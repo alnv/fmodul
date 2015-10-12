@@ -1,34 +1,10 @@
 F Modul
 ======================
 
-Text…
+Beschreibung kommt bald…
 
 
 System requirements
 -------------------
 
  * Contao CMS 3.5.3 / 3.5.4
-
-
-Installation
-------------
-
-Text…
-
-
-Documentation
--------------
-
-Text…
-
-
-License
--------
-
-Text…
-
-
-Getting support
----------------
-
-Text…

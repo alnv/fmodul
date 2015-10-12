@@ -7,20 +7,20 @@
  */
 ClassLoader::addClasses(array
 (
-    'FModule\DCACreator' => 'system/modules/fmodule/classes/DCACreator.php',
-    'FModule\DCAModuleSettings' => 'system/modules/fmodule/classes/DCAModuleSettings.php',
-    'FModule\DCAModuleData' => 'system/modules/fmodule/classes/DCAModuleData.php',
-    'FModule\SqlData' => 'system/modules/fmodule/classes/SqlData.php',
-    'FModule\OptionWizardExtended' => 'system/modules/fmodule/widgets/OptionWizardExtended.php',
-    'FModule\DCAHelper' => 'system/modules/fmodule/classes/DCAHelper.php',
-    'FModule\ModuleDetailView' => 'system/modules/fmodule/modules/ModuleDetailView.php',
-    'FModule\ModuleListView' => 'system/modules/fmodule/modules/ModuleListView.php',
-    'FModule\ModeSettings' => 'system/modules/fmodule/widgets/ModeSettings.php',
-    'FModule\FilterFields' => 'system/modules/fmodule/widgets/FilterFields.php',
-    'FModule\ModuleFormFilter' => 'system/modules/fmodule/modules/ModuleFormFilter.php',
-    'FModule\FieldAppearance' => 'system/modules/fmodule/classes/FieldAppearance.php',
-    'FModule\ContentModelExtend' => 'system/modules/fmodule/models/ContentModelExtend.php',
-    'FModule\FModule' => 'system/modules/fmodule/classes/FModule.php',
+    'FModule\DCACreator' => 'system/modules/fmodule/src/FModule/Contao/Classes/DCACreator.php',
+    'FModule\DCAModuleSettings' => 'system/modules/fmodule/src/FModule/Contao/Classes/DCAModuleSettings.php',
+    'FModule\DCAModuleData' => 'system/modules/fmodule/src/FModule/Contao/Classes/DCAModuleData.php',
+    'FModule\SqlData' => 'system/modules/fmodule/src/FModule/Contao/Classes/SqlData.php',
+    'FModule\OptionWizardExtended' => 'system/modules/fmodule/src/FModule/Contao/Widget/OptionWizardExtended.php',
+    'FModule\DCAHelper' => 'system/modules/fmodule/src/FModule/Contao/Classes/DCAHelper.php',
+    'FModule\ModuleDetailView' => 'system/modules/fmodule/src/FModule/Contao/Module/ModuleDetailView.php',
+    'FModule\ModuleListView' => 'system/modules/fmodule/src/FModule/Contao/Module/ModuleListView.php',
+    'FModule\ModeSettings' => 'system/modules/fmodule/src/FModule/Contao/Widget/ModeSettings.php',
+    'FModule\FilterFields' => 'system/modules/fmodule/src/FModule/Contao/Widget/FilterFields.php',
+    'FModule\ModuleFormFilter' => 'system/modules/fmodule/src/FModule/Contao/Module/ModuleFormFilter.php',
+    'FModule\FieldAppearance' => 'system/modules/fmodule/src/FModule/Contao/Classes/FieldAppearance.php',
+    'FModule\ContentModelExtend' => 'system/modules/fmodule/src/FModule/Contao/Model/ContentModelExtend.php',
+    'FModule\FModule' => 'system/modules/fmodule/src/FModule/Contao/Classes/FModule.php',
 
 ));
 

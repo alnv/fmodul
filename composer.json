@@ -1,0 +1,29 @@
+{
+	"name":"fmodule/fmodule",
+	"description":"",
+	"keywords":["contao"],
+	"type":"contao-module",
+	"homepage":"http://fmodule.alexandernaumov.de",
+	"license":"GNU",
+	"authors":[
+		{
+			"name":"Alexander Naumov",
+		  	"homepage":"http://www.alexandernaumov.de",
+			"role":"Developer"
+		}
+	],
+	"require":{
+		"php":">=5.4"
+	},
+	"autoload":{
+		"classmap":["src/"]
+	},
+
+	"extra":{
+		"contao":{
+			"sources":{
+				"":"system/modules/fmodule"
+			}
+		}
+	}
+}

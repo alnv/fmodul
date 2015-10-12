@@ -1,0 +1,6 @@
+<form method="GET" action="{{env::request}}">
+    <?php echo $this->widgets; ?>
+    <div class="widget-submit form-widget">
+    	<input type="submit" class="submit" value="<?php echo $this->filter; ?>"/>
+    </div>
+</form>

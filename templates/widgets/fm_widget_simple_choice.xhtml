@@ -1,0 +1,17 @@
+<div class="widget-simple-choice <?php echo $this->cssClass; ?>">
+
+    <label><?php echo $this->title; ?></label>
+
+    <select name="<?php echo $this->fieldID; ?>">
+
+        <option value="">-</option>
+
+        <?php foreach($this->options as $option): ?>
+
+        <option value="<?php echo $option['value']; ?>" <?php  echo ( ( $this->selected == $option['value'] ? 'selected' : '' )  ) ?> ><?php echo $option['label']; ?></option>
+
+    <?php endforeach; ?>
+
+</select>
+
+        </div>

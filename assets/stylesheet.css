@@ -1,0 +1,24 @@
+.fmode_settings h4{
+    margin: 0;
+}
+.f_checkbox{
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+}
+
+.f_settings{
+    padding: 10px;
+    padding-top: 5px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+.f_checkbox:last-child{
+    border-bottom: 1px solid #ddd;
+}
+.f_settings:last-child {
+    border-bottom: 1px solid #ddd;
+}
+.mode_checkbox{
+    margin-top: 5px;
+}

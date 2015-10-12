@@ -1,0 +1,19 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php echo $this->result; ?>
+
+
+<?php if ($this->allowComments): ?>
+
+<div class="ce_comments block">
+    <p class="add-comment"><?php echo $this->addComment; ?></p>
+    <?php echo implode('', $this->comments) ?>
+    <?php echo $this->pagination ?>
+    <?php include $this->getTemplate('mod_comment_form', 'html5'); ?>
+
+</div>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

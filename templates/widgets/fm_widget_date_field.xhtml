@@ -1,0 +1,11 @@
+<div class="widget-date-field <?php echo $this->cssClass; ?>">
+
+    <label><?php echo $this->title; ?></label>
+    <select name="<?php echo $this->fieldID; ?>_int">
+        <?php foreach( $this->operator as $value => $label ): ?>
+        <option value="<?php echo $value; ?>" <?php echo ( $this->selected_operator == $value ? 'selected' : '' ); ?>><?php echo $label; ?></option>
+    <?php endforeach; ?>
+</select>
+<input type="date" name="<?php echo $this->fieldID; ?>" value="<?php echo $this->selected; ?>"/>
+
+        </div>

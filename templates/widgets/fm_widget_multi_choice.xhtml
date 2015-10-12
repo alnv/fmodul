@@ -1,0 +1,14 @@
+<div class="widget-multi-choice <?php echo $this->cssClass; ?>">
+
+    <label for="<?php echo $this->fieldID; ?>" ><?php echo $this->title; ?></label>
+
+    <select multiple="" name="<?php echo $this->fieldID; ?>[]">
+
+        <?php foreach($this->options as $option): ?>
+
+        <option value="<?php echo $option['value']; ?>" <?php if($this->selected != '' ): ?> <?php echo ( ( in_array( $option['value'], $this->selected ) ? 'selected' : '' ) ) ?> <?php endif; ?>><?php echo $option['label']; ?></option>
+
+    <?php endforeach; ?>
+
+    </select>
+</div>

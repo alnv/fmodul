@@ -1,0 +1,67 @@
+<div <?php if($this->itemID):?> id="<?php echo $this->itemID ?>" <?php endif; ?> class="fmodule_teaser<?php echo $this->itemCSS; ?>">
+
+
+        <?php if( $this->href ): ?>
+            <p class="title"><a href="<?php echo $this->href; ?>" <?php if($this->target): ?> target="_blank" <?php endif; ?> title="<?php echo $this->title; ?>"><?php echo $this->title; ?></a></p>
+        <?php else: ?>
+            <p class="title" <?php if($this->target): ?> target="_blank" <?php endif; ?> ><?php echo $this->title; ?></p>
+        <?php endif; ?>
+
+    <?php if($this->info): ?>
+
+        <p class="info"><?php echo $this->info; ?></p>
+
+        <?php endif; ?>
+
+    <?php if($this->addImage): ?>
+
+        <figure class="image_container">
+
+            <?php if( $this->href ): ?>
+                <a href="<?php echo $this->href; ?>" <?php if($this->target): ?> target="_blank" <?php endif; ?> title="<?php echo $this->title; ?>">
+            <?php endif; ?>
+                    <?php $this->insert('picture_default', $this->picture); ?>
+            <?php if( $this->href ): ?>
+                </a>
+            <?php endif; ?>
+
+            <?php if($this->caption): ?>
+                <figcaption><?php echo $this->caption; ?></figcaption>
+            <?php endif; ?>
+
+        </figure>
+
+    <?php endif; ?>
+
+        <?php if($this->description): ?>
+
+            <?php echo $this->description; ?>
+
+        <?php endif; ?>
+
+    <?php if(count($this->teaser) > 0):?>
+
+        <?php foreach($this->teaser as $teaserStr): ?>
+
+            <?php echo $teaserStr; ?>
+
+        <?php endforeach;?>
+
+    <?php endif; ?>
+
+
+        <?php if ($this->enclosure): ?>
+
+        <div class="enclosure">
+            <?php foreach ($this->enclosure as $enclosure): ?>
+                <p><img src="<?php echo $enclosure['icon'] ?>" width="18" height="18" alt="<?php echo $enclosure['mime'] ?>" class="mime_icon"> <a href="<?php echo $enclosure['href'] ?>" title="<?php echo $enclosure['title'] ?>"><?php echo $enclosure['link'] ?> <span class="size">(<?php echo $enclosure['filesize'] ?>)</span></a></p>
+            <?php endforeach; ?>
+        </div>
+
+        <?php endif; ?>
+
+    <?php if($this->href): ?>
+        <p class="more"><a href="<?php echo $this->href; ?>" <?php if($this->target): ?> target="_blank" <?php endif; ?> title="<?php echo $this->title; ?>"><?php echo $this->more; ?></a></p>
+    <?php endif; ?>
+
+</div>

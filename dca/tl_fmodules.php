@@ -62,7 +62,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'donate' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editDonate'],
                 'button_callback' => array('tl_fmodules', 'setDonateButton'),
-                'icon' => 'system/modules/fmodule/assets/donate.png'
+                'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'donate.png'
             ),
 
 
@@ -82,14 +82,14 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editheader'],
                 'href' => 'act=edit',
-                'icon' => 'system/modules/fmodule/assets/settings.png'
+                'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'settings.png'
             ),
 
             'editFilters' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editFilters'],
                 'href' => 'table=tl_fmodules_filters',
-                'icon' => 'system/modules/fmodule/assets/filter.png'
+                'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'filter.png'
             ),
 
             'delete' => array

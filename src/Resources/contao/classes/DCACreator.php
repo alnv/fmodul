@@ -210,12 +210,12 @@ class DCACreator{
     /**
      *
      */
-    private function getBEMod($tablename, $childname, $icon = 'system/modules/fmodule/assets/fmodule.png')
+    private function getBEMod($tablename, $childname)
     {
-
+        $icon = version_compare( VERSION, '4.0', '>=' ) ? 'bundles/fmodule/fmodule.png' : 'files/fmodule/assets/fmodule.png';
         $path = $this->getModuleIcon($tablename);
 
-        if( $path != false )
+        if( is_string($path) )
         {
             $icon = $path;
         }
@@ -229,18 +229,21 @@ class DCACreator{
 
     public function getModuleIcon($tablename)
     {
-        /*
-        $path = (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'files/fmodule/assets/').$tablename.'_icon.png';
-        $files = Files::getInstance();
-        $files->mkdir('files/fmodule');
-        $files->mkdir('files/fmodule/assets');
-        $exist = $files->fopen($path, 'r');
+        $path = ( version_compare( VERSION, '4.0', '>=' ) ? 'bundles/fmodule/' : 'files/fmodule/assets/').$tablename.'_icon.png';
 
-        if($exist != false)
+        if( version_compare( VERSION, '4.0', '>=' ) )
         {
+            $files = Files::getInstance();
+            $files->mkdir('files/fmodule');
+            $files->mkdir('files/fmodule/assets');
+        }
+
+        if( file_exists( TL_ROOT . ( version_compare( VERSION, '4.0', '>=' ) ? '/web/' : '/' ) . $path ) )
+        {
+
             return $path;
         }
-        */
+
         return false;
 
     }

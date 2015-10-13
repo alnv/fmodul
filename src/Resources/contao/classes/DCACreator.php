@@ -229,8 +229,8 @@ class DCACreator{
 
     public function getModuleIcon($tablename)
     {
-
-        $path = 'files/fmodule/assets/'.$tablename.'_icon.png';
+        /*
+        $path = (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'files/fmodule/assets/').$tablename.'_icon.png';
         $files = Files::getInstance();
         $files->mkdir('files/fmodule');
         $files->mkdir('files/fmodule/assets');
@@ -240,7 +240,7 @@ class DCACreator{
         {
             return $path;
         }
-
+        */
         return false;
 
     }

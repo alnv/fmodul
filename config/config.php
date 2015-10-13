@@ -16,7 +16,7 @@
  */
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
 
-    'icon' => 'system/modules/fmodule/assets/icon.png',
+    'icon' =>  (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/').'icon.png',
     'tables' => array(
 
         'tl_fmodules',

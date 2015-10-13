@@ -7,7 +7,7 @@
  *
  * @package   F Modul
  * @author    Alexander Naumov
- * @license   EULA
+ * @license   commercial
  * @copyright Alexander Naumov 2015
  */
 

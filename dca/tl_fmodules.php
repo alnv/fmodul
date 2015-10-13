@@ -58,13 +58,12 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
 
         'global_operations' => array(
 
-
-            'donate' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editDonate'],
-                'button_callback' => array('tl_fmodules', 'setDonateButton'),
-                'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'donate.png'
+            'license' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'],
+                'href' => 'table=tl_fmodules_license',
+                'class' => 'header_icon',
+                'icon' => 'header.gif'
             ),
-
 
             'all' => array
             (
@@ -230,14 +229,6 @@ class tl_fmodules extends \Contao\Backend
             $this->redirect('contao/main.php?act=error');
         }
 
-    }
-
-    /**
-     *
-     */
-    public function setDonateButton($row, $href, $label, $title, $icon, $attributes)
-    {
-        return '<a href="http://fmodule.alexandernaumov.de/spenden.html" target="_blank" '.$attributes.' tite="'.$title.'" class="header_icon" '.$icon.'>'.$label.'</a>';
     }
 
     /**

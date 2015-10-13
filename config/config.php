@@ -20,7 +20,8 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     'tables' => array(
 
         'tl_fmodules',
-        'tl_fmodules_filters'
+        'tl_fmodules_filters',
+        'tl_fmodules_license'
     )
 );
 

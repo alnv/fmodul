@@ -7,7 +7,7 @@
      *
      * @package   F Modul
      * @author    Alexander Naumov http://www.alexandernaumov.de
-     * @license   GNU GENERAL PUBLIC LICENSE
+     * @license   commercial
      * @copyright 2015 Alexander Naumov
      */
 

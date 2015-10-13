@@ -7,7 +7,7 @@
  *
  * @package   F Modul
  * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   GNU GENERAL PUBLIC LICENSE
+ * @license   commercial
  * @copyright 2015 Alexander Naumov
  */
 
@@ -31,7 +31,6 @@ class OptionWizardExtended extends Widget
     /**
      * Validate the input and set the value
      */
-
     public function validate()
     {
 

@@ -231,7 +231,6 @@ class DCACreator{
     {
 
         $path = 'files/fmodule/assets/'.$tablename.'_icon.png';
-
         $files = Files::getInstance();
         $files->mkdir('files/fmodule');
         $files->mkdir('files/fmodule/assets');

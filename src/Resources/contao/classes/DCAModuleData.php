@@ -176,21 +176,21 @@ class DCAModuleData extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'],
                     'href' => 'act=edit',
-                    'icon' => 'system/modules/fmodule/assets/fields.png'
+                    'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'fields.png'
                 ),
 
                 'editList' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'],
                     'href' => 'table=tl_content&view=list',
-                    'icon' => 'system/modules/fmodule/assets/page.png'
+                    'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'page.png'
                 ),
 
                 'editDetail' => array(
 
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'],
                     'href' => 'table=tl_content&view=detail',
-                    'icon' => 'system/modules/fmodule/assets/detail.png'
+                    'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'detail.png'
 
                 ),
 

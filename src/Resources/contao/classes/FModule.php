@@ -167,7 +167,7 @@ class FModule extends Frontend
     {
         if (TL_MODE == 'BE') {
 
-            if ($strName == 'tl_user' || $strName == 'tl_user_group') {
+            if ($strName == 'tl_user' || $strName == 'tl_user_group' || version_compare(VERSION, '4.0', '>=') ) {
 
                 $this->createFModuleUserDCA();
                 $this->createFModuleUserGroupDCA();

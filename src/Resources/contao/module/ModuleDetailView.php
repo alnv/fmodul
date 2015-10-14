@@ -41,6 +41,8 @@ class ModuleDetailView extends \Contao\Module
 
         }
 
+        $this->import('FrontendUser', 'User');
+
         /**
          *
          */
@@ -87,6 +89,11 @@ class ModuleDetailView extends \Contao\Module
         //throw 404
         if (count($itemDB) < 1) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+            $objHandler->generate($objPage->id);
+        }
+
+        if ($this->sortOutProtected($itemDB)) {
+            $objHandler = new $GLOBALS['TL_PTY']['error_403']();
             $objHandler->generate($objPage->id);
         }
 
@@ -232,6 +239,38 @@ class ModuleDetailView extends \Contao\Module
 
         }
 
+    }
+    /*
+     *
+     */
+    protected function sortOutProtected($item)
+    {
+
+        if (BE_USER_LOGGED_IN) {
+
+            return false;
+
+        }
+
+        if (FE_USER_LOGGED_IN && $item['guests'] == '1') {
+
+            return true;
+
+        }
+
+        if (FE_USER_LOGGED_IN && $item['protected'] == '1') {
+
+            $groups = deserialize($item['groups']);
+
+            if (!is_array($groups) || empty($groups) || count(array_intersect($groups, $this->User->groups)) < 1) {
+
+                return true;
+
+            }
+
+        }
+
+        return false;
     }
 
     /**

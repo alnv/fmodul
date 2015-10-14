@@ -65,6 +65,13 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'icon' => 'header.gif'
             ),
 
+            'buy_license' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'],
+                'class' => 'header_store',
+                'href' => 'key=createBuyLink',
+                'button_callback' => array('tl_fmodules', 'createBuyLink')
+            ),
+
             'all' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -81,14 +88,14 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editheader'],
                 'href' => 'act=edit',
-                'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'settings.png'
+                'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'settings.png'
             ),
 
             'editFilters' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editFilters'],
                 'href' => 'table=tl_fmodules_filters',
-                'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'filter.png'
+                'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'filter.png'
             ),
 
             'delete' => array
@@ -231,6 +238,13 @@ class tl_fmodules extends \Contao\Backend
 
     }
 
+
+    public function createBuyLink()
+    {
+        return '<a href="http://fmodule.alexandernaumov.de" target="_blank" title="' . specialchars($GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1]) . '" class="header_store">' . $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] . '</a>';
+    }
+
+
     /**
      * @param $varValue
      * @param DataContainer $dc
@@ -239,7 +253,7 @@ class tl_fmodules extends \Contao\Backend
     public function generateTableName($varValue)
     {
 
-        if ( substr($varValue, 0, 3) == 'fm_') {
+        if (substr($varValue, 0, 3) == 'fm_') {
 
             return $varValue;
 
@@ -260,8 +274,7 @@ class tl_fmodules extends \Contao\Backend
         $tablename = $dc->activeRecord->tablename;
         $name = substr($tablename, 3, strlen($tablename));
 
-        if( ( !$this->Database->tableExists($name) ) && ( !$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group') ) )
-        {
+        if ((!$this->Database->tableExists($name)) && (!$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group'))) {
             $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . ' blob NULL;')->execute();
             $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . 'p blob NULL;')->execute();
 
@@ -279,11 +292,20 @@ class tl_fmodules extends \Contao\Backend
     public function saveSortingType($varValue, DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
+
+        if ($varValue == '') {
+            $varValue = 'id';
+        }
+
         $typeArr = explode('.', $varValue);
         $type = $this->Database->prepare('SELECT type FROM tl_fmodules_filters WHERE pid = ? AND fieldID = ?')->execute($id, $typeArr[0])->row()['type'];
 
         if ($typeArr[1]) {
             $type = $type . '.' . $typeArr[1];
+        }
+
+        if ($type == null) {
+            $type = $varValue;
         }
 
         $this->Database->prepare('UPDATE tl_fmodules SET sortingType = ? WHERE id = ?')->execute($type, $id);
@@ -354,9 +376,8 @@ class tl_fmodules extends \Contao\Backend
     public function updateTable($varValue, DataContainer $dc)
     {
 
-        if(!$dc->activeRecord->tablename)
-        {
-           return $varValue;
+        if (!$dc->activeRecord->tablename) {
+            return $varValue;
         }
 
         $oldTableName = $dc->activeRecord->tablename;
@@ -366,7 +387,7 @@ class tl_fmodules extends \Contao\Backend
         $newChildTableName = $newTableName . '_data';
 
 
-        if ( !$this->Database->tableExists($varValue) && $oldTableName != $newTableName ) {
+        if (!$this->Database->tableExists($varValue) && $oldTableName != $newTableName) {
 
             $this->Database->prepare("RENAME TABLE " . $oldTableName . " TO " . $newTableName . "")->execute();
             $this->Database->prepare("RENAME TABLE " . $oldChildTableName . " TO " . $newChildTableName . "")->execute();

@@ -182,20 +182,54 @@ class FModule extends Frontend
      */
     private function getUrlFromItem($arrSplit)
     {
-        if (Database::getInstance()->tableExists($arrSplit[1])) {
-            $itemDB = Database::getInstance()->prepare("SELECT * FROM " . $arrSplit[1] . "_data JOIN " . $arrSplit[1] . " ON " . $arrSplit[1] . ".id = " . $arrSplit[1] . "_data.pid WHERE " . $arrSplit[1] . "_data.id = ?")->execute($arrSplit[2])->row();
 
-            $alias = $itemDB['alias'];
-            $source = $itemDB['source'];
-            $rootPage = ($source == 'internal' ? $itemDB['jumpTo'] : $itemDB['rootPage']);
-            $host = Environment::get('url');
-            $pageDB = Database::getInstance()->prepare("SELECT * FROM tl_page WHERE id = ?")->execute($rootPage);
+        if( $arrSplit[1] && $arrSplit[2] )
+        {
+            $tablename = $arrSplit[1];
+            $tablename_data = $tablename.'_data';
+            $id = $arrSplit[2];
 
-            $url = $itemDB['url'];
-
-            if ($source != 'external') {
-                $url = $host . '/' . $this->generateFrontendUrl($pageDB->row(), '/' . $alias);
+            if( !$this->Database->tableExists($tablename) || !$this->Database->tableExists($tablename_data))
+            {
+                return false;
             }
+
+            $dataDB = $this->Database->prepare('SELECT * FROM ' . $tablename_data . ' WHERE id = ?')->execute($id);
+
+            if( $dataDB->count() < 1 )
+            {
+                return false;
+            }
+
+            $item = $dataDB->row();
+
+            $pid = $item['pid'];
+
+            $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($pid);
+
+            if($wrapperDB->count() < 1)
+            {
+                return false;
+            }
+
+            $wrapper = $wrapperDB->row();
+
+            if( $wrapper['addDetailPage'] != '1' )
+            {
+                return false;
+            }
+
+            $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
+
+            if ($objParent === null) {
+                return false;
+            }
+
+            $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
+
+            $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+
+            $url = $this->getLink($dataDB, $strUrl);
 
             return $url;
 

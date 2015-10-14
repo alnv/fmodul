@@ -30,6 +30,12 @@ $GLOBALS['TL_LANG']['tl_fmodules']['info'][1] = 'Please enter your module descri
 $GLOBALS['TL_LANG']['tl_fmodules']['tablename'][0] = 'Table name';
 $GLOBALS['TL_LANG']['tl_fmodules']['tablename'][1] = 'Please enter your table name. Table name always starts with fm_';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'][0] = 'License key';
+$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'][1] = 'Edit the license key';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] = 'Buy license key';
+$GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1] = 'Go to Website';
+
 $GLOBALS['TL_LANG']['tl_fmodules']['editDonate'] = 'Donate';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['sorting'][0] = 'Back end sorting';

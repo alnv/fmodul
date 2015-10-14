@@ -31,9 +31,12 @@ $GLOBALS['TL_LANG']['tl_fmodules']['info'][1] = 'Kurze beschreibung deines Modul
 $GLOBALS['TL_LANG']['tl_fmodules']['tablename'][0] = 'Tabellenname';
 $GLOBALS['TL_LANG']['tl_fmodules']['tablename'][1] = 'Tabellenname eingeben. Der Tabellenname fängt stets mit fm_ an.';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'] = 'Lizenzschlüssel eingeben';
+$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'][0] = 'Lizenzschlüssel eingeben';
+$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'][1] = 'Lizenzschlüssel editieren';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['editDonate'] = 'Spenden';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] = 'Lizenz kaufen';
+$GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1] = 'Zur Webseite';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['sorting'][0] = 'Sortierfeld';
 $GLOBALS['TL_LANG']['tl_fmodules']['sorting'][1] = 'Gebe den Sortierfeld ein.';

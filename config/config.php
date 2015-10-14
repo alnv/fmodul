@@ -51,8 +51,9 @@ $GLOBALS['BE_FFL']['filterFields'] = 'FilterFields';
 /**
  * files
  */
-$GLOBALS['TL_CSS'][] = (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/').'stylesheet.css';
-
+if (TL_MODE == 'BE') {
+    $GLOBALS['TL_CSS'][] = (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'stylesheet.css';
+}
 /**
  * add hocks
  */

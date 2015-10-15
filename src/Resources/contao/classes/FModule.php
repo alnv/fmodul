@@ -360,6 +360,7 @@ class FModule extends Frontend
 
         $tablename = Input::get('tablename');
         $fieldname = Input::get('fieldname');
+        $pid = Input::get('pid');
         $value = Input::get('value');
         $limit = Input::get('limit') ? Input::get('limit') : '10';
 
@@ -371,7 +372,8 @@ class FModule extends Frontend
             return;
         }
 
-        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE ' . $fieldname . ' LIKE "%' . $value . '%" LIMIT ' . $limit . '')->query();
+
+        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE ' . $fieldname . ' LIKE "%' . $value . '%" AND pid = "'.$pid.'" LIMIT ' . $limit . '')->query();
         $return = array();
 
         while ($arrDB->next()) {
@@ -382,7 +384,8 @@ class FModule extends Frontend
         exit;
     }
 
-    public function getAutoCompleteFromSearchField($tablename, $fieldname, $value = '', $limit = '10')
+
+    public function getAutoCompleteFromSearchField($tablename, $fieldname, $pid, $value = '')
     {
 
         if (!strpos($tablename, '_data')) {
@@ -393,7 +396,13 @@ class FModule extends Frontend
             return;
         }
 
-        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE ' . $fieldname . ' LIKE "%' . $value . '%" LIMIT ' . $limit . '')->query();
+        $valueQueryStr = '';
+        if($value != '')
+        {
+            $valueQueryStr = ' AND '.$fieldname.' LIKE "%' . substr($value, 0, 3) . '%"';
+        }
+
+        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE pid = "'.$pid.'"'.$valueQueryStr.'')->query();
         $return = array();
 
         while ($arrDB->next()) {
@@ -402,5 +411,6 @@ class FModule extends Frontend
 
         return $return;
     }
+
 
 }

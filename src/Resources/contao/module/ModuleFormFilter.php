@@ -108,14 +108,15 @@ class ModuleFormFilter extends \Contao\Module
             }
 
             // get auto comletion
-            if( $field['type'] == 'search_field' && $input != '')
+            if( $field['type'] == 'search_field')
             {
                 $autoComplete = new FModule();
-                $arr = $autoComplete->getAutoCompleteFromSearchField($listModuleTable, $fieldname, $input);
+                $arr = $autoComplete->getAutoCompleteFromSearchField($listModuleTable, $fieldname, $listModuleID, $input);
                 $fields[$i]['auto_complete'] = $arr;
 
             }
 
+            $fields[$i]['wrapperID'] = $listModuleID;
             $fields[$i]['selected'] = $selected;
 			
             $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
@@ -133,7 +134,7 @@ class ModuleFormFilter extends \Contao\Module
         $strResult = '';
         $objTemplate = new \FrontendTemplate($formTemplate);
         
-        $objTemplate->setData( array( 'widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit'] ) );
+        $objTemplate->setData( array('widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit'] ) );
         $strResult .= $objTemplate->parse();
         
         $this->Template->cssID = $this->cssID;

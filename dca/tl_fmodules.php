@@ -282,6 +282,13 @@ class tl_fmodules extends \Contao\Backend
             $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $name . 'p blob NULL;')->execute();
 
         }
+
+        if( !\Contao\Config::get('bypassCache') )
+        {
+            $automator = new \Contao\Automator();
+            $automator->purgeInternalCache();
+        }
+
     }
 
     /**
@@ -365,6 +372,11 @@ class tl_fmodules extends \Contao\Backend
         $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . '')->execute();
         $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
 
+        if( !\Contao\Config::get('bypassCache') )
+        {
+            $automator = new \Contao\Automator();
+            $automator->purgeInternalCache();
+        }
 
     }
 
@@ -393,6 +405,12 @@ class tl_fmodules extends \Contao\Backend
             $this->Database->prepare("RENAME TABLE " . $oldChildTableName . " TO " . $newChildTableName . "")->execute();
             $this->Database->prepare("UPDATE tl_content SET ptable = ? WHERE ptable = ?")->execute($newChildTableName, $oldChildTableName);
 
+        }
+
+        if( !\Contao\Config::get('bypassCache') )
+        {
+            $automator = new \Contao\Automator();
+            $automator->purgeInternalCache();
         }
 
         return $varValue;

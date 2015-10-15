@@ -14,7 +14,9 @@
 /**
  *
  */
+use Contao\Automator;
 use Contao\Database;
+use Contao\DcaLoader;
 use Contao\Environment;
 use Contao\Frontend;
 use Contao\Input;
@@ -165,13 +167,22 @@ class FModule extends Frontend
 
     public function createUserGroupDCA($strName)
     {
+
         if (TL_MODE == 'BE') {
 
-            if ($strName == 'tl_user' || $strName == 'tl_user_group' || version_compare(VERSION, '4.0', '>=') ) {
+            if( version_compare(VERSION, '4.0', '>=' ) )
+            {
+                DcaLoader::loadDataContainer('tl_user');
+                DcaLoader::loadDataContainer('tl_user_group');
+            }
 
+            if ($strName == 'tl_user')
+            {
                 $this->createFModuleUserDCA();
+            }
+            if($strName == 'tl_user_group')
+            {
                 $this->createFModuleUserGroupDCA();
-
             }
         }
     }
@@ -292,7 +303,6 @@ class FModule extends Frontend
      */
     public function createFModuleUserDCA()
     {
-
 
         if (!$this->Database->tableExists('tl_fmodules')) {
             return;

@@ -30,6 +30,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Edit items', '
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Delete item', 'Delete item');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] = "Do you really want to delete entry ID %s ?";
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Information', 'Information');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Duplicate', 'Duplicate');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Edit detail view', 'Edit list view');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Edit list view', 'Edit list view');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Disable/Enable item', 'Disable/Enable item');

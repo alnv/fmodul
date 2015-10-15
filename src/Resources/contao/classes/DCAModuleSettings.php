@@ -99,6 +99,18 @@ class DCAModuleSettings extends DCAHelper
                 'format' => '%s <span style="color: #c2c2c2;">(%s)</span>'
             ),
 
+            'global_operations' => array(
+
+                'all' => array
+                (
+                    'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
+                    'href' => 'act=select',
+                    'class' => 'header_edit_all',
+                    'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
+                )
+
+            ),
+
             'operations' => array(
 
                 'editheader' => array
@@ -113,6 +125,13 @@ class DCAModuleSettings extends DCAHelper
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
                     'href' => 'table=' . $this->child,
                     'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'list.png'
+                ),
+
+                'copy' => array
+                (
+                    'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'],
+                    'href' => 'act=copy',
+                    'icon' => 'copy.gif'
                 ),
 
                 'delete' => array

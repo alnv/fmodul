@@ -30,6 +30,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Datensätze be
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] = "Soll der Eintrag ID %s wirklich gelöscht werden?";
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Datensatz ID %s löschen', 'Datensatz ID %s löschen');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Information', 'Information');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Duplizieren', 'Duplizieren');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Detailansicht bearbeiten', 'Detailansicht bearbeiten');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Listenansicht bearbeiten', 'Listenansicht bearbeiten');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Datensatz einblenden/ausblenden', 'Datensatz einblenden/ausblenden');

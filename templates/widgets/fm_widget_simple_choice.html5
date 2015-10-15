@@ -1,17 +1,18 @@
-<div class="widget-simple-choice form-widget<?php echo $this->cssClass; ?>">
+<div class="widget-search-field form-widget <?php echo $this->cssClass; ?>">
 
     <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
 
-    <select id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>">
+    <?php if( $this->isInteger && $this->isInteger == '1' ): ?>
 
-        <option value=""><?php echo $this->title; ?></option>
+    <select id="<?php echo $this->fieldID; ?>_int" name="<?php echo $this->fieldID; ?>_int">
+        <?php foreach( $this->operator as $value => $label ): ?>
+        <option value="<?php echo $value; ?>"
+        <?php echo ( $this->selected_operator == $value ? 'selected' : '' ); ?>><?php echo $label; ?></option>
+    <?php endforeach; ?>
+</select>
 
-        <?php foreach($this->options as $option): ?>
+        <?php endif; ?>
 
-            <option value="<?php echo $option['value']; ?>" <?php  echo ( ( $this->selected == $option['value'] ? 'selected' : '' )  ) ?> ><?php echo $option['label']; ?></option>
+<input type="text" id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>" value="<?php echo $this->selected; ?>"/>
 
-        <?php endforeach; ?>
-
-    </select>
-
-</div>
+        </div>

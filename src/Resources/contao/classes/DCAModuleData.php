@@ -95,6 +95,7 @@ class DCAModuleData extends DCAHelper
 
             'dataContainer' => 'Table',
             'ptable' => $parent,
+            'ctable' => array('tl_content'),
             'enableVersioning' => true,
             'onload_callback' => array
             (
@@ -176,21 +177,21 @@ class DCAModuleData extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'],
                     'href' => 'act=edit',
-                    'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'fields.png'
+                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'fields.png'
                 ),
 
                 'editList' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'],
                     'href' => 'table=tl_content&view=list',
-                    'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'page.png'
+                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'page.png'
                 ),
 
                 'editDetail' => array(
 
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'],
                     'href' => 'table=tl_content&view=detail',
-                    'icon' => ( version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/' ).'detail.png'
+                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'detail.png'
 
                 ),
 
@@ -277,11 +278,9 @@ class DCAModuleData extends DCAHelper
     {
         $hash = Input::cookie('BE_USER_AUTH');
         $id = '0';
-        if( isset($hash) && $hash != '')
-        {
+        if (isset($hash) && $hash != '') {
             $sessionDB = $this->Database->prepare('SELECT * FROM tl_session WHERE hash = ?')->execute($hash);
-            if($sessionDB->count() > 0 )
-            {
+            if ($sessionDB->count() > 0) {
                 $id = $sessionDB->row()['pid'];
             }
         }
@@ -353,7 +352,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true),
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50'),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 
@@ -639,14 +638,14 @@ class DCAModuleData extends DCAHelper
         }
 
         $table = Input::get('table');
-        $pid = Input::get('pid');
+        $pid = $dc->activeRecord->pid;
 
-        $objAlias = $this->Database->prepare("SELECT id FROM " . $table . " WHERE alias=? AND pid = ?")
-            ->execute($varValue, $pid);
+        $objAlias = $this->Database->prepare("SELECT id FROM " . $table . " WHERE alias=? AND pid = ?")->execute($varValue, $pid);
 
         // Check whether the alias exists
         if ($objAlias->numRows > 1 && !$autoAlias) {
-            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+
         }
 
         // Add ID to alias
@@ -697,12 +696,6 @@ class DCAModuleData extends DCAHelper
 
         $this->createCols();
 
-        /*
-        $default = implode(',', $this->defaultCols());
-        $this->Database->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $default . ", PRIMARY KEY (id))")->execute();
-        */
-        //$sql = "CREATE TABLE IF NOT EXISTS ".$this->name." (".$default.", PRIMARY KEY (id))";
-        //$db->prepare($sql)->execute();
     }
 
     /**

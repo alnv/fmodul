@@ -13,6 +13,12 @@
 
 $fmodules = &$GLOBALS['BE_MOD']['fmodules'];
 
+$GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
+
+	'sql' => "varchar(50) NOT NULL default ''"
+
+);
+
 $view = \Input::get('view');
 
 if(!$fmodules)
@@ -28,12 +34,6 @@ foreach($fmodules as $name => $module){
 		$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
     }
 }
-
-$GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
-	
-	'sql' => "varchar(50) NOT NULL default ''"
-
-);
 
 $GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback'][] = array('tl_content_extend', 'addView');
 $GLOBALS['TL_DCA']['tl_content']['config']['oncopy_callback'][] = array('tl_content_extend', 'onCopyAddfView');

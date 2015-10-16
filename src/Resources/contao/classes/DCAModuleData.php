@@ -704,7 +704,7 @@ class DCAModuleData extends DCAHelper
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
 
-        $table = Input::get('table');
+        //$table = Input::get('table');
 
         if (strlen(Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
@@ -723,7 +723,7 @@ class DCAModuleData extends DCAHelper
             $icon = 'invisible.gif';
         }
 
-        $objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")->limit(1)->execute($row['pid']);
+        //$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")->limit(1)->execute($row['pid']);
 
         //if (!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()))
         //{

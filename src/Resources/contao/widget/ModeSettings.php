@@ -118,8 +118,8 @@ class ModeSettings extends Widget
 
         foreach ($this->modeViewObject as $index => $viewObject) {
 
-            if ($viewObject['type'] == 'search_field') {
-                //    continue;
+            if ($viewObject['type'] == 'fulltext_search') {
+                continue;
             }
 
             $str = '<div class="f_checkbox">

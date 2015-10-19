@@ -38,9 +38,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Multiple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Text field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Enable numbers';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Allow to use relational operator. See "fm_widget_search_field" Template.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Fuzzy search', 'Will find "Contao" if you search for "con" (equal to a wildcard search).');
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][0] = 'Negation';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Return the Opposite.';

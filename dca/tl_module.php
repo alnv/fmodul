@@ -188,6 +188,7 @@ class tl_module_fmodule extends tl_module
                     'title' => $filterFieldsDB->title,
                     'type' => $filterFieldsDB->type,
                     'isInteger' => $filterFieldsDB->isInteger,
+                    'isFuzzy' => $filterFieldsDB->isFuzzy,
                     'active' => '',
                     'cssClass' => '',
                     'templates' => array(),
@@ -202,6 +203,7 @@ class tl_module_fmodule extends tl_module
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['filterFields'] = $filterFields;
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['currentListID'] = $listID;
         }
+
 
         return $options;
     }
@@ -294,15 +296,13 @@ class tl_module_fmodule extends tl_module
         $sorting = array('id' => 'ID','title' => 'Titel');
 
         while ($filterDB->next()) {
+
+            if ($filterDB->type == 'fulltext_search') {
+                continue;
+            }
+
             $sorting[$filterDB->fieldID] = $filterDB->title;
-            /*
-            if ($filterDB->type == 'simple_choice') {
-            //    $sorting[$filterDB->fieldID] = $filterDB->title;
-            }
-            if ($filterDB->type == 'date_field') {
-            //    $sorting[$filterDB->fieldID] = $filterDB->title;
-            }
-            */
+
         }
 
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields']['options'] = $sorting;

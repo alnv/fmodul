@@ -43,6 +43,7 @@ TemplateLoader::addFiles(array
     'fm_widget_date_field' => $pathToFiles.'src/Resources/contao/templates/widgets',
     'fm_widget_multi_choice' => $pathToFiles.'src/Resources/contao/templates/widgets',
     'fm_widget_simple_choice' => $pathToFiles.'src/Resources/contao/templates/widgets',
-    'fm_widget_search_field' => $pathToFiles.'src/Resources/contao/templates/widgets'
+    'fm_widget_search_field' => $pathToFiles.'src/Resources/contao/templates/widgets',
+    'fm_widget_fulltext_search' => $pathToFiles.'src/Resources/contao/templates/widgets'
 
 ));

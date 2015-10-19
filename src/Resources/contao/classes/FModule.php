@@ -364,14 +364,13 @@ class FModule extends Frontend
         $value = Input::get('value');
         $limit = Input::get('limit') ? Input::get('limit') : '10';
 
-        if (!strpos($tablename, '_data')) {
+        if( !strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_'){
             $tablename = $tablename . '_data';
         }
 
         if (!$this->Database->tableExists($tablename)) {
             return;
         }
-
 
         $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE ' . $fieldname . ' LIKE "%' . $value . '%" AND pid = "'.$pid.'" LIMIT ' . $limit . '')->query();
         $return = array();
@@ -382,13 +381,14 @@ class FModule extends Frontend
 
         echo json_encode($return);
         exit;
+
     }
 
 
     public function getAutoCompleteFromSearchField($tablename, $fieldname, $pid, $value = '')
     {
 
-        if (!strpos($tablename, '_data')) {
+        if( !strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_'){
             $tablename = $tablename . '_data';
         }
 

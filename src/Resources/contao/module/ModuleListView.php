@@ -14,6 +14,8 @@
 use Contao\Cache;
 use Contao\Input;
 use Contao\Pagination;
+use Contao\Search;
+use Contao\System;
 
 
 /**
@@ -113,6 +115,7 @@ class ModuleListView extends \Contao\Module
                 'title' => $moduleDB->title,
                 'isInteger' => $moduleDB->isInteger,
                 'negate' => $moduleDB->negate,
+                'isFuzzy' => $moduleDB->isFuzzy,
                 'value' => '',
                 'overwrite' => null,
                 'active' => null,
@@ -179,10 +182,10 @@ class ModuleListView extends \Contao\Module
 
         }
 
-
         // create queries
         $sqlQueriesArr = [];
-
+        $searchQuery = '';
+        $isFuzzy = false;
         foreach ($input as $query) {
 
             switch ($query['type']) {
@@ -206,27 +209,44 @@ class ModuleListView extends \Contao\Module
 
                     $sqlQueriesArr[] = $this->multiChoiceQuery($query);
                     break;
+
+                case 'fulltext_search':
+                    $searchQuery = $query['value'];
+                    $isFuzzy = ( $query['isFuzzy'] == '1' ? true : false );
+                    break;
             }
 
         }
 
-
         $sqlQueriesStr = implode('', $sqlQueriesArr);
         $sortingFields = implode(',', $sortingFields);
+
+        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+        $addDetailPage = $wrapperDB['addDetailPage'];
+        $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
 
         $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data
         WHERE pid = ' . $wrapperID . '
         AND published = "1" ' . $sqlQueriesStr . '
         ORDER BY ' . $sortingFields . ' ' . $orderBy . '')->query();
 
-        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
-        $addDetailPage = $wrapperDB['addDetailPage'];
-        $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
-
         $strResults = '';
         $objTemplate = new \FrontendTemplate($this->f_list_template);
 
         $itemsArr = array();
+
+        /**
+         * search
+         */
+        $foundArr = array();
+        if( $searchQuery != '' && $addDetailPage == '1' )
+        {
+            $search = Search::searchFor($searchQuery, false, array($wrapperDB['rootPage']), 0, 0, $isFuzzy);
+            while($search->next())
+            {
+                $foundArr[$search->url] = $search->relevance;
+            }
+        }
 
         while ($listDB->next()) {
 
@@ -242,19 +262,59 @@ class ModuleListView extends \Contao\Module
 
             $imagePath = $this->generateSingeSrc($listDB);
 
-
             if ($imagePath) {
 
                 $listDB->singleSRC = $imagePath;
 
             }
 
-            if ($imgSize)
-            {
+            if ($imgSize) {
                 $listDB->size = $imgSize;
             }
 
+            $listDB->href = null;
+
+            if ($addDetailPage == '1' && $listDB->source == 'default') {
+                // reset target
+                $listDB->target = '';
+                $listDB->href = $this->generateUrl($rootDB, $listDB->alias);
+            }
+
+            if ($listDB->source == 'external') {
+                $listDB->href = $listDB->url;
+            }
+
+            if ($listDB->source == 'internal') {
+
+                // reset target
+                $listDB->target = '';
+                $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
+                $listDB->href = $this->generateFrontendUrl($jumpToDB);
+            }
+
+            /**
+             * search
+             */
+            if ( $searchQuery != '' && $addDetailPage == '1' ) {
+
+                if (!$foundArr[$listDB->href]) {
+                    continue;
+                }
+
+                $listDB->relevance = $foundArr[$listDB->href];
+
+            }
+
             $itemsArr[] = $listDB->row();
+
+        }
+
+        /*
+         * search
+         */
+        if ( $searchQuery != '' && $addDetailPage == '1' )
+        {
+            usort($itemsArr, array('ModuleListView', 'sortByRelevance'));
         }
 
         // pagination
@@ -289,29 +349,6 @@ class ModuleListView extends \Contao\Module
 
             $arrElements = array();
             $item = $itemsArr[$i];
-
-            $item['href'] = null;
-
-            if ($addDetailPage == '1' && $item['source'] == 'default') {
-                // reset target
-                $item['target'] = '';
-
-                $item['href'] = $this->generateUrl($rootDB, $item['alias']);
-            }
-
-            if ($item['source'] == 'external') {
-
-                $item['href'] = $item['url'];
-            }
-
-            if ($item['source'] == 'internal') {
-
-                // reset target
-                $item['target'] = '';
-
-                $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($item['jumpTo'])->row();
-                $item['href'] = $this->generateFrontendUrl($jumpToDB);
-            }
 
             //get css and id
             $item['cssID'] = deserialize($item['cssID']);
@@ -368,12 +405,22 @@ class ModuleListView extends \Contao\Module
                 $this->addImageToTemplate($objTemplate, $item);
             }
 
+
+
             $strResults .= $objTemplate->parse();
 
         }
 
-        $this->Template->results = ($listDB->count() < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
+        $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
 
+    }
+
+    /**
+     * search
+     */
+    public function sortByRelevance($a, $b)
+    {
+        return $a['relevance'] <= $b['relevance'];
     }
 
     /**

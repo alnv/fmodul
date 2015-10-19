@@ -1,0 +1,7 @@
+<div class="widget-fulltext-search form-widget <?php echo $this->cssClass; ?>">
+
+    <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
+
+    <input type="text" id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>" value="<?php echo $this->selected; ?>"/>
+
+</div>

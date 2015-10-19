@@ -96,6 +96,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,dataFromTable,negate,fieldAppearance;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,isInteger;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title, isFuzzy;',
 
     ),
 
@@ -125,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -172,6 +173,15 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'isInteger' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'],
+            'inputType' => 'checkbox',
+            'exclude'=> true,
+            'eval' => array('tl_class' => 'clr m12'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+
+        'isFuzzy' => array(
+
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'],
             'inputType' => 'checkbox',
             'exclude'=> true,
             'eval' => array('tl_class' => 'clr m12'),

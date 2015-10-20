@@ -150,7 +150,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
 );
 
 /**
- *
+ * Class tl_module_fmodule
  */
 class tl_module_fmodule extends tl_module
 {

@@ -324,9 +324,20 @@ class tl_fmodules_filters extends \Contao\Backend
 
     }
 
+    /**
+     * @param DataContainer $dc
+     */
     public function delete_cols(DataContainer $dc)
     {
+
+        //
         if($dc->activeRecord->fieldID == '')
+        {
+            return;
+        }
+
+        //
+        if($dc->activeRecord->type == 'fulltext_search')
         {
             return;
         }

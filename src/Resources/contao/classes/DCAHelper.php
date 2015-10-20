@@ -15,9 +15,15 @@ use Contao\Database;
 use Contao\Backend;
 use Contao\Input;
 
+/**
+ * Class DCAHelper
+ * @package FModule
+ */
 class DCAHelper extends Backend
 {
-	
+	/**
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -40,9 +46,12 @@ class DCAHelper extends Backend
 
 		if($field['fieldID'] == '')
 		{
-
 			return $options;
+		}
 
+		if($field['type'] == 'fulltext_search')
+		{
+			return $options;
 		}
 
 		$optionsDB = deserialize( Database::getInstance()->prepare("SELECT ".$field['fieldID']." FROM ".$this->parent." WHERE id = ?")->execute($id)->row()[$field['fieldID']] );

@@ -1,10 +1,10 @@
 {
 	"name":"fmodule/fmodule",
-	"description":"",
-	"keywords":["contao"],
+	"description":"Das F Modul befindet sich noch in der Testphase und wird voraussichtlich am 06.11.2015 veröffentlicht.",
+	"keywords":["contao", "fmodul"],
 	"type":"contao-module",
-	"homepage":"http://fmodule.alexandernaumov.de",
-	"license":"GNU",
+	"homepage":"http://fmodul.alexandernaumov.de",
+	"license":"commercial",
 	"authors":[
 		{
 			"name":"Alexander Naumov",
@@ -12,8 +12,15 @@
 			"role":"Developer"
 		}
 	],
+	"support":{
+	  "email":"me@alexandernaumov.de",
+	  "issues":"https://github.com/alnv/fmodul/issues",
+	  "wiki":"http://fmodul.alexandernaumov.de/ressourcen.html"
+	},
 	"require":{
-		"php":">=5.4"
+	  "php":">=5.4",
+	  "contao/core":">=3.5,>=4.0",
+	  "contao-community-alliance/composer-installer":"*"
 	},
 	"autoload":{
 		"classmap":["src/"]

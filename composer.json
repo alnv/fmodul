@@ -25,7 +25,9 @@
 	"autoload":{
 		"classmap":["src/"]
 	},
-
+	"replace":{
+	  "contao-legacy/fmodule":"*"
+	},
 	"extra":{
 		"contao":{
 			"sources":{

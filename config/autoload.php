@@ -2,9 +2,7 @@
 
 \Contao\ClassLoader::addNamespace('FModule');
 
-
 $pathToFiles = version_compare(VERSION, '4.0', '>=') ? 'vendor/fmodule/fmodule/' : 'system/modules/fmodule/';
-
 
 /**
  * Register the classes
@@ -25,7 +23,6 @@ ClassLoader::addClasses(array
     'FModule\FieldAppearance' => $pathToFiles.'src/Resources/contao/classes/FieldAppearance.php',
     'FModule\ContentModelExtend' => $pathToFiles.'src/Resources/contao/model/ContentModelExtend.php',
     'FModule\FModule' => $pathToFiles.'src/Resources/contao/classes/FModule.php',
-
 ));
 
 /**
@@ -44,6 +41,5 @@ TemplateLoader::addFiles(array
     'fm_widget_multi_choice' => $pathToFiles.'src/Resources/contao/templates/widgets',
     'fm_widget_simple_choice' => $pathToFiles.'src/Resources/contao/templates/widgets',
     'fm_widget_search_field' => $pathToFiles.'src/Resources/contao/templates/widgets',
-    'fm_widget_fulltext_search' => $pathToFiles.'src/Resources/contao/templates/widgets'
-
+    'fm_widget_fulltext_search' => $pathToFiles.'src/Resources/contao/templates/widgets',
 ));

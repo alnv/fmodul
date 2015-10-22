@@ -16,6 +16,7 @@ use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
 use Contao\BackendUser;
+use Symfony\Component\Intl\Util\Version;
 
 
 /**
@@ -48,7 +49,6 @@ class DCAModuleData extends DCAHelper
      */
     public function checkPermission($dc)
     {
-
 
         $modname = substr($dc->table, 3, strlen($dc->table));
         $modname = str_replace('_data', '', $modname);
@@ -704,18 +704,10 @@ class DCAModuleData extends DCAHelper
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
 
-        //$table = Input::get('table');
-
         if (strlen(Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
         }
-
-        // Check permissions AFTER checking the tid, so hacking attempts are logged
-        //if (!$this->User->hasAccess(''.$table.'::published', 'alexf'))
-        //{
-        //	return '';
-        //}
 
         $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
@@ -723,20 +715,14 @@ class DCAModuleData extends DCAHelper
             $icon = 'invisible.gif';
         }
 
-        //$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")->limit(1)->execute($row['pid']);
+        return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
 
-        //if (!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()))
-        //{
-        //	return Image::getHtml($icon) . ' ';
-        //}
-
-        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
-    }
+     }
 
     /**
      *
      */
-    public function toggleVisibility($intId, $blnVisible, DataContainer $dc = null)
+    public function toggleVisibility($intId, $blnVisible, $dc = null)
     {
 
         $table = Input::get('table');
@@ -744,17 +730,6 @@ class DCAModuleData extends DCAHelper
         // Check permissions to edit
         Input::setGet('id', $intId);
         Input::setGet('act', 'toggle');
-        //$this->checkPermission();
-
-        // Check permissions to publish
-        //if (!$this->User->hasAccess(''.$table.'::published', 'alexf'))
-        //{
-        //log->
-        //	$this->redirect('contao/main.php?act=error');
-        //}
-
-        //$objVersions = new Versions($this->name, $intId);
-        //$objVersions->initialize();
 
         // Trigger the save_callback
         if (is_array($GLOBALS['TL_DCA'][$table]['fields']['published']['save_callback'])) {
@@ -771,7 +746,6 @@ class DCAModuleData extends DCAHelper
         // Update the database
         $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
-        //$objVersions->create();
-        // ->log
+
     }
 }

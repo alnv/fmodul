@@ -251,7 +251,7 @@ class ModeSettings extends Widget
                     <div class="wizard">
                         <h4><label>'.$GLOBALS['TL_LANG']['MSC']['fm_date_label'].'</label></h4>
                         <input id="ctrl_'.$viewObject['fieldID'].'_'.$index.'" class="tl_text" name="' . $this->strName . '[' . $index . '][set][filterValue]" value="' . $viewObject['set']['filterValue'] . '" onfocus="Backend.getScrollOffset()">
-                        <img src="assets/mootools/datepicker/2.2.0/icon.gif" width="20" height="20" id="toggle_'.$viewObject['fieldID'].'" style="vertical-align:-6px;cursor:pointer">
+                        <img src="'.( version_compare( VERSION, '4.0', '>=' ) ? 'assets/datepicker/images/icon.gif' : 'assets/mootools/datepicker/2.2.0/icon.gif' ).'" width="20" height="20" id="toggle_'.$viewObject['fieldID'].'" style="vertical-align:-6px;cursor:pointer">
                     </div>
                      <script>
 

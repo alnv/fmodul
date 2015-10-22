@@ -147,7 +147,7 @@ class DCAModuleData extends DCAHelper
                 'mode' => 0,
                 'flag' => $flag,
                 'fields' => array($arrField[0]),
-                'panelLayout' => 'sort,filter;search,limit'
+                'panelLayout' => 'sort;search,limit,filter'
 
             ),
 
@@ -310,6 +310,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'],
                 'inputType' => 'text',
                 'exclude' => true,
+                'search' => true,
                 'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
                 'sql' => "varchar(255) NOT NULL default ''"
 
@@ -320,6 +321,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'],
                 'inputType' => 'text',
                 'exclude' => true,
+                'search' => true,
                 'eval' => array('maxlength' => 255, 'tl_class' => 'long clr'),
                 'sql' => "varchar(255) NOT NULL default ''"
 
@@ -330,6 +332,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'],
                 'default' => $userID,
                 'exclude' => true,
+                'filter' => true,
                 'inputType' => 'select',
                 'foreignKey' => 'tl_user.name',
                 'eval' => array('doNotCopy' => true, 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
@@ -342,6 +345,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'],
                 'inputType' => 'textarea',
                 'exclude' => true,
+                'search' => true,
                 'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE'),
                 'sql' => "mediumtext NULL"
 
@@ -446,6 +450,7 @@ class DCAModuleData extends DCAHelper
 
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['published'],
                 'inputType' => 'checkbox',
+                'filter' => true,
                 'exclude' => true,
                 'eval' => array('submitOnChange' => true, 'doNotCopy' => true),
                 'sql' => "char(1) NOT NULL default ''"
@@ -560,6 +565,11 @@ class DCAModuleData extends DCAHelper
 
                 );
 
+                if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_itemm' )
+                {
+                    $arr[$field['fieldID']]['filter'] = false;
+                }
+
                 if ($field['fieldAppearance'] == 'radio') {
                     $arr[$field['fieldID']]['inputType'] = 'radio';
                 }
@@ -580,6 +590,11 @@ class DCAModuleData extends DCAHelper
                     'eval' => array('multiple' => true, 'tl_class' => 'clr', 'csv' => ','),
                     'sql' => "blob NULL"
                 );
+
+                if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
+                {
+                    $arr[$field['fieldID']]['filter'] = false;
+                }
 
                 if ($field['fieldAppearance'] == 'checkbox') {
                     $arr[$field['fieldID']]['inputType'] = 'checkbox';

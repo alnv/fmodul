@@ -229,18 +229,16 @@ class DCACreator{
 
     public function getModuleIcon($tablename)
     {
-        $path = ( version_compare( VERSION, '4.0', '>=' ) ? 'bundles/fmodule/' : 'files/fmodule/assets/').$tablename.'_icon.png';
 
-        if( !version_compare( VERSION, '4.0', '>=' ) )
-        {
-            $files = Files::getInstance();
-            $files->mkdir('files/fmodule');
-            $files->mkdir('files/fmodule/assets');
-        }
+        $path = TL_ROOT.'/'.'files/fmodule/assets/'.$tablename.'_icon.png';
 
-        if( file_exists( TL_ROOT . ( version_compare( VERSION, '4.0', '>=' ) ? '/web/' : '/' ) . $path ) )
+        $files = Files::getInstance();
+        $files->mkdir('files/fmodule');
+        $files->mkdir('files/fmodule/assets');
+
+        if( file_exists( $path ) )
         {
-            return $path;
+            return ( version_compare( VERSION, '4.0', '>=' ) ? '../files/fmodule/assets/' : 'files/fmodule/assets/').$tablename.'_icon.png';
         }
 
         return false;

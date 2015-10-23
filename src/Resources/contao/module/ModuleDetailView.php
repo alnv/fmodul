@@ -19,16 +19,15 @@ use Contao\Input;
 class ModuleDetailView extends \Contao\Module
 {
     /**
-     *
+     * @var string
      */
     protected $strTemplate = 'mod_fmodule_detail';
 
     /**
-     *
+     * @return string
      */
     public function generate()
     {
-
         /**
          *
          */
@@ -102,7 +101,7 @@ class ModuleDetailView extends \Contao\Module
 
         if ($imagePath) {
 
-            $fitemDB['singleSRC'] = $imagePath;
+            $itemDB['singleSRC'] = $imagePath;
 
         }
 
@@ -240,8 +239,10 @@ class ModuleDetailView extends \Contao\Module
         }
 
     }
-    /*
-     *
+
+    /**
+     * @param $item
+     * @return bool
      */
     protected function sortOutProtected($item)
     {

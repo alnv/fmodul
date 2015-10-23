@@ -262,12 +262,31 @@ class tl_fmodules_filters extends \Contao\Backend
     {
         if($values == '')
         {
-            return $values;
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDEmpty'], $values));
         }
 
         $pid = $dc->activeRecord->pid;
         $tempVal = $dc->activeRecord->fieldID;
         $type = $dc->activeRecord->type;
+
+        if($values == $tempVal)
+        {
+          return $tempVal;
+        }
+
+        $filtersDB = $this->Database->prepare('SELECT fieldID FROM tl_fmodules_filters WHERE pid = ? AND fieldID = ?')->execute($pid, $values);
+
+        if( $filtersDB->numRows >= 1 )
+        {
+            if( $values == 'auto_item' || $values == 'auto_page')
+            {
+                throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'], $values));
+            }
+
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'], $values));
+
+        }
+
         $tname = $this->Database->prepare("SELECT tablename FROM tl_fmodules WHERE id = ?")->execute($pid)->row()['tablename'];
         $childTable = $tname . '_data';
         $exist = $this->Database->fieldExists($values, $tname);

@@ -47,3 +47,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Fuzzy search', 'W
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][0] = 'Negation';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Return the Opposite.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'This fieldID exist alredy!';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'It may only be one %s attribute!';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDEmpty'] = 'FieldID can not be empty!';

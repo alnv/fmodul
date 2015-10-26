@@ -82,7 +82,8 @@ class ModuleDetailView extends \Contao\Module
         $strResult = '';
         $objTemplate = new \FrontendTemplate($detailTemplate);
 
-        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ?')->execute($wrapperID, $alias)->row();
+        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? AND published = "1"')
+        ->execute($wrapperID, $alias)->row();
         $wrapperDB = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($wrapperID)->row();
 
         //throw 404

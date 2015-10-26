@@ -22,7 +22,7 @@ $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS class";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Enable form field";
 
 //size
-$GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'filter';
+$GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'Filter';
 $GLOBALS['TL_LANG']['MSC']['f_eq'] = 'Equal';
 $GLOBALS['TL_LANG']['MSC']['f_gte'] = 'Greater equal';
 $GLOBALS['TL_LANG']['MSC']['f_gt'] = 'Greater then';

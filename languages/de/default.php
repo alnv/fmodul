@@ -23,7 +23,7 @@ $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Element Aktivieren";
 
 
 //größen
-$GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'filtern';
+$GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'Filtern';
 $GLOBALS['TL_LANG']['MSC']['f_eq'] = 'Gleich';
 $GLOBALS['TL_LANG']['MSC']['f_gte'] = 'Größer gleich';
 $GLOBALS['TL_LANG']['MSC']['f_gt'] = 'Größer als';

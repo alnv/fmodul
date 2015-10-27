@@ -19,23 +19,23 @@ class SqlData
     //
     public static function insertColFilterInput($tablename, $colname)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " blob NULL")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " text NULL")->execute();
     }
 
     public static function renameColFilterInput($tablename, $oldcol, $newcol)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " blob NULL")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " text NULL")->execute();
     }
 
     //
     public static function insertColSearchField($tablename, $colname)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " mediumtext NOT NULL default ''")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " text NOT NULL default ''")->execute();
     }
 
     public static function renameColSearchField($tablename, $oldcol, $newcol)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " mediumtext NOT NULL default ''")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " text NOT NULL default ''")->execute();
     }
 
     //
@@ -52,12 +52,12 @@ class SqlData
     //
     public static function insertColSelectOptions($tablename, $colname)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " blob NULL")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " text NULL")->execute();
     }
 
     public static function renameColSelectOptions($tablename, $oldcol, $newcol)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " blob NULL")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " text NULL")->execute();
     }
 
 

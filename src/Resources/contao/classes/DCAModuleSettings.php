@@ -344,7 +344,7 @@ class DCAModuleSettings extends DCAHelper
                         'options_callback' => array( 'DCAModuleSettings', 'getTables' ),
                         'save_callback' => array( array('DCAModuleSettings', 'save_select_table') ),
                         'eval' => array('submitOnChange' => true, 'tl_class' => 'clr'),
-                        'sql' => "blob NULL"
+                        'sql' => "text NULL"
 
                     );
 
@@ -358,7 +358,7 @@ class DCAModuleSettings extends DCAHelper
                         'save_callback' => array(array('DCAModuleSettings', 'save_select_col')),
                         'exclude' => true,
                         'eval' => array('tl_class' => 'w50'),
-                        'sql' => "blob NULL"
+                        'sql' => "text NULL"
                     );
 
                     $arr['select_title_'.$field['fieldID']] = array(
@@ -371,7 +371,7 @@ class DCAModuleSettings extends DCAHelper
                         'save_callback' => array(array('DCAModuleSettings', 'save_select_title')),
                         'exclude' => true,
                         'eval' => array('tl_class' => 'w50'),
-                        'sql' => "blob NULL"
+                        'sql' => "text NULL"
                     );
 
                 } else {
@@ -383,7 +383,7 @@ class DCAModuleSettings extends DCAHelper
                         'inputType' => 'optionWizardExtended',
                         'exclude' => true,
                         'eval' => array('tl_class' => 'clr m12'),
-                        'sql' => "blob NULL"
+                        'sql' => "text NULL"
 
                     );
 

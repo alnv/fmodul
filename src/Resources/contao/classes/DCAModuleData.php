@@ -561,7 +561,7 @@ class DCAModuleData extends DCAHelper
                     'inputType' => 'select',
                     'options' => $options,
                     'eval' => array('tl_class' => 'clr'),
-                    'sql' => "blob NULL"
+                    'sql' => "text NULL"
 
                 );
 
@@ -583,12 +583,12 @@ class DCAModuleData extends DCAHelper
             if ($field['fieldID'] !== '' && $field['type'] == 'multi_choice') {
                 $arr[$field['fieldID']] = array(
                     'label' => array($field['title'], ''),
-                    'filter' => true,
+                    //'filter' => true,
                     'exclude' => true,
                     'inputType' => 'checkbox',
                     'options' => $options,
                     'eval' => array('multiple' => true, 'tl_class' => 'clr', 'csv' => ','),
-                    'sql' => "blob NULL"
+                    'sql' => "text NULL"
                 );
 
                 if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
@@ -615,7 +615,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'long'),
-                    'sql' => "mediumtext NOT NULL default ''"
+                    'sql' => "text NOT NULL default ''"
                 );
             }
 

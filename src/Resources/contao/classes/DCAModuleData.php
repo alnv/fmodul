@@ -557,6 +557,7 @@ class DCAModuleData extends DCAHelper
 
                     'label' => array($field['title'], ''),
                     'filter' => true,
+                    'search' => true,
                     'exclude' => true,
                     'inputType' => 'select',
                     'options' => $options,
@@ -565,10 +566,11 @@ class DCAModuleData extends DCAHelper
 
                 );
 
-                if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_itemm' )
-                {
-                    $arr[$field['fieldID']]['filter'] = false;
-                }
+                //if( version_compare(VERSION, '4.0', '>=') )
+                //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_itemm' )
+                //{
+                    //$arr[$field['fieldID']]['filter'] = false;
+                //}
 
                 if ($field['fieldAppearance'] == 'radio') {
                     $arr[$field['fieldID']]['inputType'] = 'radio';
@@ -583,7 +585,8 @@ class DCAModuleData extends DCAHelper
             if ($field['fieldID'] !== '' && $field['type'] == 'multi_choice') {
                 $arr[$field['fieldID']] = array(
                     'label' => array($field['title'], ''),
-                    //'filter' => true,
+                    'filter' => true,
+                    'search' => true,
                     'exclude' => true,
                     'inputType' => 'checkbox',
                     'options' => $options,
@@ -591,7 +594,9 @@ class DCAModuleData extends DCAHelper
                     'sql' => "text NULL"
                 );
 
-                if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
+                // #contao 4.0 bug
+                //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
+                if( version_compare(VERSION, '4.0', '>=') )
                 {
                     $arr[$field['fieldID']]['filter'] = false;
                 }
@@ -625,6 +630,7 @@ class DCAModuleData extends DCAHelper
                     'default' => time(),
                     'exclude' => true,
                     'sorting' => true,
+                    'search' => true,
                     'inputType' => 'text',
                     'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'wizard'),
                     'sql' => "int(10) unsigned NULL"

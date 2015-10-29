@@ -73,9 +73,12 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
 /**
  * check for license
  */
-$validSums = new \FModule\FModule();
-$license = \Contao\Config::get('fmodule_license');
-if( !isset( $license ) || !in_array(md5($license), $validSums->validSums, true) )
-{
-    $GLOBALS['TL_HEAD'][] = '<div style="position:fixed; bottom: 0; left: 0; width: 100%; background: tomato; padding-top: 10px; padding-bottom: 10px; font-size: 14px; color: #fff; z-index: 9999; text-align: center;">F Modul Lizenz <a href="http://fmodul.alexandernaumov.de/kaufen.html" target="_blank" style="color: #fff; text-decoration: underline; font-weight: 600;">kaufen</a></div>';
+if (TL_MODE == 'FE') {
+
+    $validSums = new \FModule\FModule();
+    $license = \Contao\Config::get('fmodule_license');
+    if (!isset($license) || !in_array(md5($license), $validSums->validSums, true)) {
+        $GLOBALS['TL_HEAD'][] = '<div style="position:fixed; bottom: 0; left: 0; width: 100%; background: tomato; padding-top: 10px; padding-bottom: 10px; font-size: 14px; color: #fff; z-index: 9999; text-align: center;">F Modul Lizenz <a href="http://fmodul.alexandernaumov.de/kaufen.html" target="_blank" style="color: #fff; text-decoration: underline; font-weight: 600;">kaufen</a></div>';
+    }
+
 }

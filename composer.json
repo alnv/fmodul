@@ -1,7 +1,7 @@
 {
 	"name":"fmodule/fmodule",
-	"description":"Das F Modul befindet sich noch in der Testphase und wird voraussichtlich am 06.11.2015 veröffentlicht.",
-	"keywords":["contao", "fmodul", "filter"],
+	"description":"Frontend Filter für Contao CMS",
+	"keywords":["filter", "catalog", "meta", "views", "list", "contao", "cms", "extension"],
 	"type":"contao-module",
 	"homepage":"http://fmodul.alexandernaumov.de",
 	"license":"commercial",

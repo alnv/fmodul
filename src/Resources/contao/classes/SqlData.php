@@ -30,12 +30,12 @@ class SqlData
     //
     public static function insertColSearchField($tablename, $colname)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " text NOT NULL default ''")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " text NULL")->execute();
     }
 
     public static function renameColSearchField($tablename, $oldcol, $newcol)
     {
-        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " text NOT NULL default ''")->execute();
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " text NULL")->execute();
     }
 
     //

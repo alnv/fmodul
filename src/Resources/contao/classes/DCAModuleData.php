@@ -620,7 +620,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'text',
                     'eval' => array('tl_class' => 'long'),
-                    'sql' => "text NOT NULL default ''"
+                    'sql' => "text NULL"
                 );
             }
 

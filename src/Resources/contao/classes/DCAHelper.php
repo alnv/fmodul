@@ -68,7 +68,12 @@ class DCAHelper extends Backend
 			{
 				return $options;
 			}
-
+			
+			if( $optionsDB['col'] == '' || $optionsDB['title'] == '' )
+			{
+				return $options;
+			}
+			
 			$DataFromTableDB = Database::getInstance()->prepare('SELECT '.$optionsDB['col'].', '.$optionsDB['title'].' FROM '.$optionsDB['table'].'')->execute();
 
 			while($DataFromTableDB->next())

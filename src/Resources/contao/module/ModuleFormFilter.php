@@ -150,9 +150,18 @@ class ModuleFormFilter extends \Contao\Module
         if (!$this->Database->tableExists($opt['table'])) {
             return $o;
         }
-
+		
+		if( $opt['col'] == '' || $opt['title'] == '' )
+		{
+			$o[] = array(
+				'label' => '-',
+                'value' => '',
+			);
+			return $o;
+		}	
+		
         $dataFromTableDB = $this->Database->prepare('SELECT ' . $opt['col'] . ', ' . $opt['title'] . ' FROM ' . $opt['table'] . '')->execute();
-
+		
         while ($dataFromTableDB->next()) {
 
             $o[] = array(

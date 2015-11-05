@@ -156,7 +156,7 @@ class ModuleListView extends \Contao\Module
 
                 if ($filter['active']) {
 
-                    if ($filter['type'] == 'multi_choice' ) {
+                    if ( $filter['type'] == 'multi_choice'  && !is_array($get) ) {
 
                         $get = explode(',', $get);
                     }

@@ -28,18 +28,21 @@ ClassLoader::addClasses(array
 /**
  * Register the templates
  */
+ 
+$pathToTemplates =  version_compare(VERSION, '4.0', '>=') ? $pathToFiles.'src/Resources/contao/templates' : $pathToFiles.'templates';
+ 
 TemplateLoader::addFiles(array
 (
-	'mod_fmodule_detail' => $pathToFiles.'src/Resources/contao/templates',
-	'mod_fmodule_list' => $pathToFiles.'src/Resources/contao/templates',
-    'fm_form_filter' => $pathToFiles.'src/Resources/contao/templates/form',
-    'fmodule_full' => $pathToFiles.'src/Resources/contao/templates/list',
-    'fmodule_teaser' => $pathToFiles.'src/Resources/contao/templates/list',
-    'mod_form_filter' => $pathToFiles.'src/Resources/contao/templates',
+	'mod_fmodule_detail' => $pathToTemplates,
+	'mod_fmodule_list' => $pathToTemplates,
+    'fm_form_filter' => $pathToTemplates.'/form',
+    'fmodule_full' => $pathToTemplates.'/list',
+    'fmodule_teaser' => $pathToTemplates.'/list',
+    'mod_form_filter' => $pathToTemplates,
 
-    'fm_widget_date_field' => $pathToFiles.'src/Resources/contao/templates/widgets',
-    'fm_widget_multi_choice' => $pathToFiles.'src/Resources/contao/templates/widgets',
-    'fm_widget_simple_choice' => $pathToFiles.'src/Resources/contao/templates/widgets',
-    'fm_widget_search_field' => $pathToFiles.'src/Resources/contao/templates/widgets',
-    'fm_widget_fulltext_search' => $pathToFiles.'src/Resources/contao/templates/widgets',
+    'fm_widget_date_field' => $pathToTemplates.'/widgets',
+    'fm_widget_multi_choice' => $pathToTemplates.'/widgets',
+    'fm_widget_simple_choice' => $pathToTemplates.'/widgets',
+    'fm_widget_search_field' => $pathToTemplates.'/widgets',
+    'fm_widget_fulltext_search' => $pathToTemplates.'/widgets',
 ));

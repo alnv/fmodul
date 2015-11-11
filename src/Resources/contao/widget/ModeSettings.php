@@ -73,6 +73,12 @@ class ModeSettings extends Widget
         );
 
         while ($modeSettingsDB->next()) {
+
+            if($modeSettingsDB->fieldID == 'orderBy' || $modeSettingsDB->fieldID == 'sorting_fields')
+            {
+                continue;
+            }
+
             $options = $optionsDB[$modeSettingsDB->fieldID];
 
             $viewObject = array(

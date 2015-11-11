@@ -58,7 +58,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_orderby'] = array
     'inputType' => 'radio',
     'eval' => array('tl_class' => 'clr m12'),
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array('asc', 'desc'),
+    'options' => array('asc', 'desc', 'rand'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
@@ -298,6 +298,10 @@ class tl_module_fmodule extends tl_module
         while ($filterDB->next()) {
 
             if ($filterDB->type == 'fulltext_search') {
+                continue;
+            }
+
+            if ($filterDB->fieldID == 'orderBY' || $filterDB->fieldID == 'sorting_fields') {
                 continue;
             }
 

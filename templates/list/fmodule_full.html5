@@ -23,7 +23,7 @@
     <?php if(count($this->detail) > 0): ?>
 
         <?php foreach($this->detail as $i => $detailStr): ?>
-            <div class="fmodule-detail-ce-wrapper<?php echo ( $i < 1 ? ' first' : '' ); ?><?php echo ( $i == count($this->detail) - 1 ? ' last' : '' ); ?><?php echo( $i%2 ? ' odd' : ' even' ); ?>">
+            <div class="fmodule-detail-ce-wrapper<?php echo ( $i < 1 ? ' first' : '' ); ?><?php echo ( $i == count($this->detail) - 1 ? ' last' : '' ); ?><?php echo( $i%2 ? ' even' : ' odd' ); ?>">
                 <?php echo $detailStr; ?>
             </div>
         <?php endforeach;?>

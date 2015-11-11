@@ -49,3 +49,4 @@ $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
 
 $GLOBALS['TL_LANG']['tl_module']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_module']['desc'] = 'Absteigend';
+$GLOBALS['TL_LANG']['tl_module']['rand'] = 'Zufällig';

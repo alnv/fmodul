@@ -48,3 +48,4 @@ $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
 $GLOBALS['TL_LANG']['tl_module']['asc'] = 'Asc';
 $GLOBALS['TL_LANG']['tl_module']['desc'] = 'Desc';
+$GLOBALS['TL_LANG']['tl_module']['rand'] = 'Random';

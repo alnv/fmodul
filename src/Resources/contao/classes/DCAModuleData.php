@@ -551,6 +551,11 @@ class DCAModuleData extends DCAHelper
 
             $options = $this->getOptions($field);
 
+            if($field['fieldID'] == 'orderBy' || $field['fieldID'] == 'sorting_fields')
+            {
+                continue;
+            }
+
             if ($field['fieldID'] !== '' && $field['type'] == 'simple_choice') {
 
                 $arr[$field['fieldID']] = array(

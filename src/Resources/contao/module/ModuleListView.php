@@ -40,7 +40,7 @@ class ModuleListView extends \Contao\Module
         if (TL_MODE == 'BE') {
 
             $objTemplate = new \BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '. $this->name .' ###';
+            $objTemplate->wildcard = '### ' . $this->name . ' ###';
             $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
             return $objTemplate->parse();
 
@@ -76,9 +76,8 @@ class ModuleListView extends \Contao\Module
         $sortingFields = deserialize($this->f_sorting_fields);
 
         //  set default sorting field title
-        if( !is_array($sortingFields) || count($sortingFields) < 1 )
-        {
-            $sortingFields = array( 'title' );
+        if (!is_array($sortingFields) || count($sortingFields) < 1) {
+            $sortingFields = array('title');
         }
 
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ?')->execute($tablename);
@@ -88,26 +87,26 @@ class ModuleListView extends \Contao\Module
             return;
         }
 
-        //$alias = Input::get('fitem');
-
         $filterCollection = array();
         $input = array();
 
         $imgSize = false;
 
         // Override the default image size
-        if ($this->imgSize != '')
-        {
+        if ($this->imgSize != '') {
             $size = deserialize($this->imgSize);
 
-            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
-            {
+            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $imgSize = $this->imgSize;
             }
         }
 
         // set format
         while ($moduleDB->next()) {
+
+            if ($moduleDB->fieldID == 'orderBy' || $moduleDB->fieldID == 'sorting_fields') {
+                continue;
+            }
 
             $filterCollection[$moduleDB->fieldID] = array(
                 'type' => $moduleDB->type,
@@ -145,8 +144,7 @@ class ModuleListView extends \Contao\Module
 
             $get = Input::get($filter['fieldID']);
 
-            if($filter['fieldID'] == 'auto_page')
-            {
+            if ($filter['fieldID'] == 'auto_page') {
                 $get = $objPage->alias;
             }
 
@@ -156,7 +154,7 @@ class ModuleListView extends \Contao\Module
 
                 if ($filter['active']) {
 
-                    if ( $filter['type'] == 'multi_choice'  && !is_array($get) ) {
+                    if ($filter['type'] == 'multi_choice' && !is_array($get)) {
 
                         $get = explode(',', $get);
                     }
@@ -212,7 +210,7 @@ class ModuleListView extends \Contao\Module
 
                 case 'fulltext_search':
                     $searchQuery = $query['value'];
-                    $isFuzzy = ( $query['isFuzzy'] == '1' ? true : false );
+                    $isFuzzy = ($query['isFuzzy'] == '1' ? true : false);
                     break;
             }
 
@@ -225,10 +223,33 @@ class ModuleListView extends \Contao\Module
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
 
+        //order by and sorting
+        $get_orderBy = Input::get('orderBy');
+        $allowed_orderBy_items = array('asc', 'desc', 'rand', 'ACS', 'DESC', 'RAND');
+        if( $get_orderBy && !is_array($get_orderBy) && is_string($get_orderBy) && $get_orderBy != '' && $get_orderBy != ' '  && in_array($get_orderBy, $allowed_orderBy_items))
+        {
+            $orderBy = mb_strtoupper($get_orderBy, 'UTF-8');;
+        }
+
+        $get_sorting_fields = Input::get('sorting_fields');
+        if($get_sorting_fields && is_array($get_sorting_fields))
+        {
+            $get_sorting_fields = $get_sorting_fields[0];
+        }
+        if($get_sorting_fields && $get_sorting_fields != '' && $get_sorting_fields != ' ' && $this->Database->fieldExists($get_sorting_fields, $tablename))
+        {
+            $sortingFields = $get_sorting_fields;
+        }
+
+        $orderByQueryStr = $sortingFields . ' ' . $orderBy;
+        if ($orderBy == 'RAND') {
+            $orderByQueryStr = 'RAND()';
+        }
+
         $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data
         WHERE pid = ' . $wrapperID . '
         AND published = "1" ' . $sqlQueriesStr . '
-        ORDER BY ' . $sortingFields . ' ' . $orderBy . '')->query();
+        ORDER BY ' . $orderByQueryStr . '')->query();
 
         $strResults = '';
         $objTemplate = new \FrontendTemplate($this->f_list_template);
@@ -239,11 +260,9 @@ class ModuleListView extends \Contao\Module
          * search
          */
         $foundArr = array();
-        if( $searchQuery != '' && $addDetailPage == '1' )
-        {
+        if ($searchQuery != '' && $addDetailPage == '1') {
             $search = Search::searchFor($searchQuery, false, array($wrapperDB['rootPage']), 0, 0, $isFuzzy);
-            while($search->next())
-            {
+            while ($search->next()) {
                 $foundArr[$search->url] = $search->relevance;
             }
         }
@@ -295,7 +314,7 @@ class ModuleListView extends \Contao\Module
             /**
              * search
              */
-            if ( $searchQuery != '' && $addDetailPage == '1' ) {
+            if ($searchQuery != '' && $addDetailPage == '1') {
 
                 if (!$foundArr[$listDB->href]) {
                     continue;
@@ -312,8 +331,7 @@ class ModuleListView extends \Contao\Module
         /*
          * search
          */
-        if ( $searchQuery != '' && $addDetailPage == '1' )
-        {
+        if ($searchQuery != '' && $addDetailPage == '1') {
             usort($itemsArr, array('ModuleListView', 'sortByRelevance'));
         }
 
@@ -386,25 +404,31 @@ class ModuleListView extends \Contao\Module
                 }
             }
 
+            $item['cssClass'] = $i % 2 ? 'even' : 'odd';
+            if($i == 0)
+            {
+                $item['cssClass'] .= ' first';
+            }
+            if($i == ($limit - 1))
+            {
+                $item['cssClass'] .= ' last';
+            }
             $item['teaser'] = $arrElements;
             $objTemplate->setData($item);
 
             //enclosure
             $objTemplate->enclosure = array();
 
-            if ( $item['addEnclosure'] )
-            {
+            if ($item['addEnclosure']) {
 
                 $this->addEnclosuresToTemplate($objTemplate, $item);
             }
 
 
             //add image
-            if( $item['addImage'] )
-            {
+            if ($item['addImage']) {
                 $this->addImageToTemplate($objTemplate, $item);
             }
-
 
 
             $strResults .= $objTemplate->parse();
@@ -466,12 +490,11 @@ class ModuleListView extends \Contao\Module
 
         $operator = '=';
 
-        if( $data['negate'] == '1' )
-        {
+        if ($data['negate'] == '1') {
             $operator = '!=';
         }
 
-        return ' AND ' . $data['fieldID'] . ' '.$operator.' "' . $data['value'] . '"';
+        return ' AND ' . $data['fieldID'] . ' ' . $operator . ' "' . $data['value'] . '"';
     }
 
     /**
@@ -483,8 +506,7 @@ class ModuleListView extends \Contao\Module
 
         $likeOperator = 'LIKE';
 
-        if( $data['negate'] == '1' )
-        {
+        if ($data['negate'] == '1') {
             $likeOperator = 'NOT LIKE';
         }
 
@@ -492,12 +514,11 @@ class ModuleListView extends \Contao\Module
         $operator = "AND (";
         $values = $data['value'];
 
-        if(is_string($values))
-        {
+        if (is_string($values)) {
             $values = explode(',', $values);
         }
 
-        if ( is_array($values) ) {
+        if (is_array($values)) {
 
             if (count($values) <= 1) {
                 $operator = "AND";
@@ -508,7 +529,7 @@ class ModuleListView extends \Contao\Module
                     $operator = "OR";
                 }
 
-                $sql[] = ' ' . $operator . ' ' . $data['fieldID'] . ' '.$likeOperator.' "%' . $value . '%"';
+                $sql[] = ' ' . $operator . ' ' . $data['fieldID'] . ' ' . $likeOperator . ' "%' . $value . '%"';
             }
 
             $sql[] = (count($values) <= 1 ? '' : ')');
@@ -542,7 +563,7 @@ class ModuleListView extends \Contao\Module
 
         if ($data['isInteger'] == '1' && $data['operator'] != '') {
 
-            $operator = $this->getOperator( $data['operator'] );
+            $operator = $this->getOperator($data['operator']);
 
         }
 

@@ -269,6 +269,13 @@ class tl_fmodules_filters extends \Contao\Backend
         $tempVal = $dc->activeRecord->fieldID;
         $type = $dc->activeRecord->type;
 
+        $notAllowedCols = array('id','tstamp','title','info','addDetailPage','rootPage','source','allowComments','notify','sortOrder','perPage','moderate','bbcode','requireLogin','disableCaptcha', 'protected','groups','guests','cssID','published','start','stop','addEnclosure','enclosure','addImage','singleSRC','alt','size','caption', 'alter', 'key');
+
+        if(in_array(mb_strtolower($values), $notAllowedCols))
+        {
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'], $values));
+        }
+
         if($values == $tempVal)
         {
           return $tempVal;
@@ -292,6 +299,7 @@ class tl_fmodules_filters extends \Contao\Backend
         $exist = $this->Database->fieldExists($values, $tname);
 
         if (!$exist) {
+
             if ($tempVal == '' || $values == $tempVal) {
                 //create
 

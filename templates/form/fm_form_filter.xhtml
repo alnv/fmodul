@@ -1,6 +1,6 @@
-<div class="fm_form_filter">
-    <form method="GET" action="{{env::request}}">
-        <?php echo $this->widgets; ?>
-        <input type="submit" value="Senden"/>
-    </form>
-</div>
+<form method="GET" action="{{env::request}}">
+    <?php echo $this->widgets; ?>
+    <div class="widget-submit form-widget">
+        <input type="submit" class="submit" value="<?php echo $this->filter; ?>"/>
+    </div>
+</form>

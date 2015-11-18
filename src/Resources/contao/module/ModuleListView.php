@@ -51,9 +51,9 @@ class ModuleListView extends \Contao\Module
         /**
          *
          */
-        if (!isset($_GET['fitem']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+        if (!isset($_GET['item']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
-            \Input::setGet('fitem', \Input::get('auto_item'));
+            \Input::setGet('item', \Input::get('auto_item'));
 
         }
 
@@ -246,9 +246,14 @@ class ModuleListView extends \Contao\Module
             $orderByQueryStr = 'RAND()';
         }
 
+        $protectedStr = ' AND published = "1"';
+        if( $this->previewMode() )
+        {
+            $protectedStr = ' ';
+        }
+
         $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data
-        WHERE pid = ' . $wrapperID . '
-        AND published = "1" ' . $sqlQueriesStr . '
+        WHERE pid = ' . $wrapperID . $protectedStr . $sqlQueriesStr . '
         ORDER BY ' . $orderByQueryStr . '')->query();
 
         $strResults = '';
@@ -445,6 +450,15 @@ class ModuleListView extends \Contao\Module
     public function sortByRelevance($a, $b)
     {
         return $a['relevance'] <= $b['relevance'];
+    }
+
+    private function previewMode()
+    {
+        if(BE_USER_LOGGED_IN)
+        {
+            return true;
+        }
+        return false;
     }
 
     /**

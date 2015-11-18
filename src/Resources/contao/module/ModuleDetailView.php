@@ -45,9 +45,9 @@ class ModuleDetailView extends \Contao\Module
         /**
          *
          */
-        if (!isset($_GET['fitem']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+        if (!isset($_GET['item']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
-            \Input::setGet('fitem', \Input::get('auto_item'));
+            \Input::setGet('item', \Input::get('auto_item'));
 
         }
 
@@ -72,7 +72,7 @@ class ModuleDetailView extends \Contao\Module
         $listModuleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ?')->execute($listID)->row();
         $tablename = $listModuleDB['f_select_module'];
         $wrapperID = $listModuleDB['f_select_wrapper'];
-        $alias = Input::get('fitem');
+        $alias = Input::get('item');
 
         if (!$alias && $alias == '') {
             return;
@@ -82,12 +82,18 @@ class ModuleDetailView extends \Contao\Module
         $strResult = '';
         $objTemplate = new \FrontendTemplate($detailTemplate);
 
-        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? AND published = "1"')
+        $protectedStr = ' AND published = "1"';
+        if( $this->previewMode() )
+        {
+            $protectedStr = ' ';
+        }
+
+        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? '.$protectedStr.'')
         ->execute($wrapperID, $alias)->row();
         $wrapperDB = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($wrapperID)->row();
 
         //throw 404
-        if (count($itemDB) < 1) {
+        if ( count($itemDB) < 1) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
         }
@@ -272,6 +278,15 @@ class ModuleDetailView extends \Contao\Module
 
         }
 
+        return false;
+    }
+
+    private function previewMode()
+    {
+        if(BE_USER_LOGGED_IN)
+        {
+            return true;
+        }
         return false;
     }
 

@@ -269,7 +269,7 @@ class tl_fmodules_filters extends \Contao\Backend
         $tempVal = $dc->activeRecord->fieldID;
         $type = $dc->activeRecord->type;
 
-        $notAllowedCols = array('id','tstamp','title','info','addDetailPage','rootPage','source','allowComments','notify','sortOrder','perPage','moderate','bbcode','requireLogin','disableCaptcha', 'protected','groups','guests','cssID','published','start','stop','addEnclosure','enclosure','addImage','singleSRC','alt','size','caption', 'alter', 'key');
+        $notAllowedCols = array('id','tstamp','title','info','adddetailpage','rootPage','source','allowcomments','notify','sortorder','perpage','moderate','bbcode','requirelogin','disablecaptcha', 'protected','groups','guests','cssID','published','start','stop','addenclosure','enclosure','addimage','singlesrc','alt','size','caption', 'alter', 'key');
 
         if(in_array(mb_strtolower($values), $notAllowedCols))
         {

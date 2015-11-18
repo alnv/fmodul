@@ -52,3 +52,4 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Dieser Filter negiert
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'Es darf nur einen %s Attrbute geben!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDEmpty'] = 'Der Feldname muss ausgefüllt werden!';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'] = 'Feldname %s ist nicht erlaubt!';

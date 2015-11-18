@@ -51,3 +51,4 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Return the Opposite.'
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'This fieldID exist alredy!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'It may only be one %s attribute!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDEmpty'] = 'FieldID can not be empty!';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'] = 'FieldID %s is not allowed!';

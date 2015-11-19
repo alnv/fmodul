@@ -104,7 +104,7 @@ class ModuleListView extends \Contao\Module
         // set format
         while ($moduleDB->next()) {
 
-            if ($moduleDB->fieldID == 'orderBy' || $moduleDB->fieldID == 'sorting_fields') {
+            if ($moduleDB->fieldID == 'orderBy' || $moduleDB->fieldID == 'sorting_fields' || $moduleDB->fieldID == 'pagination') {
                 continue;
             }
 
@@ -226,6 +226,10 @@ class ModuleListView extends \Contao\Module
         //order by and sorting
         $get_orderBy = Input::get('orderBy');
         $allowed_orderBy_items = array('asc', 'desc', 'rand', 'ACS', 'DESC', 'RAND');
+        if( $get_orderBy && is_array($get_orderBy) && !is_string($get_orderBy) )
+        {
+            $get_orderBy = $get_orderBy[0];
+        }
         if( $get_orderBy && !is_array($get_orderBy) && is_string($get_orderBy) && $get_orderBy != '' && $get_orderBy != ' '  && in_array($get_orderBy, $allowed_orderBy_items))
         {
             $orderBy = mb_strtoupper($get_orderBy, 'UTF-8');;
@@ -344,6 +348,16 @@ class ModuleListView extends \Contao\Module
         $total = count($itemsArr);
         $limit = $total;
         $offset = 0;
+
+        $get_pagination = Input::get('pagination');
+        if( $get_pagination && is_array($get_pagination))
+        {
+            $get_pagination = $get_pagination[0];
+        }
+        if( $get_pagination && !is_array($get_pagination) && $get_pagination != '' && $get_pagination != ' ')
+        {
+            $this->f_perPage = (int) $get_pagination;
+        }
 
         if ($this->f_limit_page > 0) {
             $total = min($this->f_limit_page, $total);

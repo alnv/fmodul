@@ -74,7 +74,7 @@ class ModeSettings extends Widget
 
         while ($modeSettingsDB->next()) {
 
-            if($modeSettingsDB->fieldID == 'orderBy' || $modeSettingsDB->fieldID == 'sorting_fields')
+            if($modeSettingsDB->fieldID == 'orderBy' || $modeSettingsDB->fieldID == 'sorting_fields' || $modeSettingsDB->fieldID == 'pagination')
             {
                 continue;
             }

@@ -78,7 +78,7 @@ if (TL_MODE == 'FE') {
     $validSums = new \FModule\FModule();
     $license = \Contao\Config::get('fmodule_license');
     if (!isset($license) || !in_array(md5($license), $validSums->validSums, true)) {
-	    $GLOBALS['TL_HEAD'][] = '<meta name="trail_fmodule" content="http://fmodul.alexandernaumov.de/kaufen.html" />';
+	    $GLOBALS['TL_HEAD'][] = '<meta name="FMODUL_DEMO_VERSION" content="http://fmodul.alexandernaumov.de/kaufen.html" />';
     }
 
 }

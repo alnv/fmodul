@@ -350,11 +350,12 @@ class ModuleListView extends \Contao\Module
         $offset = 0;
 
         $get_pagination = Input::get('pagination');
-        if( $get_pagination && is_array($get_pagination))
+        
+        if( !is_null($get_pagination) && is_array($get_pagination))
         {
             $get_pagination = $get_pagination[0];
         }
-        if( $get_pagination && !is_array($get_pagination) && $get_pagination != '' && $get_pagination != ' ')
+        if( !is_null($get_pagination) && !is_array($get_pagination) && $get_pagination != '' && $get_pagination != ' ')
         {
             $this->f_perPage = (int) $get_pagination;
         }

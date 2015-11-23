@@ -115,6 +115,7 @@ class ModuleListView extends \Contao\Module
                 'isInteger' => $moduleDB->isInteger,
                 'negate' => $moduleDB->negate,
                 'isFuzzy' => $moduleDB->isFuzzy,
+                'addTime' => $moduleDB->addTime,
                 'value' => '',
                 'overwrite' => null,
                 'active' => null,
@@ -574,9 +575,25 @@ class ModuleListView extends \Contao\Module
      */
     private function dateFieldQuery($data)
     {
+        global $objPage;
 
-        $v = $data['value'] == '' ? strtotime(date('Y-m-d')) : strtotime($data['value']);
+        $format = $objPage->dateFormat;
+
+        if($data['addTime'])
+        {
+            $format =  $objPage->datimFormat;
+        }
+
+        $unix = strtotime($data['value']);
+
+        if($unix == false)
+        {
+            return '';
+        }
+
+        $v = $data['value'] == '' ? strtotime(date($format)) : $unix;
         $operator = $this->getOperator($data['operator']);
+
         return ' AND ' . $data['fieldID'] . ' ' . $operator . ' ' . $v . '';
 
     }

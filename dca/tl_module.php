@@ -188,6 +188,7 @@ class tl_module_fmodule extends tl_module
                     'title' => $filterFieldsDB->title,
                     'type' => $filterFieldsDB->type,
                     'isInteger' => $filterFieldsDB->isInteger,
+                    'addTime' => $filterFieldsDB->addTime,
                     'isFuzzy' => $filterFieldsDB->isFuzzy,
                     'active' => '',
                     'cssClass' => '',

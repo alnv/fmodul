@@ -95,7 +95,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,dataFromTable,negate,fieldAppearance;',
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,dataFromTable,negate,fieldAppearance;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,isInteger;',
-        'date_field' => '{type_legend},type;{setting_legend},fieldID,title;',
+        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,addTime;',
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title, isFuzzy;',
 
     ),
@@ -178,7 +178,13 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
-
+        'addTime' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'],
+            'inputType' => 'checkbox',
+            'exclude'=> true,
+            'eval' => array('tl_class' => 'clr m12'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
         'isFuzzy' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'],

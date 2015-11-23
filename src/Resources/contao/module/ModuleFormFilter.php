@@ -36,6 +36,10 @@ class ModuleFormFilter extends \Contao\Module
     protected function compile()
     {
 
+        global $objPage;
+
+        $format = $objPage->dateFormat;
+
         $fields = deserialize($this->f_form_fields);
         $listID = $this->f_list_field;
         $formTemplate = $this->f_form_template;
@@ -66,6 +70,7 @@ class ModuleFormFilter extends \Contao\Module
             $selected = $input ? $input : '';
 
             $skip = false;
+
             for ($j = 0; $j < count($modeSettings); $j++) {
                 if ($modeSettings[$j]['fieldID'] == $fieldname) {
                     if (isset($modeSettings[$j]['set']['overwrite']) && $modeSettings[$j]['set']['overwrite'] == '1') {
@@ -95,6 +100,13 @@ class ModuleFormFilter extends \Contao\Module
             }
 
             $fields[$i]['tablename'] = !strpos($listModuleTable,'_data') ? $listModuleTable.'_data' : $listModuleTable;
+
+            //set date format
+            if($field['type'] == 'date_field')
+            {
+                $format =  $field['addTime'] ? $objPage->datimFormat : $format;
+                $fields[$i]['format'] = $format;
+            }
 
             //set size
             if($field['type'] == 'search_field' || $field['type'] == 'date_field')

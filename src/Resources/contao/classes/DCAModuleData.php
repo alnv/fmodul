@@ -630,6 +630,7 @@ class DCAModuleData extends DCAHelper
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'date_field') {
+
                 $arr[$field['fieldID']] = array(
                     'label' => array($field['title'], ''),
                     'default' => time(),
@@ -640,6 +641,11 @@ class DCAModuleData extends DCAHelper
                     'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'wizard'),
                     'sql' => "int(10) unsigned NULL"
                 );
+
+                if( $field['addTime'] )
+                {
+                    $arr[$field['fieldID']]['eval']['rgxp'] = 'datim';
+                }
             }
 
         }

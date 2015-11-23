@@ -127,6 +127,7 @@ class DCACreator{
                 $field['title'] = $fieldsDB->row()['title'];
                 $field['dataFromTable'] = $fieldsDB->row()['dataFromTable'];
                 $field['isInteger'] = $fieldsDB->row()['isInteger'];
+                $field['addTime'] = $fieldsDB->row()['addTime'];
                 $field['fieldAppearance'] = $fieldsDB->row()['fieldAppearance'];
                 $fields[] = $field;
             }

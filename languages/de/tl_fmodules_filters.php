@@ -48,6 +48,8 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Ungenaue Suche', 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][0] = 'Negation';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Dieser Filter negiert den Wert und liefert das Gegenteil.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][0] = 'Zeitangabe hinzufügen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][1] = 'Erlaubt die Zeitangabe.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'Es darf nur einen %s Attrbute geben!';

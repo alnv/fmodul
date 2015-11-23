@@ -89,6 +89,7 @@ class ModeSettings extends Widget
                 'dataFromTable' => $modeSettingsDB->dataFromTable,
                 "fieldAppearance" => $modeSettingsDB->fieldAppearance,
                 "isInteger" => $modeSettingsDB->isInteger,
+                "addTime" => $modeSettingsDB->addTime,
                 "options" => (!deserialize($options) ? array() : deserialize($options)),
                 "set" => ($input[$index]['set'] ? $input[$index]['set'] : $defaultSet)
             );
@@ -263,15 +264,19 @@ class ModeSettings extends Widget
 
                         window.addEvent("domready", function(){
 
+
+
                             new Picker.Date( $("ctrl_'.$viewObject['fieldID'].'_'.$index.'") ,{
 
-                            draggable: false,
-                            toggle: $("toggle_'.$viewObject['fieldID'].'"),
-                            format: "%d.%m.%Y",
-                            positionOffset: {x:-211,y:-111},
-                            pickerClass: "datepicker_bootstrap",
-                            useFadeInOut: !Browser.ie,
-                            titleFormat: "%d. %B %Y"});
+                                draggable: false,
+                                toggle: $("toggle_'.$viewObject['fieldID'].'"),
+                                format: "%d.%m.%Y '.($viewObject['addTime'] ? '%H:%M' : '').'",
+                                positionOffset: {x:-211,y:-111},
+                                pickerClass: "datepicker_bootstrap",
+                                useFadeInOut: !Browser.ie,
+                                titleFormat: "%d. %B %Y '.($viewObject['addTime'] ? '%H:%M' : '').'",
+                                '.( $viewObject['addTime'] ? 'timePicker: true,' : '' ).'
+                            });
 
                         });
 

@@ -46,6 +46,7 @@ $GLOBALS['TL_LANG']['tl_module']['f_label_select_list'] = 'Auswählen';
 //referece
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
+$GLOBALS['TL_LANG']['tl_module']['date'] = 'Datum';
 
 $GLOBALS['TL_LANG']['tl_module']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_module']['desc'] = 'Absteigend';

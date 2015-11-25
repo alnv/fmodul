@@ -46,6 +46,8 @@ $GLOBALS['TL_LANG']['tl_module']['f_label_select_list'] = 'Select';
 
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
+$GLOBALS['TL_LANG']['tl_module']['date'] = 'Date';
+
 $GLOBALS['TL_LANG']['tl_module']['asc'] = 'Asc';
 $GLOBALS['TL_LANG']['tl_module']['desc'] = 'Desc';
 $GLOBALS['TL_LANG']['tl_module']['rand'] = 'Random';

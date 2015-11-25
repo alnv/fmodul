@@ -97,10 +97,17 @@ class DCAModuleData extends DCAHelper
             'ptable' => $parent,
             'ctable' => array('tl_content'),
             'enableVersioning' => true,
+
             'onload_callback' => array
             (
                 array('DCAModuleData', 'checkPermission'),
+                array('DCAModuleData', 'generateFeed')
             ),
+            'onsubmit_callback' => array
+            (
+                array('DCAModuleData', 'scheduleUpdate')
+            ),
+
             'sql' => array(
 
                 'keys' => array
@@ -128,9 +135,14 @@ class DCAModuleData extends DCAHelper
     {
 
         $flag = 1;
-
+        $mode = 0;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
+
+        if($arrField[0] && $arrField[0] != 'id')
+        {
+            $mode = 1;
+        }
 
         if ($arrFlag[1]) {
             $flag = (int)$arrFlag[1];
@@ -144,7 +156,7 @@ class DCAModuleData extends DCAHelper
 
             'sorting' => array(
 
-                'mode' => 0,
+                'mode' => $mode,
                 'flag' => $flag,
                 'fields' => array($arrField[0]),
                 'panelLayout' => 'sort;search,limit,filter'
@@ -253,7 +265,7 @@ class DCAModuleData extends DCAHelper
 
         return array(
             '__selector__' => array('source', 'addImage', 'protected', 'addEnclosure', 'published'),
-            'default' => '{general_legend},title,alias,author,info,description;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $fieldStr . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
+            'default' => '{general_legend},title,alias,author;info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $fieldStr . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
 
         );
     }
@@ -340,6 +352,29 @@ class DCAModuleData extends DCAHelper
                 'sql' => "int(10) unsigned NOT NULL default '0'",
             ),
 
+            'date' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date'],
+                'default' => time(),
+                'exclude' => true,
+                'filter' => true,
+                'sorting' => true,
+                'flag' => 8,
+                'inputType' => 'text',
+                'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+                'sql' => "int(10) unsigned NULL"
+            ),
+
+            'time' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'],
+                'default' => time(),
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('rgxp' => 'time', 'doNotCopy' => true, 'tl_class' => 'w50'),
+                'sql' => "int(10) unsigned NULL"
+            ),
+
             'description' => array(
 
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'],
@@ -356,7 +391,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50'),
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true ),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 
@@ -546,13 +581,11 @@ class DCAModuleData extends DCAHelper
 
         );
 
-
         foreach ($fields as $field) {
 
             $options = $this->getOptions($field);
 
-            if($field['fieldID'] == 'orderBy' || $field['fieldID'] == 'sorting_fields' || $field['fieldID'] == 'pagination')
-            {
+            if ($field['fieldID'] == 'orderBy' || $field['fieldID'] == 'sorting_fields' || $field['fieldID'] == 'pagination') {
                 continue;
             }
 
@@ -574,7 +607,7 @@ class DCAModuleData extends DCAHelper
                 //if( version_compare(VERSION, '4.0', '>=') )
                 //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_itemm' )
                 //{
-                    //$arr[$field['fieldID']]['filter'] = false;
+                //$arr[$field['fieldID']]['filter'] = false;
                 //}
 
                 if ($field['fieldAppearance'] == 'radio') {
@@ -601,8 +634,7 @@ class DCAModuleData extends DCAHelper
 
                 // #contao 4.0 bug
                 //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
-                if( version_compare(VERSION, '4.0', '>=') )
-                {
+                if (version_compare(VERSION, '4.0', '>=')) {
                     $arr[$field['fieldID']]['filter'] = false;
                 }
 
@@ -642,8 +674,7 @@ class DCAModuleData extends DCAHelper
                     'sql' => "int(10) unsigned NULL"
                 );
 
-                if( $field['addTime'] )
-                {
+                if ($field['addTime']) {
                     $arr[$field['fieldID']]['eval']['rgxp'] = 'datim';
                 }
             }
@@ -747,9 +778,9 @@ class DCAModuleData extends DCAHelper
             $icon = 'invisible.gif';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
 
-     }
+    }
 
     /**
      *
@@ -780,4 +811,56 @@ class DCAModuleData extends DCAHelper
 
 
     }
+
+    /**
+     *
+     */
+    public function generateFeed()
+    {
+
+        $session = $this->Session->get('fmodules_feed_updater');
+
+        if (!is_array($session) || empty($session)) {
+            return;
+        }
+
+        $this->import('FModule');
+
+        foreach ($session as $table) {
+            $this->FModule->generateFeedsByArchive($table);
+        }
+
+        $this->import('Automator');
+        $this->Automator->generateSitemap();
+
+        $this->Session->set('fmodules_feed_updater', null);
+
+    }
+
+    /**
+     * @param DataContainer $dc
+     */
+    public function scheduleUpdate(DataContainer $dc)
+    {
+        $table = Input::get('table');
+
+        // Return if there is no ID
+        if (!$table) {
+            return;
+        }
+
+        if(substr($table, -5) != '_data')
+        {
+            return;
+        }
+
+        $table = substr($table, 0, ( strlen($table) - 5) );
+
+        // Store the ID in the session
+        $session = $this->Session->get('fmodules_feed_updater');
+        $session[] = $table;
+        $this->Session->set('fmodules_feed_updater', array_unique($session));
+
+    }
+
 }

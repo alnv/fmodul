@@ -18,13 +18,12 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
 
     'icon' =>  (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/').'icon.png',
     'tables' => array(
-
         'tl_fmodules',
         'tl_fmodules_filters',
+        'tl_fmodules_feed',
         'tl_fmodules_license'
     )
 );
-
 /**
  * add front end modules
  */
@@ -65,10 +64,17 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModule', 'fm_hooks');
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('FModule', 'createUserGroupDCA');
 $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax');
 
+$GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
+$GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
+
 /**
  * Add permissions
  */
+$GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
+
+$GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeed';
+$GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 
 /**
  * check for license

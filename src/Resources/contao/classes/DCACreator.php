@@ -200,6 +200,7 @@ class DCACreator{
 
         $modname = substr($tablename, 3, strlen($tablename));
 
+        $GLOBALS['TL_PERMISSIONS'][] = $modname;
         $GLOBALS['TL_PERMISSIONS'][] = $modname.'p';
 
         $dca_data->createTable();

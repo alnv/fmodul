@@ -15,13 +15,20 @@
  *
  */
 use Contao\Automator;
+use Contao\ContentModel;
 use Contao\Database;
+use Contao\Date;
 use Contao\DcaLoader;
 use Contao\Environment;
+use Contao\FeedItem;
+use Contao\File;
 use Contao\Frontend;
 use Contao\Input;
-use Contao\tl_user_extend;
-use Contao\tl_user_group_extend;
+use Contao\Model;
+use Contao\PageModel;
+use Contao\Config;
+//use Contao\tl_user_extend;
+//use Contao\tl_user_group_extend;
 
 /**
  * Class FModule
@@ -85,6 +92,290 @@ class FModule extends Frontend
         '6063d5b265ea1bc0a714f5b957004868',
     );
 
+    /**
+     * @param $intId
+     */
+    public function generateFeed($table)
+    {
+        $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
+
+        if ($objFeed === null)
+        {
+            return;
+        }
+
+        $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
+
+        // Delete XML file
+        if (\Input::get('act') == 'delete')
+        {
+            $this->import('Files');
+            $this->Files->delete($objFeed->feedName . '.xml');
+        }
+
+        // Update XML file
+        else
+        {
+            $this->generateFiles($objFeed->row());
+            $this->log('Generated F Module feed "' . $objFeed->feedName . '.xml"', __METHOD__, TL_CRON);
+        }
+    }
+
+    /**
+     *
+     */
+    public function generateFeeds()
+    {
+        $this->import('Automator');
+        $this->Automator->purgeXmlFiles();
+
+        $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed')->execute();
+
+        if ($objFeed !== null)
+        {
+            while ($objFeed->next())
+            {
+                $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
+                $this->generateFiles($objFeed->row());
+                $this->log('Generated F Module feed "' . $objFeed->feedName . '.xml"', __METHOD__, TL_CRON);
+            }
+        }
+    }
+
+    /**
+     * @param $intId
+     */
+    public function generateFeedsByArchive($table)
+    {
+        $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
+
+        if ($objFeed !== null)
+        {
+            while ($objFeed->next())
+            {
+                $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
+
+                // Update the XML file
+                $this->generateFiles($objFeed->row());
+                $this->log('Generated F Module feed "' . $objFeed->feedName . '.xml"', __METHOD__, TL_CRON);
+            }
+        }
+    }
+
+    /**
+     * @param $arrFeed
+     */
+    protected function generateFiles($arrFeed)
+    {
+        $arrArchives = deserialize($arrFeed['wrappers']);
+
+        if (!is_array($arrArchives) || empty($arrArchives))
+        {
+            return;
+        }
+
+        $strType = ($arrFeed['format'] == 'atom') ? 'generateAtom' : 'generateRss';
+        $strLink = $arrFeed['feedBase'] ?: Environment::get('base');
+        $strFile = $arrFeed['feedName'];
+
+        $objFeed = new \Feed($strFile);
+        $objFeed->link = $strLink;
+        $objFeed->title = $arrFeed['title'];
+        $objFeed->description = $arrFeed['description'];
+        $objFeed->language = $arrFeed['language'];
+        $objFeed->published = $arrFeed['tstamp'];
+
+        if ($arrFeed['maxItems'] > 0)
+        {
+            $objArticle = $this->findPublishedByPids($arrArchives, $arrFeed['maxItems'], $arrFeed['fmodule'].'_data');
+        }
+        else
+        {
+            $objArticle = $this->findPublishedByPids($arrArchives, 0, $arrFeed['fmodule'].'_data');
+        }
+
+        if ($objArticle !== null) {
+            $arrUrls = array();
+
+            while ($objArticle->next()) {
+
+                $pid = $objArticle->pid;
+                $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $arrFeed['fmodule'] . ' WHERE id = ?')->execute($pid)->row();
+
+                if ($wrapperDB['addDetailPage'] == '1') {
+
+
+                    $rootPage = $wrapperDB['rootPage'];
+
+                    if (!isset($arrUrls[$rootPage])) {
+                        $objParent = PageModel::findWithDetails($rootPage);
+
+                        if ($objParent === null) {
+                            $arrUrls[$rootPage] = false;
+                        } else {
+                            $arrUrls[$rootPage] = $this->generateFrontendUrl($objParent->row(), (( Config::get('useAutoItem') && ! Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+                        }
+                    }
+
+
+                    $strUrl = $arrUrls[$rootPage];
+
+                }
+                $authorName = '';
+
+                if($objArticle->author)
+                {
+                    $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($objArticle->author)->row();
+                    $authorName = $authorDB['name'];
+                }
+
+                $objItem = new \FeedItem();
+
+                $objItem->title = $objArticle->title;
+                $objItem->link = $this->getLink($objArticle, $strUrl, $strLink);
+                $objItem->published = $objArticle->date ?  $objArticle->date : $arrFeed['tstamp'];
+                $objItem->author = $authorName;
+
+                // Prepare the description
+                if ($arrFeed['source'] == 'source_text')
+                {
+                    $strDescription = '';
+
+                    $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'].'_data', array('fview' => 'detail'));
+
+                    if ($objElement !== null)
+                    {
+                        // Overwrite the request (see #7756)
+                        $strRequest = Environment::get('request');
+
+                        Environment::set('request', $objItem->link);
+
+                        while ($objElement->next())
+                        {
+                            $strDescription .= $this->getContentElement($objElement->current());
+                        }
+
+                        Environment::set('request', $strRequest);
+                    }
+                }
+                else
+                {
+                    $strDescription = '';
+
+                    $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'].'_data', array('fview' => 'list'));
+
+                    if ($objElement !== null)
+                    {
+                        // Overwrite the request (see #7756)
+                        $strRequest = Environment::get('request');
+
+                        Environment::set('request', $objItem->link);
+
+                        while ($objElement->next())
+                        {
+                            $strDescription .= $this->getContentElement($objElement->current());
+                        }
+
+                        Environment::set('request', $strRequest);
+                    }
+
+                    if(!$strDescription)
+                    {
+                        $strDescription = $objArticle->description;
+                    }
+                }
+
+                $strDescription = $this->replaceInsertTags($strDescription, false);
+                $objItem->description = $this->convertRelativeUrls($strDescription, $strLink);
+
+                // Add the article image as enclosure
+                if ($objArticle->addImage)
+                {
+                    $objFile = \FilesModel::findByUuid($objArticle->singleSRC);
+
+                    if ($objFile !== null)
+                    {
+                        $objItem->addEnclosure($objFile->path);
+                    }
+                }
+
+                // Enclosures
+                if ($objArticle->addEnclosure)
+                {
+                    $arrEnclosure = deserialize($objArticle->enclosure, true);
+
+                    if (is_array($arrEnclosure))
+                    {
+                        $objFile = \FilesModel::findMultipleByUuids($arrEnclosure);
+
+                        if ($objFile !== null)
+                        {
+                            while ($objFile->next())
+                            {
+                                $objItem->addEnclosure($objFile->path);
+                            }
+                        }
+                    }
+                }
+
+                $objFeed->addItem($objItem);
+            }
+        }
+
+        File::putContent('share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+
+    }
+
+    public function findPublishedByPids($arrPids, $intLimit=0, $tablename)
+    {
+
+        if (!is_array($arrPids) || empty($arrPids)) {
+            return null;
+        }
+
+        if (!$tablename || $tablename == 'no-value') {
+            return null;
+        }
+
+        $sql = 'SELECT * FROM '.$tablename.' WHERE ';
+        $sql .= ''.$tablename.'.pid IN('.implode(',', array_map('intval', $arrPids)).') ';
+
+        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE') {
+            $time = Date::floorToMinute();
+            $sql .= 'AND ('.$tablename.'.start="" OR '.$tablename.'.start <= '.$time.') AND ('.$tablename.'.stop="" OR '.$tablename.'.stop > '.($time + 60).') AND '.$tablename.'.published = "1" ';
+        }
+
+        $sql .= 'ORDER BY '.$tablename.'.date DESC ';
+
+        if($intLimit > 0)
+        {
+            $sql .= 'LIMIT '.$intLimit.'';
+        }
+
+        $findBy = $this->Database->prepare($sql)->execute();
+
+        return $findBy;
+
+    }
+
+    /**
+     *
+     */
+    public function purgeOldFeeds()
+    {
+        $arrFeeds = array();
+        $objFeeds = $this->Database->prepare('SELECT * FROM tl_fmodules_feed')->execute();
+
+        if ($objFeeds !== null)
+        {
+            while ($objFeeds->next())
+            {
+                $arrFeeds[] = $objFeeds->alias ?: 'fmodules' . $objFeeds->id;
+            }
+        }
+
+        return $arrFeeds;
+    }
 
     /**
      * @param $arrPages

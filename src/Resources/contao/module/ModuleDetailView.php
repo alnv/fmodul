@@ -189,6 +189,9 @@ class ModuleDetailView extends \Contao\Module
         $itemDB['detail'] = $detail;
         $itemDB['author'] = $authorDB;
 
+        $itemDB['date'] = $itemDB['date'] ? date($objPage->dateFormat, $itemDB['date']) : '';
+        $itemDB['time'] = $itemDB['time'] ? date($objPage->timeFormat, $itemDB['time']) : '';
+
         $objTemplate->setData($itemDB);
 
         //enclosure

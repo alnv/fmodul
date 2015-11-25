@@ -394,6 +394,9 @@ class ModuleListView extends \Contao\Module
             $item['itemID'] = $item['cssID'][0];
             $item['itemCSS'] = ' ' . $item['cssID'][1];
 
+            $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
+            $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
+
             //add more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 

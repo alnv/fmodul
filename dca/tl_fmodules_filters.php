@@ -275,7 +275,7 @@ class tl_fmodules_filters extends \Contao\Backend
         $tempVal = $dc->activeRecord->fieldID;
         $type = $dc->activeRecord->type;
 
-        $notAllowedCols = array('id','tstamp','title','info','adddetailpage','rootpage','source','allowcomments','notify','sortorder','perpage','moderate','bbcode','requirelogin','disablecaptcha', 'protected','groups','guests','cssID','published','start','stop','addenclosure','enclosure','addimage','singlesrc','alt','size','caption', 'alter', 'key', 'type', 'date','primary', 'auto_increment', 'data', 'insert', 'delete', 'update', 'options','max','min', 'drop');
+        $notAllowedCols = array('id','tstamp','title','info','adddetailpage','rootpage','source','allowcomments','notify','sortorder','perpage','moderate','bbcode','requirelogin','disablecaptcha', 'protected','groups','guests','cssID','published','start','stop','addenclosure','enclosure','addimage','singlesrc','alt','size','caption', 'alter', 'key', 'type', 'date','primary', 'auto_increment', 'data', 'insert', 'delete', 'update', 'options','max','min', 'drop','date','time');
 
         if(in_array(mb_strtolower($values), $notAllowedCols))
         {

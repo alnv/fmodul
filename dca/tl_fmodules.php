@@ -72,6 +72,15 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'button_callback' => array('tl_fmodules', 'createBuyLink')
             ),
 
+            'feeds' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['feeds'],
+                'href' => 'table=tl_fmodules_feed',
+                'class' => 'header_rss',
+                'attributes' => 'onclick="Backend.getScrollOffset()"',
+                'button_callback' => array('tl_fmodules', 'manageFeeds')
+            ),
+
             'all' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -238,7 +247,22 @@ class tl_fmodules extends \Contao\Backend
 
     }
 
+    /**
+     * @param $href
+     * @param $label
+     * @param $title
+     * @param $class
+     * @param $attributes
+     * @return string
+     */
+    public function manageFeeds($href, $label, $title, $class, $attributes)
+    {
+        return ($this->User->isAdmin || !empty($this->User->fmodulesfeed) || $this->User->hasAccess('create', 'fmodulesfeedp')) ? '<a href="'.$this->addToUrl($href).'" class="'.$class.'" title="'.specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : '';
+    }
 
+    /**
+     * @return string
+     */
     public function createBuyLink()
     {
         return '<a href="http://fmodul.alexandernaumov.de/kaufen.html" target="_blank" title="' . specialchars($GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1]) . '" class="header_store">' . $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] . '</a>';
@@ -283,8 +307,7 @@ class tl_fmodules extends \Contao\Backend
 
         }
 
-        if( !\Contao\Config::get('bypassCache') )
-        {
+        if (!\Contao\Config::get('bypassCache')) {
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }
@@ -328,8 +351,13 @@ class tl_fmodules extends \Contao\Backend
     {
         $id = $dc->activeRecord->id;
         $db = $this->Database->prepare('SELECT fieldID, title, type FROM tl_fmodules_filters WHERE pid = ?')->execute($id);
-        $return = array('id' => 'id', 'title' => 'Titel');
+        $return = array('id' => 'id', 'title' => 'Titel', 'date.7' => 'Datum');
         while ($db->next()) {
+
+            if($db->fieldID == 'orderBy' || $db->fieldID == 'sorting_fields' || $db->fieldID == 'pagination')
+            {
+                continue;
+            }
 
             if ($db->type == 'date_field') {
                 $return[$db->fieldID . '.5'] = $db->title . ' (d)';
@@ -372,8 +400,7 @@ class tl_fmodules extends \Contao\Backend
         $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . '')->execute();
         $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
 
-        if( !\Contao\Config::get('bypassCache') )
-        {
+        if (!\Contao\Config::get('bypassCache')) {
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }
@@ -407,8 +434,7 @@ class tl_fmodules extends \Contao\Backend
 
         }
 
-        if( !\Contao\Config::get('bypassCache') )
-        {
+        if (!\Contao\Config::get('bypassCache')) {
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }

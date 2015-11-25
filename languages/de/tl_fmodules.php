@@ -16,6 +16,9 @@ $GLOBALS['TL_LANG']['tl_fmodules']['delete'][1] = 'Modul löschen';
 $GLOBALS['TL_LANG']['tl_fmodules']['show'][0] = 'Modul Information';
 $GLOBALS['TL_LANG']['tl_fmodules']['show'][1] = 'Modul Information';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['feeds'][0] = 'Feed erstellen';
+$GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'Feed erstellen';
+
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Einstellung';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Zugriffsschutz';
@@ -55,5 +58,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Der Tabellenname muss 
 //referece
 $GLOBALS['TL_LANG']['tl_fmodules']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_fmodules']['id'] = 'ID';
+$GLOBALS['TL_LANG']['tl_fmodules']['date'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';

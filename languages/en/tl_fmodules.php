@@ -16,6 +16,9 @@ $GLOBALS['TL_LANG']['tl_fmodules']['delete'][1] = 'Delete module';
 $GLOBALS['TL_LANG']['tl_fmodules']['show'][0] = 'Information';
 $GLOBALS['TL_LANG']['tl_fmodules']['show'][1] = 'Information';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['feeds'][0] = 'New feed';
+$GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'New feed';
+
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Back end sorting';
@@ -49,5 +52,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Table name must start 
 //referece
 $GLOBALS['TL_LANG']['tl_fmodules']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_fmodules']['id'] = 'ID';
+$GLOBALS['TL_LANG']['tl_fmodules']['date'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Ascending';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descend';

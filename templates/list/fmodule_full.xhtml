@@ -5,6 +5,9 @@
         <?php if($this->info): ?>
         <p class="info"><?php echo $this->info; ?></p>
         <?php endif; ?>
+        <?php if($this->date): ?>
+        <?php echo $this->date;?><?php if($this->time):?><time> - <?php echo $this->time; ?></time><?php endif; ?>
+        <?php endif; ?>
     </div>
     <?php if($this->addImage): ?>
 
@@ -39,6 +42,5 @@
 </div>
 
         <?php endif; ?>
-
 
         </div>

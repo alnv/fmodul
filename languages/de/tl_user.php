@@ -9,6 +9,11 @@ $GLOBALS['TL_LANG']['tl_user']['fmodules'][1] = 'Hier können Sie den Zugriff au
 $GLOBALS['TL_LANG']['tl_user']['fmodulesp'][0] = 'Wrapper Rechte';
 $GLOBALS['TL_LANG']['tl_user']['fmodulesp'][1] = 'Hier können Sie die Wrapper Rechte festlegen.';
 
+$GLOBALS['TL_LANG']['tl_user']['fmodulesfeed'][0] = 'Erlaubte Feeds';
+$GLOBALS['TL_LANG']['tl_user']['fmodulesfeed'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere feeds erlauben.';
+
+$GLOBALS['TL_LANG']['tl_user']['fmodulesfeedp'][0] = 'F Modul Feed Rechte';
+$GLOBALS['TL_LANG']['tl_user']['fmodulesfeedp'][1] = 'Hier können Sie die Feed Rechte festlegen.';
 
 $GLOBALS['TL_LANG']['tl_user']['fields']['select_wrapper'][0] = "Erlaubte wrapper";
 $GLOBALS['TL_LANG']['tl_user']['fields']['select_wrapper'][1] = "Hier können Sie den Zugriff auf einen oder mehrere Wrapper erlauben.";

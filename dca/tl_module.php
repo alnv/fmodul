@@ -294,15 +294,23 @@ class tl_module_fmodule extends tl_module
         )->execute($modulename);
 
 
-        $sorting = array('id' => 'ID','title' => 'Titel');
+        $sorting = array('id' => 'ID','title' => 'Titel', 'date' => 'Datum');
 
         while ($filterDB->next()) {
+
+            if ($filterDB->fieldID == 'auto_item' || $filterDB->fieldID == 'auto_page') {
+                continue;
+            }
 
             if ($filterDB->type == 'fulltext_search') {
                 continue;
             }
 
-            if ($filterDB->fieldID == 'orderBY' || $filterDB->fieldID == 'sorting_fields') {
+            if ($filterDB->fieldID == 'pagination') {
+                continue;
+            }
+
+            if ($filterDB->fieldID == 'orderBy' || $filterDB->fieldID == 'sorting_fields') {
                 continue;
             }
 

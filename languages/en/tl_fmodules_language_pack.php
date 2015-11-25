@@ -10,6 +10,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['page_legend'] = '
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['root_legend'] = 'Detail view';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['data_legend'] = 'Filter values';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['comments_legend'] = 'Comments';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['date_legend'] = 'Date and time';
 
 //
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_legend'] = 'Image settings';
@@ -39,6 +40,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Disable/Enab
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][0] = 'Title';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][1] = 'Please enter your title';
 
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date'][0] = 'Date';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date'][1] = 'Please enter the date according to the global date format.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][0] = 'Time';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][1] = 'Please enter the time according to the global time format.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][0] = 'Information';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][1] = 'Please enter your information.';
 
@@ -46,7 +53,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][0] = 'Alias';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][1] = 'Please enter item alias.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][0] = 'Description';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][1] = 'Description for Meta Description Tag.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][1] = 'Please enter your description. If you do not have listview - content, this field will be used. Description will be used for Meta Description and RSS feed';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'][0] = 'Protect element';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'][1] = 'Show the content element to certain member groups only.';

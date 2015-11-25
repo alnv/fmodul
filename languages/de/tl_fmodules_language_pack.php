@@ -10,6 +10,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['page_legend'] = '
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['root_legend'] = 'Detailansicht';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['data_legend'] = 'Filter-Eingabewerte';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['comments_legend'] = 'Kommentare';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['date_legend'] = 'Datum und Uhrzeit';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['source_legend'] = 'Weiterleitungsziel';
 
@@ -38,6 +39,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Datensatz ei
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][0] = 'Titel';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][1] = 'Geben Sie den Titel ein. Dieser Titel wir auch für PageTitle verwendet';
 
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date'][0] = 'Datum';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date'][1] = 'Bitte geben Sie das Datum gemäß des globalen Datumsformats ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][0] = 'Uhrzeit';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][1] = 'Bitte geben Sie die Uhrzeit gemäß des globalen Zeitformats ein.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][0] = 'Information';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][1] = 'Zusätzliche Informationen';
 
@@ -45,7 +52,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][0] = 'Seitenalias';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][1] = 'Seitenalias eingeben.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][0] = 'Beschreibung';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][1] = 'Diese Beschreibung wird bei Meta Description verwendet';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][1] = 'Teasertext eingeben. Wenn es keine Listenansicht - Inhaltselemente gibt, wird diese Beschreibung verwendet. Wird auch für Meta - Description und RSS-Feed verwendet.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'][0] = 'Element schützen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'][1] = 'Das Inhaltselement nur bestimmten Gruppen anzeigen.';

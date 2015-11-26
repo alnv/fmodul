@@ -616,7 +616,7 @@ class FModule extends Frontend
 
             $GLOBALS['TL_LANG']['tl_user_group'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user_group']['fm_dyn_legend'], $cleanName);
 
-            $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('fmodulesp;', 'fmodulesp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
+            $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
 
             $GLOBALS['TL_DCA']['tl_user_group']['fields'][$modname] = array(
 
@@ -663,8 +663,8 @@ class FModule extends Frontend
 
             $GLOBALS['TL_LANG']['tl_user'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user']['fm_dyn_legend'], $cleanName);
 
-            $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('fmodulesp;', 'fmodulesp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
-            $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('fmodulesp;', 'fmodulesp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
+            $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
+            $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
 
             $GLOBALS['TL_DCA']['tl_user']['fields'][$modname] = array(
 

@@ -27,8 +27,6 @@ use Contao\Input;
 use Contao\Model;
 use Contao\PageModel;
 use Contao\Config;
-//use Contao\tl_user_extend;
-//use Contao\tl_user_group_extend;
 
 /**
  * Class FModule

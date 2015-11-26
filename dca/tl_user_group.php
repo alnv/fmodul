@@ -11,7 +11,7 @@
  * @copyright 2015 Alexander Naumov
  */
 
-$GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('formp;', 'formp;{fmodules_legend},fmodules,fmodulesp,fmodulesfeed,fmodulesfeedp;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('formp;', 'formp;{fmodules_legend},fmodules,fmodulesp,fmodulesfeed,fmodulesfeedp,fmodulesfilters,fmodulesfiltersp;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
 
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['fmodules'] = array
 (
@@ -47,6 +47,27 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['fmodulesfeed'] = array
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['fmodulesfeedp'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfeedp'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'options' => array('create', 'delete'),
+    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+    'eval' => array('multiple' => true),
+    'sql' => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_user_group']['fields']['fmodulesfilters'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfilters'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'foreignKey' => 'tl_fmodules_filters.title',
+    'eval' => array('multiple' => true),
+    'sql' => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_user_group']['fields']['fmodulesfiltersp'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfiltersp'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'options' => array('create', 'delete'),

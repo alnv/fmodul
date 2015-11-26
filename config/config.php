@@ -76,6 +76,9 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeed';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 
+$GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfilters';
+$GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfiltersp';
+
 /**
  * check for license
  */

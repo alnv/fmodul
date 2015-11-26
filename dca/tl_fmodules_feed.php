@@ -319,7 +319,7 @@ class tl_fmodules_feed extends Backend
             case 'delete':
             case 'show':
                 if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'fmodulesfeedp'))) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' fmodule feed ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module feed ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
@@ -338,7 +338,7 @@ class tl_fmodules_feed extends Backend
 
             default:
                 if (strlen(Input::get('act'))) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' fmodule feeds', __METHOD__, TL_ERROR);
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module feeds', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;

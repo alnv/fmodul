@@ -3,11 +3,17 @@
 $GLOBALS['TL_LANG']['tl_user_group']['fmodules_legend'] = 'F Modul Rechte';
 $GLOBALS['TL_LANG']['tl_user_group']['fm_dyn_legend'] = "%s Rechte";
 
-$GLOBALS['TL_LANG']['tl_user_group']['fmodules'][0] = 'Erlaubte wrapper';
-$GLOBALS['TL_LANG']['tl_user_group']['fmodules'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere wrapper erlauben.';
+$GLOBALS['TL_LANG']['tl_user_group']['fmodules'][0] = 'Erlaubte F Module';
+$GLOBALS['TL_LANG']['tl_user_group']['fmodules'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere F Module erlauben.';
 
-$GLOBALS['TL_LANG']['tl_user_group']['fmodulesp'][0] = 'Wrapper Rechte';
-$GLOBALS['TL_LANG']['tl_user_group']['fmodulesp'][1] = 'Hier können Sie die Wrapper Rechte festlegen.';
+$GLOBALS['TL_LANG']['tl_user_group']['fmodulesp'][0] = 'F Modul Rechte';
+$GLOBALS['TL_LANG']['tl_user_group']['fmodulesp'][1] = 'Hier können Sie die F Modul Rechte festlegen.';
+
+$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfilters'][0] = 'Erlaubte Filter';
+$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfilters'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere Filter erlauben.';
+
+$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfiltersp'][0] = 'Filter Rechte';
+$GLOBALS['TL_LANG']['tl_user_group']['fmodulesfiltersp'][1] = 'Hier können Sie die Filter Rechte festlegen.';
 
 $GLOBALS['TL_LANG']['tl_user_group']['fmodulesfeed'][0] = 'Erlaubte Feeds';
 $GLOBALS['TL_LANG']['tl_user_group']['fmodulesfeed'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere feeds erlauben.';

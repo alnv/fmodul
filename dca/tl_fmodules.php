@@ -235,14 +235,93 @@ class tl_fmodules extends \Contao\Backend
             return;
         }
 
+        if (!is_array($this->User->fmodules) || empty($this->User->fmodules)) {
+            $root = array(0);
+        } else {
+            $root = $this->User->fmodules;
+        }
+
+        $GLOBALS['TL_DCA']['tl_fmodules']['list']['sorting']['root'] = $root;
+
         if (!$this->User->hasAccess('create', 'fmodulesp')) {
             $GLOBALS['TL_DCA']['tl_fmodules']['config']['closed'] = true;
         }
 
-        $act = \Input::get('act');
+        switch (Input::get('act'))
+        {
+            case 'create':
+            case 'select':
+                // Allow
+                break;
+            case 'edit':
+                if (!in_array(Input::get('id'), $root)) {
 
-        if (($act == 'delete' || $act == 'deleteAll') && (!$this->user->isAdmin || !$this->User->hasAccess('delete', 'fmodulesp'))) {
-            $this->redirect('contao/main.php?act=error');
+                    $arrNew = $this->Session->get('new_records');
+
+                    if (is_array($arrNew['tl_fmodules']) && in_array(Input::get('id'), $arrNew['tl_fmodules'])) {
+                        // Add permissions on user level
+                        if ($this->User->inherit == 'custom' || !$this->User->groups[0]) {
+                            $objUser = $this->Database->prepare("SELECT fmodules, fmodulesp FROM tl_user WHERE id=?")
+                                ->limit(1)
+                                ->execute($this->User->id);
+
+                            $arrFModulep = deserialize($objUser->fmodulesp);
+
+                            if (is_array($arrFModulep) && in_array('create', $arrFModulep)) {
+                                $arrFModules = deserialize($objUser->fmodules);
+                                $arrFModules[] = Input::get('id');
+
+                                $this->Database->prepare("UPDATE tl_user SET fmodules=? WHERE id=?")
+                                    ->execute(serialize($arrFModules), $this->User->id);
+                            }
+                        } // Add permissions on group level
+                        elseif ($this->User->groups[0] > 0) {
+                            $objGroup = $this->Database->prepare("SELECT fmodules, fmodulesp FROM tl_user_group WHERE id=?")
+                                ->limit(1)
+                                ->execute($this->User->groups[0]);
+
+                            $arrFModulep = deserialize($objGroup->fmodulesp);
+
+                            if (is_array($arrFModulep) && in_array('create', $arrFModulep)) {
+                                $arrFModules = deserialize($objGroup->fmodules);
+                                $arrFModules[] = Input::get('id');
+
+                                $this->Database->prepare("UPDATE tl_user_group SET fmodules=? WHERE id=?")
+                                    ->execute(serialize($arrFModules), $this->User->groups[0]);
+                            }
+                        }
+
+                        // Add new element to the user object
+                        $root[] = Input::get('id');
+                        $this->User->fmodules = $root;
+                    }
+                }
+            case 'copy':
+            case 'delete':
+            case 'show':
+                if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'fmodulesp'))) {
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module  ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                break;
+            case 'editAll':
+            case 'deleteAll':
+            case 'overrideAll':
+                $session = $this->Session->getData();
+                if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'fmodulesp')) {
+                    $session['CURRENT']['IDS'] = array();
+                } else {
+                    $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
+                }
+                $this->Session->setData($session);
+                break;
+
+            default:
+                if (strlen(Input::get('act'))) {
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module ', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                break;
         }
 
     }

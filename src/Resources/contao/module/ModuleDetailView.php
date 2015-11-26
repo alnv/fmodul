@@ -75,7 +75,8 @@ class ModuleDetailView extends \Contao\Module
         $alias = Input::get('item');
 
         if (!$alias && $alias == '') {
-            return;
+            $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+            $objHandler->generate($objPage->id);
         }
 
 

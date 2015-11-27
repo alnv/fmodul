@@ -77,6 +77,7 @@ class ModuleDetailView extends \Contao\Module
         if (!$alias && $alias == '') {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
+            exit;
         }
 
 
@@ -97,11 +98,13 @@ class ModuleDetailView extends \Contao\Module
         if ( count($itemDB) < 1) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
+            exit;
         }
 
         if ($this->sortOutProtected($itemDB)) {
             $objHandler = new $GLOBALS['TL_PTY']['error_403']();
             $objHandler->generate($objPage->id);
+            exit;
         }
 
         //image

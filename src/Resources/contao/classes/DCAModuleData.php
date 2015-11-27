@@ -15,8 +15,8 @@ use Contao\Database;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
-use Contao\BackendUser;
-use Symfony\Component\Intl\Util\Version;
+//use Contao\BackendUser;
+//use Symfony\Component\Intl\Util\Version;
 
 
 /**
@@ -45,7 +45,26 @@ class DCAModuleData extends DCAHelper
     }
 
     /**
-     *
+     * @param $fieldname
+     * @return bool
+     */
+    private function permissionFieldExist($fieldname)
+    {
+        if(!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname.'p', 'tl_user'))
+        {
+            return false;
+        }
+
+        if(!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname.'p', 'tl_user_group'))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $dc
      */
     public function checkPermission($dc)
     {
@@ -53,18 +72,111 @@ class DCAModuleData extends DCAHelper
         $modname = substr($dc->table, 3, strlen($dc->table));
         $modname = str_replace('_data', '', $modname);
 
-        if ($this->User->isAdmin) {
+        $allowedFields = $modname;
+
+        if( !$this->permissionFieldExist($modname) )
+        {
             return;
         }
 
-        if (!$this->User->hasAccess('create', $modname . 'p')) {
-            $GLOBALS['TL_DCA'][$dc->table]['config']['closed'] = true;
+        if ($this->User->isAdmin)
+        {
+            return;
         }
 
-        $act = \Input::get('act');
+        if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields))
+        {
+            $root = array(0);
+        }
+        else
+        {
+            $root = $this->User->$allowedFields;
+        }
 
-        if (($act == 'delete' || $act == 'deleteAll') && (!$this->user->isAdmin || !$this->User->hasAccess('delete', $modname . 'p'))) {
-            $this->redirect('contao/main.php?act=error');
+        $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
+
+        switch (Input::get('act'))
+        {
+            case 'paste':
+                // Allow
+                break;
+
+            case 'create':
+                if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
+                {
+                    $this->log('Not enough permissions to create F Module items in '.$modname.' Wrapper ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                break;
+
+            case 'cut':
+            case 'copy':
+                if (!in_array(Input::get('pid'), $root))
+                {
+                    $this->log('Not enough permissions to '.Input::get('act').' F Module item ID "'.$id.'" to '.$modname.' Wrapper ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+
+            case 'edit':
+            case 'show':
+            case 'delete':
+            case 'toggle':
+            case 'feature':
+                $objArchive = $this->Database->prepare("SELECT pid FROM ".$dc->table." WHERE id=?")
+                    ->limit(1)
+                    ->execute($id);
+
+                if ($objArchive->numRows < 1)
+                {
+                    $this->log('Invalid F Module item ID "'.$id.'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+
+                if (!in_array($objArchive->pid, $root))
+                {
+                    $this->log('Not enough permissions to '.Input::get('act').' F Module item ID "'.$id.'" of '.$modname.' Wrapper ID "'.$objArchive->pid.'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                break;
+
+            case 'select':
+            case 'editAll':
+            case 'deleteAll':
+            case 'overrideAll':
+            case 'cutAll':
+            case 'copyAll':
+                if (!in_array($id, $root))
+                {
+                    $this->log('Not enough permissions to access '.$modname.' Wrapper ID "'.$id.'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+
+                $objArchive = $this->Database->prepare("SELECT id FROM ".$dc->table." WHERE pid=?")
+                    ->execute($id);
+
+                if ($objArchive->numRows < 1)
+                {
+                    $this->log('Invalid F Module ID "'.$id.'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+
+                $session = $this->Session->getData();
+                $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
+                $this->Session->setData($session);
+                break;
+
+            default:
+                if (strlen(Input::get('act')))
+                {
+                    $this->log('Invalid command "'.Input::get('act').'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                elseif (!in_array($id, $root))
+                {
+                    $this->log('Not enough permissions to access '.$modname.' Wrapper ID ' . $id, __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                break;
         }
 
     }
@@ -290,6 +402,7 @@ class DCAModuleData extends DCAHelper
     {
         $hash = Input::cookie('BE_USER_AUTH');
         $id = '0';
+
         if (isset($hash) && $hash != '') {
             $sessionDB = $this->Database->prepare('SELECT * FROM tl_session WHERE hash = ?')->execute($hash);
             if ($sessionDB->count() > 0) {

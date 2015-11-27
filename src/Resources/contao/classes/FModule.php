@@ -614,8 +614,12 @@ class FModule extends Frontend
             $cleanName = $fmodulesDB->name;
             $modname = substr($fmodulesDB->tablename, 3, strlen($fmodulesDB->tablename));
 
-            $GLOBALS['TL_LANG']['tl_user_group'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user_group']['fm_dyn_legend'], $cleanName);
+            if(!$this->permissionFieldExist($modname))
+            {
+                return;
+            }
 
+            $GLOBALS['TL_LANG']['tl_user_group'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user_group']['fm_dyn_legend'], $cleanName);
             $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
 
             $GLOBALS['TL_DCA']['tl_user_group']['fields'][$modname] = array(
@@ -650,6 +654,7 @@ class FModule extends Frontend
     public function createFModuleUserDCA()
     {
 
+
         if (!$this->Database->tableExists('tl_fmodules')) {
             return;
         }
@@ -661,8 +666,12 @@ class FModule extends Frontend
             $cleanName = $fmodulesDB->name;
             $modname = substr($fmodulesDB->tablename, 3, strlen($fmodulesDB->tablename));
 
-            $GLOBALS['TL_LANG']['tl_user'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user']['fm_dyn_legend'], $cleanName);
+            if(!$this->permissionFieldExist($modname))
+            {
+                return;
+            }
 
+            $GLOBALS['TL_LANG']['tl_user'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user']['fm_dyn_legend'], $cleanName);
             $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
             $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
 
@@ -691,6 +700,25 @@ class FModule extends Frontend
             );
 
         }
+    }
+
+    /**
+     * @param $fieldname
+     * @return bool
+     */
+    private function permissionFieldExist($fieldname)
+    {
+        if(!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname.'p', 'tl_user'))
+        {
+            return false;
+        }
+
+        if(!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname.'p', 'tl_user_group'))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**

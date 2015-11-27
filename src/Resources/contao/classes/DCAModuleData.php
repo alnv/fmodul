@@ -951,9 +951,9 @@ class DCAModuleData extends DCAHelper
     }
 
     /**
-     * @param DataContainer $dc
+     * @param $dc
      */
-    public function scheduleUpdate(DataContainer $dc)
+    public function scheduleUpdate($dc)
     {
         $table = Input::get('table');
 

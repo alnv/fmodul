@@ -513,18 +513,15 @@ class FModule extends Frontend
 
     public function createUserGroupDCA($strName)
     {
-        if ( TL_MODE == 'BE' || version_compare(VERSION, '4.0', '>=' ) ) {
-
-            if ($strName == 'tl_user')
-            {
-                $this->createFModuleUserDCA();
-            }
-
-            if($strName == 'tl_user_group')
-            {
-                $this->createFModuleUserGroupDCA();
-            }
+        if ($strName == 'tl_user')
+        {
+            $this->createFModuleUserDCA();
         }
+
+        if($strName == 'tl_user_group')
+        {
+            $this->createFModuleUserGroupDCA();
+    	}
     }
 
     /**

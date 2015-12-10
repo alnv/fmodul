@@ -78,7 +78,9 @@ class DCAHelper extends Backend
 
 			while($DataFromTableDB->next())
 			{
-				$options[$DataFromTableDB->$optionsDB['col']] = $DataFromTableDB->$optionsDB['title'];
+				$k = $DataFromTableDB->row()[$optionsDB['col']];
+				$v = $DataFromTableDB->row()[$optionsDB['title']];
+				$options[$k] = $v;
 			}
 
 			return $options;

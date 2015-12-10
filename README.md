@@ -11,7 +11,7 @@ Systemvoraussetzung
 -------------------
 
  * Contao CMS 3.5 (LTS)
- * Contao CMS 4.0
+ * Contao CMS 4
 
 
 F Modul

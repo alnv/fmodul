@@ -754,27 +754,35 @@ class FModule extends Frontend
     {
 
         if( !strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_'){
+
             $tablename = $tablename . '_data';
+
         }
 
         if (!$this->Database->tableExists($tablename)) {
+
             return;
+
         }
 
-        $valueQueryStr = '';
-        if($value != '')
-        {
-            $valueQueryStr = ' AND '.$fieldname.' LIKE "%' . substr($value, 0, 3) . '%"';
-        }
-
-        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE pid = "'.$pid.'"'.$valueQueryStr.'')->query();
+        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE pid = ?')->execute($pid);
         $return = array();
 
         while ($arrDB->next()) {
-            $return[] = $arrDB->row()[$fieldname];
+
+            $val = $arrDB->row()[$fieldname];
+
+            if( !$val || $val == '' || $val == ' ' )
+            {
+                continue;
+            }
+
+            $return[] = $val;
+
         }
 
-        return $return;
+        return array_unique($return);
+
     }
 
 

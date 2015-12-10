@@ -11,11 +11,10 @@
  * @copyright 2015 Alexander Naumov
  */
 
-use Contao\Cache;
+
 use Contao\Input;
 use Contao\Pagination;
 use Contao\Search;
-use Contao\System;
 
 
 /**
@@ -114,7 +113,6 @@ class ModuleListView extends \Contao\Module
                 'title' => $moduleDB->title,
                 'isInteger' => $moduleDB->isInteger,
                 'negate' => $moduleDB->negate,
-                'isFuzzy' => $moduleDB->isFuzzy,
                 'addTime' => $moduleDB->addTime,
                 'value' => '',
                 'overwrite' => null,
@@ -184,7 +182,6 @@ class ModuleListView extends \Contao\Module
         // create queries
         $sqlQueriesArr = [];
         $searchQuery = '';
-        $isFuzzy = false;
         foreach ($input as $query) {
 
             switch ($query['type']) {
@@ -211,7 +208,6 @@ class ModuleListView extends \Contao\Module
 
                 case 'fulltext_search':
                     $searchQuery = $query['value'];
-                    $isFuzzy = ($query['isFuzzy'] == '1' ? true : false);
                     break;
             }
 
@@ -227,22 +223,18 @@ class ModuleListView extends \Contao\Module
         //order by and sorting
         $get_orderBy = Input::get('orderBy');
         $allowed_orderBy_items = array('asc', 'desc', 'rand', 'ACS', 'DESC', 'RAND');
-        if( $get_orderBy && is_array($get_orderBy) && !is_string($get_orderBy) )
-        {
+        if ($get_orderBy && is_array($get_orderBy) && !is_string($get_orderBy)) {
             $get_orderBy = $get_orderBy[0];
         }
-        if( $get_orderBy && !is_array($get_orderBy) && is_string($get_orderBy) && $get_orderBy != '' && $get_orderBy != ' '  && in_array($get_orderBy, $allowed_orderBy_items))
-        {
+        if ($get_orderBy && !is_array($get_orderBy) && is_string($get_orderBy) && $get_orderBy != '' && $get_orderBy != ' ' && in_array($get_orderBy, $allowed_orderBy_items)) {
             $orderBy = mb_strtoupper($get_orderBy, 'UTF-8');;
         }
 
         $get_sorting_fields = Input::get('sorting_fields');
-        if($get_sorting_fields && is_array($get_sorting_fields))
-        {
+        if ($get_sorting_fields && is_array($get_sorting_fields)) {
             $get_sorting_fields = $get_sorting_fields[0];
         }
-        if($get_sorting_fields && $get_sorting_fields != '' && $get_sorting_fields != ' ' && $this->Database->fieldExists($get_sorting_fields, $tablename))
-        {
+        if ($get_sorting_fields && $get_sorting_fields != '' && $get_sorting_fields != ' ' && $this->Database->fieldExists($get_sorting_fields, $tablename)) {
             $sortingFields = $get_sorting_fields;
         }
 
@@ -252,8 +244,7 @@ class ModuleListView extends \Contao\Module
         }
 
         $protectedStr = ' AND published = "1"';
-        if( $this->previewMode() )
-        {
+        if ($this->previewMode()) {
             $protectedStr = ' ';
         }
 
@@ -270,11 +261,20 @@ class ModuleListView extends \Contao\Module
          * search
          */
         $foundArr = array();
+
         if ($searchQuery != '' && $addDetailPage == '1') {
-            $search = Search::searchFor($searchQuery, false, array($wrapperDB['rootPage']), 0, 0, $isFuzzy);
-            while ($search->next()) {
-                $foundArr[$search->url] = $search->relevance;
+
+
+            $searchDB = $this->powerSearch($searchQuery, $tablename, $wrapperID);
+
+            if($searchDB && $searchDB->count() > 0)
+            {
+               while($searchDB->next())
+               {
+                   $foundArr[$searchDB->id] = $searchDB->alias;
+               }
             }
+
         }
 
         while ($listDB->next()) {
@@ -324,26 +324,17 @@ class ModuleListView extends \Contao\Module
             /**
              * search
              */
-            if ($searchQuery != '' && $addDetailPage == '1') {
+            if ($searchQuery != '') {
 
-                if (!$foundArr[$listDB->href]) {
+                if (!$foundArr[$listDB->id]) {
                     continue;
                 }
-
-                $listDB->relevance = $foundArr[$listDB->href];
-
             }
 
             $itemsArr[] = $listDB->row();
 
         }
 
-        /*
-         * search
-         */
-        if ($searchQuery != '' && $addDetailPage == '1') {
-            usort($itemsArr, array('ModuleListView', 'sortByRelevance'));
-        }
 
         // pagination
         $total = count($itemsArr);
@@ -351,14 +342,12 @@ class ModuleListView extends \Contao\Module
         $offset = 0;
 
         $get_pagination = Input::get('pagination');
-        
-        if( !is_null($get_pagination) && is_array($get_pagination))
-        {
+
+        if (!is_null($get_pagination) && is_array($get_pagination)) {
             $get_pagination = $get_pagination[0];
         }
-        if( !is_null($get_pagination) && !is_array($get_pagination) && $get_pagination != '' && $get_pagination != ' ')
-        {
-            $this->f_perPage = (int) $get_pagination;
+        if (!is_null($get_pagination) && !is_array($get_pagination) && $get_pagination != '' && $get_pagination != ' ') {
+            $this->f_perPage = (int)$get_pagination;
         }
 
         if ($this->f_limit_page > 0) {
@@ -378,7 +367,7 @@ class ModuleListView extends \Contao\Module
             $offset = ($page - 1) * $this->f_perPage;
             $limit = min($this->f_perPage + $offset, $total);
 
-            $objPagination = new \Pagination($total, $this->f_perPage, \Config::get('maxPaginationLinks'), $id);
+            $objPagination = new Pagination($total, $this->f_perPage, \Config::get('maxPaginationLinks'), $id);
             $this->Template->pagination = $objPagination->generate("\n  ");
 
         }
@@ -429,12 +418,10 @@ class ModuleListView extends \Contao\Module
             }
 
             $item['cssClass'] = $i % 2 ? 'even' : 'odd';
-            if($i == 0)
-            {
+            if ($i == 0) {
                 $item['cssClass'] .= ' first';
             }
-            if($i == ($limit - 1))
-            {
+            if ($i == ($limit - 1)) {
                 $item['cssClass'] .= ' last';
             }
             $item['teaser'] = $arrElements;
@@ -473,8 +460,7 @@ class ModuleListView extends \Contao\Module
 
     private function previewMode()
     {
-        if(BE_USER_LOGGED_IN)
-        {
+        if (BE_USER_LOGGED_IN) {
             return true;
         }
         return false;
@@ -582,15 +568,13 @@ class ModuleListView extends \Contao\Module
 
         $format = $objPage->dateFormat;
 
-        if($data['addTime'])
-        {
-            $format =  $objPage->datimFormat;
+        if ($data['addTime']) {
+            $format = $objPage->datimFormat;
         }
 
         $unix = strtotime($data['value']);
 
-        if($unix == false)
-        {
+        if ($unix == false) {
             return '';
         }
 
@@ -609,46 +593,49 @@ class ModuleListView extends \Contao\Module
     {
 
         $operator = 'LIKE';
+        $searchValue = $data['value'];
+        $isNum = false;
 
-        if ($data['isInteger'] == '1' && $data['operator'] != '') {
+        if ($data['isInteger'] == '1' && $data['operator'] != '' && is_numeric($searchValue) ) {
 
             $operator = $this->getOperator($data['operator']);
-
+            $searchValue = (int)$searchValue;
+            $isNum = true;
         }
 
-        $words = explode(' ', $data['value']);
-
-        $sql = [];
-
-        $query = "AND (";
-
-        if (is_array($words)) {
-
-            if (count($words) <= 1) {
-                $query = "AND";
-            }
-
-            foreach ($words as $key => $value) {
-
-                $v = $data['isInteger'] == '1' ? (int)$value : $value;
-
-                if ($operator == 'LIKE') {
-                    $v = '"%' . $v . '%"';
-                }
-
-                if ($key > 0) {
-
-                    $query = "OR";
-                }
-
-                $sql[] = ' ' . $query . ' ' . $data['fieldID'] . ' ' . $operator . ' ' . $v . '';
-            }
-
-            $sql[] = (count($words) <= 1 ? '' : ')');
-
+        if(!$isNum)
+        {
+            $likeValue = '"%' . $searchValue . '%"';
+            return 'AND '.$data['fieldID'].' LIKE  '.$likeValue.' OR '.$data['fieldID'].' = "'.$searchValue.'"';
         }
 
-        return implode('', $sql);
+        return 'AND '.$data['fieldID'].' '.$operator.' '.$searchValue.'';
+
+    }
+
+    /**
+     * @param $searchStr
+     * @param $tablename
+     * @param $wrapperID
+     * @return \Database\Result|object
+     */
+    public function powerSearch($searchStr, $tablename, $wrapperID)
+    {
+
+        $sqlStr = "SELECT * FROM ".$tablename."_data WHERE pid = ? ";
+        $sqlStr .= " AND description LIKE ? OR title LIKE ? ORDER BY "
+            ."CASE "
+                ."WHEN (LOCATE(?, title) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
+                ."WHEN title = ? THEN 1 "                // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+                ."WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+                ."WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
+                ."WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
+                ."WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+                ."ELSE 6 "
+            ."END ";
+
+        return $this->Database->prepare($sqlStr)->execute($wrapperID, "%$searchStr%", "%$searchStr%", $searchStr, $searchStr, "$searchStr %", "%$searchStr", "$searchStr%", "%$searchStr%");
+
     }
 
     /**

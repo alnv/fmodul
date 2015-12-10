@@ -96,7 +96,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,dataFromTable,negate,fieldAppearance;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,isInteger;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,addTime;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title, isFuzzy;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title;',
 
     ),
 
@@ -185,15 +185,6 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
-        'isFuzzy' => array(
-
-            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'],
-            'inputType' => 'checkbox',
-            'exclude'=> true,
-            'eval' => array('tl_class' => 'clr m12'),
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
         'negate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'],
             'inputType' => 'checkbox',
@@ -327,7 +318,7 @@ class tl_fmodules_filters extends \Contao\Backend
     {
 
         $type = $dc->activeRecord->type;
-        $style = FieldAppearance::getAppearance();
+        $style = \FModule\FieldAppearance::getAppearance();
         $options = array();
 
         if ($type == 'simple_choice') {

@@ -15,6 +15,7 @@ use Contao\Backend;
 use Contao\Config;
 use Contao\Environment;
 use Contao\Files;
+use Contao\Image;
 use Contao\Input;
 use Contao\Database;
 use Contao\BackendUser;
@@ -232,10 +233,13 @@ class DCACreator{
     {
 
         $path = TL_ROOT.'/'.'files/fmodule/assets/'.$tablename.'_icon.png';
+        $file = Files::getInstance();
 
-        $files = Files::getInstance();
-        $files->mkdir('files/fmodule');
-        $files->mkdir('files/fmodule/assets');
+        if( !file_exists( TL_ROOT.'/'.'files/fmodule' ))
+        {
+            $file->mkdir('files/fmodule');
+            $file->mkdir('files/fmodule/assets');
+        }
 
         if( file_exists( $path ) )
         {

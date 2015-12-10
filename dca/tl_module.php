@@ -189,11 +189,10 @@ class tl_module_fmodule extends tl_module
                     'type' => $filterFieldsDB->type,
                     'isInteger' => $filterFieldsDB->isInteger,
                     'addTime' => $filterFieldsDB->addTime,
-                    'isFuzzy' => $filterFieldsDB->isFuzzy,
                     'active' => '',
                     'cssClass' => '',
                     'templates' => array(),
-                    'appearance' => FieldAppearance::getAppearance()[$filterFieldsDB->type],
+                    'appearance' => \FModule\FieldAppearance::getAppearance()[$filterFieldsDB->type],
                     'used_templates' => '',
                     'used_appearance' => ''
 

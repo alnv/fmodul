@@ -146,8 +146,10 @@ class ModeSettings extends Widget
             $html = $html . $checkbox;
 
             if ($viewObject['active'] == '1') {
-                $box = '<div class="f_settings">' . $this->$methods[$viewObject['type']]($index, $viewObject) . '</div>';
 
+                $func = $methods[$viewObject['type']];
+                $temp = call_user_func(array($this, $func),$index, $viewObject);
+                $box = '<div class="f_settings">' . $temp . '</div>';;
                 $html = $html . $box;
             }
 
@@ -352,9 +354,13 @@ class ModeSettings extends Widget
         $dataFromTableDB = $this->Database->prepare('SELECT ' . $viewObject['options']['col'] . ', ' . $viewObject['options']['title'] . ' FROM ' . $viewObject['options']['table'] . '')->execute();
 
         while ($dataFromTableDB->next()) {
+
+            $v = $dataFromTableDB->row()[$viewObject['options']['title']];
+            $k = $dataFromTableDB->row()[$viewObject['options']['col']];
+
             $o[] = array(
-                'label' => $dataFromTableDB->$viewObject['options']['title'],
-                'value' => $dataFromTableDB->$viewObject['options']['col'],
+                'label' => $v,
+                'value' => $k,
             );
         }
 

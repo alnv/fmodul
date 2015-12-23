@@ -25,7 +25,8 @@ use Contao\BackendUser;
  * Class DCACreator
  * @package FModule
  */
-class DCACreator{
+class DCACreator
+{
 
 
     public $modules = array();
@@ -37,27 +38,25 @@ class DCACreator{
     {
 
 
-        if(TL_MODE == 'BE')
-        {
+        if (TL_MODE == 'BE') {
             Config::getInstance();
             Environment::getInstance();
             Input::getInstance();
             BackendUser::getInstance();
             Database::getInstance();
 
-        	/**
-	         * Boot BE Modules
-	         */
-	       	if(Database::getInstance()->tableExists('tl_fmodules'))
-	       	{
+            /**
+             * Boot BE Modules
+             */
+            if (Database::getInstance()->tableExists('tl_fmodules')) {
                 $logLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
                 Backend::loadLanguageFile('tl_fmodules_language_pack', $logLanguage);
                 $this->loadDynDCA();
                 $this->setDynLanguagePack();
             }
-	                        
-        
-        } 
+
+
+        }
 
     }
 
@@ -65,33 +64,28 @@ class DCACreator{
     public function setDynLanguagePack()
     {
 
-        if(!Input::get('do') && !in_array(Input::get('do'), $this->modules ))
-        {
+        if (!Input::get('do') && !in_array(Input::get('do'), $this->modules)) {
             return;
         }
 
         $languages = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'];
 
-        foreach($languages as $key => $value)
-        {
-            foreach($this->modules as $module => $name)
-            {
-                if($key == 'new')
-                {
+        foreach ($languages as $key => $value) {
+            foreach ($this->modules as $module => $name) {
+                if ($key == 'new') {
                     $GLOBALS['TL_LANG'][$module]['new'] = $value[0];
-                    $GLOBALS['TL_LANG'][$module.'_data']['new'] = array( sprintf($value[1][0], $name), $value[1][1] );
+                    $GLOBALS['TL_LANG'][$module . '_data']['new'] = array(sprintf($value[1][0], $name), $value[1][1]);
                     continue;
                 }
 
-                if($key == 'fm_legend')
-                {
+                if ($key == 'fm_legend') {
                     $GLOBALS['TL_LANG'][$module] = $value;
-                    $GLOBALS['TL_LANG'][$module.'_data'] = $value;
+                    $GLOBALS['TL_LANG'][$module . '_data'] = $value;
                     continue;
                 }
 
                 $GLOBALS['TL_LANG'][$module][$key] = $value;
-                $GLOBALS['TL_LANG'][$module.'_data'][$key] = $value;
+                $GLOBALS['TL_LANG'][$module . '_data'][$key] = $value;
 
             }
         }
@@ -106,7 +100,7 @@ class DCACreator{
         $modulesDB = $db->prepare("SELECT * FROM tl_fmodules")->execute();
         $modules = [];
 
-        while( $modulesDB->next() ) {
+        while ($modulesDB->next()) {
 
             $module = [];
             $module['name'] = $modulesDB->row()['name'];
@@ -120,8 +114,7 @@ class DCACreator{
             $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ?")->execute($id);
             $fields = [];
 
-            while( $fieldsDB->next() )
-            {
+            while ($fieldsDB->next()) {
                 $field = [];
                 $field['type'] = $fieldsDB->row()['type'];
                 $field['fieldID'] = $fieldsDB->row()['fieldID'];
@@ -151,8 +144,7 @@ class DCACreator{
          */
         $tablename = $moduleObj['tablename'];
 
-        if($tablename == '')
-        {
+        if ($tablename == '') {
             return;
         }
 
@@ -170,7 +162,7 @@ class DCACreator{
 
         $GLOBALS['TL_DCA'][$tablename] = array(
 
-            'config' =>  $dca_settings->setConfig(),
+            'config' => $dca_settings->setConfig(),
             'list' => $dca_settings->setList(),
             'palettes' => $dca_settings->setPalettes($moduleObj['fields']),
             'subpalettes' => $dca_settings->setSubPalettes(),
@@ -191,7 +183,7 @@ class DCACreator{
 
         $GLOBALS['TL_DCA'][$childname] = array(
 
-            'config' =>  $dca_data->setConfig($moduleObj['detailPage']),
+            'config' => $dca_data->setConfig($moduleObj['detailPage']),
             'list' => $dca_data->setList($moduleObj['sorting'], $moduleObj['sortingType'], $moduleObj['orderBy']),
             'palettes' => $dca_data->setPalettes($moduleObj['fields']),
             'subpalettes' => $dca_data->subPalettes(),
@@ -202,7 +194,7 @@ class DCACreator{
         $modname = substr($tablename, 3, strlen($tablename));
 
         $GLOBALS['TL_PERMISSIONS'][] = $modname;
-        $GLOBALS['TL_PERMISSIONS'][] = $modname.'p';
+        $GLOBALS['TL_PERMISSIONS'][] = $modname . 'p';
         $dca_data->createTable();
 
 
@@ -214,11 +206,10 @@ class DCACreator{
      */
     private function getBEMod($tablename, $childname)
     {
-        $icon = version_compare( VERSION, '4.0', '>=' ) ? 'bundles/fmodule/fmodule.png' : 'system/modules/fmodule/assets/fmodule.png';
+        $icon = $GLOBALS['FM_AUTO_PATH'] . 'fmodule.png';
         $path = $this->getModuleIcon($tablename);
 
-        if( is_string($path) )
-        {
+        if (is_string($path)) {
             $icon = $path;
         }
 
@@ -232,18 +223,16 @@ class DCACreator{
     public function getModuleIcon($tablename)
     {
 
-        $path = TL_ROOT.'/'.'files/fmodule/assets/'.$tablename.'_icon.png';
+        $path = TL_ROOT . '/' . 'files/fmodule/assets/' . $tablename . '_icon.png';
         $file = Files::getInstance();
 
-        if( !file_exists( TL_ROOT.'/'.'files/fmodule' ))
-        {
+        if (!file_exists(TL_ROOT . '/' . 'files/fmodule')) {
             $file->mkdir('files/fmodule');
             $file->mkdir('files/fmodule/assets');
         }
 
-        if( file_exists( $path ) )
-        {
-            return ( version_compare( VERSION, '4.0', '>=' ) ? '../files/fmodule/assets/' : 'files/fmodule/assets/').$tablename.'_icon.png';
+        if (file_exists($path)) {
+            return (version_compare(VERSION, '4.0', '>=') ? '../files/fmodule/assets/' : 'files/fmodule/assets/') . $tablename . '_icon.png';
         }
 
         return false;
@@ -255,8 +244,7 @@ class DCACreator{
      */
     private function loadDynDCA()
     {
-        foreach($this->getModulesObj() as $moduleObj)
-        {
+        foreach ($this->getModulesObj() as $moduleObj) {
             $this->initDCA($moduleObj);
         }
     }

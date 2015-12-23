@@ -507,6 +507,11 @@ class ModuleListView extends \Contao\Module
     private function simpleChoiceQuery($data)
     {
 
+        if( !$data['value'] && ( $data['value'] == ' ' || $data['value'] == '' ) )
+        {
+            return '';
+        }
+
         $operator = '=';
 
         if ($data['negate'] == '1') {
@@ -539,6 +544,11 @@ class ModuleListView extends \Contao\Module
 
         if (is_array($values)) {
 
+            if(count($values) < 2 && ( !$values[0] || $values[0] == '' || $values[0] == ' ' ) )
+            {
+                return '';
+            }
+
             if (count($values) <= 1) {
                 $operator = "AND";
             }
@@ -566,6 +576,11 @@ class ModuleListView extends \Contao\Module
     {
         global $objPage;
 
+        if( !$data['value'] && ( $data['value'] == ' ' || $data['value'] == '' ) )
+        {
+            return '';
+        }
+
         $format = $objPage->dateFormat;
 
         if ($data['addTime']) {
@@ -591,6 +606,11 @@ class ModuleListView extends \Contao\Module
      */
     private function searchFieldQuery($data)
     {
+
+        if( !$data['value'] && ( $data['value'] == ' ' || $data['value'] == '' ) )
+        {
+            return '';
+        }
 
         $operator = 'LIKE';
         $searchValue = $data['value'];

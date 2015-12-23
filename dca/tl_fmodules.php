@@ -97,14 +97,14 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editheader'],
                 'href' => 'act=edit',
-                'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'settings.png'
+                'icon' => $GLOBALS['FM_AUTO_PATH'] . 'settings.png'
             ),
 
             'editFilters' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editFilters'],
                 'href' => 'table=tl_fmodules_filters',
-                'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'filter.png'
+                'icon' => $GLOBALS['FM_AUTO_PATH'] . 'filter.png'
             ),
 
             'delete' => array

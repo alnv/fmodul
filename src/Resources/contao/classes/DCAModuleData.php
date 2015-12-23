@@ -301,21 +301,21 @@ class DCAModuleData extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'],
                     'href' => 'act=edit',
-                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'fields.png'
+                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'fields.png'
                 ),
 
                 'editList' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'],
                     'href' => 'table=tl_content&view=list',
-                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'page.png'
+                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'page.png'
                 ),
 
                 'editDetail' => array(
 
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'],
                     'href' => 'table=tl_content&view=detail',
-                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'detail.png'
+                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'detail.png'
 
                 ),
 
@@ -377,8 +377,7 @@ class DCAModuleData extends DCAHelper
 
         return array(
             '__selector__' => array('source', 'addImage', 'protected', 'addEnclosure', 'published'),
-            'default' => '{general_legend},title,alias,author;info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $fieldStr . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
-
+            'default' => '{general_legend},title,alias,author,info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $fieldStr . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
         );
     }
 
@@ -712,7 +711,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'select',
                     'options' => $options,
-                    'eval' => array('tl_class' => 'clr'),
+                    'eval' => array('tl_class' => 'clr',  'includeBlankOption' => true, 'blankOptionLabel' => '-'),
                     'sql' => "text NULL"
 
                 );

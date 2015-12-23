@@ -19,7 +19,6 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend}
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
-
 //sub
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_sorting';
@@ -37,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
     'includeBlankOption' => true,
     'blankOptionLabel' => '-',
     'options_callback' => array('tl_module_fmodule', 'getModules'),
-    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true),
+    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
@@ -48,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
     'includeBlankOption' => true,
     'blankOptionLabel' => '-',
     'options' => array(),
-    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true),
+    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
@@ -145,7 +144,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
     'includeBlankOption' => true,
     'blankOptionLabel' => '-',
     'options_callback' => array('tl_module_fmodule', 'getListModules'),
-    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true),
+    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 

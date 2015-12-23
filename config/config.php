@@ -14,9 +14,17 @@
 /**
  * add back end modules
  */
+
+$GLOBALS['FM_AUTO_PATH'] = 'system/modules/fmodule/assets/';
+
+if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
+{
+    $GLOBALS['FM_AUTO_PATH'] = 'bundles/fmodule/';
+}
+
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
 
-    'icon' =>  (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/').'icon.png',
+    'icon' =>  $GLOBALS['FM_AUTO_PATH'].'icon.png',
     'tables' => array(
         'tl_fmodules',
         'tl_fmodules_filters',
@@ -51,7 +59,7 @@ $GLOBALS['BE_FFL']['filterFields'] = 'FilterFields';
  * files
  */
 if (TL_MODE == 'BE') {
-    $GLOBALS['TL_CSS'][] = (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'stylesheet.css';
+    $GLOBALS['TL_CSS'][] = $GLOBALS['FM_AUTO_PATH'] . 'stylesheet.css';
 }
 
 /**

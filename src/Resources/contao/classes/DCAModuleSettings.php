@@ -205,6 +205,7 @@ class DCAModuleSettings extends DCAHelper
      */
     public function setList()
     {
+
         $list = array(
 
             'sorting' => array(
@@ -234,14 +235,14 @@ class DCAModuleSettings extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'],
                     'href' => 'act=edit',
-                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'settings.png'
+                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'settings.png'
                 ),
 
                 'edit' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
                     'href' => 'table=' . $this->child,
-                    'icon' => (version_compare(VERSION, '4.0', '>=') ? 'bundles/fmodule/' : 'system/modules/fmodule/assets/') . 'list.png'
+                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'list.png'
                 ),
 
                 'copy' => array

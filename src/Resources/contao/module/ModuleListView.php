@@ -576,7 +576,7 @@ class ModuleListView extends \Contao\Module
     {
         global $objPage;
 
-        if( !$data['value'] && ( $data['value'] == ' ' || $data['value'] == '' ) )
+        if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
         {
             return '';
         }
@@ -607,7 +607,7 @@ class ModuleListView extends \Contao\Module
     private function searchFieldQuery($data)
     {
 
-        if( !$data['value'] && ( $data['value'] == ' ' || $data['value'] == '' ) )
+        if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
         {
             return '';
         }

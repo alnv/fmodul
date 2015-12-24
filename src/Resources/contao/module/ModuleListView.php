@@ -148,8 +148,8 @@ class ModuleListView extends \Contao\Module
             }
 
             $get_operator = Input::get($filter['fieldID'] . '_int');
-
-            if ($get && $get != '' || $get_operator && $get_operator != '') {
+			
+            if ( isset($get) && $get != '' || isset($get_operator) && $get_operator != '') {
 
                 if ($filter['active']) {
 
@@ -506,7 +506,7 @@ class ModuleListView extends \Contao\Module
      */
     private function simpleChoiceQuery($data)
     {
-
+		
         if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
         {
             return '';

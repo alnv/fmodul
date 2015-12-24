@@ -507,7 +507,7 @@ class ModuleListView extends \Contao\Module
     private function simpleChoiceQuery($data)
     {
 
-        if( !$data['value'] && ( $data['value'] == ' ' || $data['value'] == '' ) )
+        if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
         {
             return '';
         }

@@ -235,14 +235,14 @@ class DCAModuleSettings extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'],
                     'href' => 'act=edit',
-                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'settings.png'
+                    'icon' => 'header.gif'//$GLOBALS['FM_AUTO_PATH'] . 'settings.png'
                 ),
 
                 'edit' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
                     'href' => 'table=' . $this->child,
-                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'list.png'
+                    'icon' => 'edit.gif'//$GLOBALS['FM_AUTO_PATH'] . 'list.png'
                 ),
 
                 'copy' => array

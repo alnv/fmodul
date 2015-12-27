@@ -87,6 +87,15 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfilters';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfiltersp';
 
+// add to prosearch
+$GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
+	
+    'tables' => array('tl_fmodules', 'tl_fmodules_filters'),
+    'searchIn' => array('name','tablename', 'info', 'title', 'type', 'fieldID'),
+    'title' => array('name','title'),
+    'setCustomIcon' => array(array('ProSearchApi', 'setCustomIcon')),
+    'setCustomShortcut' => array(array('ProSearchApi', 'setCustomShortcut'))
+);
 
 $ip = Environment::get('ip');
 

@@ -301,7 +301,7 @@ class DCAModuleData extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'],
                     'href' => 'act=edit',
-                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'fields.png'
+                    'icon' => 'header.gif'//$GLOBALS['FM_AUTO_PATH'] . 'fields.png'
                 ),
 
                 'editList' => array

@@ -97,7 +97,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editheader'],
                 'href' => 'act=edit',
-                'icon' => $GLOBALS['FM_AUTO_PATH'] . 'settings.png'
+                'icon' => 'header.gif'//$GLOBALS['FM_AUTO_PATH'] . 'settings.png'
             ),
 
             'editFilters' => array

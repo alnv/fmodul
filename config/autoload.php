@@ -15,6 +15,7 @@ if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GL
 ClassLoader::addClasses(array
 (
     'FModule\DCACreator' => $pathToFiles.'src/Resources/contao/classes/DCACreator.php',
+    'FModule\ProSearchApi' => $pathToFiles.'src/Resources/contao/classes/ProSearchApi.php',
     'FModule\DCAModuleSettings' => $pathToFiles.'src/Resources/contao/classes/DCAModuleSettings.php',
     'FModule\DCAModuleData' => $pathToFiles.'src/Resources/contao/classes/DCAModuleData.php',
     'FModule\SqlData' => $pathToFiles.'src/Resources/contao/classes/SqlData.php',

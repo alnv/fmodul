@@ -231,18 +231,18 @@ class DCAModuleSettings extends DCAHelper
 
             'operations' => array(
 
+				'edit' => array
+                (
+                    'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
+                    'href' => 'table=' . $this->child,
+                    'icon' => 'edit.gif'//$GLOBALS['FM_AUTO_PATH'] . 'list.png'
+                ),
+
                 'editheader' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'],
                     'href' => 'act=edit',
                     'icon' => 'header.gif'//$GLOBALS['FM_AUTO_PATH'] . 'settings.png'
-                ),
-
-                'edit' => array
-                (
-                    'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
-                    'href' => 'table=' . $this->child,
-                    'icon' => 'edit.gif'//$GLOBALS['FM_AUTO_PATH'] . 'list.png'
                 ),
 
                 'copy' => array

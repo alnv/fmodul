@@ -20,6 +20,7 @@ $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] = "Form element";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_template'] = "Template";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS class";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Enable form field";
+$GLOBALS['TL_LANG']['MSC']['fm_ff_reset'] = 'Reset all filter settings';
 
 //size
 $GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'Filter';

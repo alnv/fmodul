@@ -20,7 +20,7 @@ $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] = "Formular Element";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_template'] = "Template";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS Klasse";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Element Aktivieren";
-
+$GLOBALS['TL_LANG']['MSC']['fm_ff_reset'] = 'Alle Filtereinstellungen zurücksetzen';
 
 //größen
 $GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'Filtern';

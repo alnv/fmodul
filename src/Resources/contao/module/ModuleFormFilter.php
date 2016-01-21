@@ -148,7 +148,8 @@ class ModuleFormFilter extends \Contao\Module
         
         $objTemplate->setData( array('widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit'] ) );
         $strResult .= $objTemplate->parse();
-        
+
+        $this->Template->reset = $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'];
         $this->Template->cssID = $this->cssID;
         $this->Template->fields = $strResult;
 

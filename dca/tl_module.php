@@ -16,7 +16,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('tl_modul
 
 //module palette
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{mode_legend},f_display_mode;{sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 //sub
@@ -146,6 +146,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
     'options_callback' => array('tl_module_fmodule', 'getListModules'),
     'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true),
     'sql' => "varchar(255) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
+
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['f_reset_button'],
+    'inputType' => 'checkbox',
+    'exclude'=> true,
+    'eval' => array('tl_class' => 'clr m12'),
+    'sql' => "char(1) NOT NULL default ''"
+
 );
 
 /**

@@ -99,14 +99,14 @@ $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
 
 $ip = Environment::get('ip');
 
-if ( TL_MODE == 'FE' &&  $ip != '127.0.0.1' && time() > 1452470400 ) {
+if ( TL_MODE == 'FE' &&  $ip != '127.0.0.1' ) {
 
     $validSums = new \FModule\FModule();
     $license = \Contao\Config::get('fmodule_license');
     if (!isset($license) || !in_array(md5($license), $validSums->validSums, true)) {
 
         $GLOBALS['TL_HEAD'][] = '<meta name="F Modul" content="http://fmodul.alexandernaumov.de" />';
-        $GLOBALS['TL_HEAD'][] = '<div><a href="http://fmodul.alexandernaumov.de" style="background: tomato; font-size: 12px; display: block; position: fixed; bottom:0; width: 100%; height: 20px; line-height: 20px; text-align: center; z-index: 9999;color: #fff;">F Modul Lizenz kaufen</a></div>';
+        $GLOBALS['TL_HEAD'][] = '<div><a href="http://fmodul.alexandernaumov.de" style="background: tomato; font-size: 12px; display: block; position: fixed; bottom:0; width: 100%; height: 20px; line-height: 20px; text-align: center; z-index: 9999;color: #fff;">F Modul Lizenz erwerben</a></div>';
 
     } 
 }

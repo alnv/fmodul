@@ -43,6 +43,9 @@ $GLOBALS['TL_LANG']['tl_module']['f_form_template'][1] = 'W채hle ein Template f�
 
 $GLOBALS['TL_LANG']['tl_module']['f_label_select_list'] = 'Ausw채hlen';
 
+$GLOBALS['TL_LANG']['tl_module']['f_reset_button'][0] = 'Der Besucher darf Filtereinstellungen zur체cksetzen';
+$GLOBALS['TL_LANG']['tl_module']['f_reset_button'][1] = 'Es wird im Formular ein Link eingef체gt mit dem der Besucher die Filtereinstellungen zur체cksetzen kann.';
+
 //referece
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

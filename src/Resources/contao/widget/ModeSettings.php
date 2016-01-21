@@ -74,8 +74,7 @@ class ModeSettings extends Widget
 
         while ($modeSettingsDB->next()) {
 
-            if($modeSettingsDB->fieldID == 'orderBy' || $modeSettingsDB->fieldID == 'sorting_fields' || $modeSettingsDB->fieldID == 'pagination')
-            {
+            if ($modeSettingsDB->fieldID == 'orderBy' || $modeSettingsDB->fieldID == 'sorting_fields' || $modeSettingsDB->fieldID == 'pagination') {
                 continue;
             }
 
@@ -86,6 +85,7 @@ class ModeSettings extends Widget
                 "fieldID" => $modeSettingsDB->fieldID,
                 "type" => $modeSettingsDB->type,
                 "title" => $modeSettingsDB->title,
+                "description" => $modeSettingsDB->description,
                 'dataFromTable' => $modeSettingsDB->dataFromTable,
                 "fieldAppearance" => $modeSettingsDB->fieldAppearance,
                 "isInteger" => $modeSettingsDB->isInteger,
@@ -148,7 +148,7 @@ class ModeSettings extends Widget
             if ($viewObject['active'] == '1') {
 
                 $func = $methods[$viewObject['type']];
-                $temp = call_user_func(array($this, $func),$index, $viewObject);
+                $temp = call_user_func(array($this, $func), $index, $viewObject);
                 $box = '<div class="f_settings">' . $temp . '</div>';;
                 $html = $html . $box;
             }
@@ -172,6 +172,9 @@ class ModeSettings extends Widget
         foreach ($viewObject['options'] as $option) {
             $optionsTpl = $optionsTpl . '<option value="' . $option['value'] . '" ' . ($selected == $option['value'] ? 'selected' : '') . ' >' . $option['label'] . '</option>';
         }
+
+        $desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
+
         $template =
             '<div>
                 <div>
@@ -180,7 +183,7 @@ class ModeSettings extends Widget
                     <select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
                         ' . $optionsTpl . '
                     </select>
-                    <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_criterion'] . '</p>
+                    <p class="tl_help tl_tip" title="">' . $desc . '</p>
                 </div>
                 <div>
                     <div class="mode_checkbox">
@@ -209,6 +212,8 @@ class ModeSettings extends Widget
             $optionsTpl = $optionsTpl . '<option value="' . $option['value'] . '" ' . (in_array($option['value'], $viewObject['set']['filterValue']) ? 'selected' : '') . ' >' . $option['label'] . '</option>';
         }
 
+        $desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
+
         $template =
             '<div>
                 <div>
@@ -217,7 +222,7 @@ class ModeSettings extends Widget
                     <select class="tl_mselect tl_chosen" multiple name="' . $this->strName . '[' . $index . '][set][filterValue][]">
                         ' . $optionsTpl . '
                     </select>
-                    <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_criterion'] . '</p>
+                    <p class="tl_help tl_tip" title="">' . $desc . '</p>
                 </div>
                 <div>
                     <div class="mode_checkbox">
@@ -241,26 +246,27 @@ class ModeSettings extends Widget
 
         $selected = $viewObject['set']['selected_operator'];
 
-        foreach( $this->getOperator() as $value => $label )
-        {
+        foreach ($this->getOperator() as $value => $label) {
             $optionsTpl = $optionsTpl . '<option value="' . $value . '" ' . ($selected == $value ? 'selected' : '') . ' >' . $label . '</option>';
         }
 
-        $selectOperationTpl = '<select class="tl_select" name="' . $this->strName . '[' . $index . '][set][selected_operator]">'.$optionsTpl.'</select>';
+        $selectOperationTpl = '<select class="tl_select" name="' . $this->strName . '[' . $index . '][set][selected_operator]">' . $optionsTpl . '</select>';
+
+        $desc = $viewObject['description'] ? $viewObject['description'] . ' (' . $GLOBALS['TL_LANG']['MSC']['fm_date_description'] . ')' : $GLOBALS['TL_LANG']['MSC']['fm_date_description'];
 
         $template =
             '<div>
                 <div>
                      <input name="' . $this->strName . '[' . $index . '][fieldID]" value="' . $viewObject['fieldID'] . '"type="hidden">
                      <div style="margin-bottom: 10px;">
-                         <h4><label>'.$GLOBALS['TL_LANG']['MSC']['fm_operator_label'].'</label></h4>
-                        '.$selectOperationTpl.'
-                        <p class="tl_help tl_tip" title="">'.$GLOBALS['TL_LANG']['MSC']['fm_operator_description'].'</p>
+                         <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_operator_label'] . '</label></h4>
+                        ' . $selectOperationTpl . '
+                        <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_operator_description'] . '</p>
                     </div>
                     <div class="wizard">
-                        <h4><label>'.$GLOBALS['TL_LANG']['MSC']['fm_date_label'].'</label></h4>
-                        <input id="ctrl_'.$viewObject['fieldID'].'_'.$index.'" class="tl_text" name="' . $this->strName . '[' . $index . '][set][filterValue]" value="' . $viewObject['set']['filterValue'] . '" onfocus="Backend.getScrollOffset()">
-                        <img src="'.( version_compare( VERSION, '4.0', '>=' ) ? 'assets/datepicker/images/icon.gif' : 'assets/mootools/datepicker/2.2.0/icon.gif' ).'" width="20" height="20" id="toggle_'.$viewObject['fieldID'].'" style="vertical-align:-6px;cursor:pointer">
+                        <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_date_label'] . '</label></h4>
+                        <input id="ctrl_' . $viewObject['fieldID'] . '_' . $index . '" class="tl_text" name="' . $this->strName . '[' . $index . '][set][filterValue]" value="' . $viewObject['set']['filterValue'] . '" onfocus="Backend.getScrollOffset()">
+                        <img src="' . (version_compare(VERSION, '4.0', '>=') ? 'assets/datepicker/images/icon.gif' : 'assets/mootools/datepicker/2.2.0/icon.gif') . '" width="20" height="20" id="toggle_' . $viewObject['fieldID'] . '" style="vertical-align:-6px;cursor:pointer">
                     </div>
                      <script>
 
@@ -268,22 +274,22 @@ class ModeSettings extends Widget
 
 
 
-                            new Picker.Date( $("ctrl_'.$viewObject['fieldID'].'_'.$index.'") ,{
+                            new Picker.Date( $("ctrl_' . $viewObject['fieldID'] . '_' . $index . '") ,{
 
                                 draggable: false,
-                                toggle: $("toggle_'.$viewObject['fieldID'].'"),
-                                format: "%d.%m.%Y '.($viewObject['addTime'] ? '%H:%M' : '').'",
+                                toggle: $("toggle_' . $viewObject['fieldID'] . '"),
+                                format: "%d.%m.%Y ' . ($viewObject['addTime'] ? '%H:%M' : '') . '",
                                 positionOffset: {x:-211,y:-111},
                                 pickerClass: "datepicker_bootstrap",
                                 useFadeInOut: !Browser.ie,
-                                titleFormat: "%d. %B %Y '.($viewObject['addTime'] ? '%H:%M' : '').'",
-                                '.( $viewObject['addTime'] ? 'timePicker: true,' : '' ).'
+                                titleFormat: "%d. %B %Y ' . ($viewObject['addTime'] ? '%H:%M' : '') . '",
+                                ' . ($viewObject['addTime'] ? 'timePicker: true,' : '') . '
                             });
 
                         });
 
                      </script>
-                    <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_date_description'] . '</p>
+                    <p class="tl_help tl_tip">' . $desc . '</p>
                 </div>
                 <div>
                     <div class="mode_checkbox">
@@ -307,12 +313,13 @@ class ModeSettings extends Widget
         $optionsTpl = '';
         $selected = $viewObject['set']['selected_operator'];
 
-        foreach( $this->getOperator() as $value => $label )
-        {
+        foreach ($this->getOperator() as $value => $label) {
             $optionsTpl = $optionsTpl . '<option value="' . $value . '" ' . ($selected == $value ? 'selected' : '') . ' >' . $label . '</option>';
         }
 
-        $selectOperationTpl = '<select class="tl_select" name="' . $this->strName . '[' . $index . '][set][selected_operator]" '.( $viewObject['isInteger'] == '1' ? '' : 'disabled' ).' >'.$optionsTpl.'</select>';
+        $selectOperationTpl = '<select class="tl_select" name="' . $this->strName . '[' . $index . '][set][selected_operator]" ' . ($viewObject['isInteger'] == '1' ? '' : 'disabled') . ' >' . $optionsTpl . '</select>';
+
+        $desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
 
         $template =
             '<div>
@@ -320,15 +327,15 @@ class ModeSettings extends Widget
                      <input name="' . $this->strName . '[' . $index . '][fieldID]" value="' . $viewObject['fieldID'] . '"type="hidden">
 
                     <div style="margin-bottom: 10px;">
-                         <h4><label>'.$GLOBALS['TL_LANG']['MSC']['fm_operator_label'].'</label></h4>
-                        '.$selectOperationTpl.'
-                        <p class="tl_help tl_tip" title="">'.$GLOBALS['TL_LANG']['MSC']['fm_operator_description'].'</p>
+                         <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_operator_label'] . '</label></h4>
+                        ' . $selectOperationTpl . '
+                        <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_operator_description'] . '</p>
                     </div>
 
                    <div>
                         <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_select'] . '</label></h4>
-                        <input class="tl_text" name="' . $this->strName . '[' . $index . '][set][filterValue]" value="'.$viewObject['set']['filterValue'].'">
-                        <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_criterion'] . '</p>
+                        <input class="tl_text" name="' . $this->strName . '[' . $index . '][set][filterValue]" value="' . $viewObject['set']['filterValue'] . '">
+                        <p class="tl_help tl_tip" title="">' . $desc . '</p>
                    </div>
 
                 </div>

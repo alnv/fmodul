@@ -26,7 +26,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'][0] = 'Feldname';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'][1] = 'Feldname wird als name attribute verwendet.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][0] = 'Bezeichnung';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][1] = 'Filter Bezeichnung';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][1] = 'Eingabefeld Bezeichnung';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][0] = 'Beschreibung';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][1] = 'Eingabefeld Beschreibung';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Style';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Back end Darstellung des Input Felds.';

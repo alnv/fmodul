@@ -496,7 +496,7 @@ class DCAModuleSettings extends DCAHelper
 
                     $arr[$field['fieldID']] = array(
 
-                        'label' => array($field['title'], ''),
+                        'label' => array($field['title'], $field['description']),
                         'fmodule_filter' => true,
                         'inputType' => 'optionWizardExtended',
                         'exclude' => true,

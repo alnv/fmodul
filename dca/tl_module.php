@@ -213,7 +213,6 @@ class tl_module_fmodule extends tl_module
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['currentListID'] = $listID;
         }
 
-
         return $options;
     }
 

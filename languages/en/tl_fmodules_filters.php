@@ -26,10 +26,13 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'][0] = 'Field name';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'][1] = 'Please enter your field name. This field name is using as name attribute.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][0] = 'Title';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][1] = 'Please enter your title';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][1] = 'Please enter your title.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][0] = 'Description';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][1] = 'Please enter your field description.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Style';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Backend Style of the input field';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Backend Style of the input field.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][0] = 'Load data from Database';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'The select values will be loaded from database.';

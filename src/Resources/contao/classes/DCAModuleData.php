@@ -734,7 +734,7 @@ class DCAModuleData extends DCAHelper
 
             if ($field['fieldID'] !== '' && $field['type'] == 'multi_choice') {
                 $arr[$field['fieldID']] = array(
-                    'label' => array($field['title'], ''),
+                    'label' => array($field['title'], $field['description']),
                     'filter' => true,
                     'search' => true,
                     'exclude' => true,
@@ -764,7 +764,7 @@ class DCAModuleData extends DCAHelper
             if ($field['fieldID'] !== '' && $field['type'] == 'search_field') {
                 $arr[$field['fieldID']] = array(
 
-                    'label' => array($field['title'], ''),
+                    'label' => array($field['title'], $field['description']),
                     'search' => true,
                     'exclude' => true,
                     'inputType' => 'text',
@@ -776,7 +776,7 @@ class DCAModuleData extends DCAHelper
             if ($field['fieldID'] !== '' && $field['type'] == 'date_field') {
 
                 $arr[$field['fieldID']] = array(
-                    'label' => array($field['title'], ''),
+                    'label' => array($field['title'], $field['description']),
                     'default' => time(),
                     'exclude' => true,
                     'sorting' => true,

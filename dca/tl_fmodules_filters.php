@@ -92,11 +92,11 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,dataFromTable,negate,fieldAppearance;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,dataFromTable,negate,fieldAppearance;',
-        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,isInteger;',
-        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,addTime;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance;',
+        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;',
+        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
 
     ),
 
@@ -150,6 +150,15 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "varchar(255) NOT NULL default ''"
         ),
 
+        'description' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['description'],
+            'inputType' => 'textarea',
+            'exclude' => true,
+            'eval' => array('tl_class' => 'clr'),
+            'sql' => "blob NULL"
+        ),
+
         'fieldAppearance' => array
         (
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'],
@@ -178,6 +187,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
+
         'addTime' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'],
             'inputType' => 'checkbox',
@@ -185,6 +195,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
+
         'negate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'],
             'inputType' => 'checkbox',

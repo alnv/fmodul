@@ -5,8 +5,8 @@ $GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'Abfragen';
 $GLOBALS['TL_LANG']['tl_module']['sort_legend'] = 'Sortierung';
 
 //fields
-$GLOBALS['TL_LANG']['tl_module']['f_select_module'][0] = 'F Modul auswählen';
-$GLOBALS['TL_LANG']['tl_module']['f_select_module'][1] = 'Wähle dein gewünschtes Modul aus';
+$GLOBALS['TL_LANG']['tl_module']['f_select_module'][0] = 'Backend Modul auswählen';
+$GLOBALS['TL_LANG']['tl_module']['f_select_module'][1] = 'Wähle dein gewünschtes Modul aus.';
 
 $GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'][0] = 'Wrapper auswählen';
 $GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'][1] = 'Wähle einen Wrapper aus.';

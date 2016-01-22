@@ -1,25 +1,25 @@
 <?php
 
 //mode settings widget
-$GLOBALS['TL_LANG']['MSC']['fm_select'] = 'Wert';
-$GLOBALS['TL_LANG']['MSC']['fm_criterion'] = 'Filterwert eintragen';
-$GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'GET Parameter werden ignoriert';
-$GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Fixieren';
+$GLOBALS['TL_LANG']['MSC']['fm_select'] = 'Eingabewert eingeben';
+$GLOBALS['TL_LANG']['MSC']['fm_criterion'] = 'Keine Beschreibung.';
+$GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'Parameter werden ignoriert und das Eingabefeld erscheint nicht im Filter Formular.';
+$GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Filter Formular ignorieren';
 $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'] = 'Filter einbinden';
 
 $GLOBALS['TL_LANG']['MSC']['fm_date_label'] = 'Datum auswählen';
-$GLOBALS['TL_LANG']['MSC']['fm_date_description'] = 'Wenn das Datumfeld leer ist wird das aktuelle Datum verwendet.';
+$GLOBALS['TL_LANG']['MSC']['fm_date_description'] = 'Wenn kein Datum angegeben ist, wird das aktuelle Datum verwendet.';
 
-$GLOBALS['TL_LANG']['MSC']['fm_operator_label'] = 'Vergleichsoperator auswählen';
-$GLOBALS['TL_LANG']['MSC']['fm_operator_description'] = 'Vergleichsoperator auswählen';
+$GLOBALS['TL_LANG']['MSC']['fm_operator_label'] = 'Operator auswählen';
+$GLOBALS['TL_LANG']['MSC']['fm_operator_description'] = 'Operator auswählen';
 
 //filter fields widget
 $GLOBALS['TL_LANG']['MSC']['fm_ff_no_list'] = "Bitte wählen Sie eine Liste aus.";
-$GLOBALS['TL_LANG']['MSC']['fm_ff_name'] = "Feldname";
-$GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] = "Formular Element";
+$GLOBALS['TL_LANG']['MSC']['fm_ff_name'] = "Name";
+$GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] = "Element";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_template'] = "Template";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS Klasse";
-$GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Element Aktivieren";
+$GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Aktivieren";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'] = 'Alle Filtereinstellungen zurücksetzen';
 
 //größen

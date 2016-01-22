@@ -2,13 +2,13 @@
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['general_legend'] = 'Allgemein';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['meta_legend'] = 'Filter-Kriterien';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['meta_legend'] = 'Kriterien';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['protected_legend'] = 'Zugriffsschutz';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['expert_legend'] = 'Experten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['publish_legend'] = 'Sichtbarkeit';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['page_legend'] = 'Detailansicht';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['root_legend'] = 'Detailansicht';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['data_legend'] = 'Filter-Eingabewerte';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['data_legend'] = 'Eingabewerte';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['comments_legend'] = 'Kommentare';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['date_legend'] = 'Datum und Uhrzeit';
 
@@ -25,16 +25,16 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array(
     array('%s anlegen', 'Neues Element anlegen.'),
 );
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'] = array('Datensatz bearbeiten', 'Datensatz bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'] = array('Wrapper bearbeiten', 'Wrapper bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Datensätze bearbeiten', 'Datensätze bearbeiten');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'] = array('Datensatz bearbeiten', 'Diesen Datensatz bearbeiten');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'] = array('Wrapper bearbeiten', 'Diesen Wrapper bearbeiten');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Datensätze bearbeiten', 'Gehe zu den Datensätzen');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] = "Soll der Eintrag ID %s wirklich gelöscht werden?";
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Datensatz ID %s löschen', 'Datensatz ID %s löschen');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Information', 'Information');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Duplizieren', 'Duplizieren');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Detailansicht bearbeiten', 'Detailansicht bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Listenansicht bearbeiten', 'Listenansicht bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Datensatz einblenden/ausblenden', 'Datensatz einblenden/ausblenden');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Information', 'Informationsfenster öffnen');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Duplizieren', 'Element Duplizieren');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Detailansicht bearbeiten', 'Die Detailansicht Elemente bearbeiten');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Listenansicht bearbeiten', 'Die Listenansicht (Teaser) Elemente bearbeiten');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Datensatz einblenden/ausblenden', 'Diesen Datensatz einblenden/ausblenden');
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][0] = 'Titel';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][1] = 'Geben Sie den Titel ein. Dieser Titel wir auch für PageTitle verwendet';
@@ -46,13 +46,13 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][0] = 'Uhrzeit';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][1] = 'Bitte geben Sie die Uhrzeit gemäß des globalen Zeitformats ein.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][0] = 'Information';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][1] = 'Zusätzliche Informationen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][1] = 'Diese Information sollte nicht größer als 12 Zeichen sein. Information erscheint in Klammern neben dem Titel.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][0] = 'Seitenalias';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][1] = 'Seitenalias eingeben.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][1] = 'Der Alias ist eine eindeutige Referenz.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][0] = 'Beschreibung';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][1] = 'Teasertext eingeben. Wenn es keine Listenansicht - Inhaltselemente gibt, wird diese Beschreibung verwendet. Wird auch für Meta - Description und RSS-Feed verwendet.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][0] = 'Teasertext';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'][1] = 'Hier können Sie eine kurze Beschreibung eingeben, die von Suchmaschinen wie Google oder Yahoo ausgewertet wird. Suchmaschinen indizieren normalerweise zwischen 150 und 300 Zeichen.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'][0] = 'Element schützen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'][1] = 'Das Inhaltselement nur bestimmten Gruppen anzeigen.';

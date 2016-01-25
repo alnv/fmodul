@@ -97,6 +97,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;',
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
+        'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
 
     ),
 
@@ -126,7 +127,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'toggle_field'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -408,6 +409,10 @@ class tl_fmodules_filters extends \Contao\Backend
                     \FModule\SqlData::insertColSelectOptions($childTable, $values);
                 }
 
+                if ($type == 'toggle_field') {
+                    \FModule\SqlData::insertColTogglefield($childTable, $values);
+                }
+
             } else {
 
                 if ($this->Database->fieldExists($tempVal, $tname)) {
@@ -429,6 +434,11 @@ class tl_fmodules_filters extends \Contao\Backend
                     if ($type == 'simple_choice' || $type == 'multi_choice') {
                         \FModule\SqlData::renameColSelectOptions($childTable, $tempVal, $values);
                     }
+
+                    if ($type == 'toggle_field') {
+                        \FModule\SqlData::renameColTogglefield($childTable, $tempVal, $values);
+                    }
+
 
                 }
 

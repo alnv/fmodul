@@ -28,6 +28,17 @@ class SqlData
     }
 
     //
+    public static function insertColTogglefield($tablename, $colname)
+    {
+        Database::getInstance()->prepare("ALTER TABLE ". $tablename ." ADD ".$colname." char(1) NOT NULL default ''")->execute();
+    }
+
+    public static function renameColTogglefield($tablename, $oldcol, $newcol)
+    {
+        Database::getInstance()->prepare("ALTER TABLE " . $tablename . " CHANGE " . $oldcol . " " . $newcol . " char(1) NOT NULL default ''")->execute();
+    }
+
+    //
     public static function insertColSearchField($tablename, $colname)
     {
         Database::getInstance()->prepare("ALTER TABLE " . $tablename . " ADD " . $colname . " text NULL")->execute();

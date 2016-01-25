@@ -13,6 +13,7 @@
 
 use Contao\Database;
 use Contao\Backend;
+use Contao\Image;
 use Contao\Input;
 
 /**
@@ -93,6 +94,48 @@ class DCAHelper extends Backend
 
     	return $options;  
         
+	}
+
+	/**
+	 * @param $state
+	 * @return string
+	 */
+	public function getToogleIcon($state, $label, $fieldID, $noHTML = false)
+	{
+
+		$src = $state ? 'files/fmodule/assets/'.$fieldID.'.' : 'files/fmodule/assets/'.$fieldID.'_.';
+		$temp = $state ? 'files/fmodule/assets/'.$fieldID.'_.' : 'files/fmodule/assets/'.$fieldID.'.';
+
+		$allowedFormat = array('gif', 'png', 'svg');
+
+		foreach($allowedFormat as $format)
+		{
+
+			if (is_file(TL_ROOT .'/'. $src.$format) && !$noHTML)
+			{
+				return Image::getHtml($src.$format, $label, 'data-src="'.$temp.$format.'" data-state="' . ($state ? 1 : 0) . '"');
+			}
+
+			if (is_file(TL_ROOT .'/'. $src.$format) && $noHTML)
+			{
+				return $src.$format;
+			}
+
+		}
+
+		$icon = $state ? 'featured.gif': 'featured_.gif';
+		$nIcon = $state ? 'featured_.gif': 'featured.gif';
+
+		$temp = 'system/themes/' . Backend::getTheme() . '/images/'.$nIcon ;
+		$src = 'system/themes/' . Backend::getTheme() . '/images/'.$icon ;
+
+		if($noHTML)
+		{
+			return $src;
+		}
+
+		return Image::getHtml($src, $label, 'data-src="'.$temp.'" data-state="' . ($state ? 1 : 0) . '"');
+
 	}
 
 }

@@ -15,6 +15,7 @@ use Contao\Database;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
+
 //use Contao\BackendUser;
 //use Symfony\Component\Intl\Util\Version;
 
@@ -50,13 +51,11 @@ class DCAModuleData extends DCAHelper
      */
     private function permissionFieldExist($fieldname)
     {
-        if(!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname.'p', 'tl_user'))
-        {
+        if (!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user')) {
             return false;
         }
 
-        if(!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname.'p', 'tl_user_group'))
-        {
+        if (!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user_group')) {
             return false;
         }
 
@@ -74,46 +73,38 @@ class DCAModuleData extends DCAHelper
 
         $allowedFields = $modname;
 
-        if( !$this->permissionFieldExist($modname) )
-        {
+        if (!$this->permissionFieldExist($modname)) {
             return;
         }
 
-        if ($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
-        if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields))
-        {
+        if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields)) {
             $root = array(0);
-        }
-        else
-        {
+        } else {
             $root = $this->User->$allowedFields;
         }
 
         $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
-        switch (Input::get('act'))
-        {
+        switch (Input::get('act')) {
             case 'paste':
                 // Allow
                 break;
 
             case 'create':
-                if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
-                {
-                    $this->log('Not enough permissions to create F Module items in '.$modname.' Wrapper ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+                if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root)) {
+                    $this->log('Not enough permissions to create F Module items in ' . $modname . ' Wrapper ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
 
             case 'cut':
             case 'copy':
-                if (!in_array(Input::get('pid'), $root))
-                {
-                    $this->log('Not enough permissions to '.Input::get('act').' F Module item ID "'.$id.'" to '.$modname.' Wrapper ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+                if (!in_array(Input::get('pid'), $root)) {
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 
@@ -122,19 +113,17 @@ class DCAModuleData extends DCAHelper
             case 'delete':
             case 'toggle':
             case 'feature':
-                $objArchive = $this->Database->prepare("SELECT pid FROM ".$dc->table." WHERE id=?")
+                $objArchive = $this->Database->prepare("SELECT pid FROM " . $dc->table . " WHERE id=?")
                     ->limit(1)
                     ->execute($id);
 
-                if ($objArchive->numRows < 1)
-                {
-                    $this->log('Invalid F Module item ID "'.$id.'"', __METHOD__, TL_ERROR);
+                if ($objArchive->numRows < 1) {
+                    $this->log('Invalid F Module item ID "' . $id . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 
-                if (!in_array($objArchive->pid, $root))
-                {
-                    $this->log('Not enough permissions to '.Input::get('act').' F Module item ID "'.$id.'" of '.$modname.' Wrapper ID "'.$objArchive->pid.'"', __METHOD__, TL_ERROR);
+                if (!in_array($objArchive->pid, $root)) {
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" of ' . $modname . ' Wrapper ID "' . $objArchive->pid . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
@@ -145,18 +134,16 @@ class DCAModuleData extends DCAHelper
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!in_array($id, $root))
-                {
-                    $this->log('Not enough permissions to access '.$modname.' Wrapper ID "'.$id.'"', __METHOD__, TL_ERROR);
+                if (!in_array($id, $root)) {
+                    $this->log('Not enough permissions to access ' . $modname . ' Wrapper ID "' . $id . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 
-                $objArchive = $this->Database->prepare("SELECT id FROM ".$dc->table." WHERE pid=?")
+                $objArchive = $this->Database->prepare("SELECT id FROM " . $dc->table . " WHERE pid=?")
                     ->execute($id);
 
-                if ($objArchive->numRows < 1)
-                {
-                    $this->log('Invalid F Module ID "'.$id.'"', __METHOD__, TL_ERROR);
+                if ($objArchive->numRows < 1) {
+                    $this->log('Invalid F Module ID "' . $id . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 
@@ -166,14 +153,11 @@ class DCAModuleData extends DCAHelper
                 break;
 
             default:
-                if (strlen(Input::get('act')))
-                {
-                    $this->log('Invalid command "'.Input::get('act').'"', __METHOD__, TL_ERROR);
+                if (strlen(Input::get('act'))) {
+                    $this->log('Invalid command "' . Input::get('act') . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
-                }
-                elseif (!in_array($id, $root))
-                {
-                    $this->log('Not enough permissions to access '.$modname.' Wrapper ID ' . $id, __METHOD__, TL_ERROR);
+                } elseif (!in_array($id, $root)) {
+                    $this->log('Not enough permissions to access ' . $modname . ' Wrapper ID ' . $id, __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
@@ -243,16 +227,21 @@ class DCAModuleData extends DCAHelper
     /**
      *
      */
-    public function setList($sortingField, $sortingType, $orderBy)
+    public function setList($moduleObj)
     {
+
+
+        $sortingField = $moduleObj['sorting'];
+        $sortingType = $moduleObj['sortingType'];
+        $orderBy = $moduleObj['orderBy'];
+        $fields = $moduleObj['fields'];
 
         $flag = 1;
         $mode = 0;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
 
-        if($arrField[0] && $arrField[0] != 'id')
-        {
+        if ($arrField[0] && $arrField[0] != 'id') {
             $mode = 1;
         }
 
@@ -340,18 +329,107 @@ class DCAModuleData extends DCAHelper
                     'icon' => 'visible.gif',
                     'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
                     'button_callback' => array('DCAModuleData', 'toggleIcon')
-                ),
-
-                'show' => array
-                (
-                    'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'],
-                    'href' => 'act=show',
-                    'icon' => 'show.gif'
                 )
             )
         );
 
+        foreach ($fields as $field) {
+
+            if ($field['fieldID'] && $field['type'] == 'toggle_field') {
+
+                $list['operations'][$field['fieldID']] = array(
+
+                    'label' => array($field['title'], $field['description']),
+                    'icon' => $this->getToogleIcon('1', $field['description'], $field['fieldID'], true),
+                    'href' => $field['fieldID'],
+                    'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFMField(this)"',
+                    'button_callback' => array('DCAModuleData', 'iconFeatured')
+
+                );
+
+            }
+
+        }
+
+        $list['operations']['show'] = array(
+
+            'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'],
+            'href' => 'act=show',
+            'icon' => 'show.gif'
+
+        );
+
         return $list;
+    }
+
+    /**
+     * @param $row
+     * @param $href
+     * @param $label
+     * @param $title
+     * @param $icon
+     * @param $attributes
+     * @return string
+     */
+    public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
+    {
+
+
+        $field = $href;
+
+        if ( strlen( Input::get('fid') ) ) {
+
+            $id = Input::get('fid');
+            $state = Input::get('state');
+            $col = Input::get('col');
+
+            $this->toggleFMField($id, ($state == 1), $col );
+            $this->redirect($this->getReferer());
+
+        }
+
+        $href = '&amp;fid=' . $row['id'] . '&amp;col='.$field.'&amp;state=' . ($row[$field] ? '' : 1);
+
+        $imageHTML = $this->getToogleIcon($row[$field], $label, $field, false);
+
+        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $imageHTML . '</a> ';
+
+    }
+
+    /**
+     * Feature/unfeature a news item
+     *
+     * @param integer $intId
+     * @param boolean $blnVisible
+     *
+     * @return string
+     */
+    public function toggleFMField($intId, $blnVisible, $field)
+    {
+
+        $table = Input::get('table');
+        $field = $field ? $field : Input::post('col');
+
+        // Trigger the save_callback
+        if (is_array($GLOBALS['TL_DCA'][$table]['fields'][$field]['save_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA'][$table]['fields'][$field]['save_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $this);
+                }
+                elseif (is_callable($callback))
+                {
+                    $blnVisible = $callback($blnVisible, $this);
+                }
+            }
+        }
+
+        // Update the database
+        $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", ".$field."='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
+
     }
 
     /**
@@ -503,7 +581,7 @@ class DCAModuleData extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true ),
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 
@@ -711,7 +789,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'select',
                     'options' => $options,
-                    'eval' => array('tl_class' => 'clr',  'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+                    'eval' => array('tl_class' => 'clr', 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
                     'sql' => "text NULL"
 
                 );
@@ -781,6 +859,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'sorting' => true,
                     'search' => true,
+                    'filter' => true,
                     'inputType' => 'text',
                     'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'wizard'),
                     'sql' => "int(10) unsigned NULL"
@@ -790,6 +869,21 @@ class DCAModuleData extends DCAHelper
                     $arr[$field['fieldID']]['eval']['rgxp'] = 'datim';
                 }
             }
+
+            if ($field['fieldID'] !== '' && $field['type'] == 'toggle_field') {
+
+                $arr[$field['fieldID']] = array(
+
+                    'label' => array($field['title'], $field['description']),
+                    'inputType' => 'checkbox',
+                    'exclude' => true,
+                    'filter' => true,
+                    'eval' => array('tl_class' => 'clr', 'doNotCopy' => true),
+                    'sql' => "char(1) NOT NULL default ''"
+
+                );
+            }
+
 
         }
         return $arr;
@@ -961,12 +1055,11 @@ class DCAModuleData extends DCAHelper
             return;
         }
 
-        if(substr($table, -5) != '_data')
-        {
+        if (substr($table, -5) != '_data') {
             return;
         }
 
-        $table = substr($table, 0, ( strlen($table) - 5) );
+        $table = substr($table, 0, (strlen($table) - 5));
 
         // Store the ID in the session
         $session = $this->Session->get('fmodules_feed_updater');

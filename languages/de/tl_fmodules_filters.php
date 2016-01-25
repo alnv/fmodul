@@ -42,6 +42,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Mehrfache Auswahl'
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Volltextsuche';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Umschalter';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahleneingabe aktivieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Erlaubt eine Zahlensuche.';

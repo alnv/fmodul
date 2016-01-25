@@ -42,6 +42,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Multiple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Text field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Enable numbers';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Allow to use relational operator. See "fm_widget_search_field" Template.';

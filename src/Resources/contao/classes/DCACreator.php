@@ -185,7 +185,7 @@ class DCACreator
         $GLOBALS['TL_DCA'][$childname] = array(
 
             'config' => $dca_data->setConfig($moduleObj['detailPage']),
-            'list' => $dca_data->setList($moduleObj['sorting'], $moduleObj['sortingType'], $moduleObj['orderBy']),
+            'list' => $dca_data->setList($moduleObj),
             'palettes' => $dca_data->setPalettes($moduleObj['fields']),
             'subpalettes' => $dca_data->subPalettes(),
             'fields' => $dca_data->setFields($moduleObj['fields'])

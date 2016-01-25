@@ -76,6 +76,41 @@ $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
 
 /**
+ * Ajax Icon
+ */
+$GLOBALS['TL_MOOTOOLS'][] =
+    "<script>
+        if(AjaxRequest)
+        {
+            AjaxRequest.toggleFMField = function(el)
+            {
+                el.blur();
+                var image = $(el).getFirst('img');
+                var href = $(el).get('href');
+                var tempSrc = image.get('src');
+                var src = image.get('data-src');
+
+                var featured = (image.get('data-state') == 1);
+
+		        if (!featured) {
+                    image.src = src;
+                    image.set('data-src', tempSrc);
+                    image.set('data-state', 1);
+                    new Request({'url': href}).get({'rt': Contao.request_token});
+                } else {
+                    image.src = src;
+                    image.set('data-src', tempSrc);
+                    image.set('data-state', 0);
+                    new Request({'url': href}).get({'rt':Contao.request_token});
+                }
+
+                return false;
+
+            }
+        }
+    </script>";
+
+/**
  * Add permissions
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
@@ -97,7 +132,7 @@ $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
     'setCustomShortcut' => array(array('ProSearchApi', 'setCustomShortcut'))
 );
 
-$ip = Environment::get('ip');
+$ip = \Contao\Environment::get('ip');
 
 if ( TL_MODE == 'FE' &&  $ip != '127.0.0.1' ) {
 

@@ -776,8 +776,12 @@ class DCAModuleData extends DCAHelper
             $options = $this->getOptions($field);
 
             if ($field['fieldID'] == 'orderBy' || $field['fieldID'] == 'sorting_fields' || $field['fieldID'] == 'pagination') {
+
                 continue;
+
             }
+
+            $mandatory = $field['isMandatory'] ? true: false;
 
             if ($field['fieldID'] !== '' && $field['type'] == 'simple_choice') {
 
@@ -789,13 +793,13 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'select',
                     'options' => $options,
-                    'eval' => array('tl_class' => 'clr', 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+                    'eval' => array('tl_class' => 'clr', 'mandatory' => $mandatory, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
                     'sql' => "text NULL"
 
                 );
 
                 //if( version_compare(VERSION, '4.0', '>=') )
-                //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_itemm' )
+                //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
                 //{
                 //$arr[$field['fieldID']]['filter'] = false;
                 //}
@@ -818,12 +822,11 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'checkbox',
                     'options' => $options,
-                    'eval' => array('multiple' => true, 'tl_class' => 'clr', 'csv' => ','),
+                    'eval' => array('multiple' => true, 'mandatory' => $mandatory, 'tl_class' => 'clr', 'csv' => ','),
                     'sql' => "text NULL"
                 );
 
                 // #contao 4.0 bug
-                //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
                 if (version_compare(VERSION, '4.0', '>=')) {
                     $arr[$field['fieldID']]['filter'] = false;
                 }
@@ -846,7 +849,7 @@ class DCAModuleData extends DCAHelper
                     'search' => true,
                     'exclude' => true,
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'long'),
+                    'eval' => array('tl_class' => 'long', 'mandatory' => $mandatory),
                     'sql' => "text NULL"
                 );
             }
@@ -861,7 +864,7 @@ class DCAModuleData extends DCAHelper
                     'search' => true,
                     'filter' => true,
                     'inputType' => 'text',
-                    'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'wizard'),
+                    'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'mandatory' => $mandatory, 'datepicker' => true, 'tl_class' => 'wizard'),
                     'sql' => "int(10) unsigned NULL"
                 );
 

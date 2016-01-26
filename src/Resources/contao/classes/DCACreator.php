@@ -111,7 +111,7 @@ class DCACreator
             $module['orderBy'] = $modulesDB->row()['orderBy'];
             $id = $modulesDB->row()['id'];
 
-            $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ?")->execute($id);
+            $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ? ORDER BY sorting")->execute($id);
             $fields = [];
 
             while ($fieldsDB->next()) {
@@ -123,6 +123,9 @@ class DCACreator
                 $field['dataFromTable'] = $fieldsDB->row()['dataFromTable'];
                 $field['isInteger'] = $fieldsDB->row()['isInteger'];
                 $field['addTime'] = $fieldsDB->row()['addTime'];
+                $field['from_field'] = $fieldsDB->row()['from_field'];
+                $field['to_field'] = $fieldsDB->row()['to_field'];
+                $field['isMandatory'] = $fieldsDB->row()['isMandatory'];
                 $field['fieldAppearance'] = $fieldsDB->row()['fieldAppearance'];
                 $fields[] = $field;
             }

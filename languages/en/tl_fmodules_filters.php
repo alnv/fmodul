@@ -13,6 +13,11 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][1] = 'Delete filter';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Information';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Information';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][0] = 'Move filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][1] = 'Move filter';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][0] = 'Eingabefeld duplizieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Dieses Eingabefeld duplizieren';
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Filter input type';
@@ -43,11 +48,21 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Text field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Between';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Enable numbers';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Allow to use relational operator. See "fm_widget_search_field" Template.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][0] = 'Mandatory';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][1] = 'Mandatory.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Fuzzy search', 'Will find "Contao" if you search for "con" (equal to a wildcard search).');
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'][0] = 'From';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'][1] = 'Choose from field.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][0] = 'To';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][1] = 'Choose to field.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][0] = 'Negation';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Return the Opposite.';

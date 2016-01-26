@@ -10,6 +10,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][1] = 'Dieses Eingabefel
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][0] = 'Eingabefeld löschen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][1] = 'Dieses Eingabefeld löschen';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][0] = 'Eingabefeld verschieben';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][1] = 'Dieses Eingabefeld verschieben';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][0] = 'Eingabefeld duplizieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Dieses Eingabefeld duplizieren';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Eingabefeld Information';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Eingabefeld Informationsfenster öffnen';
 
@@ -43,9 +49,19 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Volltextsuche';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Umschalter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Zwischen';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahleneingabe aktivieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Erlaubt eine Zahlensuche.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'][0] = 'Von';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'][1] = 'Wähle ein Eingabefeld aus.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][0] = 'Pflichtfeld';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][1] = 'Eingabefeld zum Pflichtfeld machen.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][0] = 'Bis';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][1] = 'Wähle ein Eingabefeld aus.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Ungenaue Suche', 'Findet "Contao" bei der Suche nach "con" (entspricht einer Suche mit Platzhaltern).');
 

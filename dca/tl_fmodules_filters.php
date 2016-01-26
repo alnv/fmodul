@@ -21,6 +21,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
 
         'dataContainer' => 'Table',
         'ptable' => 'tl_fmodules',
+        'enableVersioning' => true,
         'onload_callback' => array
         (
             array('tl_fmodules_filters', 'checkPermission'),
@@ -42,22 +43,21 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'list' => array(
 
         'sorting' => array(
-            'mode' => 0
-        ),
-
-        'label' => array(
-            'fields' => array('title'),
-            'format' => '%s'
+            'mode' => 4,
+            'fields' => array('sorting'),
+            'headerFields' => array('name', 'info', 'tablename'),
+            'panelLayout' => 'filter,search,limit',
+            'child_record_callback'   => array('tl_fmodules_filters', 'listFilters')
         ),
 
         'global_operations' => array(
 
             'all' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href'                => 'act=select',
-                'class'               => 'header_edit_all',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
+                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'href' => 'act=select',
+                'class' => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             )
 
         ),
@@ -68,7 +68,22 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'],
                 'href' => 'act=edit',
-                'icon' => 'edit.gif'
+                'icon' => 'header.gif'
+            ),
+
+            'copy' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'],
+                'href' => 'act=paste&amp;mode=copy',
+                'icon' => 'copy.gif',
+                'attributes' => 'onclick="Backend.getScrollOffset()"'
+            ),
+            'cut' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'],
+                'href' => 'act=paste&amp;mode=cut',
+                'icon' => 'cut.gif',
+                'attributes' => 'onclick="Backend.getScrollOffset()"'
             ),
 
             'delete' => array
@@ -92,12 +107,13 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance;',
-        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;',
-        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,isMandatory;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,isMandatory;',
+        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger,isMandatory;',
+        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime,isMandatory;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description,isMandatory;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
+        'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
 
     ),
 
@@ -121,13 +137,19 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
 
+        'sorting' => array
+        (
+            'sql' => "int(10) unsigned NOT NULL default '0'"
+        ),
+
         'type' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['type'],
             'default' => 'simple_choice',
             'exclude' => true,
+            'filter' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'toggle_field'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'toggle_field', 'wrapper_field'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -137,8 +159,9 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'],
             'inputType' => 'text',
             'exclude' => true,
-            'eval' => array('mandatory' => true, 'rgxp' => 'extnd', 'spaceToUnderscore' => true, 'maxlength' => 64, 'tl_class' => 'w50'),
-            'save_callback' => array( array('tl_fmodules_filters', 'create_cols') ),
+            'filter' => true,
+            'eval' => array('mandatory' => true, 'rgxp' => 'extnd', 'spaceToUnderscore' => true, 'doNotCopy' => true, 'maxlength' => 64, 'tl_class' => 'w50'),
+            'save_callback' => array(array('tl_fmodules_filters', 'create_cols')),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
 
@@ -147,6 +170,27 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['title'],
             'inputType' => 'text',
             'exclude' => true,
+            'search' => true,
+            'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        ),
+
+        'from_field' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'],
+            'inputType' => 'select',
+            'exclude' => true,
+            'options_callback' => array('tl_fmodules_filters', 'getFromFields'),
+            'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        ),
+
+        'to_field' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'],
+            'inputType' => 'select',
+            'exclude' => true,
+            'options_callback' => array('tl_fmodules_filters', 'getToFields'),
             'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),
@@ -156,6 +200,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['description'],
             'inputType' => 'textarea',
             'exclude' => true,
+            'search' => true,
             'eval' => array('tl_class' => 'clr'),
             'sql' => "blob NULL"
         ),
@@ -174,7 +219,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'],
             'inputType' => 'checkbox',
-            'exclude'=> true,
+            'exclude' => true,
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
 
@@ -184,7 +229,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'],
             'inputType' => 'checkbox',
-            'exclude'=> true,
+            'exclude' => true,
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
@@ -192,7 +237,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'addTime' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'],
             'inputType' => 'checkbox',
-            'exclude'=> true,
+            'exclude' => true,
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
@@ -200,7 +245,15 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'negate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'],
             'inputType' => 'checkbox',
-            'exclude'=> true,
+            'exclude' => true,
+            'eval' => array('tl_class' => 'clr m12'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+
+        'isMandatory' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'],
+            'inputType' => 'checkbox',
+            'exclude' => true,
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         )
@@ -224,13 +277,26 @@ class tl_fmodules_filters extends \Contao\Backend
     }
 
     /**
+     * @param $arrRow
+     * @return string
+     */
+    public function listFilters($arrRow)
+    {
+        $mandatoryTpl = '';
+        if($arrRow['isMandatory'])
+        {
+            $mandatoryTpl = '<span style="color: tomato;">*</span>';
+        }
+        return '<span>'.$arrRow['title'].' <span style="color:#cdcdcd;">['.$arrRow['type'].': '.$arrRow['fieldID'].']</span>'.$mandatoryTpl.'</span>';
+    }
+
+    /**
      *
      */
     public function checkPermission()
     {
 
-        if($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
@@ -246,8 +312,7 @@ class tl_fmodules_filters extends \Contao\Backend
             $GLOBALS['TL_DCA']['tl_fmodules_filters']['config']['closed'] = true;
         }
 
-        switch (Input::get('act'))
-        {
+        switch (Input::get('act')) {
             case 'create':
             case 'select':
                 // Allow
@@ -350,8 +415,7 @@ class tl_fmodules_filters extends \Contao\Backend
      */
     public function create_cols($values, DataContainer $dc)
     {
-        if($values == '')
-        {
+        if ($values == '') {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDEmpty'], $values));
         }
 
@@ -359,24 +423,20 @@ class tl_fmodules_filters extends \Contao\Backend
         $tempVal = $dc->activeRecord->fieldID;
         $type = $dc->activeRecord->type;
 
-        $notAllowedCols = array('id','tstamp','title','info','adddetailpage','rootpage','source','allowcomments','notify','sortorder','perpage','moderate','bbcode','requirelogin','disablecaptcha', 'protected','groups','guests','cssID','published','start','stop','addenclosure','enclosure','addimage','singlesrc','alt','size','caption', 'alter', 'key', 'type', 'date','primary', 'auto_increment', 'data', 'insert', 'delete', 'update', 'options','max','min', 'drop','date','time', 'fmodule', 'fmodules', 'fmodulesfilters', 'fmodulesfeed');
+        $notAllowedCols = array('id', 'tstamp', 'title', 'info', 'adddetailpage', 'rootpage', 'source', 'allowcomments', 'notify', 'sortorder', 'perpage', 'moderate', 'bbcode', 'requirelogin', 'disablecaptcha', 'protected', 'groups', 'guests', 'cssID', 'published', 'start', 'stop', 'addenclosure', 'enclosure', 'addimage', 'singlesrc', 'alt', 'size', 'caption', 'alter', 'key', 'type', 'date', 'primary', 'auto_increment', 'data', 'insert', 'delete', 'update', 'options', 'max', 'min', 'drop', 'date', 'time', 'fmodule', 'fmodules', 'fmodulesfilters', 'fmodulesfeed');
 
-        if(in_array(mb_strtolower($values), $notAllowedCols))
-        {
+        if (in_array(mb_strtolower($values), $notAllowedCols)) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'], $values));
         }
 
-        if($values == $tempVal)
-        {
-          return $tempVal;
+        if ($values == $tempVal) {
+            return $tempVal;
         }
 
         $filtersDB = $this->Database->prepare('SELECT fieldID FROM tl_fmodules_filters WHERE pid = ? AND fieldID = ?')->execute($pid, $values);
 
-        if( $filtersDB->numRows >= 1 )
-        {
-            if( $values == 'auto_item' || $values == 'auto_page')
-            {
+        if ($filtersDB->numRows >= 1) {
+            if ($values == 'auto_item' || $values == 'auto_page') {
                 throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'], $values));
             }
 
@@ -451,20 +511,52 @@ class tl_fmodules_filters extends \Contao\Backend
     }
 
     /**
+     *
+     */
+    public function getFromFields()
+    {
+
+        return $this->getWrapperFields();
+    }
+
+    /**
+     *
+     */
+    public function getToFields()
+    {
+        return $this->getWrapperFields();
+    }
+
+    /**
+     * @return array
+     */
+    public function getWrapperFields()
+    {
+        $DB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE type = ? OR type = ?')->execute('date_field', 'search_field');
+        $return = array();
+        while ($DB->next()) {
+            if ($DB->type == 'search_field' && !$DB->isInteger) {
+                continue;
+            }
+            $return[$DB->fieldID] = $DB->title;
+        }
+
+        return $return;
+    }
+
+    /**
      * @param DataContainer $dc
      */
     public function delete_cols(DataContainer $dc)
     {
 
         //
-        if($dc->activeRecord->fieldID == '')
-        {
+        if ($dc->activeRecord->fieldID == '') {
             return;
         }
 
         //
-        if($dc->activeRecord->type == 'fulltext_search')
-        {
+        if ($dc->activeRecord->type == 'fulltext_search' || $dc->activeRecord->type == 'wrapper_field') {
             return;
         }
 

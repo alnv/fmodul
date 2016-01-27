@@ -138,4 +138,25 @@ class DCAHelper extends Backend
 
 	}
 
+
+	public function isLegend($fields)
+	{
+		$legendsFound = 0;
+		foreach($fields as $field)
+		{
+			if($field['type'] == 'legend')
+			{
+				$legendsFound += 1;
+			}
+		}
+
+		if($legendsFound > 0 && $legendsFound % 2 == 0)
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
 }

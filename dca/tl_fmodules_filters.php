@@ -114,7 +114,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description,isMandatory;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
-
+        'legend' => '{type_legend},type;{setting_legend},fieldID,title,legend_toggler;',
     ),
 
     'fields' => array
@@ -149,7 +149,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'filter' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'toggle_field', 'wrapper_field'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'toggle_field', 'wrapper_field', 'legend'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -211,6 +211,16 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'radio',
             'exclude' => true,
             'options_callback' => array('tl_fmodules_filters', 'getAppearance'),
+            'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
+            'sql' => "varchar(64) NOT NULL default ''"
+        ),
+
+        'legend_toggler' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'],
+            'inputType' => 'radio',
+            'exclude' => true,
+            'options' => array('start', 'end'),
             'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
@@ -283,10 +293,26 @@ class tl_fmodules_filters extends \Contao\Backend
     public function listFilters($arrRow)
     {
         $mandatoryTpl = '';
+
+        if($arrRow['type'] == 'legend')
+        {
+            $before = '--> Start::';
+            $after = '';
+
+            if( $arrRow['legend_toggler'] && $arrRow['legend_toggler'] != 'start')
+            {
+                $before = '';
+                $after = '::END <--';
+            }
+
+            return '<span style="color: #f07146;">'.$before.'[ '.$arrRow['title'].' ]'.$after.'</span>';
+        }
+
         if($arrRow['isMandatory'])
         {
             $mandatoryTpl = '<span style="color: tomato;">*</span>';
         }
+
         return '<span>'.$arrRow['title'].' <span style="color:#cdcdcd;">['.$arrRow['type'].': '.$arrRow['fieldID'].']</span>'.$mandatoryTpl.'</span>';
     }
 
@@ -556,7 +582,7 @@ class tl_fmodules_filters extends \Contao\Backend
         }
 
         //
-        if ($dc->activeRecord->type == 'fulltext_search' || $dc->activeRecord->type == 'wrapper_field') {
+        if ($dc->activeRecord->type == 'fulltext_search' || $dc->activeRecord->type == 'wrapper_field' || $dc->activeRecord->type == 'legend') {
             return;
         }
 

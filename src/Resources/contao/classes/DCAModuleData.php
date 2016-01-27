@@ -15,6 +15,7 @@ use Contao\Database;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
+use ProSearch\Helper;
 
 //use Contao\BackendUser;
 //use Symfony\Component\Intl\Util\Version;
@@ -34,6 +35,9 @@ class DCAModuleData extends DCAHelper
     protected $parent;
     protected $id;
     protected $pid;
+
+    private $doNotSetByType = array('wrapper_field', 'legend', 'fulltext_search');
+    private $doNotSetByID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
 
     /**
      *
@@ -438,24 +442,55 @@ class DCAModuleData extends DCAHelper
     public function setPalettes($fields = array())
     {
 
-        $fieldStr = '{meta_legend},';
-        $arr = array();
+        $isLegend = DCAHelper::isLegend($fields);
+        $palette = '';
 
-        foreach ($fields as $field) {
+        if($isLegend)
+        {
+            foreach ($fields as $field)
+            {
 
-            if ($field['fieldID'] !== '') {
+                $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend'][$field['fieldID']] = $field['title'];
 
-                $arr[] = $field['fieldID'];
+                if( $field['type'] == 'legend' && $field['legend_toggler'] == 'start' )
+                {
+                    $palette .= '{'.$field['fieldID'].'}';
+                }
+
+                if( $field['fieldID'] && !in_array($field['fieldID'], $this->doNotSetByID) && !in_array($field['type'], $this->doNotSetByType) )
+                {
+                    $palette .= ','.$field['fieldID'];
+                }
+
+                if( $field['type'] == 'legend' && $field['legend_toggler'] == 'end' )
+                {
+                    $palette .= ';';
+                }
+            }
+        }
+
+
+        if(!$isLegend)
+        {
+            $palette = '{meta_legend},';
+            $arr = array();
+
+            foreach ($fields as $field) {
+
+                if( $field['fieldID'] && !in_array($field['fieldID'], $this->doNotSetByID) && !in_array($field['type'], $this->doNotSetByType) ) {
+
+                    $arr[] = $field['fieldID'];
+
+                }
 
             }
 
+            $palette .=  implode(',', $arr).';';
         }
-
-        $fieldStr = $fieldStr . implode(',', $arr) . ';';
 
         return array(
             '__selector__' => array('source', 'addImage', 'protected', 'addEnclosure', 'published'),
-            'default' => '{general_legend},title,alias,author,info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $fieldStr . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
+            'default' => '{general_legend},title,alias,author,info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $palette . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
         );
     }
 
@@ -775,7 +810,7 @@ class DCAModuleData extends DCAHelper
 
             $options = $this->getOptions($field);
 
-            if ($field['fieldID'] == 'orderBy' || $field['fieldID'] == 'sorting_fields' || $field['fieldID'] == 'pagination') {
+            if (in_array($field['fieldID'], $this->doNotSetByID)) {
 
                 continue;
 
@@ -797,12 +832,6 @@ class DCAModuleData extends DCAHelper
                     'sql' => "text NULL"
 
                 );
-
-                //if( version_compare(VERSION, '4.0', '>=') )
-                //if( $field['fieldID'] == 'auto_page' || $field['fieldID'] == 'auto_item' )
-                //{
-                //$arr[$field['fieldID']]['filter'] = false;
-                //}
 
                 if ($field['fieldAppearance'] == 'radio') {
                     $arr[$field['fieldID']]['inputType'] = 'radio';
@@ -826,7 +855,6 @@ class DCAModuleData extends DCAHelper
                     'sql' => "text NULL"
                 );
 
-                // #contao 4.0 bug
                 if (version_compare(VERSION, '4.0', '>=')) {
                     $arr[$field['fieldID']]['filter'] = false;
                 }

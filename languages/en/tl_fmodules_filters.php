@@ -22,6 +22,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Dieses Eingabefeld dupl
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Filter input type';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Expert-Settings';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type'][0] = 'Filter input type';

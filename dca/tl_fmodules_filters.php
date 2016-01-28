@@ -107,16 +107,16 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,evalCss,isMandatory;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,evalCss,isMandatory;',
-        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger,evalCss,isMandatory;',
-        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime,evalCss,isMandatory;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
+        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend:hide},evalCss,isMandatory;',
+        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},evalCss,isMandatory;',
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
-        'widget' => '{type_legend},type;{setting_legend},widget_type,fieldID,title,description,evalCss,isMandatory;'
+        'widget' => '{type_legend},type;{setting_legend},widget_type,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;'
     ),
 
     'fields' => array

@@ -23,6 +23,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Eingabefeld Information
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Eingabefeld Typ';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Einstellung';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstellungen';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type'][0] = 'Eingabefeld Typ auswählen';

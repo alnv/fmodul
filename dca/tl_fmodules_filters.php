@@ -107,15 +107,16 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,isMandatory;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,isMandatory;',
-        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger,isMandatory;',
-        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime,isMandatory;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description,isMandatory;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,evalCss,isMandatory;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,evalCss,isMandatory;',
+        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger,evalCss,isMandatory;',
+        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime,evalCss,isMandatory;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
-        'legend' => '{type_legend},type;{setting_legend},fieldID,title,legend_toggler;',
-        'widget' => '{type_legend},type;{setting_legend},widget_type,fieldID,title,description,isMandatory;'
+        'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
+        'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
+        'widget' => '{type_legend},type;{setting_legend},widget_type,fieldID,title,description,evalCss,isMandatory;'
     ),
 
     'fields' => array
@@ -150,7 +151,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'filter' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'wrapper_field', 'legend'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'wrapper_field', 'legend_start', 'legend_end'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -216,19 +217,10 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "varchar(64) NOT NULL default ''"
         ),
 
-        'legend_toggler' => array
-        (
-            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'],
-            'inputType' => 'radio',
-            'exclude' => true,
-            'options' => array('start', 'end'),
-            'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
-            'sql' => "varchar(64) NOT NULL default ''"
-        ),
-
         'widget_type' => array
         (
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'],
+            'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
             'inputType' => 'select',
             'exclude' => true,
             'options' => array('textarea.blank', 'textarea.tinyMCE', 'list.blank', 'list.keyValue'),
@@ -244,6 +236,16 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
+
+        ),
+
+        'evalCss' => array(
+
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'],
+            'inputType' => 'text',
+            'exclude' => true,
+            'eval' => array('tl_class' => 'clr'),
+            'sql' => "varchar(255) NOT NULL default ''"
 
         ),
 
@@ -318,20 +320,18 @@ class tl_fmodules_filters extends \Contao\Backend
      */
     public function listFilters($arrRow)
     {
+
         $mandatoryTpl = '';
 
-        if($arrRow['type'] == 'legend')
+
+        if($arrRow['type'] == 'legend_start')
         {
-            $before = '--> Start::';
-            $after = '';
+            return '<span style="color: #77ac45; font-weight: 600;">--> '.$arrRow['title'].'</span>';
+        }
 
-            if( $arrRow['legend_toggler'] && $arrRow['legend_toggler'] != 'start')
-            {
-                $before = '';
-                $after = '::END <--';
-            }
-
-            return '<span style="color: #f07146;">'.$before.'[ '.$arrRow['title'].' ]'.$after.'</span>';
+        if($arrRow['type'] == 'legend_end')
+        {
+            return '<span style="color: #77ac45; font-weight: 600;">'.$arrRow['title'].' <--</span>';
         }
 
         if($arrRow['isMandatory'])
@@ -608,7 +608,7 @@ class tl_fmodules_filters extends \Contao\Backend
         }
 
         //
-        if ($dc->activeRecord->type == 'fulltext_search' || $dc->activeRecord->type == 'wrapper_field' || $dc->activeRecord->type == 'legend') {
+        if ($dc->activeRecord->type == 'fulltext_search' || $dc->activeRecord->type == 'wrapper_field' || $dc->activeRecord->type == 'legend_start' || $dc->activeRecord->type == 'legend_end') {
             return;
         }
 

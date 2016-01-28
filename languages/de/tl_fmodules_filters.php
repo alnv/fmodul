@@ -48,8 +48,16 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Mehrfache Auswahl'
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Volltextsuche';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Umschalter';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Zwischen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Schalter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Umfang';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Widget';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Umschlag Anfang';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Umschlag Ende';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.blank'] = 'Textarea';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.tinyMCE'] = 'Textarea mit tinyMCE';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.blank'] = 'Liste';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.keyValue'] = 'Key Value Liste';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahleneingabe aktivieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Erlaubt eine Zahlensuche.';
@@ -59,6 +67,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'][1] = 'Wähle ein Eingab
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][0] = 'Pflichtfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][1] = 'Eingabefeld zum Pflichtfeld machen.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][0] = 'Widget Typ';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][1] = 'Wählen Sie ein Widget Typ aus. Ein Widget Typ kann nachhinein nicht geändert werden.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][0] = 'Felder ausrichten';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'Das Contao-Backend verwendet ein 2-spaltiges Grid-System, um Formularfelder innerhalb ihrer Gruppen auszurichten. Folgende CSS-Klassen können vergeben werden: w50 clr wizard long m12';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][0] = 'Bis';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][1] = 'Wähle ein Eingabefeld aus.';

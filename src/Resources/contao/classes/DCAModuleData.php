@@ -818,11 +818,17 @@ class DCAModuleData extends DCAHelper
 
             $mandatory = $field['isMandatory'] ? true: false;
 
+
+            if($field['fieldID'] !== '' && $field['type'] == 'widget')
+            {
+                $arr[$field['fieldID']] = DCAHelper::getFieldFromWidget($field);
+            }
+
             if ($field['fieldID'] !== '' && $field['type'] == 'simple_choice') {
 
                 $arr[$field['fieldID']] = array(
 
-                    'label' => array($field['title'], ''),
+                    'label' => array($field['title'], $field['description']),
                     'filter' => true,
                     'search' => true,
                     'exclude' => true,

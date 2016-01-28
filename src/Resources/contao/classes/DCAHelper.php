@@ -159,4 +159,46 @@ class DCAHelper extends Backend
 
 	}
 
+
+	public function getFieldFromWidget($field)
+	{
+
+		$widgetArr = explode('.', $field['widget_type']);
+		$mandatory = $field['isMandatory'] ? true: false;
+
+		$return = array(
+
+			'label' => array($field['title'], $field['description']),
+			'inputType' => 'text',
+			'exclude' => true,
+			'eval' => array('mandatory' => $mandatory),
+			'sql' => "text NULL"
+
+		);
+
+		if($widgetArr[0] == 'textarea' && $widgetArr[1] == 'blank')
+		{
+			$return['inputType'] = 'textarea';
+		}
+
+		if($widgetArr[0] == 'textarea' && $widgetArr[1] == 'tinyMCE')
+		{
+			$return['inputType'] = 'textarea';
+			$return['eval']['rte'] = 'tinyMCE';
+		}
+
+		if($widgetArr[0] == 'list' && $widgetArr[1] == 'blank')
+		{
+			$return['inputType'] = 'listWizard';
+		}
+
+		if($widgetArr[0] == 'list' && $widgetArr[1] == 'keyValue')
+		{
+			$return['inputType'] = 'keyValueWizard';
+		}
+
+		return $return;
+
+	}
+
 }

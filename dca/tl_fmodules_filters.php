@@ -115,6 +115,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend' => '{type_legend},type;{setting_legend},fieldID,title,legend_toggler;',
+        'widget' => '{type_legend},type;{setting_legend},widget_type,fieldID,title,description,isMandatory;'
     ),
 
     'fields' => array
@@ -149,7 +150,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'filter' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'toggle_field', 'wrapper_field', 'legend'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'wrapper_field', 'legend'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -225,6 +226,17 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "varchar(64) NOT NULL default ''"
         ),
 
+        'widget_type' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'],
+            'inputType' => 'select',
+            'exclude' => true,
+            'options' => array('textarea.blank', 'textarea.tinyMCE', 'list.blank', 'list.keyValue'),
+            'eval' => array('mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+            'load_callback' => array(array('tl_fmodules_filters', 'look_widget')),
+            'sql' => "varchar(64) NOT NULL default ''"
+        ),
+
         'dataFromTable' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'],
@@ -284,6 +296,20 @@ class tl_fmodules_filters extends \Contao\Backend
         parent::__construct();
         $this->import('BackendUser', 'User');
 
+    }
+
+    /**
+     *
+     */
+    public function look_widget($value)
+    {
+        if($value)
+        {
+            $GLOBALS['TL_DCA']['tl_fmodules_filters']['fields']['widget_type']['inputType'] = 'text';
+            $GLOBALS['TL_DCA']['tl_fmodules_filters']['fields']['widget_type']['eval']['readonly'] = true;
+        }
+
+        return $value;
     }
 
     /**
@@ -483,7 +509,7 @@ class tl_fmodules_filters extends \Contao\Backend
                 \FModule\SqlData::insertColFilterInput($tname, $values);
 
                 //child
-                if ($type == 'search_field') {
+                if ($type == 'search_field' || $type == 'widget') {
                     \FModule\SqlData::insertColSearchField($childTable, $values);
                 }
 
@@ -509,7 +535,7 @@ class tl_fmodules_filters extends \Contao\Backend
                     \FModule\SqlData::renameColFilterInput($tname, $tempVal, $values);
 
                     //child
-                    if ($type == 'search_field') {
+                    if ($type == 'search_field' || $type == 'widget') {
                         \FModule\SqlData::renameColSearchField($childTable, $tempVal, $values);
                     }
 

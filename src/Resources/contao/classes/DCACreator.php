@@ -125,6 +125,7 @@ class DCACreator
                 $field['addTime'] = $fieldsDB->row()['addTime'];
                 $field['from_field'] = $fieldsDB->row()['from_field'];
                 $field['to_field'] = $fieldsDB->row()['to_field'];
+                $field['widget_type'] = $fieldsDB->row()['widget_type'];
                 $field['isMandatory'] = $fieldsDB->row()['isMandatory'];
                 $field['legend_toggler'] = $fieldsDB->row()['legend_toggler'];
                 $field['fieldAppearance'] = $fieldsDB->row()['fieldAppearance'];

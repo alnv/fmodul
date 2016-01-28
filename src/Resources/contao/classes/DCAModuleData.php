@@ -36,7 +36,7 @@ class DCAModuleData extends DCAHelper
     protected $id;
     protected $pid;
 
-    private $doNotSetByType = array('wrapper_field', 'legend', 'fulltext_search');
+    private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search');
     private $doNotSetByID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
 
     /**
@@ -381,18 +381,18 @@ class DCAModuleData extends DCAHelper
 
         $field = $href;
 
-        if ( strlen( Input::get('fid') ) ) {
+        if (strlen(Input::get('fid'))) {
 
             $id = Input::get('fid');
             $state = Input::get('state');
             $col = Input::get('col');
 
-            $this->toggleFMField($id, ($state == 1), $col );
+            $this->toggleFMField($id, ($state == 1), $col);
             $this->redirect($this->getReferer());
 
         }
 
-        $href = '&amp;fid=' . $row['id'] . '&amp;col='.$field.'&amp;state=' . ($row[$field] ? '' : 1);
+        $href = '&amp;fid=' . $row['id'] . '&amp;col=' . $field . '&amp;state=' . ($row[$field] ? '' : 1);
 
         $imageHTML = $this->getToogleIcon($row[$field], $label, $field, false);
 
@@ -415,24 +415,19 @@ class DCAModuleData extends DCAHelper
         $field = $field ? $field : Input::post('col');
 
         // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA'][$table]['fields'][$field]['save_callback']))
-        {
-            foreach ($GLOBALS['TL_DCA'][$table]['fields'][$field]['save_callback'] as $callback)
-            {
-                if (is_array($callback))
-                {
+        if (is_array($GLOBALS['TL_DCA'][$table]['fields'][$field]['save_callback'])) {
+            foreach ($GLOBALS['TL_DCA'][$table]['fields'][$field]['save_callback'] as $callback) {
+                if (is_array($callback)) {
                     $this->import($callback[0]);
                     $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $this);
-                }
-                elseif (is_callable($callback))
-                {
+                } elseif (is_callable($callback)) {
                     $blnVisible = $callback($blnVisible, $this);
                 }
             }
         }
 
         // Update the database
-        $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", ".$field."='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
+        $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", " . $field . "='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
     }
 
@@ -445,39 +440,33 @@ class DCAModuleData extends DCAHelper
         $isLegend = DCAHelper::isLegend($fields);
         $palette = '';
 
-        if($isLegend)
-        {
-            foreach ($fields as $field)
-            {
+        if ($isLegend) {
+            foreach ($fields as $field) {
 
                 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend'][$field['fieldID']] = $field['title'];
 
-                if( $field['type'] == 'legend' && $field['legend_toggler'] == 'start' )
-                {
-                    $palette .= '{'.$field['fieldID'].'}';
+                if ($field['type'] == 'legend_start') {
+                    $palette .= '{' . $field['fieldID'] . '}';
                 }
 
-                if( $field['fieldID'] && !in_array($field['fieldID'], $this->doNotSetByID) && !in_array($field['type'], $this->doNotSetByType) )
-                {
-                    $palette .= ','.$field['fieldID'];
+                if ($field['fieldID'] && !in_array($field['fieldID'], $this->doNotSetByID) && !in_array($field['type'], $this->doNotSetByType)) {
+                    $palette .= ',' . $field['fieldID'];
                 }
 
-                if( $field['type'] == 'legend' && $field['legend_toggler'] == 'end' )
-                {
+                if ($field['type'] == 'legend_end') {
                     $palette .= ';';
                 }
             }
         }
 
 
-        if(!$isLegend)
-        {
+        if (!$isLegend) {
             $palette = '{meta_legend},';
             $arr = array();
 
             foreach ($fields as $field) {
 
-                if( $field['fieldID'] && !in_array($field['fieldID'], $this->doNotSetByID) && !in_array($field['type'], $this->doNotSetByType) ) {
+                if ($field['fieldID'] && !in_array($field['fieldID'], $this->doNotSetByID) && !in_array($field['type'], $this->doNotSetByType)) {
 
                     $arr[] = $field['fieldID'];
 
@@ -485,7 +474,7 @@ class DCAModuleData extends DCAHelper
 
             }
 
-            $palette .=  implode(',', $arr).';';
+            $palette .= implode(',', $arr) . ';';
         }
 
         return array(
@@ -816,15 +805,15 @@ class DCAModuleData extends DCAHelper
 
             }
 
-            $mandatory = $field['isMandatory'] ? true: false;
+            $mandatory = $field['isMandatory'] ? true : false;
+            $evalCss = $field['evalCss'] ? $field['evalCss'] : 'clr';
 
-
-            if($field['fieldID'] !== '' && $field['type'] == 'widget')
-            {
+            if ($field['fieldID'] !== '' && $field['type'] == 'widget') {
                 $arr[$field['fieldID']] = DCAHelper::getFieldFromWidget($field);
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'simple_choice') {
+
 
                 $arr[$field['fieldID']] = array(
 
@@ -834,7 +823,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'select',
                     'options' => $options,
-                    'eval' => array('tl_class' => 'clr', 'mandatory' => $mandatory, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+                    'eval' => array('tl_class' => $evalCss, 'mandatory' => $mandatory, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
                     'sql' => "text NULL"
 
                 );
@@ -857,7 +846,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'inputType' => 'checkbox',
                     'options' => $options,
-                    'eval' => array('multiple' => true, 'mandatory' => $mandatory, 'tl_class' => 'clr', 'csv' => ','),
+                    'eval' => array('multiple' => true, 'mandatory' => $mandatory, 'tl_class' => $evalCss, 'csv' => ','),
                     'sql' => "text NULL"
                 );
 
@@ -877,15 +866,17 @@ class DCAModuleData extends DCAHelper
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'search_field') {
+
                 $arr[$field['fieldID']] = array(
 
                     'label' => array($field['title'], $field['description']),
                     'search' => true,
                     'exclude' => true,
                     'inputType' => 'text',
-                    'eval' => array('tl_class' => 'long', 'mandatory' => $mandatory),
+                    'eval' => array('tl_class' => $evalCss, 'mandatory' => $mandatory),
                     'sql' => "text NULL"
                 );
+
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'date_field') {
@@ -898,7 +889,7 @@ class DCAModuleData extends DCAHelper
                     'search' => true,
                     'filter' => true,
                     'inputType' => 'text',
-                    'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'mandatory' => $mandatory, 'datepicker' => true, 'tl_class' => 'wizard'),
+                    'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'mandatory' => $mandatory, 'datepicker' => true, 'tl_class' => 'wizard ' . $evalCss . ''),
                     'sql' => "int(10) unsigned NULL"
                 );
 
@@ -915,7 +906,7 @@ class DCAModuleData extends DCAHelper
                     'inputType' => 'checkbox',
                     'exclude' => true,
                     'filter' => true,
-                    'eval' => array('tl_class' => 'clr', 'doNotCopy' => true),
+                    'eval' => array('tl_class' => $evalCss, 'doNotCopy' => true),
                     'sql' => "char(1) NOT NULL default ''"
 
                 );

@@ -39,6 +39,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][1] = 'Please enter you
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Style';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Backend Style of the input field.';
 
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][1] = 'Define Palette.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][0] = 'Load data from Database';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'The select values will be loaded from database.';
 
@@ -48,13 +52,29 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Text field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Between';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Range';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Widget';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Start';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'End';
+
+//
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.blank'] = 'Textarea';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.tinyMCE'] = 'Textarea with tinyMCE';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.blank'] = 'List';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.keyValue'] = 'Key Value List';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Enable numbers';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Allow to use relational operator. See "fm_widget_search_field" Template.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][0] = 'Mandatory';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'][1] = 'Mandatory.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][0] = 'Widget type';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][1] = 'Please select your widget.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][0] = 'Arranging fields';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'The Contao back end uses a simple two-column grid system to arrange input fields within their groups. You can apply the following CSS classes: w50 clr wizard long m12';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Fuzzy search', 'Will find "Contao" if you search for "con" (equal to a wildcard search).');
 

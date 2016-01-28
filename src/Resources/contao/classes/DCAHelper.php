@@ -144,7 +144,7 @@ class DCAHelper extends Backend
 		$legendsFound = 0;
 		foreach($fields as $field)
 		{
-			if($field['type'] == 'legend')
+			if($field['type'] == 'legend_start' || $field['type'] == 'legend_end')
 			{
 				$legendsFound += 1;
 			}

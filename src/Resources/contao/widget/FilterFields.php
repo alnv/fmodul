@@ -133,6 +133,9 @@ class FilterFields extends Widget
 						<input type="hidden" value="'.htmlspecialchars($strAppearance).'" name="' . $this->strName . '[' . $key . '][appearance]">
 						<input type="hidden" value="' . $value['isInteger'] . '" name="' . $this->strName . '[' . $key . '][isInteger]">
 						<input type="hidden" value="' . $value['addTime'] . '" name="' . $this->strName . '[' . $key . '][addTime]">
+						<input type="hidden" value="' . $value['from_field'] . '" name="' . $this->strName . '[' . $key . '][from_field]">
+						<input type="hidden" value="' . $value['to_field'] . '" name="' . $this->strName . '[' . $key . '][to_field]">
+						<input type="hidden" value="' . $value['description'] . '" name="' . $this->strName . '[' . $key . '][description]">
 					</td>
 					<td> <select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_appearance]" id="ctrl_' . $this->strId . '[' . $key . '][appearance]" class="tl_select" style="width: 150px;">' . $selectOptionsTemplate . '</select> </td>
 					<td> <select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_templates]" id="ctrl_' . $this->strId . '[' . $key . '][template]" class="tl_select" style="width: 200px;">' . $widgetsOptionsTemplate . '</select> </td>

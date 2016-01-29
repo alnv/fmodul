@@ -14,8 +14,6 @@
 
 use Contao\Input;
 use Contao\Pagination;
-use Contao\Search;
-
 
 /**
  *
@@ -148,8 +146,8 @@ class ModuleListView extends \Contao\Module
             }
 
             $get_operator = Input::get($filter['fieldID'] . '_int');
-			
-            if ( isset($get) && $get != '' || isset($get_operator) && $get_operator != '') {
+
+            if (isset($get) && $get != '' || isset($get_operator) && $get_operator != '') {
 
                 if ($filter['active']) {
 
@@ -267,12 +265,10 @@ class ModuleListView extends \Contao\Module
 
             $searchDB = $this->powerSearch($searchQuery, $tablename, $wrapperID);
 
-            if($searchDB && $searchDB->count() > 0)
-            {
-               while($searchDB->next())
-               {
-                   $foundArr[$searchDB->id] = $searchDB->alias;
-               }
+            if ($searchDB && $searchDB->count() > 0) {
+                while ($searchDB->next()) {
+                    $foundArr[$searchDB->id] = $searchDB->alias;
+                }
             }
 
         }
@@ -506,9 +502,8 @@ class ModuleListView extends \Contao\Module
      */
     private function simpleChoiceQuery($data)
     {
-		
-        if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
-        {
+
+        if (!isset($data['value']) && ($data['value'] == ' ' || $data['value'] == '')) {
             return '';
         }
 
@@ -544,8 +539,7 @@ class ModuleListView extends \Contao\Module
 
         if (is_array($values)) {
 
-            if(count($values) < 2 && ( !$values[0] || $values[0] == '' || $values[0] == ' ' ) )
-            {
+            if (count($values) < 2 && (!$values[0] || $values[0] == '' || $values[0] == ' ')) {
                 return '';
             }
 
@@ -576,8 +570,7 @@ class ModuleListView extends \Contao\Module
     {
         global $objPage;
 
-        if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
-        {
+        if (!isset($data['value']) && ($data['value'] == ' ' || $data['value'] == '')) {
             return '';
         }
 
@@ -607,8 +600,7 @@ class ModuleListView extends \Contao\Module
     private function searchFieldQuery($data)
     {
 
-        if( !isset($data['value']) && ( $data['value'] == ' ' || $data['value'] == '' ) )
-        {
+        if (!isset($data['value']) && ($data['value'] == ' ' || $data['value'] == '')) {
             return '';
         }
 
@@ -616,20 +608,19 @@ class ModuleListView extends \Contao\Module
         $searchValue = $data['value'];
         $isNum = false;
 
-        if ($data['isInteger'] == '1' && $data['operator'] != '' && is_numeric($searchValue) ) {
+        if ($data['isInteger'] == '1' && $data['operator'] != '' && is_numeric($searchValue)) {
 
             $operator = $this->getOperator($data['operator']);
             $searchValue = (int)$searchValue;
             $isNum = true;
         }
 
-        if(!$isNum)
-        {
+        if (!$isNum) {
             $likeValue = '"%' . $searchValue . '%"';
-            return ' AND '.$data['fieldID'].' LIKE  '.$likeValue.' OR '.$data['fieldID'].' = "'.$searchValue.'"';
+            return ' AND ' . $data['fieldID'] . ' LIKE  ' . $likeValue . ' OR ' . $data['fieldID'] . ' = "' . $searchValue . '"';
         }
 
-        return ' AND '.$data['fieldID'].' '.$operator.' '.$searchValue.'';
+        return ' AND ' . $data['fieldID'] . ' ' . $operator . ' ' . $searchValue . '';
 
     }
 
@@ -642,17 +633,17 @@ class ModuleListView extends \Contao\Module
     public function powerSearch($searchStr, $tablename, $wrapperID)
     {
 
-        $sqlStr = "SELECT * FROM ".$tablename."_data WHERE pid = ? ";
+        $sqlStr = "SELECT * FROM " . $tablename . "_data WHERE pid = ? ";
         $sqlStr .= " AND description LIKE ? OR title LIKE ? ORDER BY "
-            ."CASE "
-                ."WHEN (LOCATE(?, title) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
-                ."WHEN title = ? THEN 1 "                // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
-                ."WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
-                ."WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
-                ."WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
-                ."WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
-                ."ELSE 6 "
-            ."END ";
+            . "CASE "
+            . "WHEN (LOCATE(?, title) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
+            . "WHEN title = ? THEN 1 "                // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+            . "WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+            . "WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
+            . "WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
+            . "WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+            . "ELSE 6 "
+            . "END ";
 
         return $this->Database->prepare($sqlStr)->execute($wrapperID, "%$searchStr%", "%$searchStr%", $searchStr, $searchStr, "$searchStr %", "%$searchStr", "$searchStr%", "%$searchStr%");
 

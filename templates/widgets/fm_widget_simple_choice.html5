@@ -1,17 +1,14 @@
 <div class="widget-simple-choice form-widget <?php echo $this->cssClass; ?>">
-
-    <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
-
+    <?php if ($this->title): ?>
+        <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
+    <?php endif; ?>
     <select id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>">
-
         <option value=""><?php echo $this->title; ?></option>
-
-        <?php foreach($this->options as $option): ?>
-
-        <option value="<?php echo $option['value']; ?>" <?php  echo ( ( $this->selected == $option['value'] ? 'selected' : '' )  ) ?> ><?php echo $option['label']; ?></option>
-
-    <?php endforeach; ?>
-
-</select>
-
-        </div>
+        <?php foreach ($this->options as $option): ?>
+            <option value="<?php echo $option['value']; ?>" <?php echo(($this->selected == $option['value'] ? 'selected' : '')) ?> ><?php echo $option['label']; ?></option>
+        <?php endforeach; ?>
+    </select>
+    <?php if ($this->description): ?>
+        <p class="description"><?php echo $this->description; ?></p>
+    <?php endif; ?>
+</div>

@@ -1,0 +1,10 @@
+<div class="widget-wrapper-field form-widget <?php echo $this->cssClass; ?>">
+    <?php if($this->title):?>
+        <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
+    <?php endif; ?>
+    <?php echo $this->from_template; ?>
+    <?php echo $this->to_template; ?>
+    <?php if ($this->description): ?>
+        <p class="description"><?php echo $this->description; ?></p>
+    <?php endif; ?>
+</div>

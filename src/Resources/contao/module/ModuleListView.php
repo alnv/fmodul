@@ -626,10 +626,10 @@ class ModuleListView extends \Contao\Module
         if(!$isNum)
         {
             $likeValue = '"%' . $searchValue . '%"';
-            return 'AND '.$data['fieldID'].' LIKE  '.$likeValue.' OR '.$data['fieldID'].' = "'.$searchValue.'"';
+            return ' AND '.$data['fieldID'].' LIKE  '.$likeValue.' OR '.$data['fieldID'].' = "'.$searchValue.'"';
         }
 
-        return 'AND '.$data['fieldID'].' '.$operator.' '.$searchValue.'';
+        return ' AND '.$data['fieldID'].' '.$operator.' '.$searchValue.'';
 
     }
 

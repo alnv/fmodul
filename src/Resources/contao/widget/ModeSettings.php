@@ -47,11 +47,11 @@ class ModeSettings extends Widget
         $wrapperid = $fmoduleDB['f_select_wrapper'];
 
         if ($modulename == '' || $wrapperid == '') {
-            return '<p>No Module selected</p>';
+            return '<p>Please select Backend Modul</p>';
         }
 
         if (!$this->Database->tableExists($modulename)) {
-            return '<p>' . $modulename . ' dont exist! </p>';
+            return '<p>' . $modulename . ' do not exist! </p>';
         }
 
         $modeSettingsDB = $this->Database->prepare(
@@ -59,7 +59,7 @@ class ModeSettings extends Widget
             FROM tl_fmodules
             JOIN tl_fmodules_filters
             ON tl_fmodules.id = tl_fmodules_filters.pid
-            WHERE tablename = ?'
+            WHERE tablename = ? ORDER BY sorting'
         )->execute($modulename);
 
         $optionsDB = $this->Database->prepare('SELECT * FROM ' . $modulename . ' WHERE id = ?')->execute($wrapperid)->row();
@@ -72,9 +72,16 @@ class ModeSettings extends Widget
             'overwrite' => '0'
         );
 
+        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget');
+        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
+
         while ($modeSettingsDB->next()) {
 
-            if ($modeSettingsDB->fieldID == 'orderBy' || $modeSettingsDB->fieldID == 'sorting_fields' || $modeSettingsDB->fieldID == 'pagination') {
+            if ( in_array($modeSettingsDB->fieldID, $doNotSetByID) ) {
+                continue;
+            }
+
+            if ( in_array($modeSettingsDB->type, $doNotSetByType) ) {
                 continue;
             }
 

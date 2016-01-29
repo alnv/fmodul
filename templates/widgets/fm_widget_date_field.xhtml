@@ -1,13 +1,22 @@
 <div class="widget-date-field form-widget <?php echo $this->cssClass; ?>">
-
-    <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
-
-    <select id="id_<?php echo $this->fieldID; ?>_int" name="<?php echo $this->fieldID; ?>_int">
-
-        <?php foreach( $this->operator as $value => $label ): ?>
-        <option value="<?php echo $value; ?>" <?php echo ( $this->selected_operator == $value ? 'selected' : '' ); ?>><?php echo $label; ?></option>
-    <?php endforeach; ?>
-
-</select>
-<input type="text" id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>" value="<?php echo $this->selected; ?>" placeholder="<?php echo $this->format; ?>"/>
-        </div>
+    <?php if($this->title):?>
+        <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
+    <?php endif; ?>
+    <?php if (count($this->operator) > 1): ?>
+        <select id="id_<?php echo $this->fieldID; ?>_int" name="<?php echo $this->fieldID; ?>_int">
+            <?php foreach ($this->operator as $value => $label): ?>
+                <option
+                    value="<?php echo $value; ?>" <?php echo($this->selected_operator == $value ? 'selected' : ''); ?>><?php echo $label; ?></option>
+            <?php endforeach; ?>
+        </select>
+    <?php endif; ?>
+    <?php if (count($this->operator) == 1): ?>
+        <?php foreach ($this->operator as $value => $label): ?>
+            <input type="hidden" id="id_<?php echo $this->fieldID; ?>_int" name="<?php echo $this->fieldID; ?>_int" value="<?php echo $value; ?>"  />
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <input type="text" id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>" value="<?php echo $this->selected; ?>" placeholder="<?php echo $this->format; ?>"/>
+    <?php if ($this->description): ?>
+        <p class="description"><?php echo $this->description; ?></p>
+    <?php endif; ?>
+</div>

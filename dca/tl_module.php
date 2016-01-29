@@ -164,7 +164,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
 class tl_module_fmodule extends tl_module
 {
 
-
     public function getListModules(DataContainer $dc)
     {
         $type = 'fmodule_fe_list';
@@ -184,10 +183,16 @@ class tl_module_fmodule extends tl_module
         if ($listID != '') {
 
             $selectedList = $filters[$listID];
-            $filterFieldsDB = $this->Database->prepare('SELECT tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ?')->execute($selectedList);
+            $filterFieldsDB = $this->Database->prepare('SELECT tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($selectedList);
             $filterFields = array();
+            $doNotSetByType = array('legend_start', 'legend_end', 'widget');
 
             while ($filterFieldsDB->next()) {
+
+                if(in_array($filterFieldsDB->type, $doNotSetByType))
+                {
+                    continue;
+                }
 
                 $filterFields[$filterFieldsDB->id] = array(
 
@@ -195,9 +200,12 @@ class tl_module_fmodule extends tl_module
                     'label' => $filterFieldsDB->title,
                     'fieldID' => $filterFieldsDB->fieldID,
                     'title' => $filterFieldsDB->title,
+                    'description' => $filterFieldsDB->description,
                     'type' => $filterFieldsDB->type,
                     'isInteger' => $filterFieldsDB->isInteger,
                     'addTime' => $filterFieldsDB->addTime,
+                    'from_field' => $filterFieldsDB->from_field,
+                    'to_field' => $filterFieldsDB->to_field,
                     'active' => '',
                     'cssClass' => '',
                     'templates' => array(),
@@ -269,6 +277,9 @@ class tl_module_fmodule extends tl_module
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
         $modulename = '';
 
+        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget');
+        $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'pagination', 'orderBy', 'sorting_fields');
+
         while ($moduleDB->next()) {
             $modulename = $moduleDB->f_select_module;
         }
@@ -305,6 +316,18 @@ class tl_module_fmodule extends tl_module
 
         while ($filterDB->next()) {
 
+
+            if(in_array($filterDB->fieldID, $doNotSetByID))
+            {
+                continue;
+            }
+
+            if(in_array($filterDB->type, $doNotSetByType))
+            {
+                continue;
+            }
+
+            /*
             if ($filterDB->fieldID == 'auto_item' || $filterDB->fieldID == 'auto_page') {
                 continue;
             }
@@ -320,7 +343,7 @@ class tl_module_fmodule extends tl_module
             if ($filterDB->fieldID == 'orderBy' || $filterDB->fieldID == 'sorting_fields') {
                 continue;
             }
-
+            */
             $sorting[$filterDB->fieldID] = $filterDB->title;
 
         }

@@ -269,7 +269,7 @@ class tl_module_fmodule extends tl_module
     /**
      *
      */
-    public function setFEModule(DataContainer $dc)
+    public function setFEModule($dc)
     {
 
         //
@@ -277,7 +277,7 @@ class tl_module_fmodule extends tl_module
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
         $modulename = '';
 
-        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget');
+        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field');
         $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'pagination', 'orderBy', 'sorting_fields');
 
         while ($moduleDB->next()) {
@@ -327,23 +327,6 @@ class tl_module_fmodule extends tl_module
                 continue;
             }
 
-            /*
-            if ($filterDB->fieldID == 'auto_item' || $filterDB->fieldID == 'auto_page') {
-                continue;
-            }
-
-            if ($filterDB->type == 'fulltext_search') {
-                continue;
-            }
-
-            if ($filterDB->fieldID == 'pagination') {
-                continue;
-            }
-
-            if ($filterDB->fieldID == 'orderBy' || $filterDB->fieldID == 'sorting_fields') {
-                continue;
-            }
-            */
             $sorting[$filterDB->fieldID] = $filterDB->title;
 
         }

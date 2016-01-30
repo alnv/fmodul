@@ -174,7 +174,8 @@ class ModeSettings extends Widget
 		$desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
 		$selected = $viewObject['set']['filterValue'];
 		
-		//todo if negate change labels
+		$label1 = $viewObject['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+		$label2 = $viewObject['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
 		
 		$template = 
 			'<div>
@@ -182,8 +183,8 @@ class ModeSettings extends Widget
 					<input type="hidden" value="'.$viewObject['fieldID'].'" name="' . $this->strName . '[' . $index . '][fieldID]">
 					<h4><label>Hervorgehobene Beiträge</label></h4>
 					<select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
-                        <option value="1" ' . ($selected == '1' ? 'selected' : '') . '>Nur hervorgehobene Beiträge anzeigen</option>
-                        <option value="0" ' . ($selected == '0' ? 'selected' : '') . '>Hervorgehobene Beiträge überspringen</option>
+                        <option value="1" ' . ($selected == '1' ? 'selected' : '') . '>'.$label1.'</option>
+                        <option value="0" ' . ($selected == '0' ? 'selected' : '') . '>'.$label2.'</option>
                     </select>
                     <p class="tl_help tl_tip" title="">' . $desc . '</p>
 				</div>

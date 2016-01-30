@@ -110,8 +110,15 @@ class DCACreator
             $module['sortingType'] = $modulesDB->row()['sortingType'];
             $module['orderBy'] = $modulesDB->row()['orderBy'];
             $id = $modulesDB->row()['id'];
-
-            $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ? ORDER BY sorting")->execute($id);
+			
+			//backwards compatible
+			$orderBy = 'sorting';
+			if( !$db->fieldExists('sorting','tl_fmodules_filters') )
+			{
+				$orderBy = 'id';
+			}
+			
+            $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ? ORDER BY ".$orderBy."")->execute($id);
             $fields = [];
 
             while ($fieldsDB->next()) {

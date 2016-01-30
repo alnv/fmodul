@@ -183,6 +183,7 @@ class tl_module_fmodule extends tl_module
         if ($listID != '') {
 
             $selectedList = $filters[$listID];
+                        
             $filterFieldsDB = $this->Database->prepare('SELECT tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($selectedList);
             $filterFields = array();
             $doNotSetByType = array('legend_start', 'legend_end', 'widget');
@@ -277,7 +278,7 @@ class tl_module_fmodule extends tl_module
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
         $modulename = '';
 
-        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field');
+        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field','toggle_field');
         $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'pagination', 'orderBy', 'sorting_fields');
 
         while ($moduleDB->next()) {
@@ -310,7 +311,6 @@ class tl_module_fmodule extends tl_module
 			ON tl_fmodules.id = tl_fmodules_filters.pid 
 			WHERE tablename = ?'
         )->execute($modulename);
-
 
         $sorting = array('id' => 'ID','title' => 'Titel', 'date' => 'Datum');
 

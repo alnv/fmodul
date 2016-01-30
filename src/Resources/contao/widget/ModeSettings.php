@@ -92,6 +92,7 @@ class ModeSettings extends Widget
                 "fieldID" => $modeSettingsDB->fieldID,
                 "type" => $modeSettingsDB->type,
                 "title" => $modeSettingsDB->title,
+                "negate" => $modeSettingsDB->negate,
                 "description" => $modeSettingsDB->description,
                 'dataFromTable' => $modeSettingsDB->dataFromTable,
                 "fieldAppearance" => $modeSettingsDB->fieldAppearance,
@@ -127,7 +128,8 @@ class ModeSettings extends Widget
             'simple_choice' => 'setSimpleChoiceSettings',
             'multi_choice' => 'setMultiChoiceSettings',
             'search_field' => 'setSearchFieldSettings',
-            'date_field' => 'setDateFieldSettings'
+            'date_field' => 'setDateFieldSettings',
+            'toggle_field' => 'setToggleFieldSettings'
         );
 
         foreach ($this->modeViewObject as $index => $viewObject) {
@@ -164,7 +166,37 @@ class ModeSettings extends Widget
 
         return $html . '</div>';
     }
-
+	
+	
+	private function setToggleFieldSettings($index, $viewObject)
+	{
+		
+		$desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
+		$selected = $viewObject['set']['filterValue'];
+		
+		//todo if negate change labels
+		
+		$template = 
+			'<div>
+				<div>
+					<input type="hidden" value="'.$viewObject['fieldID'].'" name="' . $this->strName . '[' . $index . '][fieldID]">
+					<h4><label>Hervorgehobene Beiträge</label></h4>
+					<select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
+                        <option value="1" ' . ($selected == '1' ? 'selected' : '') . '>Nur hervorgehobene Beiträge anzeigen</option>
+                        <option value="0" ' . ($selected == '0' ? 'selected' : '') . '>Hervorgehobene Beiträge überspringen</option>
+                    </select>
+                    <p class="tl_help tl_tip" title="">' . $desc . '</p>
+				</div>
+				<div>
+                    <div class="mode_checkbox">
+                        <h4><input type="checkbox" id="ctrl_' . $index . '[' . $viewObject['fieldID'] . ']" value="1" name="' . $this->strName . '[' . $index . '][set][overwrite]" ' . ($viewObject['set']['overwrite'] == '1' ? 'checked="checked"' : '') . '><label for="ctrl_' . $index . '[' . $viewObject['fieldID'] . ']">' . $GLOBALS['TL_LANG']['MSC']['fm_overwrite'] . '</label></h4>
+                        <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_ignore'] . '</p>
+                    </div>
+                </div>
+			</div>';
+		
+		return $template;
+	}	
 
     private function setSimpleChoiceSettings($index, $viewObject)
     {

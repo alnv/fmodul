@@ -50,9 +50,7 @@ class ModuleFormFilter extends \Contao\Module
         $modeSettings = is_array($modeSettings) ? array_values($modeSettings) : array();
 
         if (!$listModuleTable && !$listModuleID) {
-
             return;
-
         }
 
         $fieldsDB = $this->Database->prepare('SELECT * FROM ' . $listModuleTable . ' WHERE id = ?')->execute($listModuleID)->row();
@@ -110,7 +108,13 @@ class ModuleFormFilter extends \Contao\Module
                 $fields[$i]['auto_complete'] = $arr;
 
             }
-
+			
+			if($field['type'] == 'toggle_field')
+			{
+				$fields[$i]['showLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+				$fields[$i]['ignoreLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+			}
+			
             $fields[$i]['wrapperID'] = $listModuleID;
             $fields[$i]['selected'] = $inputValue;
 

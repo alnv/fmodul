@@ -7,6 +7,9 @@ $GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'Ignore GET Parameters';
 $GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Fixing';
 $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'] = 'Enable Filter';
 
+$GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] = 'Show items';
+$GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] = 'Skip items';
+
 $GLOBALS['TL_LANG']['MSC']['fm_date_label'] = 'Select date';
 $GLOBALS['TL_LANG']['MSC']['fm_date_description'] = 'If the datefield is empty then it takes the current date.';
 

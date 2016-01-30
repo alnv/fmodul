@@ -56,4 +56,5 @@ TemplateLoader::addFiles(array
     'fm_widget_search_field' => $pathToTemplates.'/widgets',
     'fm_widget_fulltext_search' => $pathToTemplates.'/widgets',
     'fm_widget_wrapper_field' => $pathToTemplates.'/widgets',
+    'fm_widget_toggle_field' => $pathToTemplates.'/widgets',
 ));

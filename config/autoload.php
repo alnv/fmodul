@@ -29,6 +29,7 @@ ClassLoader::addClasses(array
     'FModule\FieldAppearance' => $pathToFiles.'src/Resources/contao/classes/FieldAppearance.php',
     'FModule\ContentModelExtend' => $pathToFiles.'src/Resources/contao/model/ContentModelExtend.php',
     'FModule\FModule' => $pathToFiles.'src/Resources/contao/classes/FModule.php',
+    'FModule\QueryModel' => $pathToFiles.'src/Resources/contao/models/QueryModel.php',
 ));
 
 /**

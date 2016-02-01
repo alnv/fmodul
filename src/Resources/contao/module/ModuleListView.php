@@ -12,18 +12,23 @@
  */
 
 
+use Contao\Config;
 use Contao\Input;
+use Contao\Module;
 use Contao\Pagination;
+
 
 /**
  *
  */
-class ModuleListView extends \Contao\Module
+class ModuleListView extends Module
 {
+
     /**
-     *
+     * @var string
      */
     protected $strTemplate = 'mod_fmodule_list';
+
 
     /**
      *
@@ -48,9 +53,9 @@ class ModuleListView extends \Contao\Module
         /**
          *
          */
-        if (!isset($_GET['item']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+        if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
-            \Input::setGet('item', \Input::get('auto_item'));
+            Input::setGet('item', Input::get('auto_item'));
 
         }
 
@@ -64,6 +69,87 @@ class ModuleListView extends \Contao\Module
     protected function compile()
     {
 
+
+        global $objPage;
+
+        $arrTaxFilter = deserialize($this->f_display_mode);
+        $taxFilter = is_array($arrTaxFilter) ? $arrTaxFilter : array();
+        $tablename = $this->f_select_module;
+        $wrapperID = $this->f_select_wrapper;
+
+        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination', 'auto_item');
+        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field', 'widget');
+
+        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
+
+        $fieldsArr = array();
+
+        while ( $moduleDB->next() ) {
+
+            if(in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType))
+            {
+                continue;
+            }
+
+            $modArr = $moduleDB->row();
+
+            $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
+
+            $modArr['value'] = $getFilter['value'];
+            $modArr['operator'] = $getFilter['operator'];
+            $modArr['overwrite'] = null;
+            $modArr['active'] = null;
+
+            if($getFilter['value'])
+            {
+                $modArr['enable'] = true;
+            }
+
+            if ( $moduleDB->fieldID == 'auto_page' ) {
+                $modArr['value'] = $objPage->alias;
+            }
+
+            $fieldsArr[$moduleDB->fieldID] = $modArr;
+
+        }
+
+        if(!empty($taxFilter))
+        {
+            $fieldsArr = $this->setFilterValues($taxFilter, $fieldsArr);
+        }
+
+        $qArr = array();
+
+        foreach($fieldsArr as $field)
+        {
+            if( $field['enable'] )
+            {
+                switch ($field['type']) {
+
+                    case 'simple_choice':
+                        $qArr[] = QueryModel::simpleChoiceQuery($field);
+                        break;
+                    case 'date_field':
+                        $qArr[] = QueryModel::dateFieldQuery($field);
+                        break;
+                    case 'search_field':
+                        $qArr[] = QueryModel::searchFieldQuery($field);
+                        break;
+                    case 'multi_choice':
+                        $qArr[] = QueryModel::multiChoiceQuery($field);
+                        break;
+                    case 'toggle_field':
+                        $qArr[] = QueryModel::toggleFieldQuery($field);
+                        break;
+                    case 'fulltext_search':
+                        //
+                        break;
+                }
+            }
+        }
+
+
+        /*
         global $objPage;
 
         $modeFields = deserialize($this->f_display_mode);
@@ -255,9 +341,7 @@ class ModuleListView extends \Contao\Module
 
         $itemsArr = array();
 
-        /**
-         * search
-         */
+
         $foundArr = array();
 
         if ($searchQuery != '' && $addDetailPage == '1') {
@@ -317,9 +401,7 @@ class ModuleListView extends \Contao\Module
                 $listDB->href = $this->generateFrontendUrl($jumpToDB);
             }
 
-            /**
-             * search
-             */
+
             if ($searchQuery != '') {
 
                 if (!$foundArr[$listDB->id]) {
@@ -443,6 +525,82 @@ class ModuleListView extends \Contao\Module
         }
 
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
+        */
+
+    }
+
+
+    /**
+     * @param $filterValues
+     * @param $return
+     * @return mixed
+     */
+    public function setFilterValues($filterValues, $return)
+    {
+
+        foreach($filterValues as $filterValue)
+        {
+            $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
+            $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
+
+            $value = $return[$filterValue['fieldID']]['value'];
+
+            if(is_array($value))
+            {
+                $value = $value[0] ? $value[0] : array();
+            }
+
+            if ( ( !$value || empty ( $value ) ) && $filterValue['active'] )
+            {
+                $return[$filterValue['fieldID']]['value'] = ( $filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '' );
+                $return[$filterValue['fieldID']]['operator'] = ( $filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '' );
+            }
+
+            if( $filterValue['set']['overwrite'] )
+            {
+                $return[$filterValue['fieldID']]['value'] = ( $filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '' );
+                $return[$filterValue['fieldID']]['operator'] = ( $filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '' );
+            }
+
+
+            if($return[$filterValue['fieldID']]['value'])
+            {
+                $return[$filterValue['fieldID']]['enable'] = true;
+            }
+
+        }
+
+        return $return;
+
+    }
+
+
+    /**
+     * @param $fieldID
+     * @param $type
+     * @return array
+     */
+    public function getFilter($fieldID, $type)
+    {
+        $getFilter = Input::get( $fieldID ) ? Input::get( $fieldID ) : '';
+
+        if( $type == 'toggle_field' && !$getFilter )
+        {
+            $getFilter = '0';
+        }
+
+        $getOperator = Input::get( $fieldID . '_int' ) ? Input::get( $fieldID . '_int' ) : '';
+
+        if( $type == 'multi_choice' && !is_array($getFilter))
+        {
+            $getFilter = explode(',', $getFilter);
+        }
+
+        return array(
+            'value' => $getFilter,
+            'operator' => $getOperator
+        );
+
 
     }
 

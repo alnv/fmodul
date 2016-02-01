@@ -111,12 +111,18 @@ class ModuleFormFilter extends \Contao\Module
 			
 			if($field['type'] == 'toggle_field')
 			{
-				$fields[$i]['showLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
-				$fields[$i]['ignoreLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+                $fields[$i]['showLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+				$fields[$i]['ignoreLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
 			}
 			
             $fields[$i]['wrapperID'] = $listModuleID;
             $fields[$i]['selected'] = $inputValue;
+
+            // ex
+            if($field['type'] == 'toggle_field' && !$inputValue)
+            {
+                $fields[$i]['selected'] = '0';
+            }
 
             $tplName = $this->parseTemplateName($fields[$i]['used_templates']);
 

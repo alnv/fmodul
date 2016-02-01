@@ -124,7 +124,6 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfiltersp';
 
 // add to prosearch
 $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
-	
     'tables' => array('tl_fmodules', 'tl_fmodules_filters'),
     'searchIn' => array('name','tablename', 'info', 'title', 'type', 'fieldID'),
     'title' => array('name','title'),

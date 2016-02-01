@@ -4,8 +4,8 @@
     <?php endif;?>
 	<select id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>">
 		<option value=""><?php echo $this->title; ?></option>
-		<option value="1"><?php echo $this->showLabel; ?></option>
-		<option value="0"><?php echo $this->ignoreLabel; ?></option>
+		<option value="1" <?php echo ( $this->selected == '1' ? 'selected' : '' ); ?>><?php echo $this->showLabel; ?></option>
+		<option value="0" <?php echo ( $this->selected == '0' ? 'selected' : '' ); ?>><?php echo $this->ignoreLabel; ?></option>
 	</select>
     <?php if ($this->description): ?>
         <p class="description"><?php echo $this->description; ?></p>

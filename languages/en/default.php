@@ -7,6 +7,7 @@ $GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'Ignore GET Parameters';
 $GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Fixing';
 $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'] = 'Enable Filter';
 
+$GLOBALS['TL_LANG']['MSC']['fm_highlight'] = 'Show items';
 $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] = 'Show items';
 $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] = 'Skip items';
 

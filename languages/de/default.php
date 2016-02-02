@@ -7,8 +7,9 @@ $GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'Parameter werden ignoriert und das Ei
 $GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Filter Formular ignorieren';
 $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'] = 'Filter einbinden';
 
-$GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] = 'Nur hervorgehobene Beiträge anzeigen';
-$GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] = 'Hervorgehobene Beiträge überspringen';
+$GLOBALS['TL_LANG']['MSC']['fm_highlight'] = 'Datensätze anzeigen';
+$GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] = 'Nur hervorgehobene Datensätze anzeigen';
+$GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] = 'Hervorgehobene Datensätze überspringen';
 
 $GLOBALS['TL_LANG']['MSC']['fm_date_label'] = 'Datum auswählen';
 $GLOBALS['TL_LANG']['MSC']['fm_date_description'] = 'Wenn kein Datum angegeben ist, wird das aktuelle Datum verwendet.';

@@ -149,7 +149,7 @@ class ModeSettings extends Widget
             $attributes = $this->getAttributes();
             $for = "ctrl_" . $viewObject['fieldID'];
             $label = $viewObject['title'];
-
+            $span = '';
             $checkbox = sprintf($str, $name, $id, $checked, $attributes, $for, $label, $span);
 
             $html = $html . $checkbox;
@@ -174,14 +174,14 @@ class ModeSettings extends Widget
 		$desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
 		$selected = $viewObject['set']['filterValue'];
 		
-		$label1 = $viewObject['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
-		$label2 = $viewObject['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+		$label1 = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+		$label2 = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
 		
 		$template = 
 			'<div>
 				<div>
 					<input type="hidden" value="'.$viewObject['fieldID'].'" name="' . $this->strName . '[' . $index . '][fieldID]">
-					<h4><label>Hervorgehobene Beiträge</label></h4>
+					<h4><label>'.$GLOBALS['TL_LANG']['MSC']['fm_highlight'].'</label></h4>
 					<select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
                         <option value="1" ' . ($selected == '1' ? 'selected' : '') . '>'.$label1.'</option>
                         <option value="0" ' . ($selected == '0' ? 'selected' : '') . '>'.$label2.'</option>

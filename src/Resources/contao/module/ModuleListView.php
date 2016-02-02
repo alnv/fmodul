@@ -69,19 +69,14 @@ class ModuleListView extends Module
     protected function compile()
     {
 
-
         global $objPage;
-
         $arrTaxFilter = deserialize($this->f_display_mode);
         $taxFilter = is_array($arrTaxFilter) ? $arrTaxFilter : array();
         $tablename = $this->f_select_module;
         $wrapperID = $this->f_select_wrapper;
-
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination', 'auto_item');
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field', 'widget');
-
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-
         $fieldsArr = array();
 
         while ( $moduleDB->next() ) {
@@ -100,7 +95,9 @@ class ModuleListView extends Module
             $modArr['overwrite'] = null;
             $modArr['active'] = null;
 
-            if($getFilter['value'])
+            $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
+
+            if( $val )
             {
                 $modArr['enable'] = true;
             }
@@ -113,33 +110,32 @@ class ModuleListView extends Module
 
         }
 
-        if(!empty($taxFilter))
+        if(!empty( $taxFilter ))
         {
-            $fieldsArr = $this->setFilterValues($taxFilter, $fieldsArr);
+            $fieldsArr = $this->setFilterValues( $taxFilter, $fieldsArr );
         }
 
-        $qArr = array();
-
-        foreach($fieldsArr as $field)
+        $qStr = '';
+        foreach( $fieldsArr as $field )
         {
             if( $field['enable'] )
             {
                 switch ($field['type']) {
 
                     case 'simple_choice':
-                        $qArr[] = QueryModel::simpleChoiceQuery($field);
+                        $qStr .= QueryModel::simpleChoiceQuery($field);
                         break;
                     case 'date_field':
-                        $qArr[] = QueryModel::dateFieldQuery($field);
+                        $qStr .= QueryModel::dateFieldQuery($field);
                         break;
                     case 'search_field':
-                        $qArr[] = QueryModel::searchFieldQuery($field);
+                        $qStr .= QueryModel::searchFieldQuery($field);
                         break;
                     case 'multi_choice':
-                        $qArr[] = QueryModel::multiChoiceQuery($field);
+                        $qStr .= QueryModel::multiChoiceQuery($field);
                         break;
                     case 'toggle_field':
-                        $qArr[] = QueryModel::toggleFieldQuery($field);
+                        $qStr .= QueryModel::toggleFieldQuery($field);
                         break;
                     case 'fulltext_search':
                         //
@@ -148,6 +144,8 @@ class ModuleListView extends Module
             }
         }
 
+        //var_dump($qStr);
+        //exit;
 
         /*
         global $objPage;
@@ -543,14 +541,9 @@ class ModuleListView extends Module
             $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
             $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
 
-            $value = $return[$filterValue['fieldID']]['value'];
+            $value = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
 
-            if(is_array($value))
-            {
-                $value = $value[0] ? $value[0] : array();
-            }
-
-            if ( ( !$value || empty ( $value ) ) && $filterValue['active'] )
+            if ( !$value && $filterValue['active'] )
             {
                 $return[$filterValue['fieldID']]['value'] = ( $filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '' );
                 $return[$filterValue['fieldID']]['operator'] = ( $filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '' );
@@ -562,11 +555,13 @@ class ModuleListView extends Module
                 $return[$filterValue['fieldID']]['operator'] = ( $filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '' );
             }
 
+            $val = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
 
-            if($return[$filterValue['fieldID']]['value'])
+            if( $val )
             {
                 $return[$filterValue['fieldID']]['enable'] = true;
             }
+
 
         }
 
@@ -658,6 +653,7 @@ class ModuleListView extends Module
      * @param $data
      * @return string
      */
+    /*
     private function simpleChoiceQuery($data)
     {
 
@@ -673,11 +669,13 @@ class ModuleListView extends Module
 
         return ' AND ' . $data['fieldID'] . ' ' . $operator . ' "' . $data['value'] . '"';
     }
+    */
 
     /**
      * @param $data
      * @return string
      */
+    /*
     private function multiChoiceQuery($data)
     {
 
@@ -719,11 +717,13 @@ class ModuleListView extends Module
 
         return implode('', $sql);
     }
+    */
 
     /**
      * @param $data
      * @return string
      */
+    /*
     private function dateFieldQuery($data)
     {
         global $objPage;
@@ -750,11 +750,13 @@ class ModuleListView extends Module
         return ' AND ' . $data['fieldID'] . ' ' . $operator . ' ' . $v . '';
 
     }
+    */
 
     /**
      * @param $data
      * @return string
      */
+    /*
     private function searchFieldQuery($data)
     {
 
@@ -781,6 +783,7 @@ class ModuleListView extends Module
         return ' AND ' . $data['fieldID'] . ' ' . $operator . ' ' . $searchValue . '';
 
     }
+    */
 
     /**
      * @param $searchStr
@@ -855,9 +858,7 @@ class ModuleListView extends Module
             $groups = deserialize($item['groups']);
 
             if (!is_array($groups) || empty($groups) || count(array_intersect($groups, $this->User->groups)) < 1) {
-
                 return true;
-
             }
 
         }
@@ -865,7 +866,7 @@ class ModuleListView extends Module
         return false;
     }
 
-
+    /*
     protected function getOperator($str)
     {
 
@@ -893,5 +894,5 @@ class ModuleListView extends Module
         return $return;
 
     }
-
+    */
 }

@@ -111,8 +111,8 @@ class ModuleFormFilter extends \Contao\Module
 			
 			if($field['type'] == 'toggle_field')
 			{
-                $fields[$i]['showLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
-				$fields[$i]['ignoreLabel'] = $field['negate'] ? $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] : $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+                $fields[$i]['showLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+				$fields[$i]['ignoreLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
 			}
 			
             $fields[$i]['wrapperID'] = $listModuleID;

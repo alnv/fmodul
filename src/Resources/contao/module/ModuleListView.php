@@ -13,6 +13,7 @@
 
 
 use Contao\Config;
+use Contao\FrontendTemplate;
 use Contao\Input;
 use Contao\Module;
 use Contao\Pagination;
@@ -29,6 +30,20 @@ class ModuleListView extends Module
      */
     protected $strTemplate = 'mod_fmodule_list';
 
+    /**
+     * @var
+     */
+    public $tablename;
+
+    /**
+     * @var
+     */
+    public $listViewLimit;
+
+    /**
+     * @var
+     */
+    public $listViewOffset = 0;
 
     /**
      *
@@ -36,9 +51,7 @@ class ModuleListView extends Module
     public function generate()
     {
 
-        /**
-         *
-         */
+        //
         if (TL_MODE == 'BE') {
 
             $objTemplate = new \BackendTemplate('be_wildcard');
@@ -50,9 +63,7 @@ class ModuleListView extends Module
 
         $this->import('FrontendUser', 'User');
 
-        /**
-         *
-         */
+        //
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
             Input::setGet('item', Input::get('auto_item'));
@@ -70,6 +81,7 @@ class ModuleListView extends Module
     {
 
         global $objPage;
+
         $arrTaxFilter = deserialize($this->f_display_mode);
         $taxFilter = is_array($arrTaxFilter) ? $arrTaxFilter : array();
         $tablename = $this->f_select_module;
@@ -79,10 +91,11 @@ class ModuleListView extends Module
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $fieldsArr = array();
 
-        while ( $moduleDB->next() ) {
+        $this->tablename = $tablename;
 
-            if(in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType))
-            {
+        while ($moduleDB->next()) {
+
+            if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
                 continue;
             }
 
@@ -97,12 +110,11 @@ class ModuleListView extends Module
 
             $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
 
-            if( $val )
-            {
+            if ($val) {
                 $modArr['enable'] = true;
             }
 
-            if ( $moduleDB->fieldID == 'auto_page' ) {
+            if ($moduleDB->fieldID == 'auto_page') {
                 $modArr['value'] = $objPage->alias;
             }
 
@@ -110,16 +122,13 @@ class ModuleListView extends Module
 
         }
 
-        if(!empty( $taxFilter ))
-        {
-            $fieldsArr = $this->setFilterValues( $taxFilter, $fieldsArr );
+        if (!empty($taxFilter)) {
+            $fieldsArr = $this->setFilterValues($taxFilter, $fieldsArr);
         }
 
         $qStr = '';
-        foreach( $fieldsArr as $field )
-        {
-            if( $field['enable'] )
-            {
+        foreach ($fieldsArr as $field) {
+            if ($field['enable']) {
                 switch ($field['type']) {
 
                     case 'simple_choice':
@@ -144,33 +153,23 @@ class ModuleListView extends Module
             }
         }
 
-        //var_dump($qStr);
-        //exit;
 
-        /*
-        global $objPage;
+        // get list view
+        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+        $addDetailPage = $wrapperDB['addDetailPage'];
+        $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
+        $qOrderByStr = $this->getOrderBy();
+        $qProtectedStr = ' AND published = "1"';
 
-        $modeFields = deserialize($this->f_display_mode);
-        $tablename = $this->f_select_module;
-        $wrapperID = $this->f_select_wrapper;
-        $orderBy = mb_strtoupper($this->f_orderby, 'UTF-8');
-        $sortingFields = deserialize($this->f_sorting_fields);
-
-        //  set default sorting field title
-        if (!is_array($sortingFields) || count($sortingFields) < 1) {
-            $sortingFields = array('title');
+        // if preview mode
+        if (HelperModel::previewMode()) {
+            $qProtectedStr = '';
         }
 
-        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ?')->execute($tablename);
+        // all items in list
+        $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ' . $wrapperID . $qProtectedStr . $qStr . $qOrderByStr)->query();
 
-        // no module selected
-        if ($moduleDB->count() <= 0) {
-            return;
-        }
-
-        $filterCollection = array();
-        $input = array();
-
+        // image size
         $imgSize = false;
 
         // Override the default image size
@@ -182,197 +181,20 @@ class ModuleListView extends Module
             }
         }
 
-        // set format
-        while ($moduleDB->next()) {
-
-            if ($moduleDB->fieldID == 'orderBy' || $moduleDB->fieldID == 'sorting_fields' || $moduleDB->fieldID == 'pagination') {
-                continue;
-            }
-
-            $filterCollection[$moduleDB->fieldID] = array(
-                'type' => $moduleDB->type,
-                'fieldID' => $moduleDB->fieldID,
-                'title' => $moduleDB->title,
-                'isInteger' => $moduleDB->isInteger,
-                'negate' => $moduleDB->negate,
-                'addTime' => $moduleDB->addTime,
-                'value' => '',
-                'overwrite' => null,
-                'active' => null,
-                'id' => $moduleDB->id,
-            );
-
-
-        }
-
-
-        //set default mode
-        if (is_array($modeFields)) {
-
-            foreach ($modeFields as $modeField) {
-
-                $filterCollection[$modeField['fieldID']]['value'] = ($modeField['set']['filterValue'] ? $modeField['set']['filterValue'] : '');
-                $filterCollection[$modeField['fieldID']]['operator'] = ($modeField['set']['selected_operator'] ? $modeField['set']['selected_operator'] : '');
-                $filterCollection[$modeField['fieldID']]['overwrite'] = $modeField['set']['overwrite'];
-                $filterCollection[$modeField['fieldID']]['active'] = $modeField['active'];
-
-            }
-
-        }
-
-        //set get values
-        foreach ($filterCollection as $filter) {
-
-            $get = Input::get($filter['fieldID']);
-
-            if ($filter['fieldID'] == 'auto_page') {
-                $get = $objPage->alias;
-            }
-
-            $get_operator = Input::get($filter['fieldID'] . '_int');
-
-            if (isset($get) && $get != '' || isset($get_operator) && $get_operator != '') {
-
-                if ($filter['active']) {
-
-                    if ($filter['type'] == 'multi_choice' && !is_array($get)) {
-
-                        $get = explode(',', $get);
-                    }
-
-                    $filter['value'] = ($filter['overwrite'] ? $filter['value'] : $get);
-                    $filter['operator'] = ($filter['overwrite'] ? $filter['operator'] : $get_operator);
-
-
-                } else {
-
-                    $filter['value'] = $get;
-                    $filter['operator'] = $get_operator;
-
-                }
-
-            }
-
-            if ($get || $filter['active']) {
-
-                $input[] = $filter;
-
-            }
-
-        }
-
-        // create queries
-        $sqlQueriesArr = [];
-        $searchQuery = '';
-        foreach ($input as $query) {
-
-            switch ($query['type']) {
-
-                case 'simple_choice':
-
-                    $sqlQueriesArr[] = $this->simpleChoiceQuery($query);
-                    break;
-
-                case 'date_field':
-
-                    $sqlQueriesArr[] = $this->dateFieldQuery($query);
-                    break;
-
-                case 'search_field':
-
-                    $sqlQueriesArr[] = $this->searchFieldQuery($query);
-                    break;
-
-                case 'multi_choice':
-
-                    $sqlQueriesArr[] = $this->multiChoiceQuery($query);
-                    break;
-
-                case 'fulltext_search':
-                    $searchQuery = $query['value'];
-                    break;
-            }
-
-        }
-
-        $sqlQueriesStr = implode('', $sqlQueriesArr);
-        $sortingFields = implode(',', $sortingFields);
-
-        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
-        $addDetailPage = $wrapperDB['addDetailPage'];
-        $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
-
-        //order by and sorting
-        $get_orderBy = Input::get('orderBy');
-        $allowed_orderBy_items = array('asc', 'desc', 'rand', 'ACS', 'DESC', 'RAND');
-        if ($get_orderBy && is_array($get_orderBy) && !is_string($get_orderBy)) {
-            $get_orderBy = $get_orderBy[0];
-        }
-        if ($get_orderBy && !is_array($get_orderBy) && is_string($get_orderBy) && $get_orderBy != '' && $get_orderBy != ' ' && in_array($get_orderBy, $allowed_orderBy_items)) {
-            $orderBy = mb_strtoupper($get_orderBy, 'UTF-8');;
-        }
-
-        $get_sorting_fields = Input::get('sorting_fields');
-        if ($get_sorting_fields && is_array($get_sorting_fields)) {
-            $get_sorting_fields = $get_sorting_fields[0];
-        }
-        if ($get_sorting_fields && $get_sorting_fields != '' && $get_sorting_fields != ' ' && $this->Database->fieldExists($get_sorting_fields, $tablename)) {
-            $sortingFields = $get_sorting_fields;
-        }
-
-        $orderByQueryStr = $sortingFields . ' ' . $orderBy;
-        if ($orderBy == 'RAND') {
-            $orderByQueryStr = 'RAND()';
-        }
-
-        $protectedStr = ' AND published = "1"';
-        if ($this->previewMode()) {
-            $protectedStr = ' ';
-        }
-
-        $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data
-        WHERE pid = ' . $wrapperID . $protectedStr . $sqlQueriesStr . '
-        ORDER BY ' . $orderByQueryStr . '')->query();
-
-        $strResults = '';
-        $objTemplate = new \FrontendTemplate($this->f_list_template);
-
         $itemsArr = array();
-
-
-        $foundArr = array();
-
-        if ($searchQuery != '' && $addDetailPage == '1') {
-
-
-            $searchDB = $this->powerSearch($searchQuery, $tablename, $wrapperID);
-
-            if ($searchDB && $searchDB->count() > 0) {
-                while ($searchDB->next()) {
-                    $foundArr[$searchDB->id] = $searchDB->alias;
-                }
-            }
-
-        }
-
         while ($listDB->next()) {
 
-            // Gast und Gruppenrechte
-            if ($this->sortOutProtected($listDB->row())) {
+            if (HelperModel::sortOutProtected($listDB->row(), $this->User->groups)) {
                 continue;
             }
 
-            // Von - Bis
-            if (!$this->outSideScope($listDB->start, $listDB->stop)) {
+            if (!HelperModel::outSideScope($listDB->start, $listDB->stop)) {
                 continue;
             }
 
             $imagePath = $this->generateSingeSrc($listDB);
-
             if ($imagePath) {
-
                 $listDB->singleSRC = $imagePath;
-
             }
 
             if ($imgSize) {
@@ -399,77 +221,41 @@ class ModuleListView extends Module
                 $listDB->href = $this->generateFrontendUrl($jumpToDB);
             }
 
-
-            if ($searchQuery != '') {
-
-                if (!$foundArr[$listDB->id]) {
-                    continue;
-                }
-            }
-
             $itemsArr[] = $listDB->row();
 
         }
 
-
-        // pagination
+        //pagination
         $total = count($itemsArr);
-        $limit = $total;
-        $offset = 0;
+        $paginationStr = $this->createPagination($total);
+        $paginationStr = $paginationStr ? $paginationStr : '';
+        $this->Template->pagination = $paginationStr;
 
-        $get_pagination = Input::get('pagination');
 
-        if (!is_null($get_pagination) && is_array($get_pagination)) {
-            $get_pagination = $get_pagination[0];
-        }
-        if (!is_null($get_pagination) && !is_array($get_pagination) && $get_pagination != '' && $get_pagination != ' ') {
-            $this->f_perPage = (int)$get_pagination;
-        }
+        $strResults = '';
+        $objTemplate = new FrontendTemplate($this->f_list_template);
 
-        if ($this->f_limit_page > 0) {
-            $total = min($this->f_limit_page, $total);
-            $limit = $total;
-        }
+        for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
-        if ($this->f_perPage > 0) {
-            $id = 'page_e' . $this->id;
-            $page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
-
-            if ($page < 1 || $page > max(ceil($total / $this->f_perPage), 1)) {
-                $objHandler = new $GLOBALS['TL_PTY']['error_404']();
-                $objHandler->generate($objPage->id);
-            }
-
-            $offset = ($page - 1) * $this->f_perPage;
-            $limit = min($this->f_perPage + $offset, $total);
-
-            $objPagination = new Pagination($total, $this->f_perPage, \Config::get('maxPaginationLinks'), $id);
-            $this->Template->pagination = $objPagination->generate("\n  ");
-
-        }
-
-        //parse
-        for ($i = $offset; $i < $limit; $i++) {
-
-            $arrElements = array();
             $item = $itemsArr[$i];
 
-            //get css and id
+            //set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
             $item['itemCSS'] = ' ' . $item['cssID'][1];
 
+            // set date format
             $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
             $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
 
-            //add more
+            //set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 
-            // CTE Elemente
+
+            // get list view ce
             $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $tablename . '_data', array('fview' => 'list'));
-
+            $arrElements = array();
             if ($objCte !== null) {
-
                 $intCount = 0;
                 $intLast = $objCte->count() - 1;
 
@@ -492,41 +278,121 @@ class ModuleListView extends Module
                     ++$intCount;
                 }
             }
+            $item['teaser'] = $arrElements;
 
+            // set odd and even classes
             $item['cssClass'] = $i % 2 ? 'even' : 'odd';
+
+            //set data
+            $objTemplate->setData($item);
+
+            // set last first classes
             if ($i == 0) {
                 $item['cssClass'] .= ' first';
             }
-            if ($i == ($limit - 1)) {
+            if ($i == ($this->listViewLimit - 1)) {
                 $item['cssClass'] .= ' last';
             }
-            $item['teaser'] = $arrElements;
-            $objTemplate->setData($item);
 
-            //enclosure
+            // set enclosure
             $objTemplate->enclosure = array();
-
             if ($item['addEnclosure']) {
 
                 $this->addEnclosuresToTemplate($objTemplate, $item);
             }
 
-
-            //add image
+            //set image
             if ($item['addImage']) {
                 $this->addImageToTemplate($objTemplate, $item);
             }
-
 
             $strResults .= $objTemplate->parse();
 
         }
 
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
-        */
 
     }
 
+    /**
+     * @return string
+     */
+    public function getOrderBy()
+    {
+
+        $orderByFromListView = mb_strtoupper($this->f_orderby, 'UTF-8');
+        $orderBy = Input::get('orderBy') ? Input::get('orderBy') : $orderByFromListView;
+        $isValue = QueryModel::isValue($orderBy);
+        $allowedOrderByItems = array('asc', 'desc', 'rand', 'ACS', 'DESC', 'RAND');
+
+        if ($isValue && is_array($orderBy)) {
+
+            $orderBy = $orderBy[0];
+        }
+
+        if ($isValue && in_array($orderBy, $allowedOrderByItems)) {
+            $orderBy = mb_strtoupper($orderBy, 'UTF-8');
+        }
+
+        if (!$orderBy) {
+            $orderBy = 'DESC';
+        }
+
+        $sorting = $this->getSortingField();
+        $qOrderByStr = ' ORDER BY ' . $sorting . ' ' . $orderBy;
+
+        if ($orderBy == 'RAND') {
+            $qOrderByStr = ' ORDER BY RAND()';
+        }
+
+        return $qOrderByStr;
+
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getSortingField()
+    {
+
+        $sortingFromViewList = deserialize($this->f_sorting_fields) ? deserialize($this->f_sorting_fields) : array('id');
+        $sortingFromGET = Input::get('sorting_fields');
+        $isValue = QueryModel::isValue($sortingFromGET);
+        $sortingFields = array();
+
+        if ($isValue) {
+            if (is_array($sortingFromGET)) {
+                $sortingFields = $sortingFromGET;
+            }
+
+            if (is_string($sortingFromGET)) {
+                $sortingFields[] = $sortingFromGET;
+            }
+
+            $temp = array();
+
+            foreach ($sortingFields as $field) {
+                if ($this->Database->fieldExists($field, $this->tablename)) {
+                    $temp[] = $field;
+                }
+            }
+
+            $sortingFields = $temp;
+
+        }
+
+
+        if (count($sortingFields) > 0) {
+            return implode(',', $sortingFields);
+        }
+
+        if (count($sortingFromViewList) > 0 && is_array($sortingFromViewList)) {
+            return implode(',', $sortingFromViewList);
+        }
+
+        return 'id';
+
+    }
 
     /**
      * @param $filterValues
@@ -536,29 +402,25 @@ class ModuleListView extends Module
     public function setFilterValues($filterValues, $return)
     {
 
-        foreach($filterValues as $filterValue)
-        {
+        foreach ($filterValues as $filterValue) {
             $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
             $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
 
             $value = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
 
-            if ( !$value && $filterValue['active'] )
-            {
-                $return[$filterValue['fieldID']]['value'] = ( $filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '' );
-                $return[$filterValue['fieldID']]['operator'] = ( $filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '' );
+            if (!$value && $filterValue['active']) {
+                $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
+                $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
             }
 
-            if( $filterValue['set']['overwrite'] )
-            {
-                $return[$filterValue['fieldID']]['value'] = ( $filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '' );
-                $return[$filterValue['fieldID']]['operator'] = ( $filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '' );
+            if ($filterValue['set']['overwrite']) {
+                $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
+                $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
             }
 
             $val = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
 
-            if( $val )
-            {
+            if ($val) {
                 $return[$filterValue['fieldID']]['enable'] = true;
             }
 
@@ -577,17 +439,15 @@ class ModuleListView extends Module
      */
     public function getFilter($fieldID, $type)
     {
-        $getFilter = Input::get( $fieldID ) ? Input::get( $fieldID ) : '';
+        $getFilter = Input::get($fieldID) ? Input::get($fieldID) : '';
 
-        if( $type == 'toggle_field' && !$getFilter )
-        {
+        if ($type == 'toggle_field' && !$getFilter) {
             $getFilter = '0';
         }
 
-        $getOperator = Input::get( $fieldID . '_int' ) ? Input::get( $fieldID . '_int' ) : '';
+        $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
 
-        if( $type == 'multi_choice' && !is_array($getFilter))
-        {
+        if ($type == 'multi_choice' && !is_array($getFilter)) {
             $getFilter = explode(',', $getFilter);
         }
 
@@ -602,17 +462,58 @@ class ModuleListView extends Module
     /**
      * search
      */
+    /*
     public function sortByRelevance($a, $b)
     {
         return $a['relevance'] <= $b['relevance'];
     }
+    */
 
-    private function previewMode()
+    /**
+     * @param $items
+     * @return null|string
+     */
+    public function createPagination($total = 0)
     {
-        if (BE_USER_LOGGED_IN) {
-            return true;
+        global $objPage;
+
+        $this->listViewLimit = $total;
+
+        $getPagination = Input::get('pagination');
+        $isValue = QueryModel::isValue($getPagination);
+
+        if ($isValue) {
+            if (is_array($getPagination)) {
+                $this->f_perPage = $getPagination[0];
+            }
+            if (is_string($getPagination)) {
+                $this->f_perPage = $getPagination;
+            }
         }
-        return false;
+
+        if ($this->f_limit_page > 0) {
+
+            $total = min($this->f_limit_page, $total);
+            $this->listViewLimit = $total;
+        }
+
+        if ($this->f_perPage > 0) {
+            $id = 'page_e' . $this->id;
+            $page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
+
+            if ($page < 1 || $page > max(ceil($total / $this->f_perPage), 1)) {
+                $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+                $objHandler->generate($objPage->id);
+            }
+
+            $this->listViewOffset = ($page - 1) * $this->f_perPage;
+            $this->listViewLimit = min($this->f_perPage + $this->listViewOffset, $total);
+            $objPagination = new Pagination($total, $this->f_perPage, Config::get('maxPaginationLinks'), $id);
+            return $objPagination->generate("\n  ");
+        }
+
+        return null;
+
     }
 
     /**
@@ -630,12 +531,9 @@ class ModuleListView extends Module
                 return $objModel->path;
 
             }
-
-            return;
-
         }
 
-        return;
+        return null;
 
     }
 
@@ -650,147 +548,12 @@ class ModuleListView extends Module
     }
 
     /**
-     * @param $data
-     * @return string
-     */
-    /*
-    private function simpleChoiceQuery($data)
-    {
-
-        if (!isset($data['value']) && ($data['value'] == ' ' || $data['value'] == '')) {
-            return '';
-        }
-
-        $operator = '=';
-
-        if ($data['negate'] == '1') {
-            $operator = '!=';
-        }
-
-        return ' AND ' . $data['fieldID'] . ' ' . $operator . ' "' . $data['value'] . '"';
-    }
-    */
-
-    /**
-     * @param $data
-     * @return string
-     */
-    /*
-    private function multiChoiceQuery($data)
-    {
-
-        $likeOperator = 'LIKE';
-
-        if ($data['negate'] == '1') {
-            $likeOperator = 'NOT LIKE';
-        }
-
-        $sql = [];
-        $operator = "AND (";
-        $values = $data['value'];
-
-        if (is_string($values)) {
-            $values = explode(',', $values);
-        }
-
-        if (is_array($values)) {
-
-            if (count($values) < 2 && (!$values[0] || $values[0] == '' || $values[0] == ' ')) {
-                return '';
-            }
-
-            if (count($values) <= 1) {
-                $operator = "AND";
-            }
-
-            foreach ($values as $key => $value) {
-                if ($key > 0) {
-                    $operator = "OR";
-                }
-
-                $sql[] = ' ' . $operator . ' ' . $data['fieldID'] . ' ' . $likeOperator . ' "%' . $value . '%"';
-            }
-
-            $sql[] = (count($values) <= 1 ? '' : ')');
-
-        }
-
-        return implode('', $sql);
-    }
-    */
-
-    /**
-     * @param $data
-     * @return string
-     */
-    /*
-    private function dateFieldQuery($data)
-    {
-        global $objPage;
-
-        if (!isset($data['value']) && ($data['value'] == ' ' || $data['value'] == '')) {
-            return '';
-        }
-
-        $format = $objPage->dateFormat;
-
-        if ($data['addTime']) {
-            $format = $objPage->datimFormat;
-        }
-
-        $unix = strtotime($data['value']);
-
-        if ($unix == false) {
-            return '';
-        }
-
-        $v = $data['value'] == '' ? strtotime(date($format)) : $unix;
-        $operator = $this->getOperator($data['operator']);
-
-        return ' AND ' . $data['fieldID'] . ' ' . $operator . ' ' . $v . '';
-
-    }
-    */
-
-    /**
-     * @param $data
-     * @return string
-     */
-    /*
-    private function searchFieldQuery($data)
-    {
-
-        if (!isset($data['value']) && ($data['value'] == ' ' || $data['value'] == '')) {
-            return '';
-        }
-
-        $operator = 'LIKE';
-        $searchValue = $data['value'];
-        $isNum = false;
-
-        if ($data['isInteger'] == '1' && $data['operator'] != '' && is_numeric($searchValue)) {
-
-            $operator = $this->getOperator($data['operator']);
-            $searchValue = (int)$searchValue;
-            $isNum = true;
-        }
-
-        if (!$isNum) {
-            $likeValue = '"%' . $searchValue . '%"';
-            return ' AND ' . $data['fieldID'] . ' LIKE  ' . $likeValue . ' OR ' . $data['fieldID'] . ' = "' . $searchValue . '"';
-        }
-
-        return ' AND ' . $data['fieldID'] . ' ' . $operator . ' ' . $searchValue . '';
-
-    }
-    */
-
-    /**
      * @param $searchStr
      * @param $tablename
      * @param $wrapperID
      * @return \Database\Result|object
      */
+    /*
     public function powerSearch($searchStr, $tablename, $wrapperID)
     {
 
@@ -809,90 +572,6 @@ class ModuleListView extends Module
         return $this->Database->prepare($sqlStr)->execute($wrapperID, "%$searchStr%", "%$searchStr%", $searchStr, $searchStr, "$searchStr %", "%$searchStr", "$searchStr%", "%$searchStr%");
 
     }
-
-    /**
-     * @param $start
-     * @param $stop
-     * @return bool
-     */
-    public function outSideScope($start, $stop)
-    {
-        if ($start != '' || $stop != '') {
-            $currentTime = (int)date('U');
-
-            if ($currentTime < (int)$start) {
-                return false;
-            }
-
-            if ($currentTime > (int)$stop && (int)$stop != 0) {
-                return false;
-            }
-
-
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $item
-     * @return bool
-     */
-    protected function sortOutProtected($item)
-    {
-
-        if (BE_USER_LOGGED_IN) {
-
-            return false;
-
-        }
-
-        if (FE_USER_LOGGED_IN && $item['guests'] == '1') {
-
-            return true;
-
-        }
-
-        if (FE_USER_LOGGED_IN && $item['protected'] == '1') {
-
-            $groups = deserialize($item['groups']);
-
-            if (!is_array($groups) || empty($groups) || count(array_intersect($groups, $this->User->groups)) < 1) {
-                return true;
-            }
-
-        }
-
-        return false;
-    }
-
-    /*
-    protected function getOperator($str)
-    {
-
-        $return = '=';
-
-        switch ($str) {
-
-            case 'gte':
-                $return = '>=';
-                break;
-
-            case 'gt':
-                $return = '>';
-                break;
-
-            case 'lt':
-                $return = '<';
-                break;
-
-            case 'lte':
-                $return = '<=';
-                break;
-        }
-
-        return $return;
-
-    }
     */
+
 }

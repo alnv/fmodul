@@ -2,7 +2,6 @@
 
 \Contao\ClassLoader::addNamespace('FModule');
 
-//$pathToFiles = version_compare(VERSION, '4.0', '>=') ? 'vendor/fmodule/fmodule/' : 'system/modules/fmodule/';
 $pathToFiles = 'system/modules/fmodule/';
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
 {
@@ -30,12 +29,12 @@ ClassLoader::addClasses(array
     'FModule\ContentModelExtend' => $pathToFiles.'src/Resources/contao/model/ContentModelExtend.php',
     'FModule\FModule' => $pathToFiles.'src/Resources/contao/classes/FModule.php',
     'FModule\QueryModel' => $pathToFiles.'src/Resources/contao/models/QueryModel.php',
+    'FModule\HelperModel' => $pathToFiles.'src/Resources/contao/models/HelperModel.php',
 ));
 
 /**
  * Register the templates
  */
-//$pathToTemplates =  version_compare(VERSION, '4.0', '>=') ? $pathToFiles.'src/Resources/contao/templates' : $pathToFiles.'templates';
 $pathToTemplates = $pathToFiles.'templates';
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
 {

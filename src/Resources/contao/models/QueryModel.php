@@ -19,6 +19,7 @@ use Contao\Model;
  */
 class QueryModel
 {
+
     /**
      * @param $query
      * @return string
@@ -34,31 +35,26 @@ class QueryModel
      * @param $type
      * @return bool
      */
-    static public function isValue($value, $type)
+    static public function isValue($value, $type = 'undefined')
     {
 
-        if( $type == 'toggle_field' && $value == '0')
-        {
+        if ($type == 'toggle_field' && $value == '0') {
             return true;
         }
 
-        if( $value && is_string($value) )
-        {
+        if ($value && is_string($value)) {
             $str = trim($value);
 
-            if( $str )
-            {
+            if ($str) {
                 return true;
             }
 
         }
 
-        if( $value && is_array($value) )
-        {
+        if ($value && is_array($value)) {
             $arr = $value[0];
 
-            if( $arr )
-            {
+            if ($arr) {
                 return true;
             }
 
@@ -81,18 +77,14 @@ class QueryModel
         $bind = ' AND (';
         $sql = [];
 
-        if( is_array( $values ) )
-        {
+        if (is_array($values)) {
 
-            if ( count($values) == 1 )
-            {
+            if (count($values) == 1) {
                 $bind = 'AND';
             }
 
-            foreach( $values as $n => $value )
-            {
-                if( $n > 0)
-                {
+            foreach ($values as $n => $value) {
+                if ($n > 0) {
                     $bind = 'OR';
                 }
 
@@ -100,7 +92,7 @@ class QueryModel
 
             }
 
-            $sql[] = ( count($values) <= 1  ? '' : ' )' );
+            $sql[] = (count($values) <= 1 ? '' : ' )');
         }
 
         return implode('', $sql);
@@ -122,7 +114,7 @@ class QueryModel
             return '';
         }
 
-        $value = $query['value'] == '' ? strtotime( date($format) ) : $unix;
+        $value = $query['value'] == '' ? strtotime(date($format)) : $unix;
         $bind = static::getOperator($query['operator']);
 
         return ' AND ' . $query['fieldID'] . ' ' . $bind . ' ' . $value . '';
@@ -141,7 +133,7 @@ class QueryModel
 
         if ($query['isInteger'] == '1' && $query['operator'] != '' && is_numeric($searchValue)) {
 
-            $bind = static::getOperator( $query['operator'] );
+            $bind = static::getOperator($query['operator']);
             $searchValue = (int)$searchValue;
             $isNum = true;
         }
@@ -163,7 +155,7 @@ class QueryModel
     static public function toggleFieldQuery($query)
     {
         $bind = $query['value'] ? '=' : '!=';
-        return ' AND ' . $query['fieldID'] . ' '.$bind.' "1"';
+        return ' AND ' . $query['fieldID'] . ' ' . $bind . ' "1"';
     }
 
     /**

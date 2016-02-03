@@ -86,7 +86,7 @@ class ModuleListView extends Module
         $taxFilter = is_array($arrTaxFilter) ? $arrTaxFilter : array();
         $tablename = $this->f_select_module;
         $wrapperID = $this->f_select_wrapper;
-        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination', 'auto_item');
+        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field', 'widget');
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $fieldsArr = array();

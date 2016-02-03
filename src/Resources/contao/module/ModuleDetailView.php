@@ -11,6 +11,7 @@
  * @copyright 2015 Alexander Naumov
  */
 
+use Contao\FrontendTemplate;
 use Contao\Input;
 
 /**
@@ -28,9 +29,7 @@ class ModuleDetailView extends \Contao\Module
      */
     public function generate()
     {
-        /**
-         *
-         */
+
         if (TL_MODE == 'BE') {
 
             $objTemplate = new \BackendTemplate('be_wildcard');
@@ -42,18 +41,12 @@ class ModuleDetailView extends \Contao\Module
 
         $this->import('FrontendUser', 'User');
 
-        /**
-         *
-         */
         if (!isset($_GET['item']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
             \Input::setGet('item', \Input::get('auto_item'));
 
         }
 
-        /**
-         *
-         */
         return parent::generate();
 
     }
@@ -70,38 +63,37 @@ class ModuleDetailView extends \Contao\Module
         $detailTemplate = $this->f_detail_template;
 
         $listModuleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ?')->execute($listID)->row();
+
         $tablename = $listModuleDB['f_select_module'];
         $wrapperID = $listModuleDB['f_select_wrapper'];
-        $alias = Input::get('item');
 
-        if (!$alias && $alias == '') {
+        $alias = Input::get('item');
+        $isAlias = QueryModel::isValue($alias);
+
+        if (!$isAlias) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
             exit;
         }
 
-
         $strResult = '';
-        $objTemplate = new \FrontendTemplate($detailTemplate);
+        $objTemplate = new FrontendTemplate($detailTemplate);
 
-        $protectedStr = ' AND published = "1"';
-        if( $this->previewMode() )
-        {
-            $protectedStr = ' ';
+        $qProtectedStr = ' AND published = "1"';
+        if (HelperModel::previewMode()) {
+            $qProtectedStr = '';
         }
 
-        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? '.$protectedStr.'')
-        ->execute($wrapperID, $alias)->row();
+
+        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? '.$qProtectedStr.'')->execute($wrapperID, $alias)->row();
         $wrapperDB = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($wrapperID)->row();
 
-        //throw 404
         if ( count($itemDB) < 1) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
             exit;
         }
-
-        if ($this->sortOutProtected($itemDB)) {
+        if (HelperModel::sortOutProtected($itemDB, $this->User->groups)) {
             $objHandler = new $GLOBALS['TL_PTY']['error_403']();
             $objHandler->generate($objPage->id);
             exit;
@@ -109,11 +101,8 @@ class ModuleDetailView extends \Contao\Module
 
         //image
         $imagePath = $this->generateSingeSrc($itemDB);
-
         if ($imagePath) {
-
             $itemDB['singleSRC'] = $imagePath;
-
         }
 
         // size
@@ -178,12 +167,11 @@ class ModuleDetailView extends \Contao\Module
         }
 
 
-        $seoDescription = Input::stripSlashes(strip_tags($itemDB['description']));
-
+        $seoDescription = strip_tags($itemDB['description']);
         $objPage->description = $seoDescription;
         $objPage->pageTitle = $itemDB['title'];
-
         $authorDB = null;
+
         if($itemDB['author'])
         {
             $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($itemDB['author'])->row();
@@ -192,7 +180,6 @@ class ModuleDetailView extends \Contao\Module
         $itemDB['teaser'] = $teaser;
         $itemDB['detail'] = $detail;
         $itemDB['author'] = $authorDB;
-
         $itemDB['date'] = $itemDB['date'] ? date($objPage->dateFormat, $itemDB['date']) : '';
         $itemDB['time'] = $itemDB['time'] ? date($objPage->timeFormat, $itemDB['time']) : '';
 
@@ -203,7 +190,6 @@ class ModuleDetailView extends \Contao\Module
 
         if ( $itemDB['addEnclosure'] )
         {
-
             $this->addEnclosuresToTemplate($objTemplate, $itemDB);
         }
 
@@ -213,9 +199,7 @@ class ModuleDetailView extends \Contao\Module
             $this->addImageToTemplate($objTemplate, $itemDB);
         }
 
-
         $strResult .= $objTemplate->parse();
-
         $this->Template->result = $strResult;
 
         //allow comments
@@ -224,7 +208,6 @@ class ModuleDetailView extends \Contao\Module
         {
             $this->import('Comments');
             $arrNotifies = array();
-
             if( $wrapperDB['notify'] != 'notify_author' )
             {
                 $arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
@@ -239,7 +222,6 @@ class ModuleDetailView extends \Contao\Module
             }
 
             $objConfig = new \stdClass();
-
             $objConfig->perPage = $wrapperDB['perPage'];
             $objConfig->order = $wrapperDB['sortOrder'];
             $objConfig->template = $this->com_template;
@@ -247,7 +229,6 @@ class ModuleDetailView extends \Contao\Module
             $objConfig->disableCaptcha = $wrapperDB['disableCaptcha'];
             $objConfig->bbcode = $wrapperDB['bbcode'];
             $objConfig->moderate = $wrapperDB['moderate'];
-
             $this->Comments->addCommentsToTemplate($this->Template, $objConfig, $tablename.'_data', $itemDB['id'], $arrNotifies);
 
         }
@@ -258,6 +239,7 @@ class ModuleDetailView extends \Contao\Module
      * @param $item
      * @return bool
      */
+    /*
     protected function sortOutProtected($item)
     {
 
@@ -287,15 +269,7 @@ class ModuleDetailView extends \Contao\Module
 
         return false;
     }
-
-    private function previewMode()
-    {
-        if(BE_USER_LOGGED_IN)
-        {
-            return true;
-        }
-        return false;
-    }
+    */
 
     /**
      * @param $row
@@ -312,12 +286,9 @@ class ModuleDetailView extends \Contao\Module
                 return $objModel->path;
 
             }
-
-            return;
-
         }
 
-        return;
+        return null;
 
     }
 

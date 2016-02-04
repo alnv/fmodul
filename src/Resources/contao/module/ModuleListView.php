@@ -87,10 +87,10 @@ class ModuleListView extends Module
         $tablename = $this->f_select_module;
         $wrapperID = $this->f_select_wrapper;
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
-        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field', 'widget');
+        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $fieldsArr = array();
-
+        $fieldWidgets = array();
         $this->tablename = $tablename;
 
         while ($moduleDB->next()) {
@@ -118,6 +118,16 @@ class ModuleListView extends Module
                 $modArr['value'] = $objPage->alias;
             }
 
+            // field
+            if($moduleDB->type == 'widget')
+            {
+                $fieldWidgets[$moduleDB->fieldID] = array(
+                    'fieldID' => $moduleDB->fieldID,
+                    'widgetType' => $moduleDB->widget_type,
+                    'widgetTemplate' => $moduleDB->widgetTemplate
+                );
+            }
+
             $fieldsArr[$moduleDB->fieldID] = $modArr;
 
         }
@@ -127,6 +137,7 @@ class ModuleListView extends Module
         }
 
         $qStr = '';
+        $qTextSearch = '';
         foreach ($fieldsArr as $field) {
             if ($field['enable']) {
                 switch ($field['type']) {
@@ -147,12 +158,20 @@ class ModuleListView extends Module
                         $qStr .= QueryModel::toggleFieldQuery($field);
                         break;
                     case 'fulltext_search':
-                        //
+                        $isValue = QueryModel::isValue($field['value']);
+                        if ($isValue) {
+                            $qTextSearch = $field['value'];
+                        }
                         break;
                 }
             }
         }
 
+        //get text search results
+        $textSearchResults = array();
+        if ($qTextSearch) {
+            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID);
+        }
 
         // get list view
         $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
@@ -221,6 +240,14 @@ class ModuleListView extends Module
                 $listDB->href = $this->generateFrontendUrl($jumpToDB);
             }
 
+            // check for textsearch
+            if ($qTextSearch) {
+                if (!$textSearchResults[$listDB->id]) {
+                    continue;
+                }
+            }
+
+            //
             $itemsArr[] = $listDB->row();
 
         }
@@ -282,6 +309,36 @@ class ModuleListView extends Module
 
             // set odd and even classes
             $item['cssClass'] = $i % 2 ? 'even' : 'odd';
+
+            //field
+            if(!empty($fieldWidgets))
+            {
+
+                $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+
+                foreach($fieldWidgets as $widget)
+                {
+                    $id = $widget['fieldID'];
+                    $tplName = $widget['widgetTemplate'];
+                    $type = $widget['widgetType'];
+                    $value = $item[$id];
+
+                    if( in_array( $type, $arrayAsValue ) )
+                    {
+                        $value = unserialize($value);
+                    }
+
+                    $objFieldTemplate = new FrontendTemplate($tplName);
+                    $objFieldTemplate->setData(array(
+                        'value' => $value,
+                        'type' => $type,
+                        'item' => $item
+                    ));
+
+                    $item[$id] = $objFieldTemplate->parse();
+                }
+
+            }
 
             //set data
             $objTemplate->setData($item);
@@ -460,16 +517,6 @@ class ModuleListView extends Module
     }
 
     /**
-     * search
-     */
-    /*
-    public function sortByRelevance($a, $b)
-    {
-        return $a['relevance'] <= $b['relevance'];
-    }
-    */
-
-    /**
      * @param $items
      * @return null|string
      */
@@ -547,31 +594,5 @@ class ModuleListView extends Module
         return $this->generateFrontendUrl($objTarget, '/' . $alias);
     }
 
-    /**
-     * @param $searchStr
-     * @param $tablename
-     * @param $wrapperID
-     * @return \Database\Result|object
-     */
-    /*
-    public function powerSearch($searchStr, $tablename, $wrapperID)
-    {
-
-        $sqlStr = "SELECT * FROM " . $tablename . "_data WHERE pid = ? ";
-        $sqlStr .= " AND description LIKE ? OR title LIKE ? ORDER BY "
-            . "CASE "
-            . "WHEN (LOCATE(?, title) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
-            . "WHEN title = ? THEN 1 "                // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
-            . "WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
-            . "WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
-            . "WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
-            . "WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
-            . "ELSE 6 "
-            . "END ";
-
-        return $this->Database->prepare($sqlStr)->execute($wrapperID, "%$searchStr%", "%$searchStr%", $searchStr, $searchStr, "$searchStr %", "%$searchStr", "$searchStr%", "%$searchStr%");
-
-    }
-    */
 
 }

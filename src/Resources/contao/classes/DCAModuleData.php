@@ -427,7 +427,7 @@ class DCAModuleData extends DCAHelper
         }
 
         // Update the database
-        $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", " . $field . "='" . ($blnVisible ? '1' : '0') . "' WHERE id=?")->execute($intId);
+        $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", " . $field . "='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
     }
 
@@ -907,7 +907,7 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'filter' => true,
                     'eval' => array('tl_class' => $evalCss, 'doNotCopy' => true),
-                    'sql' => "char(1) NOT NULL default '0'"
+                    'sql' => "char(1) NOT NULL default ''"
 
                 );
             }

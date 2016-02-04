@@ -166,7 +166,7 @@ class ModuleListView extends Module
                 }
             }
         }
-
+		
         //get text search results
         $textSearchResults = array();
         if ($qTextSearch) {
@@ -460,6 +460,7 @@ class ModuleListView extends Module
     {
 
         foreach ($filterValues as $filterValue) {
+            
             $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
             $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
 
@@ -497,11 +498,7 @@ class ModuleListView extends Module
     public function getFilter($fieldID, $type)
     {
         $getFilter = Input::get($fieldID) ? Input::get($fieldID) : '';
-
-        if ($type == 'toggle_field' && !$getFilter) {
-            $getFilter = '0';
-        }
-
+		
         $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
 
         if ($type == 'multi_choice' && !is_array($getFilter)) {

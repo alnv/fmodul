@@ -39,26 +39,22 @@ class QueryModel
     static public function isValue($value, $type = 'undefined')
     {
 
-        if ($type == 'toggle_field' && $value == '0') {
+        if ($type == 'toggle_field' && $value == '') {
             return true;
         }
 
         if ($value && is_string($value)) {
             $str = trim($value);
-
             if ($str) {
                 return true;
             }
-
         }
 
         if ($value && is_array($value)) {
             $arr = $value[0];
-
             if ($arr) {
                 return true;
             }
-
         }
 
         return false;
@@ -71,7 +67,6 @@ class QueryModel
      */
     static public function multiChoiceQuery($query)
     {
-
 
         $like = $query['negate'] ? 'NOT LIKE' : 'LIKE';
         $values = $query['value'];

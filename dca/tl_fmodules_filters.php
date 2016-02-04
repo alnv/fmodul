@@ -116,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
-        'widget' => '{type_legend},type;{setting_legend},widget_type,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;'
+        'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;'
     ),
 
     'fields' => array
@@ -223,8 +223,8 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
             'inputType' => 'select',
             'exclude' => true,
-            'options' => array('textarea.blank', 'textarea.tinyMCE', 'list.blank', 'list.keyValue'),
-            'eval' => array('mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+            'options' => array('text.blank', 'textarea.blank', 'textarea.tinyMCE', 'list.blank', 'list.keyValue', 'table.blank'),
+            'eval' => array('mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50', 'submitOnChange' => true),
             'load_callback' => array(array('tl_fmodules_filters', 'look_widget')),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
@@ -245,6 +245,17 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'text',
             'exclude' => true,
             'eval' => array('tl_class' => 'clr'),
+            'sql' => "varchar(255) NOT NULL default ''"
+
+        ),
+
+        'widgetTemplate' => array(
+
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'],
+            'inputType' => 'select',
+            'exclude' => true,
+            'options_callback' => array('tl_fmodules_filters', 'getWidgetTemplates'),
+            'eval' => array('tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
 
         ),
@@ -297,6 +308,23 @@ class tl_fmodules_filters extends \Contao\Backend
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getWidgetTemplates($dc)
+    {
+        $type = $dc->activeRecord->widget_type;
+
+        if($type)
+        {
+            $tplName = explode('.', $type)[0];
+            return $this->getTemplateGroup('fm_field_'.$tplName);
+        }
+
+        return array();
 
     }
 

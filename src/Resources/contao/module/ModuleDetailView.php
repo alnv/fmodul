@@ -236,42 +236,6 @@ class ModuleDetailView extends \Contao\Module
     }
 
     /**
-     * @param $item
-     * @return bool
-     */
-    /*
-    protected function sortOutProtected($item)
-    {
-
-        if (BE_USER_LOGGED_IN) {
-
-            return false;
-
-        }
-
-        if (FE_USER_LOGGED_IN && $item['guests'] == '1') {
-
-            return true;
-
-        }
-
-        if (FE_USER_LOGGED_IN && $item['protected'] == '1') {
-
-            $groups = deserialize($item['groups']);
-
-            if (!is_array($groups) || empty($groups) || count(array_intersect($groups, $this->User->groups)) < 1) {
-
-                return true;
-
-            }
-
-        }
-
-        return false;
-    }
-    */
-
-    /**
      * @param $row
      * @return bool|void
      */

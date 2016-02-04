@@ -197,6 +197,14 @@ class DCAHelper extends Backend
 			$return['inputType'] = 'keyValueWizard';
 		}
 
+		if($widgetArr[0] == 'table' && $widgetArr[1] == 'blank')
+		{
+			$return['inputType'] = 'tableWizard';
+			$return['eval']['allowHtml'] = true;
+			$return['eval']['doNotSaveEmpty'] = true;
+			$return['eval']['style'] = 'width:142px;height:66px';
+		}
+
 		return $return;
 
 	}

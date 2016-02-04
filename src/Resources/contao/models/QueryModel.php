@@ -11,6 +11,7 @@
  * @copyright 2015 Alexander Naumov
  */
 
+use Contao\Database;
 use Contao\Model;
 
 /**
@@ -156,6 +157,49 @@ class QueryModel
     {
         $bind = $query['value'] ? '=' : '!=';
         return ' AND ' . $query['fieldID'] . ' ' . $bind . ' "1"';
+    }
+
+    /**
+     * @param string $searchStr
+     * @param $tablename
+     * @param $wrapperID
+     * @return \Database\Result|object
+     */
+    static public function textSearch($searchStr = '', $tablename, $wrapperID)
+    {
+        $searchDB = Database::getInstance();
+        $sqlStr = "SELECT * FROM " . $tablename . "_data WHERE pid = ? ";
+        $sqlStr .= " AND description LIKE ? OR title LIKE ? ORDER BY "
+            . "CASE "
+            . "WHEN (LOCATE(?, title) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
+            . "WHEN title = ? THEN 1 "                // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+            . "WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+            . "WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
+            . "WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
+            . "WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+            . "ELSE 6 "
+            . "END ";
+        return $searchDB->prepare($sqlStr)->execute($wrapperID, "%$searchStr%", "%$searchStr%", $searchStr, $searchStr, "$searchStr %", "%$searchStr", "$searchStr%", "%$searchStr%");
+    }
+
+    /**
+     * @param string $searchStr
+     * @param $tablename
+     * @param $wrapperID
+     * @return array
+     */
+    static public function getTextSearchResult($searchStr = '', $tablename, $wrapperID)
+    {
+        $resultsDB = static::textSearch($searchStr, $tablename, $wrapperID);
+        $results = array();
+        if( $resultsDB != null && $resultsDB->count() > 0 )
+        {
+            while($resultsDB->next())
+            {
+                $results[$resultsDB->id] = $resultsDB->alias;
+            }
+        }
+        return $results;
     }
 
     /**

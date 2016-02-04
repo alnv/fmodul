@@ -1,0 +1,20 @@
+<div class="field_list">
+    <?php if($this->value && $this->type == 'list.blank'): ?>
+        <ul>
+            <?php foreach($this->value as $list): ?>
+                <?php if($list): ?>
+                    <li><?php echo $list; ?></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+    <?php if($this->value && $this->type == 'list.keyValue'): ?>
+        <ul>
+            <?php foreach($this->value as $value): ?>
+                <?php if(!empty($value)): ?>
+                    <li><span class="key"><?php echo $value['key']; ?></span> <span class="value"><?php echo $value['value']; ?></span></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+</div>

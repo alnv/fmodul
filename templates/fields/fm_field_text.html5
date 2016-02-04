@@ -1,0 +1,5 @@
+<div class="field_text">
+    <?php if($this->value): ?>
+        <p><?php echo $this->value; ?></p>
+    <?php endif; ?>
+</div>

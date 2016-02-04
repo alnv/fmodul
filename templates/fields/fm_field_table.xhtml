@@ -1,0 +1,13 @@
+<div class="field_table">
+    <?php if($this->value): ?>
+        <table>
+            <?php foreach ($this->value as $row): ?>
+                <tr>
+                    <?php foreach($row as $cell): ?>
+                        <td><?php echo $cell; ?></td>
+                    <?php endforeach;?>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    <?php endif; ?>
+</div>

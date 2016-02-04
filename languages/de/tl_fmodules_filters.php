@@ -32,6 +32,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['type'][1] = 'Wähle Sie einen Eingab
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'][0] = 'Feldname';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldID'][1] = 'Geben Sie Feldname ein.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][0] = 'Template';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][1] = 'Template auswählen.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][0] = 'Bezeichnung';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['title'][1] = 'Geben Sie eine Eingabfeld Bezeichnung im klartext ein für Redakteure und Besucher.';
 
@@ -51,14 +54,16 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Volltextsuche';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Schalter';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Umfang';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Widget';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Feld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Umschlag Anfang';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Umschlag Ende';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.blank'] = 'Textarea';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.tinyMCE'] = 'Textarea mit tinyMCE';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.blank'] = 'Liste';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.keyValue'] = 'Key Value Liste';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.blank'] = 'Normale Liste';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['list.keyValue'] = 'Erweiterte Liste';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['text.blank'] = 'Textfeld';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['table.blank'] = 'Tabelle';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahleneingabe aktivieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Erlaubt eine Zahlensuche.';

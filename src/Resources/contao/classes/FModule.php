@@ -324,6 +324,12 @@ class FModule extends Frontend
 
     }
 
+    /**
+     * @param $arrPids
+     * @param int $intLimit
+     * @param $tablename
+     * @return \Database\Result|null|object
+     */
     public function findPublishedByPids($arrPids, $intLimit=0, $tablename)
     {
 
@@ -503,14 +509,30 @@ class FModule extends Frontend
 
         $arrSplit = explode('::', $strTag);
 
+        // get url
         if (count($arrSplit) > 2 && $arrSplit[0] == 'fm_url') {
             return $this->getUrlFromItem($arrSplit);
+        }
+
+        // count items
+        if($arrSplit[0] == 'fm_count' && $arrSplit[1] )
+        {
+            $tablename = $arrSplit[1].'_data';
+
+            if($this->Database->tableExists($tablename))
+            {
+                return $this->Database->prepare('SELECT id FROM '.$tablename.'')->execute()->count();
+            }
+
+            return 0;
         }
 
         return false;
     }
 
-
+    /**
+     * @param $strName
+     */
     public function createUserGroupDCA($strName)
     {
         if ($strName == 'tl_user')
@@ -749,7 +771,13 @@ class FModule extends Frontend
 
     }
 
-
+    /**
+     * @param $tablename
+     * @param $fieldname
+     * @param $pid
+     * @param string $value
+     * @return array|void
+     */
     public function getAutoCompleteFromSearchField($tablename, $fieldname, $pid, $value = '')
     {
 

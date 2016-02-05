@@ -224,7 +224,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'select',
             'exclude' => true,
             'options' => array('text.blank', 'textarea.blank', 'textarea.tinyMCE', 'list.blank', 'list.keyValue', 'table.blank'),
-            'eval' => array('mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50', 'submitOnChange' => true),
+            'eval' => array('mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'),
             'load_callback' => array(array('tl_fmodules_filters', 'look_widget')),
             'sql' => "varchar(64) NOT NULL default ''"
         ),

@@ -61,12 +61,10 @@ class ModuleDetailView extends \Contao\Module
 
         $listID = $this->f_list_field;
         $detailTemplate = $this->f_detail_template;
-
         $listModuleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ?')->execute($listID)->row();
-
         $tablename = $listModuleDB['f_select_module'];
         $wrapperID = $listModuleDB['f_select_wrapper'];
-
+        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $alias = Input::get('item');
         $isAlias = QueryModel::isValue($alias);
 
@@ -74,6 +72,30 @@ class ModuleDetailView extends \Contao\Module
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
             exit;
+        }
+
+        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
+        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
+        $fieldWidgets = array();
+        $moduleArr = array();
+        while($moduleDB->next())
+        {
+            if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
+                continue;
+            }
+
+            // field
+            if($moduleDB->type == 'widget')
+            {
+                $fieldWidgets[$moduleDB->fieldID] = array(
+                    'fieldID' => $moduleDB->fieldID,
+                    'widgetType' => $moduleDB->widget_type,
+                    'widgetTemplate' => $moduleDB->widgetTemplate
+                );
+            }
+
+            $moduleArr[$moduleDB->fieldID] = $moduleDB->row();
+
         }
 
         $strResult = '';
@@ -182,6 +204,36 @@ class ModuleDetailView extends \Contao\Module
         $itemDB['author'] = $authorDB;
         $itemDB['date'] = $itemDB['date'] ? date($objPage->dateFormat, $itemDB['date']) : '';
         $itemDB['time'] = $itemDB['time'] ? date($objPage->timeFormat, $itemDB['time']) : '';
+        $itemDB['filter'] = $moduleArr;
+
+        if(!empty($fieldWidgets))
+        {
+
+            $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+
+            foreach($fieldWidgets as $widget)
+            {
+                $id = $widget['fieldID'];
+                $tplName = $widget['widgetTemplate'];
+                $type = $widget['widgetType'];
+                $value = $itemDB[$id];
+
+                if( in_array( $type, $arrayAsValue ) )
+                {
+                    $value = unserialize($value);
+                }
+
+                $objFieldTemplate = new FrontendTemplate($tplName);
+                $objFieldTemplate->setData(array(
+                    'value' => $value,
+                    'type' => $type,
+                    'item' => $itemDB
+                ));
+
+                $itemDB[$id] = $objFieldTemplate->parse();
+            }
+
+        }
 
         $objTemplate->setData($itemDB);
 

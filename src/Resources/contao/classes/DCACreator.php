@@ -233,20 +233,27 @@ class DCACreator
         ];
     }
 
-
+    /**
+     * @param $tablename
+     * @return bool|string
+     */
     public function getModuleIcon($tablename)
     {
 
-        $path = TL_ROOT . '/' . 'files/fmodule/assets/' . $tablename . '_icon.png';
+        $path = TL_ROOT . '/' . 'files/fmodule/assets/' . $tablename . '_icon';
         $file = Files::getInstance();
+        $allowedFormat = array('gif', 'png', 'svg');
 
         if (!file_exists(TL_ROOT . '/' . 'files/fmodule')) {
             $file->mkdir('files/fmodule');
             $file->mkdir('files/fmodule/assets');
         }
 
-        if (file_exists($path)) {
-            return (version_compare(VERSION, '4.0', '>=') ? '../files/fmodule/assets/' : 'files/fmodule/assets/') . $tablename . '_icon.png';
+        foreach($allowedFormat as $format)
+        {
+            if (file_exists($path.'.'.$format)) {
+                return (version_compare(VERSION, '4.0', '>=') ? '../files/fmodule/assets/' : 'files/fmodule/assets/') . $tablename . '_icon'.'.'.$format;
+            }
         }
 
         return false;

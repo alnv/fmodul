@@ -789,7 +789,7 @@ class FModule extends Frontend
 
         if (!$this->Database->tableExists($tablename)) {
 
-            return;
+            return null;
 
         }
 

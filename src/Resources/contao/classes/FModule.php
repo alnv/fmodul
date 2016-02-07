@@ -518,10 +518,12 @@ class FModule extends Frontend
         if($arrSplit[0] == 'fm_count' && $arrSplit[1] )
         {
             $tablename = $arrSplit[1].'_data';
-
+			
+			$qPid = $arrSplit[2] ? ' AND pid = "'.$arrSplit[2].'"' : '';
+			
             if($this->Database->tableExists($tablename))
             {
-                return $this->Database->prepare('SELECT id FROM '.$tablename.'')->execute()->count();
+                return $this->Database->prepare('SELECT id FROM '.$tablename.' WHERE published = "1"'.$qPid.'')->execute()->count();
             }
 
             return 0;

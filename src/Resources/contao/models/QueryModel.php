@@ -39,10 +39,6 @@ class QueryModel
     static public function isValue($value, $type = 'undefined')
     {
 
-        if ($type == 'toggle_field' && $value == '') {
-            return true;
-        }
-
         if ($value && is_string($value)) {
             $str = trim($value);
             if ($str) {

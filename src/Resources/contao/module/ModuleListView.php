@@ -139,9 +139,9 @@ class ModuleListView extends Module
         $qStr = '';
         $qTextSearch = '';
         foreach ($fieldsArr as $field) {
+
             if ($field['enable']) {
                 switch ($field['type']) {
-
                     case 'simple_choice':
                         $qStr .= QueryModel::simpleChoiceQuery($field);
                         break;
@@ -458,7 +458,6 @@ class ModuleListView extends Module
      */
     public function setFilterValues($filterValues, $return)
     {
-
         foreach ($filterValues as $filterValue) {
             
             $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
@@ -482,7 +481,6 @@ class ModuleListView extends Module
                 $return[$filterValue['fieldID']]['enable'] = true;
             }
 
-
         }
 
         return $return;
@@ -498,7 +496,6 @@ class ModuleListView extends Module
     public function getFilter($fieldID, $type)
     {
         $getFilter = Input::get($fieldID) ? Input::get($fieldID) : '';
-		
         $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
 
         if ($type == 'multi_choice' && !is_array($getFilter)) {

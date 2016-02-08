@@ -21,7 +21,6 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
 
         'dataContainer' => 'Table',
         'ptable' => 'tl_fmodules',
-        'enableVersioning' => true,
         'onload_callback' => array
         (
             array('tl_fmodules_filters', 'checkPermission'),
@@ -531,12 +530,12 @@ class tl_fmodules_filters extends \Contao\Backend
         if (!$exist) {
 
             if ($tempVal == '' || $values == $tempVal) {
-                //create
 
+                //create
                 //parent
                 \FModule\SqlData::insertColFilterInput($tname, $values);
-
                 //child
+
                 if ($type == 'search_field' || $type == 'widget') {
                     \FModule\SqlData::insertColSearchField($childTable, $values);
                 }
@@ -558,11 +557,10 @@ class tl_fmodules_filters extends \Contao\Backend
                 if ($this->Database->fieldExists($tempVal, $tname)) {
 
                     //rename
-
                     //parent
                     \FModule\SqlData::renameColFilterInput($tname, $tempVal, $values);
-
                     //child
+
                     if ($type == 'search_field' || $type == 'widget') {
                         \FModule\SqlData::renameColSearchField($childTable, $tempVal, $values);
                     }

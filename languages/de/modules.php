@@ -5,7 +5,7 @@ $GLOBALS['TL_LANG']['MOD']['fmodule'][0] = 'F Modul';
 $GLOBALS['TL_LANG']['MOD']['fmodule'][1] = 'Hier werden Ihre Backend Module verwaltet.';
 
 $GLOBALS['TL_LANG']['MOD']['fmodules'][0] = 'Erweiterungen';
-$GLOBALS['TL_LANG']['MOD']['fmodules'][1] = 'Auflistung aller Backend Module, die mit F Modul erstellt worden sind.';
+$GLOBALS['TL_LANG']['MOD']['fmodules'][1] = 'Auflistung aller Backend Module.';
 
 // FE
 $GLOBALS['TL_LANG']['FMD']['fmodule'] = 'F Modul';

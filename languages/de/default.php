@@ -20,7 +20,7 @@ $GLOBALS['TL_LANG']['MSC']['fm_operator_description'] = 'Operator auswählen';
 //filter fields widget
 $GLOBALS['TL_LANG']['MSC']['fm_ff_no_list'] = "Bitte wählen Sie eine Liste aus.";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_name'] = "Name";
-$GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] = "Element";
+$GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] = "Type";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_template'] = "Template";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS Klasse";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Aktivieren";

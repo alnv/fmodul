@@ -19,7 +19,6 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Dieses Eingabefeld dupl
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Eingabefeld Information';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Eingabefeld Informationsfenster öffnen';
 
-
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Eingabefeld Typ';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Einstellung';
@@ -53,10 +52,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Volltextsuche';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Schalter';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Umfang';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Feld';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Umschlag Anfang';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Umschlag Ende';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Umschlag';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Eingabefeld ohne Filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Palette öffnen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Palette schließen';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.blank'] = 'Textarea';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.tinyMCE'] = 'Textarea mit tinyMCE';
@@ -89,7 +88,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][0] = 'Eingabe negieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Wenn Sie diese Option aktivieren, werden gegenteilige Ergebnisse geliefert.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][0] = 'Zeitangabe hinzufügen';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][1] = 'Erlaubt die Zeitangabe.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][1] = 'Erlaubt das hinzufügen einer Zeitangabe.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'Es darf nur einen %s Attrbute geben!';

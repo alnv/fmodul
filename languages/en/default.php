@@ -1,13 +1,13 @@
 <?php
 
 //
-$GLOBALS['TL_LANG']['MSC']['fm_select'] = 'Value';
-$GLOBALS['TL_LANG']['MSC']['fm_criterion'] = 'Please enter your value';
-$GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'Ignore GET Parameters';
-$GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Fixing';
-$GLOBALS['TL_LANG']['MSC']['fm_activate_filter'] = 'Enable Filter';
+$GLOBALS['TL_LANG']['MSC']['fm_select'] = 'Enter input value ';
+$GLOBALS['TL_LANG']['MSC']['fm_criterion'] = 'Please enter your input value';
+$GLOBALS['TL_LANG']['MSC']['fm_ignore'] = 'Parameters will be ignored and input field will not appear in the form.';
+$GLOBALS['TL_LANG']['MSC']['fm_overwrite'] = 'Ignore form input value';
+$GLOBALS['TL_LANG']['MSC']['fm_activate_filter'] = 'Enable this filter.';
 
-$GLOBALS['TL_LANG']['MSC']['fm_highlight'] = 'Show items';
+$GLOBALS['TL_LANG']['MSC']['fm_highlight'] = 'Elements en/disable';
 $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'] = 'Show items';
 $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'] = 'Skip items';
 

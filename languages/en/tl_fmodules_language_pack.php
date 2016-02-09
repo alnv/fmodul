@@ -20,21 +20,18 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['enclosure_legend'
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['source_legend'] = 'Redirect target';
 
 //operations
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array(
-    array('Add channel', 'Add new channel'),
-    array('Add %s', 'Add new element'),
-);
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array( array('Add channel', 'Add new channel'), array('Add %s', 'Add new element'));
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'] = array('Edit item', 'Edit item');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'] = array('Channel item', 'Channel item');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Edit items', 'Edit items');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Delete item', 'Delete item');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'] = array('Edit item ID %s', 'Edit item ID %s.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'] = array('Channel item %s', 'Channel item ID %s.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Edit item ID %s', 'Edit item ID %s.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Delete item ID %s', 'Delete item ID %s');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] = "Do you really want to delete entry ID %s ?";
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Information', 'Information');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Duplicate', 'Duplicate');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Show the details of item ID %s', 'Show the details of item ID %s.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Copy item ID %s', 'Copy item ID %s.');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Edit detail view', 'Edit list view');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Edit list view', 'Edit list view');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Disable/Enable item', 'Disable/Enable item');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Disable/Enable item ID %s', 'Disable/Enable item ID %s.');
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][0] = 'Title';
@@ -122,8 +119,6 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fullsize'][1] = 'Open the full
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'][0] = 'Image caption';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'][1] = 'Here you can enter a short text that will be displayed below the image.';
-
-//
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'] = array('Author','Here you can change the author.');
 

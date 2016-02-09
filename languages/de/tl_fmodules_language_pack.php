@@ -25,16 +25,16 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array(
     array('%s anlegen', 'Neues Element anlegen.'),
 );
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'] = array('Datensatz bearbeiten', 'Diesen Datensatz bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'] = array('Wrapper bearbeiten', 'Diesen Wrapper bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Datensätze bearbeiten', 'Gehe zu den Datensätzen');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'] = array('Element mit der ID %s bearbeiten', 'Element mit der ID %s bearbeiten.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'] = array('Wrapper mit der ID %s bearbeiten', 'Wrapper mit der ID %s bearbeiten.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'] = array('Datensätze bearbeiten', 'Gehe zu den Datensätzen.');
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] = "Soll der Eintrag ID %s wirklich gelöscht werden?";
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Datensatz ID %s löschen', 'Datensatz ID %s löschen');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Information', 'Informationsfenster öffnen');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Duplizieren', 'Element Duplizieren');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Detailansicht bearbeiten', 'Die Detailansicht Elemente bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Listenansicht bearbeiten', 'Die Listenansicht (Teaser) Elemente bearbeiten');
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Datensatz einblenden/ausblenden', 'Diesen Datensatz einblenden/ausblenden');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'] = array('Element mit der ID %s löschen', 'Element mit der ID %s löschen.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'] = array('Details des Elements ID %s anzeigen', 'Details des Elements ID %s anzeigen.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'] = array('Element mit der ID %s Duplizieren', 'Element mit der ID %s Duplizieren.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'] = array('Detailansicht ID %s bearbeiten', 'Detailansicht ID %s bearbeiten.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'] = array('Listenansicht (Teaser) ID %s bearbeiten', 'Listenansicht (Teaser) ID %s bearbeiten.');
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'] = array('Element mit der ID %s einblenden/ausblenden', 'Element mit der ID %s einblenden/ausblenden.');
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][0] = 'Titel';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'][1] = 'Geben Sie den Titel ein. Dieser Titel wir auch für PageTitle verwendet';

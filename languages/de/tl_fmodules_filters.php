@@ -4,20 +4,20 @@
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['new'][0] = 'Eingabefeld anlegen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['new'][1] = 'Neues Eingabefeld anlegen';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][0] = 'Eingabefeld bearbeiten';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][1] = 'Dieses Eingabefeld bearbeiten';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][0] = 'Eingabefeld ID %s bearbeiten';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][1] = 'Eingabefeld ID %s bearbeiten.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][0] = 'Eingabefeld löschen';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][1] = 'Dieses Eingabefeld löschen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][0] = 'Eingabefeld mit der ID %s löschen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][1] = 'Eingabefeld mit der ID %s löschen.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][0] = 'Eingabefeld verschieben';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][1] = 'Dieses Eingabefeld verschieben';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][0] = 'Eingabefeld mit der ID %s verschieben';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][1] = 'Eingabefeld mit der ID %s verschieben.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][0] = 'Eingabefeld duplizieren';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Dieses Eingabefeld duplizieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][0] = 'Eingabefeld mit der ID %s duplizieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Eingabefeld mit der ID %s duplizieren.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Eingabefeld Information';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Eingabefeld Informationsfenster öffnen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Details des Eingabefeldes ID %s anzeigen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Details des Eingabefeldes ID %s anzeigen.';
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Eingabefeld Typ';

@@ -18,17 +18,20 @@ $GLOBALS['TL_LANG']['tl_fmodules_feed']['config_legend'] = 'Feed-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['new'][0] = 'Feed anlegen';
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['new'][1] = 'Neues Feed anlegen.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][0] = 'Feed bearbeiten';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][1] = 'Diesen Feed bearbeiten.';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][0] = 'Feed mit der ID %s bearbeiten';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][1] = 'Feed mit der ID %s bearbeiten.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][0] = 'Feed löschen';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][1] = 'Diesen Feed löschen.';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][0] = 'Feed mit der ID %s löschen';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][1] = 'Feed mit der ID %s löschen.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][0] = 'Feed Kopieren';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][1] = 'Diesen Feed Kopieren.';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][0] = 'Feed mit der ID %s Kopieren';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][1] = 'Feed mit der ID %s Kopieren.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][0] = 'Feed Information';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][1] = 'Feed Informationsfenster öffen.';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['edit'][0] = 'Feed mit der ID %s bearbeiten';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['edit'][1] = 'Feed mit der ID %s bearbeiten.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][0] = 'Details des Feeds ID %s anzeigen';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][1] = 'Details des Feeds ID %s anzeigen.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['title'][0] = 'Titel';
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['title'][1] = 'Bitte geben Sie einen Feed-Titel ein.';

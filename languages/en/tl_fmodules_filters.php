@@ -1,23 +1,23 @@
 <?php
 
 //operation
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['new'][0] = 'Add filter';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['new'][1] = 'Add filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['new'][0] = 'Add input field';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['new'][1] = 'Add input field';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][0] = 'Edit filter';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][1] = 'Edit filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][0] = 'Edit input field ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['editheader'][1] = 'Edit input field ID %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][0] = 'Delete filter';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][1] = 'Delete filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][0] = 'Delete input field ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['delete'][1] = 'Delete input field ID %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Information';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Information';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][0] = 'Show the details of input field %s';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Show the details of input field %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][0] = 'Move filter';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][1] = 'Move filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][0] = 'Move input field ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['cut'][1] = 'Move input field ID %s';
 
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][0] = 'Eingabefeld duplizieren';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Dieses Eingabefeld duplizieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][0] = 'Copy input field ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Copy input field ID %s.';
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Filter input type';
@@ -57,7 +57,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Range';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Inputfield without filter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Input field without filter';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Open palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Close palette';

@@ -1,20 +1,20 @@
 <?php
 
 //operation
-$GLOBALS['TL_LANG']['tl_fmodules']['new'][0] = 'Add new F Module';
-$GLOBALS['TL_LANG']['tl_fmodules']['new'][1] = 'Add new F Module';
+$GLOBALS['TL_LANG']['tl_fmodules']['new'][0] = 'Add Back end module';
+$GLOBALS['TL_LANG']['tl_fmodules']['new'][1] = 'Add Back end module';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][0] = 'Edit module';
-$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][1] = 'Edit module';
+$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][0] = 'Edit module ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][1] = 'Edit module ID %s.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['editFilters'][0] = 'Edit filter fields';
 $GLOBALS['TL_LANG']['tl_fmodules']['editFilters'][1] = 'Edit filter fields';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['delete'][0] = 'Delete module';
-$GLOBALS['TL_LANG']['tl_fmodules']['delete'][1] = 'Delete module';
+$GLOBALS['TL_LANG']['tl_fmodules']['delete'][0] = 'Delete module ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules']['delete'][1] = 'Delete module ID %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['show'][0] = 'Information';
-$GLOBALS['TL_LANG']['tl_fmodules']['show'][1] = 'Information';
+$GLOBALS['TL_LANG']['tl_fmodules']['show'][0] = 'Show the details of module ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules']['show'][1] = 'Show the details of module ID %s.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][0] = 'New feed';
 $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'New feed';

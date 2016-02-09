@@ -18,17 +18,20 @@ $GLOBALS['TL_LANG']['tl_fmodules_feed']['config_legend'] = 'Feed settings';
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['new'][0] = 'New feed';
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['new'][1] = 'New feed';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][0] = 'Edit feed';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][1] = 'Edit feed';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][0] = 'Edit feed ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['editheader'][1] = 'Edit feed ID %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][0] = 'Delete feed';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][1] = 'Delete feed';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][0] = 'Delete feed ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['delete'][1] = 'Delete feed ID %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][0] = 'Copy feed';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][1] = 'Copy feed';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['edit'][0] = 'Edit feed ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['edit'][1] = 'Edit feed ID %s.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][0] = 'Show Information';
-$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][1] = 'Show Information';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][0] = 'Copy feed ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['copy'][1] = 'Copy feed ID %s.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][0] = 'Show the details of feed ID %s';
+$GLOBALS['TL_LANG']['tl_fmodules_feed']['show'][1] = 'Show the details of feed ID %s.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['title'][0] = 'Title';
 $GLOBALS['TL_LANG']['tl_fmodules_feed']['title'][1] = 'Please enter a feed title.';

@@ -4,17 +4,17 @@
 $GLOBALS['TL_LANG']['tl_fmodules']['new'][0] = 'Backend Modul anlegen';
 $GLOBALS['TL_LANG']['tl_fmodules']['new'][1] = 'Ein Backend Modul anlegen.';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][0] = 'Backend Modul bearbeiten';
-$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][1] = 'Einstellungen des Backend Moduls bearbeiten.';
+$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][0] = 'Backend Modul mit der ID %s bearbeiten';
+$GLOBALS['TL_LANG']['tl_fmodules']['editheader'][1] = 'Backend Modul mit der ID %s bearbeiten.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['editFilters'][0] = 'Eingabefelder Verwaltung';
-$GLOBALS['TL_LANG']['tl_fmodules']['editFilters'][1] = 'Gehe zu Eingabefelder Verwaltung.';
+$GLOBALS['TL_LANG']['tl_fmodules']['editFilters'][1] = 'Eingabefelder Verwaltung.';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['delete'][0] = 'Backend Modul löschen';
-$GLOBALS['TL_LANG']['tl_fmodules']['delete'][1] = 'Dieses Backend Modul löschen.';
+$GLOBALS['TL_LANG']['tl_fmodules']['delete'][0] = 'Backend Modul mit der ID %s löschen';
+$GLOBALS['TL_LANG']['tl_fmodules']['delete'][1] = 'Backend Modul mit der ID %s löschen.';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['show'][0] = 'Backend Modul Information';
-$GLOBALS['TL_LANG']['tl_fmodules']['show'][1] = 'Backend Modul Informationsfenster öffnen.';
+$GLOBALS['TL_LANG']['tl_fmodules']['show'][0] = 'Details des Backend Moduls ID %s anzeigen';
+$GLOBALS['TL_LANG']['tl_fmodules']['show'][1] = 'Details des Backend Moduls ID %s anzeigen.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][0] = 'Feeds erstellen';
 $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'Feeds für die Backend Module erstellen.';

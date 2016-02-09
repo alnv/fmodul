@@ -146,7 +146,7 @@ class QueryModel
      */
     static public function toggleFieldQuery($query)
     {
-        $bind = $query['value'] ? '=' : '!=';
+        $bind = $query['value'] != 'skip' ? '=' : '!=';
         return ' AND ' . $query['fieldID'] . ' ' . $bind . ' "1"';
     }
 

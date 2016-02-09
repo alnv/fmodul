@@ -1,8 +1,8 @@
 {
 	"name":"fmodule/fmodule",
 	"description":"Frontend Filter für Contao CMS",
-	"keywords":["filter", "catalog", "meta", "views", "list", "contao", "cms", "extension"],
-	"type":"contao-module",
+	"keywords":["filter", "catalog", "meta", "views", "taxonomy", "contao", "cms", "extension"],
+  	"type":"contao-module",
 	"homepage":"http://fmodul.alexandernaumov.de",
 	"license":"commercial",
 	"authors":[
@@ -24,7 +24,7 @@
 		"classmap":["src/"]
 	},
 	"replace":{
-	  "contao-legacy/fmodule":"*"
+	  "contao-legacy/fmodule": "self.version"
 	},
 	"extra":{
 		"contao":{

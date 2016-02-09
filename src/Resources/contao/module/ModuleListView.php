@@ -119,8 +119,7 @@ class ModuleListView extends Module
             }
 
             // field
-            if($moduleDB->type == 'widget')
-            {
+            if ($moduleDB->type == 'widget') {
                 $fieldWidgets[$moduleDB->fieldID] = array(
                     'fieldID' => $moduleDB->fieldID,
                     'widgetType' => $moduleDB->widget_type,
@@ -166,7 +165,7 @@ class ModuleListView extends Module
                 }
             }
         }
-		
+
         //get text search results
         $textSearchResults = array();
         if ($qTextSearch) {
@@ -311,20 +310,17 @@ class ModuleListView extends Module
             $item['cssClass'] = $i % 2 ? 'even' : 'odd';
 
             //field
-            if(!empty($fieldWidgets))
-            {
+            if (!empty($fieldWidgets)) {
 
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
 
-                foreach($fieldWidgets as $widget)
-                {
+                foreach ($fieldWidgets as $widget) {
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
                     $type = $widget['widgetType'];
                     $value = $item[$id];
 
-                    if( in_array( $type, $arrayAsValue ) )
-                    {
+                    if (in_array($type, $arrayAsValue)) {
                         $value = unserialize($value);
                     }
 
@@ -459,20 +455,34 @@ class ModuleListView extends Module
     public function setFilterValues($filterValues, $return)
     {
         foreach ($filterValues as $filterValue) {
-            
+
             $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
             $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
 
             $value = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
 
             if (!$value && $filterValue['active']) {
+
                 $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
                 $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
+
+                //exception for toggle field
+                if (is_null(Input::get($filterValue['fieldID'])) && $return[$filterValue['fieldID']]['type'] == 'toggle_field') {
+                    $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] ? '1' : 'skip';
+                }
+
             }
 
             if ($filterValue['set']['overwrite']) {
+
                 $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
                 $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
+
+                //exception for toggle field
+                if ($return[$filterValue['fieldID']]['type'] == 'toggle_field') {
+                    $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] ? '1' : 'skip';
+                }
+
             }
 
             $val = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
@@ -500,6 +510,10 @@ class ModuleListView extends Module
 
         if ($type == 'multi_choice' && !is_array($getFilter)) {
             $getFilter = explode(',', $getFilter);
+        }
+
+        if ($type == 'toggle_field' && is_null(Input::get($fieldID)) == false && Input::get($fieldID) != '1') {
+            $getFilter = 'skip';
         }
 
         return array(

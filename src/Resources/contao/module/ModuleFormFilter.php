@@ -114,14 +114,22 @@ class ModuleFormFilter extends \Contao\Module
                 $fields[$i]['showLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
 				$fields[$i]['ignoreLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
 			}
-			
+
             $fields[$i]['wrapperID'] = $listModuleID;
             $fields[$i]['selected'] = $inputValue;
+
+            //
+            if ($field['type'] == 'search_field' && $field['isInteger'] == '1') {
+                if( !$fields[$i]['selected'] && !is_null(Input::get($field['fieldID'])) )
+                {
+                    $fields[$i]['selected'] = '0';
+                }
+            }
 
             // ex
             if($field['type'] == 'toggle_field' && !$inputValue)
             {
-                $fields[$i]['selected'] = '0';
+                $fields[$i]['selected'] = '';
             }
 
             $tplName = $this->parseTemplateName($fields[$i]['used_templates']);
@@ -141,22 +149,60 @@ class ModuleFormFilter extends \Contao\Module
 
             //
             if ($widget['data']['type'] == 'wrapper_field' && $widget['data']['from_field'] && $widget['data']['to_field']) {
-                // generate from field tpl
-                $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
-                $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
-                $fromTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['from_field']]['tpl']);
-                $fromTemplateObj->setData($fromFieldData);
-                $from_template = $fromTemplateObj->parse();
-                $widget['data']['from_template'] = $from_template;
+
+                if($widget['data']['from_field'] == $widget['data']['to_field'])
+                {
+
+                    $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
+                    $widget['data']['title'] = $fromFieldData['title'];
+                    $widget['data']['description'] = $fromFieldData['description'];
+
+                    $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
+                    $fromFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_from_label'];
+                    $fromFieldData['description'] = '';
+                    $fromTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['from_field']]['tpl']);
+                    $fromTemplateObj->setData($fromFieldData);
+                    $from_template = $fromTemplateObj->parse();
+                    $widget['data']['from_template'] = $from_template;
+
+                    //to
+                    $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
+                    $toFieldData['fieldID'] = $toFieldData['fieldID'].'_btw';
+                    $toFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_to_label'];
+                    $toFieldData['description'] = '';
+                    $selectValue = Input::get($toFieldData['fieldID']);
+                    if(!is_null($selectValue) && !$selectValue)
+                    {
+                        $selectValue = '0';
+                    }
+                    $toFieldData['selected'] = $selectValue;
+                    $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
+                    $toTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['to_field']]['tpl']);
+                    $toTemplateObj->setData($toFieldData);
+                    $to_template = $toTemplateObj->parse();
+                    $widget['data']['to_template'] = $to_template;
 
 
-                // generate to field tpl
-                $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
-                $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
-                $toTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['to_field']]['tpl']);
-                $toTemplateObj->setData($toFieldData);
-                $to_template = $toTemplateObj->parse();
-                $widget['data']['to_template'] = $to_template;
+                }else{
+
+                    // generate from field tpl
+                    $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
+                    $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
+                    $fromTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['from_field']]['tpl']);
+                    $fromTemplateObj->setData($fromFieldData);
+                    $from_template = $fromTemplateObj->parse();
+                    $widget['data']['from_template'] = $from_template;
+
+
+                    // generate to field tpl
+                    $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
+                    $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
+                    $toTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['to_field']]['tpl']);
+                    $toTemplateObj->setData($toFieldData);
+                    $to_template = $toTemplateObj->parse();
+                    $widget['data']['to_template'] = $to_template;
+
+                }
             }
 
             // sort out fixed field
@@ -190,6 +236,7 @@ class ModuleFormFilter extends \Contao\Module
         $this->Template->fields = $strResult;
 
     }
+
 
     /**
      * @param $fieldID

@@ -97,23 +97,18 @@ class FModule extends Frontend
     {
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
 
-        if ($objFeed === null)
-        {
+        if ($objFeed === null) {
             return;
         }
 
         $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
 
         // Delete XML file
-        if (\Input::get('act') == 'delete')
-        {
+        if (\Input::get('act') == 'delete') {
             $this->import('Files');
             $this->Files->delete($objFeed->feedName . '.xml');
-        }
-
-        // Update XML file
-        else
-        {
+        } // Update XML file
+        else {
             $this->generateFiles($objFeed->row());
             $this->log('Generated F Module feed "' . $objFeed->feedName . '.xml"', __METHOD__, TL_CRON);
         }
@@ -129,10 +124,8 @@ class FModule extends Frontend
 
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed')->execute();
 
-        if ($objFeed !== null)
-        {
-            while ($objFeed->next())
-            {
+        if ($objFeed !== null) {
+            while ($objFeed->next()) {
                 $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
                 $this->generateFiles($objFeed->row());
                 $this->log('Generated F Module feed "' . $objFeed->feedName . '.xml"', __METHOD__, TL_CRON);
@@ -147,10 +140,8 @@ class FModule extends Frontend
     {
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
 
-        if ($objFeed !== null)
-        {
-            while ($objFeed->next())
-            {
+        if ($objFeed !== null) {
+            while ($objFeed->next()) {
                 $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
 
                 // Update the XML file
@@ -167,8 +158,7 @@ class FModule extends Frontend
     {
         $arrArchives = deserialize($arrFeed['wrappers']);
 
-        if (!is_array($arrArchives) || empty($arrArchives))
-        {
+        if (!is_array($arrArchives) || empty($arrArchives)) {
             return;
         }
 
@@ -183,13 +173,10 @@ class FModule extends Frontend
         $objFeed->language = $arrFeed['language'];
         $objFeed->published = $arrFeed['tstamp'];
 
-        if ($arrFeed['maxItems'] > 0)
-        {
-            $objArticle = $this->findPublishedByPids($arrArchives, $arrFeed['maxItems'], $arrFeed['fmodule'].'_data');
-        }
-        else
-        {
-            $objArticle = $this->findPublishedByPids($arrArchives, 0, $arrFeed['fmodule'].'_data');
+        if ($arrFeed['maxItems'] > 0) {
+            $objArticle = $this->findPublishedByPids($arrArchives, $arrFeed['maxItems'], $arrFeed['fmodule'] . '_data');
+        } else {
+            $objArticle = $this->findPublishedByPids($arrArchives, 0, $arrFeed['fmodule'] . '_data');
         }
 
         if ($objArticle !== null) {
@@ -211,7 +198,7 @@ class FModule extends Frontend
                         if ($objParent === null) {
                             $arrUrls[$rootPage] = false;
                         } else {
-                            $arrUrls[$rootPage] = $this->generateFrontendUrl($objParent->row(), (( Config::get('useAutoItem') && ! Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+                            $arrUrls[$rootPage] = $this->generateFrontendUrl($objParent->row(), ((Config::get('useAutoItem') && !Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
                         }
                     }
 
@@ -221,8 +208,7 @@ class FModule extends Frontend
                 }
                 $authorName = '';
 
-                if($objArticle->author)
-                {
+                if ($objArticle->author) {
                     $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($objArticle->author)->row();
                     $authorName = $authorDB['name'];
                 }
@@ -231,54 +217,46 @@ class FModule extends Frontend
 
                 $objItem->title = $objArticle->title;
                 $objItem->link = $this->getLink($objArticle, $strUrl, $strLink);
-                $objItem->published = $objArticle->date ?  $objArticle->date : $arrFeed['tstamp'];
+                $objItem->published = $objArticle->date ? $objArticle->date : $arrFeed['tstamp'];
                 $objItem->author = $authorName;
 
                 // Prepare the description
-                if ($arrFeed['source'] == 'source_text')
-                {
+                if ($arrFeed['source'] == 'source_text') {
                     $strDescription = '';
 
-                    $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'].'_data', array('fview' => 'detail'));
+                    $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'] . '_data', array('fview' => 'detail'));
 
-                    if ($objElement !== null)
-                    {
+                    if ($objElement !== null) {
                         // Overwrite the request (see #7756)
                         $strRequest = Environment::get('request');
 
                         Environment::set('request', $objItem->link);
 
-                        while ($objElement->next())
-                        {
+                        while ($objElement->next()) {
                             $strDescription .= $this->getContentElement($objElement->current());
                         }
 
                         Environment::set('request', $strRequest);
                     }
-                }
-                else
-                {
+                } else {
                     $strDescription = '';
 
-                    $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'].'_data', array('fview' => 'list'));
+                    $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'] . '_data', array('fview' => 'list'));
 
-                    if ($objElement !== null)
-                    {
+                    if ($objElement !== null) {
                         // Overwrite the request (see #7756)
                         $strRequest = Environment::get('request');
 
                         Environment::set('request', $objItem->link);
 
-                        while ($objElement->next())
-                        {
+                        while ($objElement->next()) {
                             $strDescription .= $this->getContentElement($objElement->current());
                         }
 
                         Environment::set('request', $strRequest);
                     }
 
-                    if(!$strDescription)
-                    {
+                    if (!$strDescription) {
                         $strDescription = $objArticle->description;
                     }
                 }
@@ -287,29 +265,23 @@ class FModule extends Frontend
                 $objItem->description = $this->convertRelativeUrls($strDescription, $strLink);
 
                 // Add the article image as enclosure
-                if ($objArticle->addImage)
-                {
+                if ($objArticle->addImage) {
                     $objFile = \FilesModel::findByUuid($objArticle->singleSRC);
 
-                    if ($objFile !== null)
-                    {
+                    if ($objFile !== null) {
                         $objItem->addEnclosure($objFile->path);
                     }
                 }
 
                 // Enclosures
-                if ($objArticle->addEnclosure)
-                {
+                if ($objArticle->addEnclosure) {
                     $arrEnclosure = deserialize($objArticle->enclosure, true);
 
-                    if (is_array($arrEnclosure))
-                    {
+                    if (is_array($arrEnclosure)) {
                         $objFile = \FilesModel::findMultipleByUuids($arrEnclosure);
 
-                        if ($objFile !== null)
-                        {
-                            while ($objFile->next())
-                            {
+                        if ($objFile !== null) {
+                            while ($objFile->next()) {
                                 $objItem->addEnclosure($objFile->path);
                             }
                         }
@@ -330,7 +302,7 @@ class FModule extends Frontend
      * @param $tablename
      * @return \Database\Result|null|object
      */
-    public function findPublishedByPids($arrPids, $intLimit=0, $tablename)
+    public function findPublishedByPids($arrPids, $intLimit = 0, $tablename)
     {
 
         if (!is_array($arrPids) || empty($arrPids)) {
@@ -341,19 +313,18 @@ class FModule extends Frontend
             return null;
         }
 
-        $sql = 'SELECT * FROM '.$tablename.' WHERE ';
-        $sql .= ''.$tablename.'.pid IN('.implode(',', array_map('intval', $arrPids)).') ';
+        $sql = 'SELECT * FROM ' . $tablename . ' WHERE ';
+        $sql .= '' . $tablename . '.pid IN(' . implode(',', array_map('intval', $arrPids)) . ') ';
 
         if (!BE_USER_LOGGED_IN || TL_MODE == 'BE') {
             $time = Date::floorToMinute();
-            $sql .= 'AND ('.$tablename.'.start="" OR '.$tablename.'.start <= '.$time.') AND ('.$tablename.'.stop="" OR '.$tablename.'.stop > '.($time + 60).') AND '.$tablename.'.published = "1" ';
+            $sql .= 'AND (' . $tablename . '.start="" OR ' . $tablename . '.start <= ' . $time . ') AND (' . $tablename . '.stop="" OR ' . $tablename . '.stop > ' . ($time + 60) . ') AND ' . $tablename . '.published = "1" ';
         }
 
-        $sql .= 'ORDER BY '.$tablename.'.date DESC ';
+        $sql .= 'ORDER BY ' . $tablename . '.date DESC ';
 
-        if($intLimit > 0)
-        {
-            $sql .= 'LIMIT '.$intLimit.'';
+        if ($intLimit > 0) {
+            $sql .= 'LIMIT ' . $intLimit . '';
         }
 
         $findBy = $this->Database->prepare($sql)->execute();
@@ -370,10 +341,8 @@ class FModule extends Frontend
         $arrFeeds = array();
         $objFeeds = $this->Database->prepare('SELECT * FROM tl_fmodules_feed')->execute();
 
-        if ($objFeeds !== null)
-        {
-            while ($objFeeds->next())
-            {
+        if ($objFeeds !== null) {
+            while ($objFeeds->next()) {
                 $arrFeeds[] = $objFeeds->alias ?: 'fmodules' . $objFeeds->id;
             }
         }
@@ -510,20 +479,27 @@ class FModule extends Frontend
         $arrSplit = explode('::', $strTag);
 
         // get url
-        if (count($arrSplit) > 2 && $arrSplit[0] == 'fm_url') {
+        if ($arrSplit[0] == 'fm_url' && count($arrSplit) > 2) {
             return $this->getUrlFromItem($arrSplit);
         }
 
         // count items
-        if($arrSplit[0] == 'fm_count' && $arrSplit[1] )
-        {
-            $tablename = $arrSplit[1].'_data';
-			
-			$qPid = $arrSplit[2] ? ' AND pid = "'.$arrSplit[2].'"' : '';
-			
-            if($this->Database->tableExists($tablename))
-            {
-                return $this->Database->prepare('SELECT id FROM '.$tablename.' WHERE published = "1"'.$qPid.'')->execute()->count();
+        if ($arrSplit[0] == 'fm_count' && $arrSplit[1]) {
+
+            $tablename = $arrSplit[1] . '_data';
+            $qPid = $arrSplit[2] ? ' AND pid = "' . $arrSplit[2] . '"' : '';
+            $q = $arrSplit[3] ? Input::decodeEntities($arrSplit[3]) : '';
+
+            if ($q) {
+
+                $filterArr = $this->getFilterFields($q);
+                $qResult = HelperModel::generateSQLQueryFromFilterArray($filterArr);
+                $q = $qResult['qStr'];
+
+            }
+
+            if ($this->Database->tableExists($tablename)) {
+                return $this->Database->prepare('SELECT id FROM ' . $tablename . ' WHERE published = "1"' . $qPid . $q . '')->query()->count();
             }
 
             return 0;
@@ -533,19 +509,67 @@ class FModule extends Frontend
     }
 
     /**
+     * @param $q
+     * @return array
+     */
+    protected function getFilterFields($q)
+    {
+
+        $notSupportedTypes = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search', 'widget');
+        $notSupportedID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
+
+        parse_str($q, $qRow);
+        $qArr = array();
+
+        foreach ($qRow as $k => $v) {
+            $qArr[$k] = $v;
+        }
+
+        if (empty($qArr)) {
+            return array();
+        }
+
+        $allFiltersDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters')->execute();
+        $filterArr = array();
+
+        while ($allFiltersDB->next()) {
+            $tname = $allFiltersDB->fieldID;
+
+            if (in_array($tname, $notSupportedID) || in_array($allFiltersDB->type, $notSupportedTypes)) {
+                continue;
+            }
+
+            if ($qArr[$tname] || $allFiltersDB->type == 'toggle_field') {
+
+                $filterArr[$tname] = $allFiltersDB->row();
+                $filterArr[$tname]['value'] = $qArr[$tname];
+                $filterArr[$tname]['enable'] = true;
+                $filterArr[$tname]['operator'] = $qArr[$tname . '_int'] ? $qArr[$tname . '_int'] : '';
+
+            }
+
+            if ($allFiltersDB->type == 'toggle_field' && !$qArr[$tname]) {
+                $filterArr[$tname]['value'] = 'skip';
+            }
+
+        }
+
+        return $filterArr;
+
+    }
+
+    /**
      * @param $strName
      */
     public function createUserGroupDCA($strName)
     {
-        if ($strName == 'tl_user')
-        {
+        if ($strName == 'tl_user') {
             $this->createFModuleUserDCA();
         }
 
-        if($strName == 'tl_user_group')
-        {
+        if ($strName == 'tl_user_group') {
             $this->createFModuleUserGroupDCA();
-    	}
+        }
     }
 
     /**
@@ -555,21 +579,18 @@ class FModule extends Frontend
     private function getUrlFromItem($arrSplit)
     {
 
-        if( $arrSplit[1] && $arrSplit[2] )
-        {
+        if ($arrSplit[1] && $arrSplit[2]) {
             $tablename = $arrSplit[1];
-            $tablename_data = $tablename.'_data';
+            $tablename_data = $tablename . '_data';
             $id = $arrSplit[2];
 
-            if( !$this->Database->tableExists($tablename) || !$this->Database->tableExists($tablename_data))
-            {
+            if (!$this->Database->tableExists($tablename) || !$this->Database->tableExists($tablename_data)) {
                 return false;
             }
 
             $dataDB = $this->Database->prepare('SELECT * FROM ' . $tablename_data . ' WHERE id = ?')->execute($id);
 
-            if( $dataDB->count() < 1 )
-            {
+            if ($dataDB->count() < 1) {
                 return false;
             }
 
@@ -579,15 +600,13 @@ class FModule extends Frontend
 
             $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($pid);
 
-            if($wrapperDB->count() < 1)
-            {
+            if ($wrapperDB->count() < 1) {
                 return false;
             }
 
             $wrapper = $wrapperDB->row();
 
-            if( $wrapper['addDetailPage'] != '1' )
-            {
+            if ($wrapper['addDetailPage'] != '1') {
                 return false;
             }
 
@@ -629,8 +648,7 @@ class FModule extends Frontend
             $cleanName = $fmodulesDB->name;
             $modname = substr($fmodulesDB->tablename, 3, strlen($fmodulesDB->tablename));
 
-            if(!$this->permissionFieldExist($modname))
-            {
+            if (!$this->permissionFieldExist($modname)) {
                 return;
             }
 
@@ -681,8 +699,7 @@ class FModule extends Frontend
             $cleanName = $fmodulesDB->name;
             $modname = substr($fmodulesDB->tablename, 3, strlen($fmodulesDB->tablename));
 
-            if(!$this->permissionFieldExist($modname))
-            {
+            if (!$this->permissionFieldExist($modname)) {
                 return;
             }
 
@@ -723,13 +740,11 @@ class FModule extends Frontend
      */
     private function permissionFieldExist($fieldname)
     {
-        if(!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname.'p', 'tl_user'))
-        {
+        if (!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user')) {
             return false;
         }
 
-        if(!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname.'p', 'tl_user_group'))
-        {
+        if (!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user_group')) {
             return false;
         }
 
@@ -753,7 +768,7 @@ class FModule extends Frontend
         $value = Input::get('value');
         $limit = Input::get('limit') ? Input::get('limit') : '10';
 
-        if( !strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_'){
+        if (!strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_') {
             $tablename = $tablename . '_data';
         }
 
@@ -761,7 +776,7 @@ class FModule extends Frontend
             return;
         }
 
-        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE ' . $fieldname . ' LIKE "%' . $value . '%" AND pid = "'.$pid.'" LIMIT ' . $limit . '')->query();
+        $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE ' . $fieldname . ' LIKE "%' . $value . '%" AND pid = "' . $pid . '" LIMIT ' . $limit . '')->query();
         $return = array();
 
         while ($arrDB->next()) {
@@ -783,7 +798,7 @@ class FModule extends Frontend
     public function getAutoCompleteFromSearchField($tablename, $fieldname, $pid, $value = '')
     {
 
-        if( !strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_'){
+        if (!strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_') {
 
             $tablename = $tablename . '_data';
 
@@ -802,8 +817,7 @@ class FModule extends Frontend
 
             $val = $arrDB->row()[$fieldname];
 
-            if( !$val || $val == '' || $val == ' ' )
-            {
+            if (!$val || $val == '' || $val == ' ') {
                 continue;
             }
 

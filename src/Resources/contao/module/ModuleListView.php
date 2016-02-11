@@ -134,37 +134,10 @@ class ModuleListView extends Module
         if (!empty($taxFilter)) {
             $fieldsArr = $this->setFilterValues($taxFilter, $fieldsArr);
         }
-
-        $qStr = '';
-        $qTextSearch = '';
-        foreach ($fieldsArr as $field) {
-
-            if ($field['enable']) {
-                switch ($field['type']) {
-                    case 'simple_choice':
-                        $qStr .= QueryModel::simpleChoiceQuery($field);
-                        break;
-                    case 'date_field':
-                        $qStr .= QueryModel::dateFieldQuery($field);
-                        break;
-                    case 'search_field':
-                        $qStr .= QueryModel::searchFieldQuery($field);
-                        break;
-                    case 'multi_choice':
-                        $qStr .= QueryModel::multiChoiceQuery($field);
-                        break;
-                    case 'toggle_field':
-                        $qStr .= QueryModel::toggleFieldQuery($field);
-                        break;
-                    case 'fulltext_search':
-                        $isValue = QueryModel::isValue($field['value']);
-                        if ($isValue) {
-                            $qTextSearch = $field['value'];
-                        }
-                        break;
-                }
-            }
-        }
+        
+        $qResult = HelperModel::generateSQLQueryFromFilterArray($fieldsArr);
+        $qStr = $qResult['qStr'];
+        $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch']: '';
 
         //get text search results
         $textSearchResults = array();

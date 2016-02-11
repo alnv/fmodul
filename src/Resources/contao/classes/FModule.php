@@ -489,6 +489,7 @@ class FModule extends Frontend
             $tablename = $arrSplit[1] . '_data';
             $qPid = $arrSplit[2] ? ' AND pid = "' . $arrSplit[2] . '"' : '';
             $q = $arrSplit[3] ? Input::decodeEntities($arrSplit[3]) : '';
+            $q = str_replace('[&]', '&', $q);
 
             if ($q) {
 
@@ -515,7 +516,7 @@ class FModule extends Frontend
     protected function getFilterFields($q)
     {
 
-        $notSupportedTypes = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search', 'widget');
+        $notSupportedTypes = array('legend_start', 'legend_end', 'fulltext_search', 'widget');
         $notSupportedID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
 
         parse_str($q, $qRow);
@@ -533,6 +534,7 @@ class FModule extends Frontend
         $filterArr = array();
 
         while ($allFiltersDB->next()) {
+            
             $tname = $allFiltersDB->fieldID;
 
             if (in_array($tname, $notSupportedID) || in_array($allFiltersDB->type, $notSupportedTypes)) {
@@ -546,6 +548,12 @@ class FModule extends Frontend
                 $filterArr[$tname]['enable'] = true;
                 $filterArr[$tname]['operator'] = $qArr[$tname . '_int'] ? $qArr[$tname . '_int'] : '';
 
+            }
+
+            if ($allFiltersDB->type == 'wrapper_field' && ( $allFiltersDB->from_field == $allFiltersDB->to_field ) )
+            {
+                $fname = $allFiltersDB->from_field.'_btw';
+                Input::setGet($fname, $qArr[$fname]);
             }
 
             if ($allFiltersDB->type == 'toggle_field' && !$qArr[$tname]) {

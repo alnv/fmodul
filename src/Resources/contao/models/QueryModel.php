@@ -107,7 +107,21 @@ class QueryModel
             return '';
         }
 
+        //wrapper
+        $btw = Input::get($query['fieldID'] . '_btw') ? Input::get($query['fieldID'] . '_btw') : '';
         $value = $query['value'] == '' ? strtotime(date($format)) : $unix;
+
+        if ($btw) {
+            $fromValue = $value;
+            $toValue = strtotime($btw);
+
+            if ($toValue == false) {
+                return '';
+            }
+
+            return ' AND ' . $query['fieldID'] . ' BETWEEN ' . $fromValue . ' AND ' . $toValue . '';
+        }
+
         $bind = static::getOperator($query['operator']);
 
         return ' AND ' . $query['fieldID'] . ' ' . $bind . ' ' . $value . '';
@@ -125,13 +139,12 @@ class QueryModel
         $isNum = false;
 
         //wrapper
-        $btw = Input::get($query['fieldID'].'_btw') ? Input::get($query['fieldID'].'_btw') : '';
+        $btw = Input::get($query['fieldID'] . '_btw') ? Input::get($query['fieldID'] . '_btw') : '';
 
-        if($btw)
-        {
+        if ($btw) {
             $fromValue = (float)$searchValue;
             $toValue = (float)$btw;
-            return ' AND '.$query['fieldID'].' BETWEEN '.$fromValue.' AND '.$toValue.'';
+            return ' AND ' . $query['fieldID'] . ' BETWEEN ' . $fromValue . ' AND ' . $toValue . '';
         }
 
         if ($query['isInteger'] == '1' && $query['operator'] != '' && is_numeric($searchValue)) {
@@ -194,10 +207,8 @@ class QueryModel
     {
         $resultsDB = static::textSearch($searchStr, $tablename, $wrapperID);
         $results = array();
-        if( $resultsDB != null && $resultsDB->count() > 0 )
-        {
-            while($resultsDB->next())
-            {
+        if ($resultsDB != null && $resultsDB->count() > 0) {
+            while ($resultsDB->next()) {
                 $results[$resultsDB->id] = $resultsDB->alias;
             }
         }

@@ -26,6 +26,9 @@ $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS Klasse";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Aktivieren";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'] = 'Alle Filtereinstellungen zurücksetzen';
 
+$GLOBALS['TL_LANG']['MSC']['fm_from_label'] = "Von";
+$GLOBALS['TL_LANG']['MSC']['fm_to_label'] = "Bis";
+
 //größen
 $GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'Filtern';
 $GLOBALS['TL_LANG']['MSC']['f_eq'] = 'Gleich';

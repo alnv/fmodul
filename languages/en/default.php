@@ -26,6 +26,9 @@ $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] = "CSS class";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] = "Enable form field";
 $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'] = 'Reset all filter settings';
 
+$GLOBALS['TL_LANG']['MSC']['fm_from_label'] = "From";
+$GLOBALS['TL_LANG']['MSC']['fm_to_label'] = "To";
+
 //size
 $GLOBALS['TL_LANG']['MSC']['widget_submit'] = 'Filter';
 $GLOBALS['TL_LANG']['MSC']['f_eq'] = 'Equal';

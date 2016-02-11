@@ -37,7 +37,7 @@ class DCAModuleData extends DCAHelper
     protected $pid;
 
     private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search');
-    private $doNotSetByID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
+    private $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
 
     /**
      *

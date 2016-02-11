@@ -12,6 +12,7 @@
  */
 
 use Contao\Database;
+use Contao\Input;
 use Contao\Model;
 
 /**
@@ -123,10 +124,20 @@ class QueryModel
         $searchValue = $query['value'];
         $isNum = false;
 
+        //wrapper
+        $btw = Input::get($query['fieldID'].'_btw') ? Input::get($query['fieldID'].'_btw') : '';
+
+        if($btw)
+        {
+            $fromValue = (float)$searchValue;
+            $toValue = (float)$btw;
+            return ' AND '.$query['fieldID'].' BETWEEN '.$fromValue.' AND '.$toValue.'';
+        }
+
         if ($query['isInteger'] == '1' && $query['operator'] != '' && is_numeric($searchValue)) {
 
             $bind = static::getOperator($query['operator']);
-            $searchValue = (int)$searchValue;
+            $searchValue = (float)$searchValue;
             $isNum = true;
         }
 

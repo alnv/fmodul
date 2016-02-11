@@ -52,6 +52,53 @@ class HelperModel
     }
 
     /**
+     * @param $filterArr
+     * @return array
+     */
+    public static function generateSQLQueryFromFilterArray($filterArr)
+    {
+        $qStr = '';
+        $qTextSearch = '';
+        $isFulltextSearch = false;
+
+        foreach ($filterArr as $field) {
+
+            if ($field['enable']) {
+                switch ($field['type']) {
+                    case 'simple_choice':
+                        $qStr .= QueryModel::simpleChoiceQuery($field);
+                        break;
+                    case 'date_field':
+                        $qStr .= QueryModel::dateFieldQuery($field);
+                        break;
+                    case 'search_field':
+                        $qStr .= QueryModel::searchFieldQuery($field);
+                        break;
+                    case 'multi_choice':
+                        $qStr .= QueryModel::multiChoiceQuery($field);
+                        break;
+                    case 'toggle_field':
+                        $qStr .= QueryModel::toggleFieldQuery($field);
+                        break;
+                    case 'fulltext_search':
+                        $isValue = QueryModel::isValue($field['value']);
+                        if ($isValue) {
+                            $isFulltextSearch = true;
+                            $qTextSearch = $field['value'];
+                        }
+                        break;
+                }
+            }
+        }
+
+        return array(
+            'qStr' => $qStr,
+            'isFulltextSearch' => $isFulltextSearch,
+            '$qTextSearch' => $qTextSearch,
+        );
+    }
+
+    /**
      * @param $start
      * @param $stop
      * @return bool

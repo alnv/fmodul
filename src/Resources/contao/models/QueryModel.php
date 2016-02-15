@@ -70,6 +70,10 @@ class QueryModel
         $bind = ' AND (';
         $sql = [];
 
+        if(is_string($values)) {
+            $values = explode(',', $values);
+        }
+
         if (is_array($values)) {
 
             if (count($values) == 1) {

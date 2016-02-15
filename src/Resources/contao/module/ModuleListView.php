@@ -108,14 +108,14 @@ class ModuleListView extends Module
             $modArr['overwrite'] = null;
             $modArr['active'] = null;
 
+            if ($moduleDB->fieldID == 'auto_page') {
+                $modArr['value'] = $objPage->alias;
+            }
+
             $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
 
             if ($val) {
                 $modArr['enable'] = true;
-            }
-
-            if ($moduleDB->fieldID == 'auto_page') {
-                $modArr['value'] = $objPage->alias;
             }
 
             // field

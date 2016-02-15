@@ -380,7 +380,6 @@ class ModuleListView extends Module
      */
     public function getSortingField()
     {
-
         $sortingFromViewList = deserialize($this->f_sorting_fields) ? deserialize($this->f_sorting_fields) : array('id');
         $sortingFromGET = Input::get('sorting_fields');
         $isValue = QueryModel::isValue($sortingFromGET);
@@ -407,12 +406,13 @@ class ModuleListView extends Module
 
         }
 
-
         if (count($sortingFields) > 0) {
+            $sortingFields = array_filter($sortingFields);
             return implode(',', $sortingFields);
         }
 
         if (count($sortingFromViewList) > 0 && is_array($sortingFromViewList)) {
+            $sortingFromViewList = array_filter($sortingFromViewList);
             return implode(',', $sortingFromViewList);
         }
 

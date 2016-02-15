@@ -55,9 +55,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_orderby'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_orderby'],
     'inputType' => 'radio',
+    'default' => 'desc',
     'eval' => array('tl_class' => 'clr m12'),
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array('asc', 'desc', 'rand'),
+    'options' => array('desc','asc','rand'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
@@ -65,8 +66,9 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'],
     'inputType' => 'checkboxWizard',
+    'default' => 'id',
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array(),
+    'options' => array('id' => 'ID','title' => 'Titel', 'date' => 'Datum'),
     'eval' => array('multiple' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
@@ -273,7 +275,6 @@ class tl_module_fmodule extends tl_module
     public function setFEModule($dc)
     {
 
-        //
         $id = $dc->id;
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
         $modulename = '';

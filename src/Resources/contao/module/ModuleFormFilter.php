@@ -171,7 +171,7 @@ class ModuleFormFilter extends \Contao\Module
                     $toFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_to_label'];
                     $toFieldData['description'] = '';
                     $selectValue = Input::get($toFieldData['fieldID']);
-                    if(!is_null($selectValue) && !$selectValue)
+                    if(!is_null($selectValue) && !$selectValue && $toFieldData['type'] != 'date_field')
                     {
                         $selectValue = '0';
                     }

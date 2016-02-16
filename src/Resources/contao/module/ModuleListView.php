@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   F Modul
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @copyright 2016 Alexander Naumov
  */
 
 
@@ -250,7 +250,6 @@ class ModuleListView extends Module
             //set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 
-
             // get list view ce
             $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $tablename . '_data', array('fview' => 'list'));
             $arrElements = array();
@@ -323,7 +322,6 @@ class ModuleListView extends Module
             // set enclosure
             $objTemplate->enclosure = array();
             if ($item['addEnclosure']) {
-
                 $this->addEnclosuresToTemplate($objTemplate, $item);
             }
 

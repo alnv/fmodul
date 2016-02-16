@@ -3,24 +3,21 @@
     /**
      * Contao Open Source CMS
      *
-     * Copyright (c) 2005-2015 Leo Feyer
+     * Copyright (c) 2005-2016 Leo Feyer
      *
      * @package   F Modul
      * @author    Alexander Naumov http://www.alexandernaumov.de
      * @license   commercial
-     * @copyright 2015 Alexander Naumov
+     * @copyright 2016 Alexander Naumov
      */
 
 /**
  *
  */
-use Contao\Automator;
-use Contao\ContentModel;
+
 use Contao\Database;
 use Contao\Date;
-use Contao\DcaLoader;
 use Contao\Environment;
-use Contao\FeedItem;
 use Contao\File;
 use Contao\Frontend;
 use Contao\Input;

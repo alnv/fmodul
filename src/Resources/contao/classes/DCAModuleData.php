@@ -3,23 +3,18 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   F Modul
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @copyright 2016 Alexander Naumov
  */
 
 use Contao\Database;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
-use ProSearch\Helper;
-
-//use Contao\BackendUser;
-//use Symfony\Component\Intl\Util\Version;
-
 
 /**
  * Class DCAModule

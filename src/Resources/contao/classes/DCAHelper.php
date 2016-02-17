@@ -138,7 +138,10 @@ class DCAHelper extends Backend
 
 	}
 
-
+	/**
+	 * @param $fields
+	 * @return bool
+	 */
 	public function isLegend($fields)
 	{
 		$legendsFound = 0;
@@ -159,7 +162,10 @@ class DCAHelper extends Backend
 
 	}
 
-
+	/**
+	 * @param $field
+	 * @return array
+	 */
 	public function getFieldFromWidget($field)
 	{
 

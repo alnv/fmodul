@@ -11,11 +11,12 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\Config;
 use Contao\Frontend;
 use Contao\FrontendTemplate;
 use Contao\Input;
-use Contao\Pagination;
-use Contao\Config;
+use Contao\FilesModel;
+use Contao\ContentModel;
 
 /**
  * Class AjaxApiFModule
@@ -45,6 +46,16 @@ class AjaxApiFModule extends Frontend
     protected $perPage = 0;
 
     /**
+     * @var array
+     */
+    protected $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
+
+    /**
+     * @var array
+     */
+    protected $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
+
+    /**
      *
      */
     public function getEntities()
@@ -65,49 +76,13 @@ class AjaxApiFModule extends Frontend
 
         $this->import('FrontendUser', 'User');
 
-        global $objPage;
-
         $dataTable = $tablename . '_data';
         $this->tablename = $dataTable;
+
         $template = Input::get('template') ? Input::get('template') : 'fmodule_teaser';
-        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
-        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
-        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-        $fieldsArr = array();
 
-        while ($moduleDB->next()) {
-
-            if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
-                continue;
-            }
-
-            $modArr = $moduleDB->row();
-
-            $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
-
-            $modArr['value'] = $getFilter['value'];
-            $modArr['operator'] = $getFilter['operator'];
-            $modArr['overwrite'] = null;
-            $modArr['active'] = null;
-
-            $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
-
-            if ($val) {
-                $modArr['enable'] = true;
-            }
-
-            // field
-            if ($moduleDB->type == 'widget') {
-                $fieldWidgets[$moduleDB->fieldID] = array(
-                    'fieldID' => $moduleDB->fieldID,
-                    'widgetType' => $moduleDB->widget_type,
-                    'widgetTemplate' => $moduleDB->widgetTemplate
-                );
-            }
-
-            $fieldsArr[$moduleDB->fieldID] = $modArr;
-
-        }
+        $fieldsArr = $this->getModule($tablename)['fieldsArr'];
+        $fieldWidgets = $this->getModule($tablename)['widgetsArr'];
 
         $qPid = ' AND pid = "' . $wrapperID . '"';
         $qResult = HelperModel::generateSQLQueryFromFilterArray($fieldsArr);
@@ -119,10 +94,10 @@ class AjaxApiFModule extends Frontend
         if ($qTextSearch) {
             $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID);
         }
-        $qOrderBY = $this->getOrderBY();
+        $qOrderBY = $this->getOrderBy();
 
         $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1"' . $qPid . $qStr . $qOrderBY.'')->query();
-        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+        $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
 
@@ -176,8 +151,12 @@ class AjaxApiFModule extends Frontend
         $this->listViewLimit = $total;
         $this->createPagination($total);
 
-        $jsonReturnData = array('entities' => array(), 'html' => '', 'labels' => array('noResults' => $GLOBALS['TL_LANG']['MSC']['noResult']));
+        $jsonReturnData = array('entities' => array(), 'html' => '', 'fields' => $fieldsArr, 'redirectPage' => $rootDB, 'labels' => array('noResults' => $GLOBALS['TL_LANG']['MSC']['noResult']));
         $objTemplate = new FrontendTemplate($template);
+
+        //options
+        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
+        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
@@ -189,8 +168,8 @@ class AjaxApiFModule extends Frontend
             $item['itemCSS'] = ' ' . $item['cssID'][1];
 
             // set date format
-            $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
-            $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
+            $item['date'] = $item['date'] ? date($dateFormat, $item['date']) : '';
+            $item['time'] = $item['time'] ? date($timeFormat, $item['time']) : '';
 
             //set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
@@ -233,6 +212,7 @@ class AjaxApiFModule extends Frontend
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
 
                 foreach ($fieldWidgets as $widget) {
+
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
                     $type = $widget['widgetType'];
@@ -251,7 +231,6 @@ class AjaxApiFModule extends Frontend
 
                     $item[$id] = $objFieldTemplate->parse();
                 }
-
             }
 
             $objTemplate->setData($item);
@@ -287,11 +266,298 @@ class AjaxApiFModule extends Frontend
     }
 
     /**
+     *
+     */
+    public function getDetail()
+    {
+
+        $tablename = Input::get('tablename');
+        $wrapperID = Input::get('wrapperID');
+
+        $jsonReturnData = array();
+
+        if (!$tablename || !$wrapperID) {
+            $this->sendFailState("No Back end Module found");
+        }
+
+        if (!$this->Database->tableExists($tablename)) {
+            $this->sendFailState($tablename . " do not exist");
+        }
+
+        $alias = Input::get('alias');
+        $id = Input::get('id');
+        $qStr = '';
+
+        if($id)
+        {
+            $qStr = ' AND id = "'.$id.'"';
+        }
+
+        if($alias)
+        {
+            $qStr = ' AND alias = "'.$alias.'"';
+        }
+
+        if(!$qStr)
+        {
+            $this->sendFailState("No alias or id found");
+        }
+
+        $dataTable = $tablename.'_data';
+        $template = Input::get('template') ? Input::get('template') : 'fmodule_full';
+        $item = $this->Database->prepare('SELECT * FROM '.$dataTable.' WHERE published = "1" AND pid = "'.$wrapperID.'"'.$qStr.'')->query()->row();
+        $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+
+        if(empty($item))
+        {
+            $this->sendFailState("Page not found", "404");
+        }
+
+        $strResult = '';
+        $objTemplate = new FrontendTemplate($template);
+
+        $fieldsArr = $this->getModule($tablename)['fieldsArr'];
+        $fieldWidgets = $this->getModule($tablename)['widgetsArr'];
+
+        //options
+        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
+        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
+
+        $imagePath = $this->generateSingeSrc($item);
+
+        if ($imagePath) {
+            $item['singleSRC'] = $imagePath;
+        }
+
+        $item['size'] = $this->setImageSize($item['size']);
+
+        $item['cssID'] = deserialize($item['cssID']);
+        $item['itemID'] = $item['cssID'][0];
+        $item['itemCSS'] = ' ' . $item['cssID'][1];
+
+        $objCte = ContentModel::findPublishedByPidAndTable($item['id'], $dataTable);
+
+        $detail = array();
+        $teaser = array();
+
+        if ($objCte !== null) {
+
+            $intCount = 0;
+            $intLast = $objCte->count() - 1;
+
+            while ($objCte->next()) {
+
+                $arrCss = array();
+                $objRow = $objCte->current();
+
+                if ($intCount == 0 || $intCount == $intLast) {
+                    if ($intCount == 0) {
+                        $arrCss[] = 'first';
+                    }
+
+                    if ($intCount == $intLast) {
+                        $arrCss[] = 'last';
+                    }
+                }
+
+                $objRow->classes = $arrCss;
+
+                if ($objRow->fview == 'list') {
+
+                    $teaser[] = $this->getContentElement($objRow, $this->strColumn);
+
+                } else {
+
+                    $detail[] = $this->getContentElement($objRow, $this->strColumn);
+
+                }
+
+                ++$intCount;
+
+            }
+        }
+
+        $authorDB = null;
+        if($item['author'])
+        {
+            $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($item['author'])->row();
+            unset($authorDB['password']);
+            unset($authorDB['session']);
+        }
+
+        if(!empty($fieldWidgets))
+        {
+
+            $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+
+            foreach($fieldWidgets as $widget)
+            {
+                $id = $widget['fieldID'];
+                $tplName = $widget['widgetTemplate'];
+                $type = $widget['widgetType'];
+                $value = $item[$id];
+
+                if( in_array( $type, $arrayAsValue ) )
+                {
+                    $value = unserialize($value);
+                }
+
+                $objFieldTemplate = new FrontendTemplate($tplName);
+                $objFieldTemplate->setData(array(
+                    'value' => $value,
+                    'type' => $type,
+                    'item' => $item
+                ));
+
+                $item[$id] = $objFieldTemplate->parse();
+            }
+
+        }
+
+        $item['author'] = $authorDB;
+        $item['detail'] = $detail;
+        $item['teaser'] = $teaser;
+        $item['filter'] = $fieldsArr;
+        $item['date'] = $item['date'] ? date($dateFormat, $item['date']) : '';
+        $item['time'] = $item['time'] ? date($timeFormat, $item['time']) : '';
+
+        $objTemplate->setData($item);
+
+        $objTemplate->enclosure = array();
+        if ( $item['addEnclosure'] )
+        {
+            $this->addEnclosuresToTemplate($objTemplate, $item);
+            $item['enclosure'] = $objTemplate->enclosure;
+        }
+
+        if( $item['addImage'] )
+        {
+            $this->addImageToTemplate($objTemplate, $item);
+        }
+        /*
+        if( $wrapperDB['allowComments'] )
+        {
+            $this->import('Comments');
+            $com_template = Input::get('com_template') ? Input::get('com_template') : 'com_default';
+            $arrNotifies = array();
+            if( $wrapperDB['notify'] != 'notify_author' )
+            {
+                $arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
+            }
+
+            if( $wrapperDB['notify'] != 'notify_admin' )
+            {
+                if($authorDB != null && $authorDB['email'] != '')
+                {
+                    $arrNotifies[] = $authorDB['email'];
+                }
+            }
+
+            $objConfig = new \stdClass();
+            $objConfig->perPage = $wrapperDB['perPage'];
+            $objConfig->order = $wrapperDB['sortOrder'];
+            $objConfig->template = $com_template;
+            $objConfig->requireLogin = $wrapperDB['requireLogin'];
+            $objConfig->disableCaptcha = $wrapperDB['disableCaptcha'];
+            $objConfig->bbcode = $wrapperDB['bbcode'];
+            $objConfig->moderate = $wrapperDB['moderate'];
+
+            //$this->Comments->addCommentsToTemplate($objTemplate, $objConfig, $dataTable, $item['id'], $arrNotifies);
+
+        }
+        */
+
+        $strResult .= $objTemplate->parse();
+        $jsonReturnData['detail'] = $item;
+        $jsonReturnData['html'] = $strResult;
+        header('Content-type: application/json');
+        echo json_encode($jsonReturnData, 512);
+        exit;
+    }
+
+    /**
+     * @param $imgSize
+     * @return mixed
+     */
+    protected function setImageSize($imgSize)
+    {
+        if ($imgSize)
+        {
+            $size = deserialize($imgSize);
+
+            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
+            {
+                return $size;
+            }
+        }
+
+        return $imgSize;
+    }
+
+    /**
+     * @param $tablename
+     * @return array
+     */
+    protected function getModule($tablename)
+    {
+
+        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
+
+        $fieldsArr = array();
+        $widgetsArr = array();
+
+        while ($moduleDB->next()) {
+
+            if (in_array($moduleDB->fieldID, $this->doNotSetByID) || in_array($moduleDB->type, $this->doNotSetByType)) {
+                continue;
+            }
+
+            $modArr = $moduleDB->row();
+            $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
+            $modArr['value'] = $getFilter['value'];
+            $modArr['operator'] = $getFilter['operator'];
+            $modArr['overwrite'] = null;
+            $modArr['active'] = null;
+
+            $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
+
+            if ($val) {
+                $modArr['enable'] = true;
+            }
+
+            // field
+            if ($moduleDB->type == 'widget') {
+
+                $tplName = $moduleDB->widgetTemplate;
+                $tpl = '';
+
+                if(!$tplName)
+                {
+                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
+                    $tplNameArr = $this->getTemplateGroup('fm_field_'.$tplNameType);
+                    $tpl = current($tplNameArr);
+                }
+
+                $widgetsArr[$moduleDB->fieldID] = array(
+                    'fieldID' => $moduleDB->fieldID,
+                    'widgetType' => $moduleDB->widget_type,
+                    'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
+                );
+            }
+
+            $fieldsArr[$moduleDB->fieldID] = $modArr;
+
+        }
+
+        return array('fieldsArr' => $fieldsArr, 'widgetsArr' => $widgetsArr);
+    }
+
+    /**
      * @param $fieldID
      * @param $type
      * @return array
      */
-    public function getFilter($fieldID, $type)
+    protected function getFilter($fieldID, $type)
     {
         $getFilter = Input::get($fieldID) ? Input::get($fieldID) : '';
         $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
@@ -344,7 +610,7 @@ class AjaxApiFModule extends Frontend
     /**
      * @return string
      */
-    protected function getOrderBY()
+    protected function getOrderBy()
     {
         $orderBYOptions = array('ASC', 'DESC', 'RAND');
         $orderBY = Input::get('orderBy');
@@ -400,9 +666,16 @@ class AjaxApiFModule extends Frontend
      */
     private function generateSingeSrc($row)
     {
-        if ($row->singleSRC != '') {
+        $singleSrc = $row->singleSRC;
 
-            $objModel = \FilesModel::findByUuid($row->singleSRC);
+        if(!$singleSrc)
+        {
+            $singleSrc = $row['singleSRC'];
+        }
+
+        if ($singleSrc != '') {
+
+            $objModel = FilesModel::findByUuid($singleSrc);
 
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
 

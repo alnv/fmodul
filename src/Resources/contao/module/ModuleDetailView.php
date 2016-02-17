@@ -78,6 +78,7 @@ class ModuleDetailView extends \Contao\Module
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $fieldWidgets = array();
         $moduleArr = array();
+
         while($moduleDB->next())
         {
             if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
@@ -105,7 +106,6 @@ class ModuleDetailView extends \Contao\Module
         if (HelperModel::previewMode()) {
             $qProtectedStr = '';
         }
-
 
         $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? '.$qProtectedStr.'')->execute($wrapperID, $alias)->row();
         $wrapperDB = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($wrapperID)->row();
@@ -146,6 +146,10 @@ class ModuleDetailView extends \Contao\Module
             $itemDB['size'] = $imgSize;
         }
 
+        //set css and id
+        $itemDB['cssID'] = deserialize($itemDB['cssID']);
+        $itemDB['itemID'] = $itemDB['cssID'][0];
+        $itemDB['itemCSS'] = ' ' . $itemDB['cssID'][1];
 
         $objCte = \ContentModel::findPublishedByPidAndTable($itemDB['id'], $tablename . '_data');
 

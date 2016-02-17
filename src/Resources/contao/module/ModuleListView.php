@@ -109,7 +109,7 @@ class ModuleListView extends Module
             $modArr['active'] = null;
 
             if ($moduleDB->fieldID == 'auto_page') {
-                $modArr['value'] = $objPage->alias;
+                $modArr['value'] = Input::get('auto_item') ? $objPage->parentAlias : $objPage->alias;
             }
 
             $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
@@ -120,10 +120,21 @@ class ModuleListView extends Module
 
             // field
             if ($moduleDB->type == 'widget') {
+
+                $tplName = $moduleDB->widgetTemplate;
+                $tpl = '';
+
+                if(!$tplName)
+                {
+                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
+                    $tplNameArr = $this->getTemplateGroup('fm_field_'.$tplNameType);
+                    $tpl = current($tplNameArr);
+                }
+
                 $fieldWidgets[$moduleDB->fieldID] = array(
                     'fieldID' => $moduleDB->fieldID,
                     'widgetType' => $moduleDB->widget_type,
-                    'widgetTemplate' => $moduleDB->widgetTemplate
+                    'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
             }
 

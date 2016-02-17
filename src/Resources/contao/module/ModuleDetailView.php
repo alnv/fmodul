@@ -184,11 +184,9 @@ class ModuleDetailView extends \Contao\Module
                 } else {
 
                     $detail[] = $this->getContentElement($objRow, $this->strColumn);
-
                 }
 
                 ++$intCount;
-
             }
         }
 
@@ -201,6 +199,8 @@ class ModuleDetailView extends \Contao\Module
         if($itemDB['author'])
         {
             $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($itemDB['author'])->row();
+            unset($authorDB['password']);
+            unset($authorDB['session']);
         }
 
         $itemDB['teaser'] = $teaser;

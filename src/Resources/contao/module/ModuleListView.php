@@ -82,8 +82,10 @@ class ModuleListView extends Module
 
         global $objPage;
 
-        $arrTaxFilter = deserialize($this->f_display_mode);
-        $taxFilter = is_array($arrTaxFilter) ? $arrTaxFilter : array();
+        $f_display_mode = deserialize($this->f_display_mode);
+        $page_taxonomy = deserialize($objPage->page_taxonomy);
+        $taxonomyFromFE = is_array($f_display_mode) ? $f_display_mode : array();
+        $taxonomyFromPage = is_array($page_taxonomy) ? $page_taxonomy : array();
         $tablename = $this->f_select_module;
         $wrapperID = $this->f_select_wrapper;
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
@@ -142,10 +144,10 @@ class ModuleListView extends Module
 
         }
 
-        if (!empty($taxFilter)) {
-            $fieldsArr = $this->setFilterValues($taxFilter, $fieldsArr);
+        if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
+            $fieldsArr = $this->setFilterValues($taxonomyFromFE, $taxonomyFromPage, $fieldsArr);
         }
-        
+       
         $qResult = HelperModel::generateSQLQueryFromFilterArray($fieldsArr);
         $qStr = $qResult['qStr'];
         $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch']: '';
@@ -434,9 +436,28 @@ class ModuleListView extends Module
      * @param $return
      * @return mixed
      */
-    public function setFilterValues($filterValues, $return)
+    public function setFilterValues($taxonomyFromFE, $taxonomyFromPage, $return)
     {
-        foreach ($filterValues as $filterValue) {
+
+        $overriddenTaxonomyFields = array();
+        if(!empty($taxonomyFromPage))
+        {
+            foreach ($taxonomyFromPage as $filterValue) {
+
+                if($filterValue['active'] == '1')
+                {
+                    $overriddenTaxonomyFields[$filterValue['fieldID']] = $filterValue;
+                }
+
+            }
+        }
+
+        foreach ($taxonomyFromFE as $filterValue) {
+
+            if($overriddenTaxonomyFields[$filterValue['fieldID']])
+            {
+                $filterValue = $overriddenTaxonomyFields[$filterValue['fieldID']];
+            }
 
             $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
             $return[$filterValue['fieldID']]['active'] = $filterValue['active'];

@@ -3,15 +3,14 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   F Modul
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Input;
 use Contao\Widget;
 
 class ModeSettings extends Widget
@@ -31,38 +30,76 @@ class ModeSettings extends Widget
     public function generate()
     {
 
-        if ($this->strTable != 'tl_module') {
-            return '<p>ModeSetting is not enable</p>';
+        $allowedDCA = array('tl_module', 'tl_page');
+        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget');
+        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
+
+        if(!in_array($this->strTable, $allowedDCA))
+        {
+            return 'Taxonomy field is not allowed to used in '.$this->strTable;
         }
 
+        // contao
         if (!is_array($this->varValue)) {
             $this->varValue = array(array(''));
         }
 
         $this->import('Database');
 
-        $fmoduleDB = $this->Database->prepare("SELECT f_select_module, f_select_wrapper FROM " . $this->strTable . " WHERE id = ?")->execute($this->currentRecord)->row();
+        $fmoduleDB = null;
+        if($this->strTable == 'tl_module')
+        {
+            $fmoduleDB = $this->Database->prepare("SELECT f_select_module, f_select_wrapper FROM tl_module WHERE id = ?")->execute($this->currentRecord)->row();
+        }
 
-        $modulename = $fmoduleDB['f_select_module'];
-        $wrapperid = $fmoduleDB['f_select_wrapper'];
+        $modulename = $fmoduleDB ? $fmoduleDB['f_select_module'] : '';
+        $wrapperID = $fmoduleDB ? $fmoduleDB['f_select_wrapper'] : '';
 
-        if ($modulename == '' || $wrapperid == '') {
+        if ($this->strTable == 'tl_module' && ( $modulename == '' || $wrapperID == '' ) ) {
             return '<p>Please select Backend Modul</p>';
         }
 
-        if (!$this->Database->tableExists($modulename)) {
+        if ($this->strTable == 'tl_module' && !$this->Database->tableExists($modulename)) {
             return '<p>' . $modulename . ' do not exist! </p>';
         }
 
-        $modeSettingsDB = $this->Database->prepare(
-            'SELECT tl_fmodules.id AS fmoduleID, tl_fmodules_filters.*
-            FROM tl_fmodules
-            JOIN tl_fmodules_filters
-            ON tl_fmodules.id = tl_fmodules_filters.pid
-            WHERE tablename = ? ORDER BY sorting'
-        )->execute($modulename);
+        $modeSettingsDB = null;
+        $optionsDB = null;
+        //
+        if($this->strTable == 'tl_module')
+        {
+            $modeSettingsDB = $this->Database->prepare('SELECT tl_fmodules.tablename, tl_fmodules.id AS fmoduleID, tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY sorting')->execute($modulename);
+            $optionsDB = $this->Database->prepare('SELECT * FROM ' . $modulename . ' WHERE id = ?')->execute($wrapperID)->row();
+        }
 
-        $optionsDB = $this->Database->prepare('SELECT * FROM ' . $modulename . ' WHERE id = ?')->execute($wrapperid)->row();
+        //
+        if($this->strTable == 'tl_page')
+        {
+            $modeSettingsDB = $this->Database->prepare('SELECT tl_fmodules.tablename, tl_fmodules.id AS fmoduleID, tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid ORDER BY sorting')->execute();
+        }
+
+        //
+        if($optionsDB == null && $this->strTable == 'tl_page')
+        {
+            $options = array();
+
+            while($modeSettingsDB->next())
+            {
+                if ( in_array($modeSettingsDB->fieldID, $doNotSetByID) ) {
+                    continue;
+                }
+
+                if ( in_array($modeSettingsDB->type, $doNotSetByType) ) {
+                    continue;
+                }
+
+                $options[$modeSettingsDB->fieldID] = $this->Database->prepare('SELECT '.$modeSettingsDB->fieldID.' FROM ' . $modeSettingsDB->tablename . '')->execute()->row()[$modeSettingsDB->fieldID];
+            }
+
+            $optionsDB = $options;
+            $modeSettingsDB->reset();
+
+        }
 
         $index = 0;
         $input = $this->varValue;
@@ -72,8 +109,10 @@ class ModeSettings extends Widget
             'overwrite' => '0'
         );
 
-        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget');
-        $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
+        if($modeSettingsDB->count() < 1)
+        {
+            return 'No fields found';
+        }
 
         while ($modeSettingsDB->next()) {
 

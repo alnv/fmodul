@@ -59,5 +59,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Der Tabellenname muss 
 $GLOBALS['TL_LANG']['tl_fmodules']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_fmodules']['id'] = 'ID';
 $GLOBALS['TL_LANG']['tl_fmodules']['date'] = 'Datum';
+$GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';

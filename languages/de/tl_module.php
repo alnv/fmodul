@@ -1,7 +1,7 @@
 <?php
 
 //legend
-$GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'Abfragen';
+$GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'F Modul Taxonomie';
 $GLOBALS['TL_LANG']['tl_module']['sort_legend'] = 'Sortierung';
 
 //fields
@@ -11,7 +11,7 @@ $GLOBALS['TL_LANG']['tl_module']['f_select_module'][1] = 'Wähle dein gewünscht
 $GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'][0] = 'Wrapper auswählen';
 $GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'][1] = 'Wähle einen Wrapper aus.';
 
-$GLOBALS['TL_LANG']['tl_module']['f_display_mode'][0] = 'Abfragen';
+$GLOBALS['TL_LANG']['tl_module']['f_display_mode'][0] = 'Taxonomie';
 $GLOBALS['TL_LANG']['tl_module']['f_display_mode'][1] = 'Erstelle deine gewünschte vordefinierten Datenbank abfragen';
 
 $GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'][0] = 'Sortierung';

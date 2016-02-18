@@ -1,7 +1,7 @@
 <?php
 
 //legend
-$GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'Queries';
+$GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'Taxonomy';
 $GLOBALS['TL_LANG']['tl_module']['sort_legend'] = 'Sorting';
 
 //fields
@@ -11,7 +11,7 @@ $GLOBALS['TL_LANG']['tl_module']['f_select_module'][1] = 'Please select your F m
 $GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'][0] = 'Select channel';
 $GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'][1] = 'Please select your F module channel.';
 
-$GLOBALS['TL_LANG']['tl_module']['f_display_mode'][0] = 'Where queries';
+$GLOBALS['TL_LANG']['tl_module']['f_display_mode'][0] = 'Taxonomies';
 $GLOBALS['TL_LANG']['tl_module']['f_display_mode'][1] = 'define your where queries';
 
 $GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'][0] = 'Front end sorting';

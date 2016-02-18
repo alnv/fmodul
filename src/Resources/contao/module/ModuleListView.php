@@ -126,10 +126,9 @@ class ModuleListView extends Module
                 $tplName = $moduleDB->widgetTemplate;
                 $tpl = '';
 
-                if(!$tplName)
-                {
+                if (!$tplName) {
                     $tplNameType = explode('.', $moduleDB->widget_type)[0];
-                    $tplNameArr = $this->getTemplateGroup('fm_field_'.$tplNameType);
+                    $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                 }
 
@@ -147,10 +146,10 @@ class ModuleListView extends Module
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
             $fieldsArr = $this->setFilterValues($taxonomyFromFE, $taxonomyFromPage, $fieldsArr);
         }
-       
+
         $qResult = HelperModel::generateSQLQueryFromFilterArray($fieldsArr);
         $qStr = $qResult['qStr'];
-        $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch']: '';
+        $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch'] : '';
 
         //get text search results
         $textSearchResults = array();
@@ -440,12 +439,10 @@ class ModuleListView extends Module
     {
 
         $overriddenTaxonomyFields = array();
-        if(!empty($taxonomyFromPage))
-        {
+        if (!empty($taxonomyFromPage)) {
             foreach ($taxonomyFromPage as $filterValue) {
 
-                if($filterValue['active'] == '1')
-                {
+                if ($filterValue['active'] == '1') {
                     $overriddenTaxonomyFields[$filterValue['fieldID']] = $filterValue;
                 }
 
@@ -454,8 +451,7 @@ class ModuleListView extends Module
 
         foreach ($taxonomyFromFE as $filterValue) {
 
-            if($overriddenTaxonomyFields[$filterValue['fieldID']])
-            {
+            if ($overriddenTaxonomyFields[$filterValue['fieldID']]) {
                 $filterValue = $overriddenTaxonomyFields[$filterValue['fieldID']];
             }
 

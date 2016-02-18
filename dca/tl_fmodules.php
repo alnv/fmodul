@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   F Modul
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @copyright 2016 Alexander Naumov
  */
 
 /**
@@ -181,20 +181,16 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         'sorting' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['sorting'],
-            'default' => 'title',
             'exclude' => true,
-            'inputType' => 'radio',
+            'default' => 'title',
+            'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
             'options_callback' => array('tl_fmodules', 'getSortingOptions'),
+            'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
             'save_callback' => array(
                 array('tl_fmodules', 'saveSortingType')
             ),
             'sql' => "varchar(64) NOT NULL default 'title'"
-        ),
-
-        'sortingType' => array(
-
-            'sql' => "varchar(64) NOT NULL default ''"
         ),
 
         'orderBy' => array(
@@ -202,10 +198,16 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['orderBy'],
             'default' => 'asc',
             'exclude' => true,
-            'inputType' => 'radio',
+            'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
             'options' => array('asc', 'desc'),
+            'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(12) NOT NULL default 'asc'"
+        ),
+
+        'sortingType' => array(
+
+            'sql' => "varchar(64) NOT NULL default ''"
         )
     )
 );
@@ -430,7 +432,7 @@ class tl_fmodules extends \Contao\Backend
     {
         $id = $dc->activeRecord->id;
         $db = $this->Database->prepare('SELECT fieldID, title, type FROM tl_fmodules_filters WHERE pid = ?')->execute($id);
-        $return = array('id' => 'id', 'title' => 'Titel', 'date.7' => 'Datum');
+        $return = array('title' => 'title', 'id' => 'id',  'date.7' => 'date');
         while ($db->next()) {
 
             if($db->fieldID == 'orderBy' || $db->fieldID == 'sorting_fields' || $db->fieldID == 'pagination')

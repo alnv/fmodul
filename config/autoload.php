@@ -30,7 +30,7 @@ ClassLoader::addClasses(array
     'FModule\FModule' => $pathToFiles.'src/Resources/contao/classes/FModule.php',
     'FModule\QueryModel' => $pathToFiles.'src/Resources/contao/models/QueryModel.php',
     'FModule\HelperModel' => $pathToFiles.'src/Resources/contao/models/HelperModel.php',
-    'FModule\AjaxApiFModule' => $pathToFiles.'src/Resources/contao/classes/AjaxApiFModule.php',
+    'FModule\FModuleAjaxApi' => $pathToFiles.'src/Resources/contao/classes/FModuleAjaxApi.php',
 ));
 
 /**

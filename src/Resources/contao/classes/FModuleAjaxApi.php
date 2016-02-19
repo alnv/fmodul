@@ -56,7 +56,8 @@ class FModuleAjaxApi extends Frontend
     protected $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
 
     /**
-     *
+     * return list view
+     * filter allowed
      */
     public function getEntities()
     {
@@ -98,10 +99,11 @@ class FModuleAjaxApi extends Frontend
         }
         $qOrderBY = $this->getOrderBy();
 
-        $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1"' . $qPid . $qStr . $qOrderBY.'')->query();
+        $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1"' . $qPid . $qStr . $qOrderBY . '')->query();
         $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
+
 
         while ($resultsDB->next()) {
 
@@ -264,7 +266,7 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
-     *
+     * return detail view
      */
     public function getDetail()
     {
@@ -290,27 +292,22 @@ class FModuleAjaxApi extends Frontend
 
         $qStr = '';
 
-        if($id)
-        {
-            $qStr = ' AND id = "'.$id.'"';
+        if ($id) {
+            $qStr = ' AND id = "' . $id . '"';
         }
 
-        if($alias)
-        {
-            $qStr = ' AND alias = "'.$alias.'"';
+        if ($alias) {
+            $qStr = ' AND alias = "' . $alias . '"';
         }
 
-        if(!$qStr)
-        {
+        if (!$qStr) {
             $this->sendFailState("No alias or id found");
         }
 
-        $dataTable = $tablename.'_data';
-        $item = $this->Database->prepare('SELECT * FROM '.$dataTable.' WHERE published = "1" AND pid = "'.$wrapperID.'"'.$qStr.'')->query()->row();
-        //$wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+        $dataTable = $tablename . '_data';
+        $item = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1" AND pid = "' . $wrapperID . '"' . $qStr . '')->query()->row();
 
-        if(empty($item))
-        {
+        if (empty($item)) {
             $this->sendFailState("Page not found", "404");
         }
 
@@ -319,7 +316,6 @@ class FModuleAjaxApi extends Frontend
 
         $fieldsArr = $this->getModule($tablename)['fieldsArr'];
         $fieldWidgets = $this->getModule($tablename)['widgetsArr'];
-
 
         $imagePath = $this->generateSingeSrc($item);
 
@@ -376,27 +372,23 @@ class FModuleAjaxApi extends Frontend
         }
 
         $authorDB = null;
-        if($item['author'])
-        {
+        if ($item['author']) {
             $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($item['author'])->row();
             unset($authorDB['password']);
             unset($authorDB['session']);
         }
 
-        if(!empty($fieldWidgets))
-        {
+        if (!empty($fieldWidgets)) {
 
             $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
 
-            foreach($fieldWidgets as $widget)
-            {
+            foreach ($fieldWidgets as $widget) {
                 $id = $widget['fieldID'];
                 $tplName = $widget['widgetTemplate'];
                 $type = $widget['widgetType'];
                 $value = $item[$id];
 
-                if( in_array( $type, $arrayAsValue ) )
-                {
+                if (in_array($type, $arrayAsValue)) {
                     $value = unserialize($value);
                 }
 
@@ -422,14 +414,12 @@ class FModuleAjaxApi extends Frontend
         $objTemplate->setData($item);
 
         $objTemplate->enclosure = array();
-        if ( $item['addEnclosure'] )
-        {
+        if ($item['addEnclosure']) {
             $this->addEnclosuresToTemplate($objTemplate, $item);
             $item['enclosure'] = $objTemplate->enclosure;
         }
 
-        if( $item['addImage'] )
-        {
+        if ($item['addImage']) {
             $this->addImageToTemplate($objTemplate, $item);
         }
 
@@ -442,7 +432,7 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
-     *
+     * return auto completion
      */
     public function getAutoCompletion()
     {
@@ -456,7 +446,7 @@ class FModuleAjaxApi extends Frontend
         $allowedTypes = array('search_field', 'multi_choice', 'simple_choice', 'fulltext_search', 'date_field');
 
         //
-        if (!$tablename || !$wrapperID || !$fieldID ) {
+        if (!$tablename || !$wrapperID || !$fieldID) {
             $this->sendFailState("No back end module found");
         }
 
@@ -466,99 +456,103 @@ class FModuleAjaxApi extends Frontend
         }
 
         //
-        $dataTable = $tablename.'_data';
+        $dataTable = $tablename . '_data';
 
         //q
-        $resultsDB =  $this->Database->prepare('SELECT * FROM '.$dataTable.' WHERE published = "1" AND pid = ?')->execute($wrapperID);
+        $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1" AND pid = ?')->execute($wrapperID);
         $field = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE fieldID = ?')->execute($fieldID)->row();
 
-        if(empty($field))
-        {
-            $this->sendFailState('Field '.$fieldID . ' do not exist');
+        if (empty($field)) {
+            $this->sendFailState('Field ' . $fieldID . ' do not exist');
         }
 
-        if(!in_array($field['type'], $allowedTypes))
-        {
+        if (!in_array($field['type'], $allowedTypes)) {
             $this->sendFailState('This field type is not supported');
         }
 
         $wrapperOptionsDB = null;
         $options = array();
 
-        if($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice' )
-        {
-            $wrapperOptionsDB = $this->Database->prepare('SELECT '.$fieldID.' FROM '.$tablename.' WHERE id = ?')->execute($wrapperID)->row();
+        if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
+            $wrapperOptionsDB = $this->Database->prepare('SELECT ' . $fieldID . ' FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
 
-            if($wrapperOptionsDB[$fieldID] && is_string($wrapperOptionsDB[$fieldID]))
-            {
+            if ($wrapperOptionsDB[$fieldID] && is_string($wrapperOptionsDB[$fieldID])) {
                 $wrapperOptionsDB = deserialize($wrapperOptionsDB[$fieldID]);
             }
 
-            if(is_array($wrapperOptionsDB))
-            {
-                foreach($wrapperOptionsDB as $option)
-                {
-                    $options[$option['value']] =  $option['label'];
+            if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] != '1') {
+                foreach ($wrapperOptionsDB as $option) {
+                    $options[$option['value']] = $option['label'];
                 }
+            }
+
+            if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] == '1') {
+                if ($wrapperOptionsDB['table'] && $wrapperOptionsDB['col'] && $wrapperOptionsDB['title']) {
+                    $dataFromTableDB = $this->Database->prepare('SELECT * FROM ' . $wrapperOptionsDB['table'] . ' LIMIT 1000')->execute();
+                    $optionsFromTableDB = array();
+
+                    while ($dataFromTableDB->next()) {
+                        $keyValue = $dataFromTableDB->row();
+                        $optionsFromTableDB[] = array('value' => $keyValue[$wrapperOptionsDB['col']], 'label' => $keyValue[$wrapperOptionsDB['title']]);
+                    }
+
+                    if (!empty($optionsFromTableDB)) {
+                        foreach ($optionsFromTableDB as $option) {
+                            $options[$option['value']] = $option['label'];
+                        }
+
+                    }
+                }
+
             }
 
         }
 
         $autoCompletionArr = array();
 
-        while($resultsDB->next())
-        {
+        while ($resultsDB->next()) {
             $result = $resultsDB->row();
 
             $items = $result[$fieldID];
 
-            if($field['type'] == 'multi_choice')
-            {
+            if ($field['type'] == 'multi_choice') {
                 $splitResults = explode(',', $items);
 
-                foreach($splitResults as $splitResult)
-                {
+                foreach ($splitResults as $splitResult) {
                     $autoCompletionArr[$splitResult] = $options[$splitResult] ? $options[$splitResult] : $splitResult;
                 }
             }
 
-            if($field['type'] == 'simple_choice')
-            {
+            if ($field['type'] == 'simple_choice') {
                 $autoCompletionArr[$items] = $options[$items] ? $options[$items] : $items;
             }
 
-            if($field['type'] == 'date_field')
-            {
+            if ($field['type'] == 'date_field') {
                 $format = $dateFormat;
 
-                if($field['addTime'])
-                {
-                    $format .= ' '.$timeFormat;
+                if ($field['addTime']) {
+                    $format .= ' ' . $timeFormat;
                 }
 
                 $autoCompletionArr[$items] = date($format, $items);
 
             }
 
-            if($field['type'] == 'fulltext_search')
-            {
+            if ($field['type'] == 'fulltext_search') {
                 $autoCompletionArr[] = $result['title'];
             }
 
-            if($field['type'] == 'search_field' && $field['isInteger'])
-            {
+            if ($field['type'] == 'search_field' && $field['isInteger']) {
                 $autoCompletionArr[$items] = $items;
             }
 
-            if($field['type'] == 'search_field' && !$field['isInteger'])
-            {
+            if ($field['type'] == 'search_field' && !$field['isInteger']) {
                 $itemStr = preg_replace('/[^a-z_\-0-9]/i', ' ', $items);
                 $itemStr = trim($itemStr);
 
                 $splitResults = explode(' ', $itemStr);
 
-                foreach($splitResults as $splitResult)
-                {
+                foreach ($splitResults as $splitResult) {
                     $autoCompletionArr[] = $splitResult;
                 }
 
@@ -578,17 +572,23 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
+     *
+     */
+    public function getDefault()
+    {
+        $this->sendFailState('No method found');
+    }
+
+    /**
      * @param $imgSize
      * @return mixed
      */
     protected function setImageSize($imgSize)
     {
-        if ($imgSize)
-        {
+        if ($imgSize) {
             $size = deserialize($imgSize);
 
-            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
-            {
+            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 return $size;
             }
         }
@@ -633,10 +633,9 @@ class FModuleAjaxApi extends Frontend
                 $tplName = $moduleDB->widgetTemplate;
                 $tpl = '';
 
-                if(!$tplName)
-                {
+                if (!$tplName) {
                     $tplNameType = explode('.', $moduleDB->widget_type)[0];
-                    $tplNameArr = $this->getTemplateGroup('fm_field_'.$tplNameType);
+                    $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                 }
 
@@ -689,16 +688,14 @@ class FModuleAjaxApi extends Frontend
         // options
         // perPage
         // page
-
-        if(Input::get('perPage'))
-        {
+        if (Input::get('perPage')) {
             $perPage = (int)Input::get('perPage');
             $this->perPage = $perPage;
         }
 
         if ($this->perPage > 0) {
 
-            $page = (Input::get('page') !== null) ? (int) Input::get('page') : 1;
+            $page = (Input::get('page') !== null) ? (int)Input::get('page') : 1;
 
             if ($page < 1 || $page > max(ceil($total / $this->perPage), 1)) {
 
@@ -720,7 +717,6 @@ class FModuleAjaxApi extends Frontend
         // options
         // orderBy
         // sorting_fields
-
         $orderBYOptions = array('ASC', 'DESC', 'RAND');
         $orderBY = Input::get('orderBy');
         $orderBYStr = 'DESC';
@@ -773,13 +769,14 @@ class FModuleAjaxApi extends Frontend
      * @param $row
      * @return bool|void
      */
-    private function generateSingeSrc($row)
+    protected function generateSingeSrc($row)
     {
-        $singleSrc = $row->singleSRC;
 
-        if(!$singleSrc)
+        if(is_array($row))
         {
             $singleSrc = $row['singleSRC'];
+        }else{
+            $singleSrc = $row->singleSRC;
         }
 
         if ($singleSrc != '') {
@@ -802,7 +799,7 @@ class FModuleAjaxApi extends Frontend
      * @param $alias
      * @return string
      */
-    private function generateUrl($objTarget, $alias)
+    protected function generateUrl($objTarget, $alias)
     {
         return $this->generateFrontendUrl($objTarget, '/' . $alias);
     }

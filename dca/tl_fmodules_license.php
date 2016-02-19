@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   F Modul
  * @author    Alexander Naumov
  * @license   commercial
- * @copyright Alexander Naumov 2015
+ * @copyright Alexander Naumov 2016
  */
 
 $GLOBALS['TL_DCA']['tl_fmodules_license'] = array(

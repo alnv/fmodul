@@ -352,12 +352,12 @@ class tl_fmodules_filters extends \Contao\Backend
 
         if($arrRow['type'] == 'legend_start')
         {
-            return '<span style="color: #77ac45; font-weight: 600;">'.htmlentities('<').' '.$arrRow['title'].' '.htmlentities('>').'</span>';
+            return '<span style="color: #77ac45;">'.htmlentities('<').''.$arrRow['title'].''.htmlentities('>').'</span>';
         }
 
         if($arrRow['type'] == 'legend_end')
         {
-            return '<span style="color: #77ac45; font-weight: 600;">'.htmlentities('</').' '.$arrRow['title'].' '.htmlentities('>').'</span>';
+            return '<span style="color: #77ac45;">'.htmlentities('</').''.$arrRow['title'].''.htmlentities('>').'</span>';
         }
 
         if($arrRow['isMandatory'])

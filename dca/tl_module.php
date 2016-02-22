@@ -189,10 +189,16 @@ class tl_module_fmodule extends tl_module
             $filterFieldsDB = $this->Database->prepare('SELECT tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($selectedList);
             $filterFields = array();
             $doNotSetByType = array('legend_start', 'legend_end', 'widget');
+            $doNotSetByID = array('auto_page', 'auto_item');
 
             while ($filterFieldsDB->next()) {
 
                 if(in_array($filterFieldsDB->type, $doNotSetByType))
+                {
+                    continue;
+                }
+
+                if(in_array($filterFieldsDB->fieldID, $doNotSetByID))
                 {
                     continue;
                 }

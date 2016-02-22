@@ -40,6 +40,7 @@ class ModuleFormFilter extends \Contao\Module
         global $objPage;
 
         $format = $objPage->dateFormat;
+        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();
         $fields = deserialize($this->f_form_fields);
         $listID = $this->f_list_field;
         $formTemplate = $this->f_form_template;
@@ -217,7 +218,7 @@ class ModuleFormFilter extends \Contao\Module
             }
 
             //
-            if ($widget['data']['overwrite'] == '1') {
+            if ($widget['data']['overwrite'] == '1' || $pageTaxonomy[$fieldID]['set']['overwrite'] == '1') {
                 continue;
             }
 

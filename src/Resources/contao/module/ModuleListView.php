@@ -438,63 +438,82 @@ class ModuleListView extends Module
     public function setFilterValues($taxonomyFromFE, $taxonomyFromPage, $return)
     {
 
-        $overriddenTaxonomyFields = array();
-        if (!empty($taxonomyFromPage)) {
-            foreach ($taxonomyFromPage as $filterValue) {
+        $taxonomies = array();
 
-                if ($filterValue['active'] == '1') {
-                    $overriddenTaxonomyFields[$filterValue['fieldID']] = $filterValue;
-                }
+        // nachdem 1.4.2 update ändern!
+        // die fieldID wird als key übergeben. daher kann man eine schleife sparen
+        // erstmal weglassen wegen der kompatibilität
+        foreach ($taxonomyFromFE as $filterValue) {
+            if($filterValue['set']['ignore'])
+            {
+                continue;
+            }
+            $taxonomies[$filterValue['fieldID']] = $filterValue;
+        }
 
+        foreach ($taxonomyFromPage as $filterValue) {
+            if($filterValue['set']['ignore'])
+            {
+                continue;
+            }
+            if ($filterValue['active'] == '1') {
+                $taxonomies[$filterValue['fieldID']] = $filterValue;
             }
         }
 
-        foreach ($taxonomyFromFE as $filterValue) {
-
-            if ($overriddenTaxonomyFields[$filterValue['fieldID']]) {
-                $filterValue = $overriddenTaxonomyFields[$filterValue['fieldID']];
-            }
-
-            $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
-            $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
-
-            $value = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
-
-            if (!$value && $filterValue['active']) {
-
-                $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
-                $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
-
-                //exception for toggle field
-                if (is_null(Input::get($filterValue['fieldID'])) && $return[$filterValue['fieldID']]['type'] == 'toggle_field') {
-                    $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] ? '1' : 'skip';
-                }
-
-            }
-
-            if ($filterValue['set']['overwrite']) {
-
-                $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
-                $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
-
-                //exception for toggle field
-                if ($return[$filterValue['fieldID']]['type'] == 'toggle_field') {
-                    $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] ? '1' : 'skip';
-                }
-
-            }
-
-            $val = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
-
-            if ($val) {
-                $return[$filterValue['fieldID']]['enable'] = true;
-            }
-
+        foreach ($taxonomies as $filterValue) {
+            $return = $this->taxonomyValueSetter($filterValue, $return);
         }
 
         return $return;
 
     }
+
+    /**
+     * @param $filterValue
+     * @param $return
+     * @return mixed
+     */
+    protected function taxonomyValueSetter($filterValue, $return)
+    {
+
+        $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
+        $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
+
+        $value = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
+
+        if (!$value && $filterValue['active']) {
+
+            $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
+            $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
+
+            //exception for toggle field
+            if (is_null(Input::get($filterValue['fieldID'])) && $return[$filterValue['fieldID']]['type'] == 'toggle_field') {
+                $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] ? '1' : 'skip';
+            }
+        }
+
+        if ($filterValue['set']['overwrite']) {
+
+            $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
+            $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
+
+            //exception for toggle field
+            if ($return[$filterValue['fieldID']]['type'] == 'toggle_field') {
+                $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] == '1' ? '1' : 'skip';
+            }
+
+        }
+
+        $val = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
+
+        if ($val) {
+            $return[$filterValue['fieldID']]['enable'] = true;
+        }
+
+        return $return;
+    }
+
 
 
     /**

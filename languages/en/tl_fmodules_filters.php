@@ -43,6 +43,8 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][1] = 'Template ausw
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Style';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Backend Style of the input field.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][0] = 'Activate Auto page';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][1] = 'Use page alias to filter your list.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][1] = 'Define Palette.';

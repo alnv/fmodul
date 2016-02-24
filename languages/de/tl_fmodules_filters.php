@@ -82,6 +82,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'Das Contao-Backend v
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][0] = 'Bis';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][1] = 'Wähle ein Eingabefeld aus.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][0] = 'Auto Page Attribute Aktivieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][1] = 'Damit kannst du deine Liste nach Seitenalias filtern. Mehr auf: http://fmodul.alexandernaumov.de/dokumentation/auto_page-attribute.html';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isFuzzy'] = array('Ungenaue Suche', 'Findet "Contao" bei der Suche nach "con" (entspricht einer Suche mit Platzhaltern).');
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][0] = 'Eingabe negieren';

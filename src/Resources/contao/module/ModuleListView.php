@@ -13,6 +13,7 @@
 
 
 use Contao\Config;
+use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\Input;
 use Contao\Module;
@@ -20,7 +21,8 @@ use Contao\Pagination;
 
 
 /**
- *
+ * Class ModuleListView
+ * @package FModule
  */
 class ModuleListView extends Module
 {
@@ -63,11 +65,8 @@ class ModuleListView extends Module
 
         $this->import('FrontendUser', 'User');
 
-        //
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
-
             Input::setGet('item', Input::get('auto_item'));
-
         }
 
         return parent::generate();
@@ -110,8 +109,8 @@ class ModuleListView extends Module
             $modArr['overwrite'] = null;
             $modArr['active'] = null;
 
-            if ($moduleDB->fieldID == 'auto_page') {
-                $modArr['value'] = Input::get('auto_item') ? $objPage->parentAlias : $objPage->alias;
+            if ($moduleDB->fieldID == 'auto_page' || $moduleDB->autoPage) {
+                $modArr = $this->setValuesForAutoPageAttribute($modArr);
             }
 
             $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
@@ -349,6 +348,38 @@ class ModuleListView extends Module
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
 
     }
+
+    /**
+     * @param $mode
+     * @return mixed
+     */
+    protected function setValuesForAutoPageAttribute($return)
+    {
+        global $objPage;
+
+        $alias =  $objPage->alias;
+
+        if($return['type'] == 'multi_choice')
+        {
+
+            $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
+            $alias = Environment::get('requestUri');
+            $alias = explode('/', $alias);
+            $alias = array_filter($alias);
+            $alias = array_values($alias);
+
+            if($language && $alias[0] && $language == $alias[0])
+            {
+                array_shift($alias);
+            }
+
+        }
+
+        $return['value'] = $alias;
+
+        return $return;
+    }
+
 
     /**
      * @return string

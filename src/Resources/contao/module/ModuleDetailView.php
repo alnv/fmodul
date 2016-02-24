@@ -13,11 +13,16 @@
 
 use Contao\FrontendTemplate;
 use Contao\Input;
+use Contao\Config;
+use Contao\Module;
+use Contao\BackendTemplate;
+use Contao\FilesModel;
 
 /**
- *
+ * Class ModuleDetailView
+ * @package FModule
  */
-class ModuleDetailView extends \Contao\Module
+class ModuleDetailView extends Module
 {
     /**
      * @var string
@@ -32,7 +37,7 @@ class ModuleDetailView extends \Contao\Module
 
         if (TL_MODE == 'BE') {
 
-            $objTemplate = new \BackendTemplate('be_wildcard');
+            $objTemplate = new BackendTemplate('be_wildcard');
             $objTemplate->wildcard = '### '. $this->name .' ###';
             $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
             return $objTemplate->parse();
@@ -41,9 +46,9 @@ class ModuleDetailView extends \Contao\Module
 
         $this->import('FrontendUser', 'User');
 
-        if (!isset($_GET['item']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+        if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
-            \Input::setGet('item', \Input::get('auto_item'));
+            Input::setGet('item', Input::get('auto_item'));
 
         }
 
@@ -190,7 +195,6 @@ class ModuleDetailView extends \Contao\Module
             }
         }
 
-
         $seoDescription = strip_tags($itemDB['description']);
         $objPage->description = $seoDescription;
         $objPage->pageTitle = $itemDB['title'];
@@ -299,7 +303,7 @@ class ModuleDetailView extends \Contao\Module
     {
         if ($row['singleSRC'] != '') {
 
-            $objModel = \FilesModel::findByUuid($row['singleSRC']);
+            $objModel = FilesModel::findByUuid($row['singleSRC']);
 
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
 

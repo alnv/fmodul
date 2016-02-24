@@ -129,6 +129,7 @@ class DCACreator
                 $field['dataFromTable'] = $fieldsDB->row()['dataFromTable'];
                 $field['widgetTemplate'] = $fieldsDB->row()['widgetTemplate'];
                 $field['isInteger'] = $fieldsDB->row()['isInteger'];
+                $field['autoPage'] = $fieldsDB->row()['autoPage'];
                 $field['addTime'] = $fieldsDB->row()['addTime'];
                 $field['from_field'] = $fieldsDB->row()['from_field'];
                 $field['to_field'] = $fieldsDB->row()['to_field'];

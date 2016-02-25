@@ -17,7 +17,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('tl_modul
 //module palette
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{mode_legend},f_display_mode;{sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 //sub
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
@@ -32,6 +32,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_select_module'],
     'default' => '',
+    'exclude' => true,
     'inputType' => 'select',
     'includeBlankOption' => true,
     'blankOptionLabel' => '-',
@@ -44,6 +45,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_select_wrapper'],
     'inputType' => 'select',
+    'exclude' => true,
     'includeBlankOption' => true,
     'blankOptionLabel' => '-',
     'options' => array(),
@@ -55,6 +57,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_orderby'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_orderby'],
     'inputType' => 'radio',
+    'exclude' => true,
     'default' => 'desc',
     'eval' => array('tl_class' => 'clr m12'),
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
@@ -66,6 +69,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'],
     'inputType' => 'checkboxWizard',
+    'exclude' => true,
     'default' => 'id',
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
     'options' => array('id' => 'ID','title' => 'Titel', 'date' => 'Datum'),
@@ -77,6 +81,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_perPage'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_perPage'],
     'default' => '0',
+    'exclude' => true,
     'inputType' => 'text',
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(10) NOT NULL default ''"
@@ -86,13 +91,25 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_limit_page'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_limit_page'],
     'default' => '0',
+    'exclude' => true,
     'inputType' => 'text',
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(10) NOT NULL default ''"
 );
 
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['f_doNotSet_404'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'clr m12'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_display_mode'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_display_mode'],
+    'exclude' => true,
     'inputType' => 'modeSettings',
     'eval' => array('submitOnChange' => true),
     'sql' => "blob NULL"
@@ -134,6 +151,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_template'] = array
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_form_fields'],
+    'exclude' => true,
     'inputType' => 'filterFields',
     'eval' => array('tl_class' => 'clr'),
     'sql' => "blob NULL"
@@ -142,6 +160,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields'] = array(
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_list_field'],
+    'exclude' => true,
     'inputType' => 'select',
     'includeBlankOption' => true,
     'blankOptionLabel' => '-',
@@ -166,6 +185,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
 class tl_module_fmodule extends tl_module
 {
 
+    /**
+     * @param DataContainer $dc
+     * @return array
+     */
     public function getListModules(DataContainer $dc)
     {
         $type = 'fmodule_fe_list';
@@ -235,7 +258,7 @@ class tl_module_fmodule extends tl_module
 
 
     /**
-     *
+     * @return array
      */
     public function getDetailTemplates()
     {
@@ -243,7 +266,7 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     *
+     * @return array
      */
     public function getListTemplates()
     {
@@ -251,7 +274,7 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     *
+     * @return array
      */
     public function getFormTemplates()
     {
@@ -259,7 +282,7 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     *
+     * @return array
      */
     public function getModules()
     {
@@ -276,7 +299,7 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     *
+     * @param $dc
      */
     public function setFEModule($dc)
     {

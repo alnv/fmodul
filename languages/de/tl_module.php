@@ -23,6 +23,9 @@ $GLOBALS['TL_LANG']['tl_module']['f_perPage'][1] = 'Die Anzahl an Elementen pro 
 $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][0] = 'Anzahl an Elementen';
 $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][1] = 'Hier können Sie die Element-Anzahl beschränken. Geben Sie 0 ein, um alle anzuzeigen';
 
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'Keine 404 Fehlerseite anzeigen';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Die 404 Fehlerseite wird nicht angezeigt, wenn kein Datensatz gefunden wird.';
+
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][0] = 'Sortierreihenfolge';
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][1] = 'Lege die Reihenfolge fest';
 

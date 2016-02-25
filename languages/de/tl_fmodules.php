@@ -22,7 +22,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'Feeds für die Backend Module 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Einstellung';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Zugriffsschutz';
-$GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Sortierung';
+$GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Backend Sortierung';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Modulname';

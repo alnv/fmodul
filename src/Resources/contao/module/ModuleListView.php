@@ -65,6 +65,7 @@ class ModuleListView extends Module
 
         $this->import('FrontendUser', 'User');
 
+        //auto_page Attribute
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
             Input::setGet('item', Input::get('auto_item'));
         }
@@ -101,9 +102,7 @@ class ModuleListView extends Module
             }
 
             $modArr = $moduleDB->row();
-
             $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
-
             $modArr['value'] = $getFilter['value'];
             $modArr['operator'] = $getFilter['operator'];
             $modArr['overwrite'] = null;

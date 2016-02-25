@@ -46,9 +46,20 @@ class ModuleDetailView extends Module
 
         $this->import('FrontendUser', 'User');
 
-        if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+        if (!isset($_GET['auto_item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
 
-            Input::setGet('item', Input::get('auto_item'));
+            Input::setGet('auto_item', Input::get('auto_item'));
+
+        }
+
+        if($this->f_doNotSet_404 == '1' && !Input::get('auto_item'))
+        {
+            global $objPage;
+
+            $objPage->noSearch = 1;
+            $objPage->cache = 0;
+
+            return '';
 
         }
 
@@ -70,7 +81,8 @@ class ModuleDetailView extends Module
         $tablename = $listModuleDB['f_select_module'];
         $wrapperID = $listModuleDB['f_select_wrapper'];
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-        $alias = Input::get('item');
+
+        $alias = Input::get('auto_item');
         $isAlias = QueryModel::isValue($alias);
 
         if (!$isAlias) {

@@ -127,7 +127,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
 
     'palettes' => array(
         '__selector__' => array('protected'),
-        'default' => '{main_legend},name,info,tablename;{list_legend},sorting,orderBy'
+        'default' => '{main_legend},name,info,tablename;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy'
     ),
 
     'fields' => array
@@ -208,7 +208,17 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         'sortingType' => array(
 
             'sql' => "varchar(64) NOT NULL default ''"
+        ),
+
+        'paletteBuilder' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'],
+            'inputType' => 'checkboxWizard',
+            'options_callback' => array('tl_fmodules', 'getPalettes'),
+            'exclude' => true,
+            'eval' => array('multiple' => true),
+            'sql' => "varchar(255) NOT NULL default ''"
         )
+
     )
 );
 
@@ -326,6 +336,14 @@ class tl_fmodules extends \Contao\Backend
                 break;
         }
 
+    }
+
+    /**
+     * @return array
+     */
+    public function getPalettes()
+    {
+        return array('datePalette' => 'datePalette', 'imagePalette' => 'imagePalette', 'enclosurePalette' => 'enclosurePalette');
     }
 
     /**

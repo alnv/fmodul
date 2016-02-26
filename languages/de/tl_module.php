@@ -26,6 +26,9 @@ $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][1] = 'Hier können Sie die Elem
 $GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'Keine 404 Fehlerseite anzeigen';
 $GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Die 404 Fehlerseite wird nicht angezeigt, wenn kein Datensatz gefunden wird.';
 
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][0] = 'Autovervollständigung aktivieren';
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][1] = 'Bitte aktivieren Sie die Autovervollständigung nur bei Bedarf.';
+
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][0] = 'Sortierreihenfolge';
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][1] = 'Lege die Reihenfolge fest';
 

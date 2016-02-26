@@ -474,7 +474,7 @@ class DCAModuleData extends DCAHelper
 
         return array(
             '__selector__' => array('source', 'addImage', 'protected', 'addEnclosure', 'published'),
-            'default' => '{general_legend},title,alias,author,info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $palette . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published'
+            'default' => '{general_legend},title,alias,author,info,description;{date_legend},date,time;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;' . $palette . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published;'
         );
     }
 
@@ -915,9 +915,9 @@ class DCAModuleData extends DCAHelper
 
     /**
      * @param $varValue
-     * @param DataContainer $dc
+     * @param $dc
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public function generateAlias($varValue, $dc)
     {

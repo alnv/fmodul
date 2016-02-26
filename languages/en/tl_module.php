@@ -29,6 +29,9 @@ $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][1] = 'Here you can limit the nu
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][0] = 'Order by';
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][1] = 'Please select list order';
 
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][0] = 'Activate Auto Completion';
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][1] = 'Please activate the Auto Completion only when needed.';
+
 $GLOBALS['TL_LANG']['tl_module']['f_list_template'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_module']['f_list_template'][1] = 'Select your template.';
 

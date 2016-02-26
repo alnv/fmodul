@@ -16,7 +16,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('tl_modul
 
 //module palette
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{mode_legend},f_display_mode;{sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 //sub
@@ -179,6 +179,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
 
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['f_active_options'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'options' => array(),
+    'eval' => array('multiple' => true),
+    'sql' => "blob NULL"
+);
+
 /**
  * Class tl_module_fmodule
  */
@@ -205,6 +215,8 @@ class tl_module_fmodule extends tl_module
 
         }
 
+        $activeOptions = array();
+
         if ($listID != '') {
 
             $selectedList = $filters[$listID];
@@ -214,7 +226,15 @@ class tl_module_fmodule extends tl_module
             $doNotSetByType = array('legend_start', 'legend_end', 'widget');
             $doNotSetByID = array('auto_page', 'auto_item');
 
+            $allowedOptionTypes = array('search_field', 'multi_choice', 'simple_choice', 'fulltext_search', 'date_field');
+            $allowedOptionID = array('pagination', 'orderBy', 'sorting_fields');
+
             while ($filterFieldsDB->next()) {
+
+                if( $filterFieldsDB->fieldID && in_array($filterFieldsDB->type, $allowedOptionTypes) && !in_array($filterFieldsDB->fieldID, $allowedOptionID))
+                {
+                    $activeOptions[$filterFieldsDB->fieldID] = $filterFieldsDB->title;
+                }
 
                 if(in_array($filterFieldsDB->type, $doNotSetByType))
                 {
@@ -226,6 +246,7 @@ class tl_module_fmodule extends tl_module
                     continue;
                 }
 
+                //active options
                 $filterFields[$filterFieldsDB->id] = array(
 
                     'id' => $filterFieldsDB->id,
@@ -251,11 +272,11 @@ class tl_module_fmodule extends tl_module
 
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['filterFields'] = $filterFields;
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['currentListID'] = $listID;
+            $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options']['options'] = $activeOptions;
         }
 
         return $options;
     }
-
 
     /**
      * @return array
@@ -309,7 +330,7 @@ class tl_module_fmodule extends tl_module
         $modulename = '';
 
         $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field','toggle_field');
-        $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'pagination', 'orderBy', 'sorting_fields');
+        $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields');
 
         while ($moduleDB->next()) {
             $modulename = $moduleDB->f_select_module;

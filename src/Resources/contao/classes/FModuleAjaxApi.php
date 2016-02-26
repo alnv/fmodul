@@ -432,41 +432,59 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
-     * return auto completion
+     * @param string $tablename
+     * @param string $wrapperID
+     * @param string $fieldID
+     * @param bool|false $noAjax
+     * @param string $dateFormat
+     * @param string $timeFormat
+     * @return array
      */
-    public function getAutoCompletion()
+    public function getAutoCompletion($tablename = '', $wrapperID = '', $fieldID = '', $noAjax = false, $dateFormat = '', $timeFormat = '')
     {
 
         //options
-        $tablename = Input::get('tablename');
-        $fieldID = Input::get('fieldID');
-        $wrapperID = Input::get('wrapperID');
-        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
-        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
+        $tablename = $tablename ? $tablename : Input::get('tablename');
+        $fieldID = $fieldID ? $fieldID : Input::get('fieldID');
+        $wrapperID = $wrapperID ? $wrapperID : Input::get('wrapperID');
+
+        $dateFormat = $dateFormat ? $dateFormat : Config::get('dateFormat');
+        $timeFormat = $timeFormat ? $dateFormat : Config::get('timeFormat');
+
+        if( Input::get('dateFormat') )
+        {
+            $dateFormat = Input::get('dateFormat');
+        }
+
+        if(Input::get('timeFormat'))
+        {
+            $timeFormat = Input::get('timeFormat');
+        }
+
         $allowedTypes = array('search_field', 'multi_choice', 'simple_choice', 'fulltext_search', 'date_field');
 
         //
-        if (!$tablename || !$wrapperID || !$fieldID) {
+        if ((!$tablename || !$wrapperID || !$fieldID) && !$noAjax) {
             $this->sendFailState("No back end module found");
         }
 
         //
-        if (!$this->Database->tableExists($tablename)) {
+        if (!$this->Database->tableExists($tablename) && !$noAjax) {
             $this->sendFailState($tablename . " do not exist");
         }
 
         //
         $dataTable = $tablename . '_data';
 
-        //q
+        //
         $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1" AND pid = ?')->execute($wrapperID);
         $field = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE fieldID = ?')->execute($fieldID)->row();
 
-        if (empty($field)) {
+        if (empty($field) && !$noAjax) {
             $this->sendFailState('Field ' . $fieldID . ' do not exist');
         }
 
-        if (!in_array($field['type'], $allowedTypes)) {
+        if (!in_array($field['type'], $allowedTypes) && !$noAjax) {
             $this->sendFailState('This field type is not supported');
         }
 
@@ -511,8 +529,8 @@ class FModuleAjaxApi extends Frontend
         $autoCompletionArr = array();
 
         while ($resultsDB->next()) {
-            $result = $resultsDB->row();
 
+            $result = $resultsDB->row();
             $items = $result[$fieldID];
 
             if ($field['type'] == 'multi_choice') {
@@ -528,6 +546,7 @@ class FModuleAjaxApi extends Frontend
             }
 
             if ($field['type'] == 'date_field') {
+
                 $format = $dateFormat;
 
                 if ($field['addTime']) {
@@ -564,11 +583,34 @@ class FModuleAjaxApi extends Frontend
         $autoCompletionArr = array_filter($autoCompletionArr);
         $autoCompletionArr = Input::decodeEntities($autoCompletionArr);
 
-        //
-        header('Content-type: application/json');
-        echo json_encode($autoCompletionArr, 512);
-        exit;
+        if (!$noAjax) {
+            header('Content-type: application/json');
+            echo json_encode($autoCompletionArr, 512);
+            exit;
+        }
 
+        if ($noAjax) {
+
+            $returnActiveOptions = array();
+
+            foreach ($autoCompletionArr as $value => $label) {
+
+                $returnActiveOptions[] = array(
+                    'label' => $label,
+                    'value' => $value
+                );
+
+            }
+
+            return $returnActiveOptions;
+        }
+
+        return array(
+            array(
+                'label' => '',
+                'value' => ''
+            )
+        );
     }
 
     /**
@@ -772,10 +814,9 @@ class FModuleAjaxApi extends Frontend
     protected function generateSingeSrc($row)
     {
 
-        if(is_array($row))
-        {
+        if (is_array($row)) {
             $singleSrc = $row['singleSRC'];
-        }else{
+        } else {
             $singleSrc = $row->singleSRC;
         }
 

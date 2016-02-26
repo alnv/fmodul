@@ -108,6 +108,7 @@ class DCACreator
             $module['sorting'] = $modulesDB->row()['sorting'];
             $module['sortingType'] = $modulesDB->row()['sortingType'];
             $module['orderBy'] = $modulesDB->row()['orderBy'];
+            $module['paletteBuilder'] = $modulesDB->row()['paletteBuilder'];
             $id = $modulesDB->row()['id'];
 			
 			//backwards compatible
@@ -174,11 +175,13 @@ class DCACreator
 
         $GLOBALS['BE_MOD']['fmodules'][$modulename] = $this->getBEMod($tablename, $childname);
 
+        $palette = $dca_settings->setPalettes($moduleObj);
+
         $GLOBALS['TL_DCA'][$tablename] = array(
 
             'config' => $dca_settings->setConfig(),
             'list' => $dca_settings->setList(),
-            'palettes' => $dca_settings->setPalettes($moduleObj['fields']),
+            'palettes' => $dca_settings->setPalettes($moduleObj),
             'subpalettes' => $dca_settings->setSubPalettes(),
             'fields' => $dca_settings->setFields($moduleObj['fields'])
 
@@ -194,15 +197,17 @@ class DCACreator
          */
         $dca_data = new DCAModuleData();
         $dca_data->init($childname, $tablename);
-
+        $palette = $dca_data->setPalettes($moduleObj);
         $GLOBALS['TL_DCA'][$childname] = array(
 
             'config' => $dca_data->setConfig($moduleObj['detailPage']),
             'list' => $dca_data->setList($moduleObj),
-            'palettes' => $dca_data->setPalettes($moduleObj['fields']),
-            'subpalettes' => $dca_data->subPalettes(),
+            'palettes' => array(
+                '__selector__' => $palette['__selector__'],
+                'default' => $palette['default']
+            ),
+            'subpalettes' => $palette['subPalettes'],
             'fields' => $dca_data->setFields($moduleObj['fields'])
-
         );
 
         $modname = substr($tablename, 3, strlen($tablename));

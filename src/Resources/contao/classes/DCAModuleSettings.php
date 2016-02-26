@@ -275,8 +275,10 @@ class DCAModuleSettings extends DCAHelper
     /**
      *
      */
-    public function setPalettes($fields = array())
+    public function setPalettes($moduleDB)
     {
+
+        $fields = $moduleDB['fields'];
 
         $fieldStr = '{data_legend},';
 

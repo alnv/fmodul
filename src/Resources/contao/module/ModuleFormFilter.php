@@ -40,7 +40,7 @@ class ModuleFormFilter extends \Contao\Module
         global $objPage;
 
         $format = $objPage->dateFormat;
-        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();
+        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();        
         $fields = deserialize($this->f_form_fields);
         $listID = $this->f_list_field;
         $formTemplate = $this->f_form_template;
@@ -50,7 +50,12 @@ class ModuleFormFilter extends \Contao\Module
         $modeSettings = deserialize($listModuleDB['f_display_mode']);
         $modeSettings = is_array($modeSettings) ? array_values($modeSettings) : array();
         $activeOption = $this->f_active_options ? deserialize($this->f_active_options) : array();
-
+				
+		if(!is_array($pageTaxonomy))
+        {
+	        $pageTaxonomy = array();
+        }
+		
         if (!$listModuleTable && !$listModuleID) {
             return;
         }
@@ -226,8 +231,14 @@ class ModuleFormFilter extends \Contao\Module
             }
 
             //
-            if ($widget['data']['overwrite'] == '1' || $pageTaxonomy[$fieldID]['set']['overwrite'] == '1') {
+            if ($widget['data']['overwrite'] == '1') {
                 continue;
+            }
+            
+			//
+            if($pageTaxonomy[$fieldID] && $pageTaxonomy[$fieldID]['set']['overwrite'] == '1')
+            {
+	            continue;
             }
 
             $widgetTemplate = new FrontendTemplate($widget['tpl']);

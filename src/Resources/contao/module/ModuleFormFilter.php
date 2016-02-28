@@ -58,13 +58,11 @@ class ModuleFormFilter extends \Contao\Module
         $fieldsDB = $this->Database->prepare('SELECT * FROM ' . $listModuleTable . ' WHERE id = ?')->execute($listModuleID)->row();
 
         if (!is_array($fields)) {
-
             return;
-
         }
 
         $arrWidget = array();
-        $autoComplete = new FModuleAjaxApi();
+        $autoComplete = new AutoCompletion();
 
         foreach ($fields as $i => $field) {
 
@@ -75,27 +73,32 @@ class ModuleFormFilter extends \Contao\Module
             $inputValue = Input::get($fieldID) ? Input::get($fieldID) : '';
 
             // get options from wrapper
-            if ($fieldsDB[$fieldID] && !in_array($fieldID, $activeOption) && !isset(deserialize($fieldsDB[$fieldID])['table'])) {
-                $fields[$i]['options'] = deserialize($fieldsDB[$fieldID]);
+            if( $field['type'] == 'multi_choice' || $field['type'] == 'simple_choice' )
+            {
+	       
+	       	    $wrapperOptions = deserialize($fieldsDB[$fieldID]);
+	            	       
+	            if($wrapperOptions['table'] && !in_array($fieldID, $activeOption))
+	            {
+		            $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);		           
+	            }
+	            
+	            if(is_null($wrapperOptions['table']) && !in_array($fieldID, $activeOption))
+	            {
+		            $fields[$i]['options'] = $wrapperOptions;
+	            }
+	           	            
             }
-
-            // get options from tables
-            if ($fieldsDB[$fieldID] && !in_array($fieldID, $activeOption) && isset(deserialize($fieldsDB[$fieldID])['table'])) {
-                $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);
-            }
-
+         
             // get options
-            if ($fieldID && in_array($fieldID, $activeOption)) {
-
-                $fields[$i]['options'] = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, true, $objPage->dateFormat, $objPage->timeFormat);
+            if ($fieldID && in_array($fieldID, $activeOption)) {            
+                $results = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, $objPage->dateFormat, $objPage->timeFormat);
+				$fields[$i]['options'] = is_array($results) ? $results : array();				
             }
             
-
             // set tablename
             $fields[$i]['tablename'] = !strpos($listModuleTable, '_data') ? $listModuleTable . '_data' : $listModuleTable;
 
-
-            // set filter types
 
             // date field
             if ($field['type'] == 'date_field') {
@@ -114,9 +117,6 @@ class ModuleFormFilter extends \Contao\Module
 
             // search field
             if ($field['type'] == 'search_field') {
-
-                //$autoComplete = new FModule();
-                //$arr = $autoComplete->getAutoCompleteFromSearchField($listModuleTable, $fieldID, $listModuleID, $inputValue);
 
                 //backwards compatible
                 $fields[$i]['auto_complete'] = $fields[$i]['options'];

@@ -432,185 +432,31 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
-     * @param string $tablename
-     * @param string $wrapperID
-     * @param string $fieldID
-     * @param bool|false $noAjax
-     * @param string $dateFormat
-     * @param string $timeFormat
      * @return array
      */
-    public function getAutoCompletion($tablename = '', $wrapperID = '', $fieldID = '', $noAjax = false, $dateFormat = '', $timeFormat = '')
+    public function getAutoCompletion()
     {
 
         //options
-        $tablename = $tablename ? $tablename : Input::get('tablename');
-        $fieldID = $fieldID ? $fieldID : Input::get('fieldID');
-        $wrapperID = $wrapperID ? $wrapperID : Input::get('wrapperID');
+        $tablename = Input::get('tablename');
+        $fieldID = Input::get('fieldID');
+        $wrapperID = Input::get('wrapperID');
 
-        $dateFormat = $dateFormat ? $dateFormat : Config::get('dateFormat');
-        $timeFormat = $timeFormat ? $dateFormat : Config::get('timeFormat');
-
-        if( Input::get('dateFormat') )
-        {
-            $dateFormat = Input::get('dateFormat');
-        }
-
-        if(Input::get('timeFormat'))
-        {
-            $timeFormat = Input::get('timeFormat');
-        }
-
-        $allowedTypes = array('search_field', 'multi_choice', 'simple_choice', 'fulltext_search', 'date_field');
-
-        //
-        if ((!$tablename || !$wrapperID || !$fieldID) && !$noAjax) {
-            $this->sendFailState("No back end module found");
-        }
-
-        //
-        if (!$this->Database->tableExists($tablename) && !$noAjax) {
-            $this->sendFailState($tablename . " do not exist");
-        }
-
-        //
-        $dataTable = $tablename . '_data';
-
-        //
-        $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1" AND pid = ?')->execute($wrapperID);
-        $field = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE fieldID = ?')->execute($fieldID)->row();
-
-        if (empty($field) && !$noAjax) {
-            $this->sendFailState('Field ' . $fieldID . ' do not exist');
-        }
-
-        if (!in_array($field['type'], $allowedTypes) && !$noAjax) {
-            $this->sendFailState('This field type is not supported');
-        }
-
-        $wrapperOptionsDB = null;
-        $options = array();
-
-        if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
-            $wrapperOptionsDB = $this->Database->prepare('SELECT ' . $fieldID . ' FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
-
-            if ($wrapperOptionsDB[$fieldID] && is_string($wrapperOptionsDB[$fieldID])) {
-                $wrapperOptionsDB = deserialize($wrapperOptionsDB[$fieldID]);
-            }
-
-            if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] != '1') {
-                foreach ($wrapperOptionsDB as $option) {
-                    $options[$option['value']] = $option['label'];
-                }
-            }
-
-            if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] == '1') {
-                if ($wrapperOptionsDB['table'] && $wrapperOptionsDB['col'] && $wrapperOptionsDB['title']) {
-                    $dataFromTableDB = $this->Database->prepare('SELECT * FROM ' . $wrapperOptionsDB['table'] . ' LIMIT 1000')->execute();
-                    $optionsFromTableDB = array();
-
-                    while ($dataFromTableDB->next()) {
-                        $keyValue = $dataFromTableDB->row();
-                        $optionsFromTableDB[] = array('value' => $keyValue[$wrapperOptionsDB['col']], 'label' => $keyValue[$wrapperOptionsDB['title']]);
-                    }
-
-                    if (!empty($optionsFromTableDB)) {
-                        foreach ($optionsFromTableDB as $option) {
-                            $options[$option['value']] = $option['label'];
-                        }
-
-                    }
-                }
-
-            }
-
-        }
-
-        $autoCompletionArr = array();
-
-        while ($resultsDB->next()) {
-
-            $result = $resultsDB->row();
-            $items = $result[$fieldID];
-
-            if ($field['type'] == 'multi_choice') {
-                $splitResults = explode(',', $items);
-
-                foreach ($splitResults as $splitResult) {
-                    $autoCompletionArr[$splitResult] = $options[$splitResult] ? $options[$splitResult] : $splitResult;
-                }
-            }
-
-            if ($field['type'] == 'simple_choice') {
-                $autoCompletionArr[$items] = $options[$items] ? $options[$items] : $items;
-            }
-
-            if ($field['type'] == 'date_field') {
-
-                $format = $dateFormat;
-
-                if ($field['addTime']) {
-                    $format .= ' ' . $timeFormat;
-                }
-
-                $autoCompletionArr[$items] = date($format, $items);
-
-            }
-
-            if ($field['type'] == 'fulltext_search') {
-                $autoCompletionArr[] = $result['title'];
-            }
-
-            if ($field['type'] == 'search_field' && $field['isInteger']) {
-                $autoCompletionArr[$items] = $items;
-            }
-
-            if ($field['type'] == 'search_field' && !$field['isInteger']) {
-                $itemStr = preg_replace('/[^a-z_\-0-9]/i', ' ', $items);
-                $itemStr = trim($itemStr);
-
-                $splitResults = explode(' ', $itemStr);
-
-                foreach ($splitResults as $splitResult) {
-                    $autoCompletionArr[] = $splitResult;
-                }
-
-            }
-
-        }
-
-        $autoCompletionArr = array_unique($autoCompletionArr);
-        $autoCompletionArr = array_filter($autoCompletionArr);
-        $autoCompletionArr = Input::decodeEntities($autoCompletionArr);
-
-        if (!$noAjax) {
-            header('Content-type: application/json');
-            echo json_encode($autoCompletionArr, 512);
-            exit;
-        }
-
-        if ($noAjax) {
-
-            $returnActiveOptions = array();
-
-            foreach ($autoCompletionArr as $value => $label) {
-
-                $returnActiveOptions[] = array(
-                    'label' => $label,
-                    'value' => $value
-                );
-
-            }
-
-            return $returnActiveOptions;
-        }
-
-        return array(
-            array(
-                'label' => '',
-                'value' => ''
-            )
-        );
+        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
+        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
+	
+		$autoCompletion = new AutoCompletion();
+		$results = $autoCompletion->getAutoCompletion($tablename, $wrapperID, $fieldID, $dateFormat, $timeFormat);
+		
+		if(is_string($results))
+		{
+			$this->sendFailState($results);
+		}
+		
+		header('Content-type: application/json');
+        echo json_encode($results, 512);
+        exit;
+		
     }
 
     /**

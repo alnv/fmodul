@@ -17,8 +17,8 @@ $GLOBALS['TL_LANG']['tl_module']['f_display_mode'][1] = 'define your where queri
 $GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'][0] = 'Front end sorting';
 $GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'][1] = 'Please select your sorting fields.';
 
-$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'No 404';
-$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Do not show 404 page, if no page found.';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'Disable 404 error page';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Do not show 404 page, if no page alias found.';
 
 $GLOBALS['TL_LANG']['tl_module']['f_perPage'][0] = 'Items per Page';
 $GLOBALS['TL_LANG']['tl_module']['f_perPage'][1] = 'The number of items per page. Set to 0 to disable pagination.';

@@ -21,12 +21,16 @@ $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'Feeds für die Backend Module 
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Einstellung';
+$GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Backend Paletten';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Zugriffsschutz';
 $GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Backend Sortierung';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Modulname';
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][1] = 'Tragen Sie Ihren gewünschten Modulname ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'][0] = 'Paletten auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'][1] = 'Wählen Sie weitere Paletten für Ihr Backend Modul aus.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['info'][0] = 'Modul Information';
 $GLOBALS['TL_LANG']['tl_fmodules']['info'][1] = 'Geben Sie eine kurze Modul Beschreibung ein.';
@@ -36,7 +40,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['tablename'][1] = ' Geben Sie Tabellenname ei
 
 $GLOBALS['TL_LANG']['tl_fmodules']['editLicense'][0] = 'Lizenzschlüssel eingeben';
 $GLOBALS['TL_LANG']['tl_fmodules']['editLicense'][1] = 'Gehe zu Lizenzschlüssel Verwaltung.';
-
 
 $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] = 'Lizenz kaufen';
 $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1] = 'F Modul Store öffnen.';
@@ -62,3 +65,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['date'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Datum';
+$GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Bild';
+$GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Anlagen';

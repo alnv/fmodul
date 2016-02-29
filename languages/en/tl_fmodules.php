@@ -21,11 +21,16 @@ $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'New feed';
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Settings';
+$GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Access protection';
+$GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Back end palettes';
 $GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Back end sorting';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Module name';
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][1] = 'Please enter your module name.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'][0] = 'Select palettes';
+$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'][1] = 'Pleae select your palettes.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['info'][0] = 'Module Information';
 $GLOBALS['TL_LANG']['tl_fmodules']['info'][1] = 'Please enter your module description.';
@@ -56,3 +61,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['date'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Ascending';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descend';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Date';
+$GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Image';
+$GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Enclosure';

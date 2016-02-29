@@ -168,53 +168,45 @@ class DCACreator
         /**
          * parent
          */
-        $dca_settings = new DCAModuleSettings();
-        $dca_settings->init($tablename);
-        $childname = $dca_settings->getChildName();
+        $dcaSettings = new DCAModuleSettings();
+        $dcaSettings->init($tablename);
+        $childname = $dcaSettings->getChildName();
         $modulename = substr($tablename, 3, strlen($tablename));
-
         $GLOBALS['BE_MOD']['fmodules'][$modulename] = $this->getBEMod($tablename, $childname);
-
-        $palette = $dca_settings->setPalettes($moduleObj);
-
         $GLOBALS['TL_DCA'][$tablename] = array(
 
-            'config' => $dca_settings->setConfig(),
-            'list' => $dca_settings->setList(),
-            'palettes' => $dca_settings->setPalettes($moduleObj),
-            'subpalettes' => $dca_settings->setSubPalettes(),
-            'fields' => $dca_settings->setFields($moduleObj['fields'])
+            'config' => $dcaSettings->setConfig(),
+            'list' => $dcaSettings->setList(),
+            'palettes' => $dcaSettings->setPalettes($moduleObj),
+            'subpalettes' => $dcaSettings->setSubPalettes(),
+            'fields' => $dcaSettings->setFields($moduleObj['fields'])
 
         );
-
         $GLOBALS['TL_LANG']['MOD'][$modulename] = array($moduleObj['name'], $moduleObj['info']);
-
-        $dca_settings->createTable();
-
+        $dcaSettings->createTable();
 
         /**
          * child
          */
-        $dca_data = new DCAModuleData();
-        $dca_data->init($childname, $tablename);
-        $palette = $dca_data->setPalettes($moduleObj);
+        $dcaData = new DCAModuleData();
+        $dcaData->init($childname, $tablename);
+        $palette = $dcaData->setPalettes($moduleObj);
         $GLOBALS['TL_DCA'][$childname] = array(
 
-            'config' => $dca_data->setConfig($moduleObj['detailPage']),
-            'list' => $dca_data->setList($moduleObj),
+            'config' => $dcaData->setConfig($moduleObj['detailPage']),
+            'list' => $dcaData->setList($moduleObj),
             'palettes' => array(
                 '__selector__' => $palette['__selector__'],
                 'default' => $palette['default']
             ),
             'subpalettes' => $palette['subPalettes'],
-            'fields' => $dca_data->setFields($moduleObj['fields'])
+            'fields' => $dcaData->setFields($moduleObj['fields'])
         );
 
         $modname = substr($tablename, 3, strlen($tablename));
-
         $GLOBALS['TL_PERMISSIONS'][] = $modname;
         $GLOBALS['TL_PERMISSIONS'][] = $modname . 'p';
-        $dca_data->createTable();
+        $dcaData->createTable();
 
 
     }

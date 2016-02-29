@@ -17,8 +17,8 @@ $GLOBALS['TL_LANG']['tl_module']['f_display_mode'][1] = 'define your where queri
 $GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'][0] = 'Front end sorting';
 $GLOBALS['TL_LANG']['tl_module']['f_sorting_fields'][1] = 'Please select your sorting fields.';
 
-$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'No 404';
-$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Do not show 404 page, if no page found.';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'Disable 404 error page';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Do not show 404 page, if no page alias found.';
 
 $GLOBALS['TL_LANG']['tl_module']['f_perPage'][0] = 'Items per Page';
 $GLOBALS['TL_LANG']['tl_module']['f_perPage'][1] = 'The number of items per page. Set to 0 to disable pagination.';
@@ -28,6 +28,9 @@ $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][1] = 'Here you can limit the nu
 
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][0] = 'Order by';
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][1] = 'Please select list order';
+
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][0] = 'Activate Auto Completion';
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][1] = 'Please activate the Auto Completion only when needed.';
 
 $GLOBALS['TL_LANG']['tl_module']['f_list_template'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_module']['f_list_template'][1] = 'Select your template.';

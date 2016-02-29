@@ -40,7 +40,7 @@ class ModuleFormFilter extends \Contao\Module
         global $objPage;
 
         $format = $objPage->dateFormat;
-        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();
+        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();        
         $fields = deserialize($this->f_form_fields);
         $listID = $this->f_list_field;
         $formTemplate = $this->f_form_template;
@@ -49,7 +49,13 @@ class ModuleFormFilter extends \Contao\Module
         $listModuleID = $listModuleDB['f_select_wrapper'];
         $modeSettings = deserialize($listModuleDB['f_display_mode']);
         $modeSettings = is_array($modeSettings) ? array_values($modeSettings) : array();
-
+        $activeOption = $this->f_active_options ? deserialize($this->f_active_options) : array();
+				
+		if(!is_array($pageTaxonomy))
+        {
+	        $pageTaxonomy = array();
+        }
+		
         if (!$listModuleTable && !$listModuleID) {
             return;
         }
@@ -57,12 +63,11 @@ class ModuleFormFilter extends \Contao\Module
         $fieldsDB = $this->Database->prepare('SELECT * FROM ' . $listModuleTable . ' WHERE id = ?')->execute($listModuleID)->row();
 
         if (!is_array($fields)) {
-
             return;
-
         }
 
         $arrWidget = array();
+        $autoComplete = new AutoCompletion();
 
         foreach ($fields as $i => $field) {
 
@@ -73,23 +78,36 @@ class ModuleFormFilter extends \Contao\Module
             $inputValue = Input::get($fieldID) ? Input::get($fieldID) : '';
 
             // get options from wrapper
-            if ($fieldsDB[$fieldID] && !isset(deserialize($fieldsDB[$fieldID])['table'])) {
-                $fields[$i]['options'] = deserialize($fieldsDB[$fieldID]);
+            if( $field['type'] == 'multi_choice' || $field['type'] == 'simple_choice' )
+            {
+	       
+	       	    $wrapperOptions = deserialize($fieldsDB[$fieldID]);
+	            	       
+	            if($wrapperOptions['table'] && !in_array($fieldID, $activeOption))
+	            {
+		            $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);		           
+	            }
+	            
+	            if(is_null($wrapperOptions['table']) && !in_array($fieldID, $activeOption))
+	            {
+		            $fields[$i]['options'] = $wrapperOptions;
+	            }
+	           	            
             }
-
-            // get options from tables
-            if ($fieldsDB[$fieldID] && isset(deserialize($fieldsDB[$fieldID])['table'])) {
-                $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);
+         
+            // get options
+            if ($fieldID && in_array($fieldID, $activeOption)) {            
+                $results = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, $objPage->dateFormat, $objPage->timeFormat);
+				$fields[$i]['options'] = is_array($results) ? $results : array();				
             }
-
+            
             // set tablename
             $fields[$i]['tablename'] = !strpos($listModuleTable, '_data') ? $listModuleTable . '_data' : $listModuleTable;
 
 
-            // set filter types
-
             // date field
             if ($field['type'] == 'date_field') {
+
                 $format = $field['addTime'] ? $objPage->datimFormat : $format;
                 $fields[$i]['format'] = $format;
                 $fields[$i]['operator'] = $this->getOperator();
@@ -104,32 +122,29 @@ class ModuleFormFilter extends \Contao\Module
 
             // search field
             if ($field['type'] == 'search_field') {
-                $autoComplete = new FModule();
-                $arr = $autoComplete->getAutoCompleteFromSearchField($listModuleTable, $fieldID, $listModuleID, $inputValue);
-                $fields[$i]['auto_complete'] = $arr;
+
+                //backwards compatible
+                $fields[$i]['auto_complete'] = $fields[$i]['options'];
 
             }
-			
-			if($field['type'] == 'toggle_field')
-			{
+
+            if ($field['type'] == 'toggle_field') {
                 $fields[$i]['showLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
-				$fields[$i]['ignoreLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
-			}
+                $fields[$i]['ignoreLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+            }
 
             $fields[$i]['wrapperID'] = $listModuleID;
             $fields[$i]['selected'] = $inputValue;
 
             //
             if ($field['type'] == 'search_field' && $field['isInteger'] == '1') {
-                if( !$fields[$i]['selected'] && !is_null(Input::get($field['fieldID'])) )
-                {
+                if (!$fields[$i]['selected'] && !is_null(Input::get($field['fieldID']))) {
                     $fields[$i]['selected'] = '0';
                 }
             }
 
             // ex
-            if($field['type'] == 'toggle_field' && !$inputValue)
-            {
+            if ($field['type'] == 'toggle_field' && !$inputValue) {
                 $fields[$i]['selected'] = '';
             }
 
@@ -151,8 +166,7 @@ class ModuleFormFilter extends \Contao\Module
             //
             if ($widget['data']['type'] == 'wrapper_field' && $widget['data']['from_field'] && $widget['data']['to_field']) {
 
-                if($widget['data']['from_field'] == $widget['data']['to_field'])
-                {
+                if ($widget['data']['from_field'] == $widget['data']['to_field']) {
 
                     $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
                     $widget['data']['title'] = $fromFieldData['title'];
@@ -168,12 +182,11 @@ class ModuleFormFilter extends \Contao\Module
 
                     //to
                     $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
-                    $toFieldData['fieldID'] = $toFieldData['fieldID'].'_btw';
+                    $toFieldData['fieldID'] = $toFieldData['fieldID'] . '_btw';
                     $toFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_to_label'];
                     $toFieldData['description'] = '';
                     $selectValue = Input::get($toFieldData['fieldID']);
-                    if(!is_null($selectValue) && !$selectValue && $toFieldData['type'] != 'date_field')
-                    {
+                    if (!is_null($selectValue) && !$selectValue && $toFieldData['type'] != 'date_field') {
                         $selectValue = '0';
                     }
                     $toFieldData['selected'] = $selectValue;
@@ -184,7 +197,7 @@ class ModuleFormFilter extends \Contao\Module
                     $widget['data']['to_template'] = $to_template;
 
 
-                }else{
+                } else {
 
                     // generate from field tpl
                     $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
@@ -218,8 +231,14 @@ class ModuleFormFilter extends \Contao\Module
             }
 
             //
-            if ($widget['data']['overwrite'] == '1' || $pageTaxonomy[$fieldID]['set']['overwrite'] == '1') {
+            if ($widget['data']['overwrite'] == '1') {
                 continue;
+            }
+            
+			//
+            if($pageTaxonomy[$fieldID] && $pageTaxonomy[$fieldID]['set']['overwrite'] == '1')
+            {
+	            continue;
             }
 
             $widgetTemplate = new FrontendTemplate($widget['tpl']);

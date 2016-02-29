@@ -23,8 +23,11 @@ $GLOBALS['TL_LANG']['tl_module']['f_perPage'][1] = 'Die Anzahl an Elementen pro 
 $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][0] = 'Anzahl an Elementen';
 $GLOBALS['TL_LANG']['tl_module']['f_limit_page'][1] = 'Hier können Sie die Element-Anzahl beschränken. Geben Sie 0 ein, um alle anzuzeigen';
 
-$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = 'Keine 404 Fehlerseite anzeigen';
-$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Die 404 Fehlerseite wird nicht angezeigt, wenn kein Datensatz gefunden wird.';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][0] = '404 Fehlerseite deaktivieren';
+$GLOBALS['TL_LANG']['tl_module']['f_doNotSet_404'][1] = 'Die 404 Fehlerseite wird nicht angezeigt, wenn kein Seitenalias angegeben wird.';
+
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][0] = 'Autovervollständigung aktivieren';
+$GLOBALS['TL_LANG']['tl_module']['f_active_options'][1] = 'Sie können die Autovervollständigung mit $this->options im jeweiligen Template ausgeben. Bitte die Autovervollständigung nur bei Bedarf aktivieren.';
 
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][0] = 'Sortierreihenfolge';
 $GLOBALS['TL_LANG']['tl_module']['f_orderby'][1] = 'Lege die Reihenfolge fest';

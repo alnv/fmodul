@@ -101,17 +101,28 @@ class ModuleDetailView extends Module
             if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
                 continue;
             }
+			
+			if ($moduleDB->type == 'widget') {
 
-            // field
-            if($moduleDB->type == 'widget')
-            {
+                $tplName = $moduleDB->widgetTemplate;
+                
+                $tpl = '';
+
+                if (!$tplName) {
+                    $tplNameType = explode('.', $moduleDB->widget_type)[0];                   
+                    $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
+                    $tpl = current($tplNameArr);
+                    $tpl = $this->parseTemplateName($tpl);
+                }
+
                 $fieldWidgets[$moduleDB->fieldID] = array(
                     'fieldID' => $moduleDB->fieldID,
                     'widgetType' => $moduleDB->widget_type,
-                    'widgetTemplate' => $moduleDB->widgetTemplate
+                    'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
+                                
             }
-
+			
             $moduleArr[$moduleDB->fieldID] = $moduleDB->row();
 
         }
@@ -306,7 +317,20 @@ class ModuleDetailView extends Module
         }
 
     }
-
+	
+	/**
+     * @param $usesTemplates
+     * @return mixed
+     */
+    public function parseTemplateName($usesTemplates)
+    {
+        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
+        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
+        $strVal = str_replace($arrSearch, $arrReplace, $usesTemplates);
+        $strVal = str_replace(' ', '', $strVal);
+        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+    }
+	
     /**
      * @param $row
      * @return bool|void

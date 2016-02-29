@@ -122,12 +122,14 @@ class ModuleListView extends Module
             if ($moduleDB->type == 'widget') {
 
                 $tplName = $moduleDB->widgetTemplate;
+                
                 $tpl = '';
 
                 if (!$tplName) {
-                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
+                    $tplNameType = explode('.', $moduleDB->widget_type)[0];                   
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
+                    $tpl = $this->parseTemplateName($tpl);
                 }
 
                 $fieldWidgets[$moduleDB->fieldID] = array(
@@ -135,10 +137,11 @@ class ModuleListView extends Module
                     'widgetType' => $moduleDB->widget_type,
                     'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
+                                
             }
 
             $fieldsArr[$moduleDB->fieldID] = $modArr;
-
+            
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
@@ -192,8 +195,8 @@ class ModuleListView extends Module
             if (!HelperModel::outSideScope($listDB->start, $listDB->stop)) {
                 continue;
             }
-
-            $imagePath = $this->generateSingeSrc($listDB);
+			
+		    $imagePath = $this->generateSingeSrc($listDB);
             if ($imagePath) {
                 $listDB->singleSRC = $imagePath;
             }
@@ -233,7 +236,7 @@ class ModuleListView extends Module
             $itemsArr[] = $listDB->row();
 
         }
-
+		//exit;
         //pagination
         $total = count($itemsArr);
         $paginationStr = $this->createPagination($total);
@@ -247,7 +250,7 @@ class ModuleListView extends Module
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
             $item = $itemsArr[$i];
-
+			
             //set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
@@ -414,7 +417,20 @@ class ModuleListView extends Module
         return $qOrderByStr;
 
     }
-
+	
+	/**
+     * @param $usesTemplates
+     * @return mixed
+     */
+    public function parseTemplateName($usesTemplates)
+    {
+        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
+        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
+        $strVal = str_replace($arrSearch, $arrReplace, $usesTemplates);
+        $strVal = str_replace(' ', '', $strVal);
+        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+    }
+	
     /**
      * @return array|string
      */
@@ -579,19 +595,24 @@ class ModuleListView extends Module
     public function createPagination($total = 0)
     {
         global $objPage;
-
         $this->listViewLimit = $total;
-
         $getPagination = Input::get('pagination');
-        $isValue = QueryModel::isValue($getPagination);
 
-        if ($isValue) {
+        if ($getPagination) {
+
             if (is_array($getPagination)) {
                 $this->f_perPage = $getPagination[0];
             }
+
             if (is_string($getPagination)) {
                 $this->f_perPage = $getPagination;
             }
+
+        }
+
+        if($getPagination == '0' && !is_null($getPagination))
+        {
+            $this->f_perPage = $getPagination;
         }
 
         if ($this->f_limit_page > 0) {

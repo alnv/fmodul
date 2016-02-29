@@ -32,7 +32,9 @@ ClassLoader::addClasses(array
     'FModule\HelperModel' => $pathToFiles.'src/Resources/contao/models/HelperModel.php',
     'FModule\FModuleAjaxApi' => $pathToFiles.'src/Resources/contao/classes/FModuleAjaxApi.php',
     'FModule\AjaxApi' => $pathToFiles.'src/Resources/contao/api/AjaxApi.php',
-    'FModule\ViewContainer' => $pathToFiles.'src/Resources/contao/classes/ViewContainer.php'
+    'FModule\ViewContainer' => $pathToFiles.'src/Resources/contao/classes/ViewContainer.php',
+    'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php'
+
 ));
 
 /**

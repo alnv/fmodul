@@ -106,8 +106,8 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,autoPage;{expert_legend:hide},evalCss,isMandatory;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,fieldAppearance,autoPage;{expert_legend:hide},evalCss,isMandatory;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend:hide},evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},evalCss,isMandatory;',
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
@@ -233,7 +233,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
 
         ),
@@ -280,7 +280,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
 
@@ -288,7 +288,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
 

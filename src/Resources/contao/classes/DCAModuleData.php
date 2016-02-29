@@ -536,7 +536,7 @@ class DCAModuleData extends ViewContainer
     {
 
         // get dca fields
-        $arr = $this->dcaFields();
+        $arr = $this->dcaDataFields();
 
         //
         if(empty($fields))

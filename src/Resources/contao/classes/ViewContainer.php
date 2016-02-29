@@ -24,7 +24,7 @@ class ViewContainer extends DCAHelper
     /**
      * @return array
      */
-    public function dcaFields()
+    public function dcaDataFields()
     {
 
         $userID = $this->getUserID();
@@ -232,6 +232,124 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'text',
                 'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'),
                 'sql' => "varchar(255) NOT NULL default ''"
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function dcaSettingField()
+    {
+        return array(
+            'id' => array(
+                'sql' => 'int(10) unsigned NOT NULL auto_increment'
+            ),
+            'tstamp' => array(
+                'sql' => "int(10) unsigned NOT NULL default '0'"
+            ),
+            'title' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'],
+                'inputType' => 'text',
+                'exclude' => true,
+                'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'info' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'],
+                'inputType' => 'text',
+                'exclude' => true,
+                'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'addDetailPage' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addDetailPage'],
+                'inputType' => 'checkbox',
+                'exclude' => true,
+                'eval' => array('tl_class' => 'clr', 'submitOnChange' => true),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'rootPage' => array(
+
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['rootPage'],
+                'inputType' => 'pageTree',
+                'exclude' => true,
+                'foreignKey' => 'tl_page.title',
+                'eval' => array('fieldType' => 'radio', 'tl_class' => 'clr', 'mandatory' => true),
+                'relation' => array('type' => 'hasOne', 'load' => 'eager'),
+                'sql' => "int(10) unsigned NOT NULL default '0'"
+
+            ),
+            'allowComments' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['allowComments'],
+                'exclude' => true,
+                'filter' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('submitOnChange' => true),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'notify' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify'],
+                'default' => 'notify_admin',
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => array('notify_admin', 'notify_author', 'notify_both'),
+                'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'],
+                'sql' => "varchar(32) NOT NULL default ''"
+            ),
+            'sortOrder' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sortOrder'],
+                'default' => 'ascending',
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => array('ascending', 'descending'),
+                'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "varchar(32) NOT NULL default ''"
+            ),
+            'perPage' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perPage'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+                'sql' => "smallint(5) unsigned NOT NULL default '0'"
+            ),
+            'moderate' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['moderate'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'bbcode' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['bbcode'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'requireLogin' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'disableCaptcha' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "char(1) NOT NULL default ''"
             )
         );
     }
@@ -600,6 +718,72 @@ class ViewContainer extends DCAHelper
         if ($fieldData['fieldAppearance'] == 'tags') {
             $field['inputType'] = 'select';
             $field['eval']['chosen'] = true;
+        }
+
+        return $field;
+    }
+
+    /**
+     * @param $fieldData
+     * @return array
+     */
+    public function getOptionField($fieldData)
+    {
+
+        $field = array();
+
+        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['exclude'] = true;
+        $field['fmodule_filter'] = true;
+        $field['eval'] = array('tl_class' => 'clr m12');
+        $field['inputType'] = 'optionWizardExtended';
+        $field['sql'] = 'text NULL';
+
+        return $field;
+    }
+
+    /**
+     * @param $type
+     * @param $fieldData
+     * @return array
+     */
+    public function getOptionFromTableField($type, $fieldData)
+    {
+        $field = array();
+        $field['exclude'] = true;
+        $field['fmodule_filter'] = true;
+        $field['inputType'] = 'select';
+        $field['eval'] = array('tl_class' => 'clr', 'submitOnChange' => true);
+        $field['sql'] = 'text NULL';
+
+        if($type == 'select_table_')
+        {
+            $field['label'] = array(sprintf($GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_table'][0], $fieldData['title']), $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_table'][1]);
+            $field['load_callback'] = array( array( 'DCAModuleSettings', 'loadDefaultTable' ) );
+            $field['options_callback'] = array( 'DCAModuleSettings', 'getTables' );
+            $field['save_callback'] = array( array( 'DCAModuleSettings', 'save_select_table' ) );
+        }
+
+        if($type == 'select_col_')
+        {
+            $field['label'] = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_col'];
+            $field['load_callback'] = array( array( 'DCAModuleSettings', 'loadDefaultCol' ) );
+            $field['options_callback'] = array( 'DCAModuleSettings', 'getCols' );
+            $field['save_callback'] = array( array( 'DCAModuleSettings', 'save_select_col' ) );
+        }
+
+        if($type == 'select_title_')
+        {
+            $field['label'] = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_title'];
+            $field['load_callback'] = array( array( 'DCAModuleSettings', 'loadDefaultTitle' ) );
+            $field['options_callback'] =  array( 'DCAModuleSettings', 'getTitle' );
+            $field['save_callback'] = array( array( 'DCAModuleSettings', 'save_select_title' ) );
+        }
+
+        if($type != 'select_table_')
+        {
+            $field['eval']['tl_class'] = 'w50';
+            $field['eval']['submitOnChange'] = false;
         }
 
         return $field;

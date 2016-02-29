@@ -212,9 +212,10 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
 
         'paletteBuilder' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'],
+            'exclude' => true,
             'inputType' => 'checkboxWizard',
             'options_callback' => array('tl_fmodules', 'getPalettes'),
-            'exclude' => true,
+            'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
             'eval' => array('multiple' => true),
             'sql' => "varchar(255) NOT NULL default ''"
         )

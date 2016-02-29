@@ -12,14 +12,23 @@
  */
  
 use Contao\Frontend;
-use Contao\Input; 
+use Contao\Input;
 
-// 
+/**
+ * Class AutoCompletion
+ * @package FModule
+ */
 class AutoCompletion extends Frontend 
 {
-	/**
-     *
-     */		
+
+    /**
+     * @param string $tablename
+     * @param string $wrapperID
+     * @param string $fieldID
+     * @param string $dateFormat
+     * @param string $timeFormat
+     * @return array|string
+     */
 	public function getAutoCompletion($tablename = '', $wrapperID = '', $fieldID = '', $dateFormat = '', $timeFormat = '')
 	{
 		//
@@ -194,8 +203,12 @@ class AutoCompletion extends Frontend
         return $returnActiveOptions;
 		
 	}
-	
-	//
+
+    /**
+     * @param $type
+     * @param $autoCompletionArr
+     * @return array
+     */
 	protected function dataFormatter($type, $autoCompletionArr)
 	{
 		

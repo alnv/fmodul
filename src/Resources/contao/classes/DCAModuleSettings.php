@@ -17,7 +17,7 @@ use Contao\Input;
 /**
  * Class DCAModuleSettings
  */
-class DCAModuleSettings extends DCAHelper
+class DCAModuleSettings extends ViewContainer
 {
 
     /**
@@ -173,7 +173,7 @@ class DCAModuleSettings extends DCAHelper
     }
 
     /**
-     *
+     * @return array
      */
     public function setConfig()
     {
@@ -201,7 +201,7 @@ class DCAModuleSettings extends DCAHelper
 
 
     /**
-     *
+     * @return array
      */
     public function setList()
     {
@@ -235,14 +235,14 @@ class DCAModuleSettings extends DCAHelper
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
                     'href' => 'table=' . $this->child,
-                    'icon' => 'edit.gif'//$GLOBALS['FM_AUTO_PATH'] . 'list.png'
+                    'icon' => 'edit.gif'
                 ),
 
                 'editheader' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'],
                     'href' => 'act=edit',
-                    'icon' => 'header.gif'//$GLOBALS['FM_AUTO_PATH'] . 'settings.png'
+                    'icon' => 'header.gif'
                 ),
 
                 'copy' => array
@@ -273,7 +273,8 @@ class DCAModuleSettings extends DCAHelper
     }
 
     /**
-     *
+     * @param $moduleDB
+     * @return array
      */
     public function setPalettes($moduleDB)
     {
@@ -286,7 +287,12 @@ class DCAModuleSettings extends DCAHelper
 
         foreach ($fields as $field) {
 
-            if ($field['fieldID'] !== '' && ($field['type'] !== 'simple_choice' || $field['type'] !== 'multi_choice')) {
+            if(!$field['fieldID'])
+            {
+                continue;
+            }
+
+            if ($field['type'] !== 'simple_choice' || $field['type'] !== 'multi_choice') {
                 if ($field['dataFromTable'] == '1') {
                     $arr[] = 'select_table_' . $field['fieldID'];
                     $arr[] = 'select_col_' . $field['fieldID'];
@@ -309,7 +315,7 @@ class DCAModuleSettings extends DCAHelper
     }
 
     /**
-     *
+     * @return array
      */
     public function setSubPalettes()
     {
@@ -322,201 +328,72 @@ class DCAModuleSettings extends DCAHelper
     }
 
     /**
-     *
+     * @param array $fields
+     * @return array|mixed
      */
     public function setFields($fields = array())
     {
 
-        $arr = array(
+        $arr = $this->dcaSettingField();
 
-            'id' => array(
-                'sql' => 'int(10) unsigned NOT NULL auto_increment'
-            ),
-
-            'tstamp' => array(
-                'sql' => "int(10) unsigned NOT NULL default '0'"
-            ),
-
-            'title' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'],
-                'inputType' => 'text',
-                'exclude' => true,
-                'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
-                'sql' => "varchar(255) NOT NULL default ''"
-            ),
-
-            'info' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'],
-                'inputType' => 'text',
-                'exclude' => true,
-                'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
-                'sql' => "varchar(255) NOT NULL default ''"
-            ),
-
-            'addDetailPage' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addDetailPage'],
-                'inputType' => 'checkbox',
-                'exclude' => true,
-                'eval' => array('tl_class' => 'clr', 'submitOnChange' => true),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-
-            'rootPage' => array(
-
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['rootPage'],
-                'inputType' => 'pageTree',
-                'exclude' => true,
-                'foreignKey' => 'tl_page.title',
-                'eval' => array('fieldType' => 'radio', 'tl_class' => 'clr m12', 'mandatory' => true),
-                'relation' => array('type' => 'hasOne', 'load' => 'eager'),
-                'sql' => "int(10) unsigned NOT NULL default '0'"
-
-            ),
-
-            //comments
-            'allowComments' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['allowComments'],
-                'exclude' => true,
-                'filter' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('submitOnChange' => true),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-            'notify' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify'],
-                'default' => 'notify_admin',
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => array('notify_admin', 'notify_author', 'notify_both'),
-                'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'],
-                'sql' => "varchar(32) NOT NULL default ''"
-            ),
-            'sortOrder' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sortOrder'],
-                'default' => 'ascending',
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => array('ascending', 'descending'),
-                'reference' => &$GLOBALS['TL_LANG']['MSC'],
-                'eval' => array('tl_class' => 'w50'),
-                'sql' => "varchar(32) NOT NULL default ''"
-            ),
-            'perPage' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perPage'],
-                'exclude' => true,
-                'inputType' => 'text',
-                'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
-                'sql' => "smallint(5) unsigned NOT NULL default '0'"
-            ),
-            'moderate' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['moderate'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50'),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-            'bbcode' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['bbcode'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50'),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-            'requireLogin' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50'),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-            'disableCaptcha' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50'),
-                'sql' => "char(1) NOT NULL default ''"
-            )
-
-        );
+        if(empty($fields))
+        {
+            return $arr;
+        }
 
         foreach ($fields as $field) {
 
-            if ($field['fieldID'] !== '' && ($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')) {
-
-                if ($field['dataFromTable'] == '1') {
-
-                    $arr['select_table_' . $field['fieldID']] = array(
-
-                        'label' => array(sprintf($GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_table'][0], $field['title']), $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_table'][1]),
-                        'fmodule_filter' => true,
-                        'inputType' => 'select',
-                        'exclude' => true,
-                        'load_callback' => array(array('DCAModuleSettings', 'loadDefaultTable')),
-                        'options_callback' => array('DCAModuleSettings', 'getTables'),
-                        'save_callback' => array(array('DCAModuleSettings', 'save_select_table')),
-                        'eval' => array('submitOnChange' => true, 'tl_class' => 'clr'),
-                        'sql' => "text NULL"
-
-                    );
-
-                    $arr['select_col_' . $field['fieldID']] = array(
-
-                        'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_col'],
-                        'fmodule_filter' => true,
-                        'inputType' => 'select',
-                        'load_callback' => array(array('DCAModuleSettings', 'loadDefaultCol')),
-                        'options_callback' => array('DCAModuleSettings', 'getCols'),
-                        'save_callback' => array(array('DCAModuleSettings', 'save_select_col')),
-                        'exclude' => true,
-                        'eval' => array('tl_class' => 'w50'),
-                        'sql' => "text NULL"
-                    );
-
-                    $arr['select_title_' . $field['fieldID']] = array(
-
-                        'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_title'],
-                        'fmodule_filter' => true,
-                        'inputType' => 'select',
-                        'load_callback' => array(array('DCAModuleSettings', 'loadDefaultTitle')),
-                        'options_callback' => array('DCAModuleSettings', 'getTitle'),
-                        'save_callback' => array(array('DCAModuleSettings', 'save_select_title')),
-                        'exclude' => true,
-                        'eval' => array('tl_class' => 'w50'),
-                        'sql' => "text NULL"
-                    );
-
-                } else {
-
-                    $arr[$field['fieldID']] = array(
-
-                        'label' => array($field['title'], $field['description']),
-                        'fmodule_filter' => true,
-                        'inputType' => 'optionWizardExtended',
-                        'exclude' => true,
-                        'eval' => array('tl_class' => 'clr m12'),
-                        'sql' => "text NULL"
-
-                    );
-
-                }
-
+            //
+            if(!$field['fieldID'])
+            {
+                continue;
             }
+
+            //
+            if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
+            {
+                $arr = $this->setOptionsFields($field, $arr);
+            }
+
         }
+
         return $arr;
 
     }
 
     /**
-     *
+     * @param $field
+     * @param $arr
+     * @return mixed
+     */
+    private function setOptionsFields($field, $arr)
+    {
+
+        if($field['dataFromTable'] == '1')
+        {
+
+            $fieldPrefixes = array('select_table_', 'select_col_', 'select_title_');
+
+            for($i=0; $i < count($fieldPrefixes); $i++)
+            {
+                if($fieldPrefixes[$i])
+                {
+                    $arr[$fieldPrefixes[$i].$field['fieldID']] = $this->getOptionFromTableField($fieldPrefixes[$i], $field);
+                }
+            }
+
+        }else{
+
+            $arr[$field['fieldID']] = $this->getOptionField($field);
+
+        }
+
+        return $arr;
+    }
+
+    /**
+     * @param $value
+     * @param $dc
      */
     public function loadDefaultTitle($value, $dc)
     {
@@ -537,6 +414,10 @@ class DCAModuleSettings extends DCAHelper
 
     }
 
+    /**
+     * @param $value
+     * @param $dc
+     */
     public function loadDefaultCol($value, $dc)
     {
 
@@ -557,6 +438,10 @@ class DCAModuleSettings extends DCAHelper
 
     }
 
+    /**
+     * @param $value
+     * @param $dc
+     */
     public function loadDefaultTable($value, $dc)
     {
 
@@ -579,11 +464,18 @@ class DCAModuleSettings extends DCAHelper
 
     }
 
+    /**
+     * @return array
+     */
     public function getTables()
     {
         return $this->Database->listTables();
     }
 
+    /**
+     * @param $dc
+     * @return array
+     */
     public function getTitle($dc)
     {
         $field = $dc->field;
@@ -595,6 +487,10 @@ class DCAModuleSettings extends DCAHelper
         return array();
     }
 
+    /**
+     * @param $dc
+     * @return array
+     */
     public function getCols($dc)
     {
         $field = $dc->field;
@@ -606,6 +502,10 @@ class DCAModuleSettings extends DCAHelper
         return array();
     }
 
+    /**
+     * @param $value
+     * @param $dc
+     */
     public function save_select_table($value, $dc)
     {
         $id = $dc->id;
@@ -617,6 +517,10 @@ class DCAModuleSettings extends DCAHelper
         $this->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 
+    /**
+     * @param $value
+     * @param $dc
+     */
     public function save_select_title($value, $dc)
     {
         $id = $dc->id;
@@ -628,6 +532,10 @@ class DCAModuleSettings extends DCAHelper
         $this->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 
+    /**
+     * @param $value
+     * @param $dc
+     */
     public function save_select_col($value, $dc)
     {
         $id = $dc->id;
@@ -640,7 +548,7 @@ class DCAModuleSettings extends DCAHelper
     }
 
     /**
-     *
+     * @return string
      */
     public function getChildName()
     {
@@ -649,7 +557,7 @@ class DCAModuleSettings extends DCAHelper
 
 
     /**
-     *
+     * @return void
      */
     public function createCols()
     {
@@ -673,7 +581,7 @@ class DCAModuleSettings extends DCAHelper
     }
 
     /**
-     *
+     * @return void
      */
     public function createTable()
     {
@@ -686,7 +594,6 @@ class DCAModuleSettings extends DCAHelper
         }
 
         $this->createCols();
-
     }
 
 }

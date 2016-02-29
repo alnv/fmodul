@@ -595,19 +595,24 @@ class ModuleListView extends Module
     public function createPagination($total = 0)
     {
         global $objPage;
-
         $this->listViewLimit = $total;
-
         $getPagination = Input::get('pagination');
-        $isValue = QueryModel::isValue($getPagination);
 
-        if ($isValue) {
+        if ($getPagination) {
+
             if (is_array($getPagination)) {
                 $this->f_perPage = $getPagination[0];
             }
+
             if (is_string($getPagination)) {
                 $this->f_perPage = $getPagination;
             }
+
+        }
+
+        if($getPagination == '0' && !is_null($getPagination))
+        {
+            $this->f_perPage = $getPagination;
         }
 
         if ($this->f_limit_page > 0) {

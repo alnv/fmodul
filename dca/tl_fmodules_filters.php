@@ -336,7 +336,8 @@ class tl_fmodules_filters extends \Contao\Backend
     }
 
     /**
-     *
+     * @param $value
+     * @return mixed
      */
     public function look_widget($value)
     {
@@ -377,7 +378,7 @@ class tl_fmodules_filters extends \Contao\Backend
     }
 
     /**
-     *
+     * @throws Exception
      */
     public function checkPermission()
     {
@@ -513,7 +514,62 @@ class tl_fmodules_filters extends \Contao\Backend
         $tempVal = $dc->activeRecord->fieldID;
         $type = $dc->activeRecord->type;
 
-        $notAllowedCols = array('id', 'tstamp', 'title', 'info', 'adddetailpage', 'rootpage', 'source', 'allowcomments', 'notify', 'sortorder', 'perpage', 'moderate', 'bbcode', 'requirelogin', 'disablecaptcha', 'protected', 'groups', 'guests', 'cssID', 'published', 'start', 'stop', 'addenclosure', 'enclosure', 'addimage', 'singlesrc', 'alt', 'size', 'caption', 'alter', 'key', 'type', 'date', 'primary', 'auto_increment', 'data', 'insert', 'delete', 'update', 'options', 'max', 'min', 'drop', 'date', 'time', 'fmodule', 'fmodules', 'fmodulesfilters', 'fmodulesfeed');
+        $notAllowedCols = array(
+            'id',
+            'tstamp',
+            'title',
+            'info',
+            'adddetailpage',
+            'rootpage',
+            'source',
+            'allowcomments',
+            'notify',
+            'sortorder',
+            'perpage',
+            'moderate',
+            'bbcode',
+            'requirelogin',
+            'disablecaptcha',
+            'protected',
+            'groups',
+            'guests',
+            'cssID',
+            'published',
+            'start',
+            'stop',
+            'addenclosure',
+            'enclosure',
+            'addimage',
+            'singlesrc',
+            'alt',
+            'size',
+            'caption',
+            'alter',
+            'key',
+            'type',
+            'date',
+            'primary',
+            'auto_increment',
+            'data',
+            'insert',
+            'delete',
+            'update',
+            'options',
+            'max',
+            'min',
+            'drop',
+            'date',
+            'time',
+            'fmodule',
+            'fmodules',
+            'fmodulesfilters',
+            'fmodulesfeed',
+            'sourcePalette',
+            'protectedPalette',
+            'expertPalette',
+            'publishPalette',
+            'generalPalette'
+        );
 
         if (in_array(mb_strtolower($values), $notAllowedCols)) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'], $values));
@@ -600,7 +656,7 @@ class tl_fmodules_filters extends \Contao\Backend
     }
 
     /**
-     *
+     * @return array
      */
     public function getFromFields()
     {
@@ -609,7 +665,7 @@ class tl_fmodules_filters extends \Contao\Backend
     }
 
     /**
-     *
+     * @return array
      */
     public function getToFields()
     {

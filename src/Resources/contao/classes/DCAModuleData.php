@@ -30,7 +30,7 @@ class DCAModuleData extends ViewContainer
     protected $parent;
     protected $id;
     protected $pid;
-
+    protected $fields = array();
     private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search');
     private $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
 
@@ -179,7 +179,8 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
-     *
+     * @param $detailPage
+     * @return array
      */
     public function setConfig($detailPage)
     {
@@ -224,7 +225,8 @@ class DCAModuleData extends ViewContainer
 
 
     /**
-     *
+     * @param $moduleObj
+     * @return array
      */
     public function setList($moduleObj)
     {
@@ -281,7 +283,6 @@ class DCAModuleData extends ViewContainer
                 )
 
             ),
-
 
             'operations' => array(
 
@@ -440,25 +441,20 @@ class DCAModuleData extends ViewContainer
         $defaultPalettes = array('sourcePalette', 'protectedPalette', 'expertPalette', 'publishPalette');
 
         // add palettes from builder into $palettes var
-        if(!empty($paletteBuilder)) {
+        if (!empty($paletteBuilder)) {
 
-            foreach($paletteBuilder as $palette)
-            {
+            foreach ($paletteBuilder as $palette) {
                 $palettes[] = $palette;
             }
 
         }
 
         // set custom fields
-        if(!empty($fields))
-        {
+        if (!empty($fields)) {
 
-            if(DCAHelper::isLegend($fields))
-            {
-                foreach($fields as $field)
-                {
-                    if($field['type'] != 'legend_start')
-                    {
+            if (DCAHelper::isLegend($fields)) {
+                foreach ($fields as $field) {
+                    if ($field['type'] != 'legend_start') {
                         continue;
                     }
 
@@ -467,8 +463,7 @@ class DCAModuleData extends ViewContainer
                 }
             }
 
-            if(!DCAHelper::isLegend($fields))
-            {
+            if (!DCAHelper::isLegend($fields)) {
                 $palettes[] = 'metaPalette';
             }
 
@@ -496,27 +491,23 @@ class DCAModuleData extends ViewContainer
         );
 
         //build palettes
-        foreach($palettes as $palette)
-        {
+        foreach ($palettes as $palette) {
 
             $getPalette = $this->{$palette}($moduleDB['fields']);
             $paletteData = $getPalette ? $getPalette : array();
 
-            if(!empty($paletteData))
-            {
+            if (!empty($paletteData)) {
 
                 // set palette string
                 $returnPalette['default'] .= $paletteData['palette'];
 
                 // set selectors
-                if($paletteData['__selector__'])
-                {
+                if ($paletteData['__selector__']) {
                     $returnPalette['__selector__'][] = $paletteData['__selector__'];
                 }
 
                 // set subpallets
-                if($paletteData['subPalettes'] && $paletteData['__selector__'])
-                {
+                if ($paletteData['subPalettes'] && $paletteData['__selector__']) {
                     $returnPalette['subPalettes'][$paletteData['__selector__']] = $paletteData['subPalettes'];
                 }
 
@@ -539,8 +530,7 @@ class DCAModuleData extends ViewContainer
         $arr = $this->dcaDataFields();
 
         //
-        if(empty($fields))
-        {
+        if (empty($fields)) {
             return $arr;
         }
 
@@ -548,8 +538,7 @@ class DCAModuleData extends ViewContainer
         foreach ($fields as $field) {
 
             // skip if field id is empty
-            if(!$field['fieldID'])
-            {
+            if (!$field['fieldID']) {
                 continue;
             }
 
@@ -559,8 +548,7 @@ class DCAModuleData extends ViewContainer
             }
 
             // get field from view
-            switch($field['type'])
-            {
+            switch ($field['type']) {
                 case 'widget':
                     $arr[$field['fieldID']] = $this->getWidgetField($field);
                     break;
@@ -584,7 +572,7 @@ class DCAModuleData extends ViewContainer
             }
 
         }
-
+        $this->fields = $arr;
         return $arr;
     }
 
@@ -625,49 +613,60 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
-     *
+     * @return null
      */
     public function createCols()
     {
-        $db = Database::getInstance();
-        $rows = $GLOBALS['TL_DCA'][$this->name]['fields'];
 
-        foreach ($rows as $name => $row) {
-
-            if ($row['fmodule_filter']) {
-                continue;
-            }
-
-            if ($name == 'id' || $name == 'tstamp' || $name == 'pid') {
-                continue;
-            }
-
-            if (!$db->fieldExists($name, $this->name)) {
-                $db->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $name . ' ' . $row['sql'])->execute();
-            }
+        if(!$this->name)
+        {
+            return null;
         }
+
+        foreach($this->fields as $colname => $field)
+        {
+            if(!$field['sql'])
+            {
+               continue;
+            }
+
+            if(!$this->Database->fieldExists($colname, $this->name))
+            {
+                $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
+            }
+
+        }
+
     }
 
     /**
-     *
+     * @return void
      */
     public function createTable()
     {
 
-        $db = Database::getInstance();
         $defaultCols = "id int(10) unsigned NOT NULL auto_increment, tstamp int(10) unsigned NOT NULL default '0', pid int(10) unsigned NOT NULL default '0'";
 
-        if (!$db->tableExists($this->name)) {
-            Database::getInstance()->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")
-                ->execute();
+        if( $this->name && !$this->Database->tableExists($this->name) )
+        {
+            $this->Database->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")->execute();
         }
 
-        $this->createCols();
+        if(!empty($this->fields))
+        {
+            $this->createCols();
+        }
 
     }
 
     /**
-     *
+     * @param $row
+     * @param $href
+     * @param $label
+     * @param $title
+     * @param $icon
+     * @param $attributes
+     * @return string
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
@@ -688,7 +687,9 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
-     *
+     * @param $intId
+     * @param $blnVisible
+     * @param null $dc
      */
     public function toggleVisibility($intId, $blnVisible, $dc = null)
     {

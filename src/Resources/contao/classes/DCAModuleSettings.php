@@ -25,6 +25,7 @@ class DCAModuleSettings extends ViewContainer
      */
     protected $child;
     protected $name;
+    protected $fields = array();
 
     /**
      * @param $dcaname
@@ -357,6 +358,8 @@ class DCAModuleSettings extends ViewContainer
 
         }
 
+        $this->fields = $arr;
+
         return $arr;
 
     }
@@ -555,28 +558,28 @@ class DCAModuleSettings extends ViewContainer
         return $this->child = $this->name . '_data';
     }
 
-
     /**
      * @return void
      */
     public function createCols()
     {
-        $db = Database::getInstance();
-        $rows = $GLOBALS['TL_DCA'][$this->name]['fields'];
+        if(!$this->name)
+        {
+            return null;
+        }
 
-        foreach ($rows as $name => $row) {
-
-            if ($row['fmodule_filter']) {
+        foreach($this->fields as $colname => $field)
+        {
+            if(!$field['sql'])
+            {
                 continue;
             }
 
-            if ($name == 'id' || $name == 'tstamp') {
-                continue;
+            if(!$this->Database->fieldExists($colname, $this->name))
+            {
+                $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
             }
 
-            if (!$db->fieldExists($name, $this->name)) {
-                $db->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $name . ' ' . $row['sql'])->execute();
-            }
         }
     }
 
@@ -585,15 +588,19 @@ class DCAModuleSettings extends ViewContainer
      */
     public function createTable()
     {
-        $db = Database::getInstance();
+
         $defaultCols = "id int(10) unsigned NOT NULL auto_increment, tstamp int(10) unsigned NOT NULL default '0'";
 
-        if (!$db->tableExists($this->name)) {
-            Database::getInstance()->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")
-                ->execute();
+        if( $this->name && !$this->Database->tableExists($this->name) )
+        {
+            $this->Database->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")->execute();
         }
 
-        $this->createCols();
+        if(!empty($this->fields))
+        {
+            $this->createCols();
+        }
+
     }
 
 }

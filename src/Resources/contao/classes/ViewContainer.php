@@ -29,7 +29,7 @@ class ViewContainer extends DCAHelper
 
         $userID = $this->getUserID();
 
-        return array(
+        $fields = array(
             'id' => array('sql' => 'int(10) unsigned NOT NULL auto_increment'),
             'tstamp' => array('sql' => "int(10) unsigned NOT NULL default '0'"),
             'title' => array(
@@ -234,6 +234,18 @@ class ViewContainer extends DCAHelper
                 'sql' => "varchar(255) NOT NULL default ''"
             )
         );
+
+        // add pid
+        if($this->parent)
+        {
+            $fields['pid'] = array(
+                'foreignKey' => $this->parent.'.id',
+                'sql' => "int(10) unsigned NOT NULL default '0'",
+                'relation' => array('type' => 'belongsTo', 'load' => 'eager')
+            );
+        }
+
+        return $fields;
     }
 
     /**
@@ -500,11 +512,10 @@ class ViewContainer extends DCAHelper
 
         $palette['palette'] .= '{meta_legend}';
 
-        foreach($fields as $field)
-        {
+        foreach ($fields as $field) {
             $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend'][$field['fieldID']] = $field['title'];
             $palette['fields'][] = $field['fieldID'];
-            $palette['palette'] .= ','.$field['fieldID'].'';
+            $palette['palette'] .= ',' . $field['fieldID'] . '';
         }
 
         $palette['palette'] .= ';';
@@ -524,42 +535,36 @@ class ViewContainer extends DCAHelper
 
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['exclude'] = true;
-
         $field['eval'] = array(
             'tl_class' => $this->setTLClass($fieldData),
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
         );
-
         $field['inputType'] = 'text';
+        $field['sql'] = "text NULL";
 
         // textarea blank
-        if($widgetType[0] == 'textarea' && $widgetType[1] == 'blank')
-        {
+        if ($widgetType[0] == 'textarea' && $widgetType[1] == 'blank') {
             $field['inputType'] = 'textarea';
         }
 
         // textarea tinymce
-        if($widgetType[0] == 'textarea' && $widgetType[1] == 'tinyMCE')
-        {
+        if ($widgetType[0] == 'textarea' && $widgetType[1] == 'tinyMCE') {
             $field['inputType'] = 'textarea';
             $field['eval']['rte'] = 'tinyMCE';
         }
 
         // list
-        if($widgetType[0] == 'list' && $widgetType[1] == 'blank')
-        {
+        if ($widgetType[0] == 'list' && $widgetType[1] == 'blank') {
             $field['inputType'] = 'listWizard';
         }
 
         // key - value list
-        if($widgetType[0] == 'list' && $widgetType[1] == 'keyValue')
-        {
+        if ($widgetType[0] == 'list' && $widgetType[1] == 'keyValue') {
             $field['inputType'] = 'keyValueWizard';
         }
 
         //table
-        if($widgetType[0] == 'table' && $widgetType[1] == 'blank')
-        {
+        if ($widgetType[0] == 'table' && $widgetType[1] == 'blank') {
             $field['inputType'] = 'tableWizard';
             $field['eval']['allowHtml'] = true;
             $field['eval']['doNotSaveEmpty'] = true;
@@ -580,16 +585,12 @@ class ViewContainer extends DCAHelper
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['exclude'] = true;
         $field['filter'] = true;
-
         $field['inputType'] = 'checkbox';
-
         $field['eval'] = array(
             'tl_class' => $this->setTLClass($fieldData),
             'doNotCopy' => true
         );
-
         $field['sql'] = "char(1) NOT NULL default ''";
-
         return $field;
     }
 
@@ -601,16 +602,12 @@ class ViewContainer extends DCAHelper
     {
         $field = array();
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
-
         $field['search'] = true;
         $field['exclude'] = true;
         $field['filter'] = true;
         $field['sorting'] = true;
-
         $field['default'] = time();
-
         $field['inputType'] = 'text';
-
         $field['eval'] = array(
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData),
@@ -618,14 +615,11 @@ class ViewContainer extends DCAHelper
             'doNotCopy' => true,
             'datepicker' => true,
         );
-
         $field['sql'] = 'int(10) unsigned NULL';
-
         // if time is enable
         if ($fieldData['addTime']) {
             $field['eval']['rgxp'] = 'datim';
         }
-
         return $field;
     }
 
@@ -639,16 +633,12 @@ class ViewContainer extends DCAHelper
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['search'] = true;
         $field['exclude'] = true;
-
         $field['inputType'] = 'text';
-
         $field['eval'] = array(
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData)
         );
-
         $field['sql'] = 'text NULL';
-
         return $field;
     }
 
@@ -666,24 +656,21 @@ class ViewContainer extends DCAHelper
         $field['filter'] = true;
         $field['search'] = true;
         $field['exclude'] = true;
-
         $field['inputType'] = 'select';
         $field['options'] = $options;
-
         $field['eval'] = array(
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData),
             'includeBlankOption' => true,
+            'chosen' => true,
             'blankOptionLabel' => '-'
         );
-
         $field['sql'] = 'text NULL';
 
         // radio
         if ($fieldData['fieldAppearance'] == 'radio') {
             $field['inputType'] = 'radio';
         }
-
         return $field;
     }
 
@@ -701,25 +688,20 @@ class ViewContainer extends DCAHelper
         $field['filter'] = true;
         $field['search'] = true;
         $field['exclude'] = true;
-
         $field['inputType'] = 'checkbox';
         $field['options'] = $options;
-
         $field['eval'] = array(
             'multiple' => true,
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData),
             'csv' => ','
         );
-
         $field['sql'] = 'text NULL';
-
         // tags
         if ($fieldData['fieldAppearance'] == 'tags') {
             $field['inputType'] = 'select';
             $field['eval']['chosen'] = true;
         }
-
         return $field;
     }
 
@@ -731,14 +713,12 @@ class ViewContainer extends DCAHelper
     {
 
         $field = array();
-
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['exclude'] = true;
         $field['fmodule_filter'] = true;
         $field['eval'] = array('tl_class' => 'clr m12');
         $field['inputType'] = 'optionWizardExtended';
         $field['sql'] = 'text NULL';
-
         return $field;
     }
 
@@ -753,35 +733,31 @@ class ViewContainer extends DCAHelper
         $field['exclude'] = true;
         $field['fmodule_filter'] = true;
         $field['inputType'] = 'select';
-        $field['eval'] = array('tl_class' => 'clr', 'submitOnChange' => true);
+        $field['eval'] = array('tl_class' => 'clr', 'submitOnChange' => true, 'chosen' => true,);
         $field['sql'] = 'text NULL';
 
-        if($type == 'select_table_')
-        {
+        if ($type == 'select_table_') {
             $field['label'] = array(sprintf($GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_table'][0], $fieldData['title']), $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_table'][1]);
-            $field['load_callback'] = array( array( 'DCAModuleSettings', 'loadDefaultTable' ) );
-            $field['options_callback'] = array( 'DCAModuleSettings', 'getTables' );
-            $field['save_callback'] = array( array( 'DCAModuleSettings', 'save_select_table' ) );
+            $field['load_callback'] = array(array('DCAModuleSettings', 'loadDefaultTable'));
+            $field['options_callback'] = array('DCAModuleSettings', 'getTables');
+            $field['save_callback'] = array(array('DCAModuleSettings', 'save_select_table'));
         }
 
-        if($type == 'select_col_')
-        {
+        if ($type == 'select_col_') {
             $field['label'] = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_col'];
-            $field['load_callback'] = array( array( 'DCAModuleSettings', 'loadDefaultCol' ) );
-            $field['options_callback'] = array( 'DCAModuleSettings', 'getCols' );
-            $field['save_callback'] = array( array( 'DCAModuleSettings', 'save_select_col' ) );
+            $field['load_callback'] = array(array('DCAModuleSettings', 'loadDefaultCol'));
+            $field['options_callback'] = array('DCAModuleSettings', 'getCols');
+            $field['save_callback'] = array(array('DCAModuleSettings', 'save_select_col'));
         }
 
-        if($type == 'select_title_')
-        {
+        if ($type == 'select_title_') {
             $field['label'] = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['select_title'];
-            $field['load_callback'] = array( array( 'DCAModuleSettings', 'loadDefaultTitle' ) );
-            $field['options_callback'] =  array( 'DCAModuleSettings', 'getTitle' );
-            $field['save_callback'] = array( array( 'DCAModuleSettings', 'save_select_title' ) );
+            $field['load_callback'] = array(array('DCAModuleSettings', 'loadDefaultTitle'));
+            $field['options_callback'] = array('DCAModuleSettings', 'getTitle');
+            $field['save_callback'] = array(array('DCAModuleSettings', 'save_select_title'));
         }
 
-        if($type != 'select_table_')
-        {
+        if ($type != 'select_table_') {
             $field['eval']['tl_class'] = 'w50';
             $field['eval']['submitOnChange'] = false;
         }
@@ -818,14 +794,12 @@ class ViewContainer extends DCAHelper
         $cssStr = '';
 
         // check evalCss
-        if($fieldData['evalCss'])
-        {
-            $cssStr .=  $fieldData['evalCss'];
+        if ($fieldData['evalCss']) {
+            $cssStr .= $fieldData['evalCss'];
         }
 
-        if($fieldData['type'] == 'date_field')
-        {
-            $cssStr .=  ' wizard';
+        if ($fieldData['type'] == 'date_field') {
+            $cssStr .= ' wizard';
         }
 
         return $cssStr;
@@ -866,23 +840,19 @@ class ViewContainer extends DCAHelper
 
         $pointer = false;
 
-        foreach($fields as $field)
-        {
-            if($field['fieldID'] == $name)
-            {
+        foreach ($fields as $field) {
+            if ($field['fieldID'] == $name) {
                 $pointer = true;
                 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend'][$field['fieldID']] = $field['title'];
-                $palette['palette'] .= '{'.$name.'}';
+                $palette['palette'] .= '{' . $name . '}';
             }
 
-            if($pointer)
-            {
+            if ($pointer) {
                 $palette['fields'][] = $field['fieldID'];
-                $palette['palette'] .= ','.$field['fieldID'].'';
+                $palette['palette'] .= ',' . $field['fieldID'] . '';
             }
 
-            if($pointer && $field['type'] == 'legend_end')
-            {
+            if ($pointer && $field['type'] == 'legend_end') {
                 $pointer = false;
                 $palette['palette'] .= ';';
             }

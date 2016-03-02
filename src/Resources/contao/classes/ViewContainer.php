@@ -26,9 +26,7 @@ class ViewContainer extends DCAHelper
      */
     public function dcaDataFields()
     {
-
         $userID = $this->getUserID();
-
         $fields = array(
             'id' => array('sql' => 'int(10) unsigned NOT NULL auto_increment'),
             'tstamp' => array('sql' => "int(10) unsigned NOT NULL default '0'"),
@@ -812,14 +810,12 @@ class ViewContainer extends DCAHelper
     {
         $hash = Input::cookie('BE_USER_AUTH');
         $id = '0';
-
         if (isset($hash) && $hash != '') {
             $sessionDB = $this->Database->prepare('SELECT * FROM tl_session WHERE hash = ?')->execute($hash);
             if ($sessionDB->count() > 0) {
                 $id = $sessionDB->row()['pid'];
             }
         }
-
         return $id;
     }
 
@@ -830,16 +826,13 @@ class ViewContainer extends DCAHelper
     public function __call($name, $arguments)
     {
         $fields = $arguments[0] ? $arguments[0] : array();
-
         $palette = array(
             'fields' => array(),
             'palette' => '',
             '__selector__' => '',
             'subPalettes' => '',
         );
-
         $pointer = false;
-
         foreach ($fields as $field) {
             if ($field['fieldID'] == $name) {
                 $pointer = true;
@@ -858,9 +851,6 @@ class ViewContainer extends DCAHelper
             }
 
         }
-
         return $palette;
-
     }
-
 }

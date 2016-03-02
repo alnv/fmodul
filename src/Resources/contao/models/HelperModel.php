@@ -27,6 +27,7 @@ class HelperModel
 
     /**
      * @param $item
+     * @param $allowedGroups
      * @return bool
      */
     public static function sortOutProtected($item, $allowedGroups)

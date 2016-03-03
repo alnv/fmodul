@@ -1,18 +1,14 @@
 <?php namespace FModule;
 
-    /**
-     * Contao Open Source CMS
-     *
-     * Copyright (c) 2005-2016 Leo Feyer
-     *
-     * @package   F Modul
-     * @author    Alexander Naumov http://www.alexandernaumov.de
-     * @license   commercial
-     * @copyright 2016 Alexander Naumov
-     */
-
 /**
+ * Contao Open Source CMS
  *
+ * Copyright (c) 2005-2016 Leo Feyer
+ *
+ * @package   F Modul
+ * @author    Alexander Naumov http://www.alexandernaumov.de
+ * @license   commercial
+ * @copyright 2016 Alexander Naumov
  */
 
 use Contao\Database;
@@ -331,7 +327,7 @@ class FModule extends Frontend
     }
 
     /**
-     *
+     * @return array
      */
     public function purgeOldFeeds()
     {
@@ -408,14 +404,12 @@ class FModule extends Frontend
                 $strUrl = $arrProcessed[$wrapper['rootPage']];
                 $dataDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ?')->execute($wrapper['id']);
 
-                if ($dataDB->count() > 0) {
+                if ($dataDB->count()) {
                     while ($dataDB->next()) {
                         $arrPages[] = $this->getLink($dataDB, $strUrl);
                     }
                 }
-
             }
-
         }
 
         return $arrPages;
@@ -531,7 +525,7 @@ class FModule extends Frontend
         $filterArr = array();
 
         while ($allFiltersDB->next()) {
-            
+
             $tname = $allFiltersDB->fieldID;
 
             if (in_array($tname, $notSupportedID) || in_array($allFiltersDB->type, $notSupportedTypes)) {
@@ -547,9 +541,8 @@ class FModule extends Frontend
 
             }
 
-            if ($allFiltersDB->type == 'wrapper_field' && ( $allFiltersDB->from_field == $allFiltersDB->to_field ) )
-            {
-                $fname = $allFiltersDB->from_field.'_btw';
+            if ($allFiltersDB->type == 'wrapper_field' && ($allFiltersDB->from_field == $allFiltersDB->to_field)) {
+                $fname = $allFiltersDB->from_field . '_btw';
                 Input::setGet($fname, $qArr[$fname]);
             }
 
@@ -641,7 +634,6 @@ class FModule extends Frontend
     public function createFModuleUserGroupDCA()
     {
 
-
         if (!$this->Database->tableExists('tl_fmodules')) {
             return;
         }
@@ -691,7 +683,6 @@ class FModule extends Frontend
      */
     public function createFModuleUserDCA()
     {
-
 
         if (!$this->Database->tableExists('tl_fmodules')) {
             return;

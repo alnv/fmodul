@@ -621,13 +621,34 @@ class tl_fmodules_filters extends \Contao\Backend
      */
     public function getWrapperFields()
     {
-        $DB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE type = ? OR type = ?')->execute('date_field', 'search_field');
+        $id = \Contao\Input::get('id');
+        $pid = null;
+
+        if($id)
+        {
+            $currentItemDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE id = ?')->execute($id);
+
+            if($currentItemDB->count())
+            {
+                $pid = $currentItemDB->row()['pid'];
+            }
+        }
+        
+        $filterDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE pid = ?')->execute($pid);
         $return = array();
-        while ($DB->next()) {
-            if ($DB->type == 'search_field' && !$DB->isInteger) {
+
+        while ($filterDB->next()) {
+
+            if(!in_array($filterDB->type, array('date_field', 'search_field')))
+            {
                 continue;
             }
-            $return[$DB->fieldID] = $DB->title;
+
+            if ($filterDB->type == 'search_field' && !$filterDB->isInteger) {
+                continue;
+            }
+
+            $return[$filterDB->fieldID] = $filterDB->title;
         }
 
         return $return;

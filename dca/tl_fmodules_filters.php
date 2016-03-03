@@ -637,14 +637,36 @@ class tl_fmodules_filters extends Backend
      */
     public function getWrapperFields()
     {
-        $filterFieldsDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE type = ? OR type = ?')->execute('date_field', 'search_field');
+        $id = Input::get('id');
+        $pid = null;
+
+        if($id)
+        {
+            $currentItemDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE id = ?')->execute($id);
+
+            if($currentItemDB->count())
+            {
+                $pid = $currentItemDB->row()['pid'];
+            }
+        }
+
+        $filterDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE pid = ?')->execute($pid);
         $return = array();
-        while ($filterFieldsDB->next()) {
-            if ($filterFieldsDB->type == 'search_field' && !$filterFieldsDB->isInteger) {
+
+        while ($filterDB->next()) {
+
+            if(!in_array($filterDB->type, array('date_field', 'search_field')))
+            {
                 continue;
             }
-            $return[$filterFieldsDB->fieldID] = $filterFieldsDB->title;
+
+            if ($filterDB->type == 'search_field' && !$filterDB->isInteger) {
+                continue;
+            }
+
+            $return[$filterDB->fieldID] = $filterDB->title;
         }
+
         return $return;
     }
 

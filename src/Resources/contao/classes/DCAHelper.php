@@ -30,69 +30,82 @@ class DCAHelper extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
-	
+
 	/**
-	 *
+	 * @param $field
+	 * @param $moduleObj
+	 * @return array
 	 */
-	public function getOptions($field)
+	public function getOptions($field, $moduleObj)
 	{
-		
+
 		$options = array();
-		$id = $this->pid;
+		$hasOptions = array('multi_choice', 'simple_choice');
+
+		if(!in_array($field['type'], $hasOptions))
+		{
+			return $options;
+		}
+
+		if(!$field['fieldID'])
+		{
+			return $options;
+		}
+
+		$id = $this->pid ? $this->pid : Input::get('id');
 
 		if( Input::get('act') && Input::get('act') == 'editAll' )
 		{
 			$id = Input::get('id');
 		}
 
-		if($field['fieldID'] == '')
+		$table = $moduleObj['tablename'];
+
+		if(!$id)
 		{
 			return $options;
 		}
 
-		if($field['type'] == 'fulltext_search')
+		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.' WHERE id = ?')->execute($id);
+
+		if(!$optionsDB->count())
 		{
 			return $options;
 		}
 
-		$optionsDB = deserialize( Database::getInstance()->prepare("SELECT ".$field['fieldID']." FROM ".$this->parent." WHERE id = ?")->execute($id)->row()[$field['fieldID']] );
+		$optionsArr = deserialize($optionsDB->row()[$field['fieldID']]);
 
-		if( count( $optionsDB ) <= 0 )
-		{
-			return $options;
-		}
-
-		if( $field['dataFromTable'] == '1' && isset($optionsDB['table']) )
+		if( $field['dataFromTable'] == '1' && isset($optionsArr['table']) )
 		{
 
-			if( !Database::getInstance()->tableExists($optionsDB['table']) )
+			if( !$this->Database->tableExists($optionsArr['table']) )
 			{
 				return $options;
 			}
-			
-			if( $optionsDB['col'] == '' || $optionsDB['title'] == '' )
+
+			if( !$optionsArr['col'] || !$optionsArr['title'] )
 			{
 				return $options;
 			}
-			
-			$DataFromTableDB = Database::getInstance()->prepare('SELECT '.$optionsDB['col'].', '.$optionsDB['title'].' FROM '.$optionsDB['table'].'')->execute();
+
+			$DataFromTableDB = $this->Database->prepare('SELECT '.$optionsArr['col'].', '.$optionsArr['title'].' FROM '.$optionsArr['table'].'')->execute();
 
 			while($DataFromTableDB->next())
 			{
-				$k = $DataFromTableDB->row()[$optionsDB['col']];
-				$v = $DataFromTableDB->row()[$optionsDB['title']];
+				$k = $DataFromTableDB->row()[$optionsArr['col']];
+				$v = $DataFromTableDB->row()[$optionsArr['title']];
 				$options[$k] = $v;
 			}
 
 			return $options;
 		}
 
-		foreach( $optionsDB as $value )
+		foreach( $optionsArr as $value )
 		{
 			$options[$value['value']] = $value['label'];
 		}
 
-    	return $options;  
+		return $options;
         
 	}
 
@@ -100,7 +113,7 @@ class DCAHelper extends Backend
 	 * @param $state
 	 * @return string
 	 */
-	public function getToogleIcon($state, $label, $fieldID, $noHTML = false)
+	public function getToggleIcon($state, $label, $fieldID, $noHTML = false)
 	{
 
 		$src = $state ? 'files/fmodule/assets/'.$fieldID.'.' : 'files/fmodule/assets/'.$fieldID.'_.';

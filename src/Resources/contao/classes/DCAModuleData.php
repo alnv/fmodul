@@ -282,7 +282,6 @@ class DCAModuleData extends DCAHelper
 
             ),
 
-
             'operations' => array(
 
                 'editheader' => array
@@ -339,7 +338,7 @@ class DCAModuleData extends DCAHelper
                 $list['operations'][$field['fieldID']] = array(
 
                     'label' => array($field['title'], $field['description']),
-                    'icon' => $this->getToogleIcon('1', $field['description'], $field['fieldID'], true),
+                    'icon' => $this->getToggleIcon('1', $field['description'], $field['fieldID'], true),
                     'href' => $field['fieldID'],
                     'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFMField(this)"',
                     'button_callback' => array('DCAModuleData', 'iconFeatured')
@@ -373,7 +372,6 @@ class DCAModuleData extends DCAHelper
     public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
     {
 
-
         $field = $href;
 
         if (strlen(Input::get('fid'))) {
@@ -389,7 +387,7 @@ class DCAModuleData extends DCAHelper
 
         $href = '&amp;fid=' . $row['id'] . '&amp;col=' . $field . '&amp;state=' . ($row[$field] ? '' : 1);
 
-        $imageHTML = $this->getToogleIcon($row[$field], $label, $field, false);
+        $imageHTML = $this->getToggleIcon($row[$field], $label, $field, false);
 
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $imageHTML . '</a> ';
 
@@ -511,9 +509,10 @@ class DCAModuleData extends DCAHelper
     /**
      *
      */
-    public function setFields($fields = array())
+    public function setFields($moduleObj = array())
     {
 
+        $fields = $moduleObj['fields'];
         $userID = $this->getUserID();
 
         $arr = array(
@@ -792,12 +791,10 @@ class DCAModuleData extends DCAHelper
 
         foreach ($fields as $field) {
 
-            $options = $this->getOptions($field);
+            $options = $this->getOptions($field, $moduleObj);
 
             if (in_array($field['fieldID'], $this->doNotSetByID)) {
-
                 continue;
-
             }
 
             $mandatory = $field['isMandatory'] ? true : false;
@@ -808,10 +805,7 @@ class DCAModuleData extends DCAHelper
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'simple_choice') {
-
-
                 $arr[$field['fieldID']] = array(
-
                     'label' => array($field['title'], $field['description']),
                     'filter' => true,
                     'search' => true,
@@ -820,17 +814,13 @@ class DCAModuleData extends DCAHelper
                     'options' => $options,
                     'eval' => array('tl_class' => $evalCss, 'mandatory' => $mandatory, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
                     'sql' => "text NULL"
-
                 );
-
                 if ($field['fieldAppearance'] == 'radio') {
                     $arr[$field['fieldID']]['inputType'] = 'radio';
                 }
-
                 if ($field['fieldAppearance'] == 'select') {
                     $arr[$field['fieldID']]['inputType'] = 'select';
                 }
-
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'multi_choice') {
@@ -844,26 +834,17 @@ class DCAModuleData extends DCAHelper
                     'eval' => array('multiple' => true, 'mandatory' => $mandatory, 'tl_class' => $evalCss, 'csv' => ','),
                     'sql' => "text NULL"
                 );
-
-                if (version_compare(VERSION, '4.0', '>=')) {
-                    $arr[$field['fieldID']]['filter'] = false;
-                }
-
                 if ($field['fieldAppearance'] == 'checkbox') {
                     $arr[$field['fieldID']]['inputType'] = 'checkbox';
                 }
-
                 if ($field['fieldAppearance'] == 'tags') {
                     $arr[$field['fieldID']]['inputType'] = 'select';
                     $arr[$field['fieldID']]['eval']['chosen'] = true;
                 }
-
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'search_field') {
-
                 $arr[$field['fieldID']] = array(
-
                     'label' => array($field['title'], $field['description']),
                     'search' => true,
                     'exclude' => true,
@@ -871,11 +852,9 @@ class DCAModuleData extends DCAHelper
                     'eval' => array('tl_class' => $evalCss, 'mandatory' => $mandatory),
                     'sql' => "text NULL"
                 );
-
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'date_field') {
-
                 $arr[$field['fieldID']] = array(
                     'label' => array($field['title'], $field['description']),
                     'default' => time(),
@@ -887,31 +866,25 @@ class DCAModuleData extends DCAHelper
                     'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'mandatory' => $mandatory, 'datepicker' => true, 'tl_class' => 'wizard ' . $evalCss . ''),
                     'sql' => "int(10) unsigned NULL"
                 );
-
                 if ($field['addTime']) {
                     $arr[$field['fieldID']]['eval']['rgxp'] = 'datim';
                 }
             }
 
             if ($field['fieldID'] !== '' && $field['type'] == 'toggle_field') {
-
                 $arr[$field['fieldID']] = array(
-
                     'label' => array($field['title'], $field['description']),
                     'inputType' => 'checkbox',
                     'exclude' => true,
                     'filter' => true,
                     'eval' => array('tl_class' => $evalCss, 'doNotCopy' => true),
                     'sql' => "char(1) NOT NULL default ''"
-
                 );
             }
-
-
         }
+
         return $arr;
     }
-
 
     /**
      * @param $varValue

@@ -861,7 +861,6 @@ class DCAModuleData extends DCAHelper
                     'exclude' => true,
                     'sorting' => true,
                     'search' => true,
-                    'filter' => true,
                     'inputType' => 'text',
                     'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'mandatory' => $mandatory, 'datepicker' => true, 'tl_class' => 'wizard ' . $evalCss . ''),
                     'sql' => "int(10) unsigned NULL"

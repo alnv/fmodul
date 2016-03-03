@@ -201,7 +201,7 @@ class DCACreator
             'list' => $dca_data->setList($moduleObj),
             'palettes' => $dca_data->setPalettes($moduleObj['fields']),
             'subpalettes' => $dca_data->subPalettes(),
-            'fields' => $dca_data->setFields($moduleObj['fields'])
+            'fields' => $dca_data->setFields($moduleObj)
 
         );
 

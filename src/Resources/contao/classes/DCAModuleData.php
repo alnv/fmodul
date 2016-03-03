@@ -231,7 +231,6 @@ class DCAModuleData extends ViewContainer
     public function setList($moduleObj)
     {
 
-
         $sortingField = $moduleObj['sorting'];
         $sortingType = $moduleObj['sortingType'];
         $orderBy = $moduleObj['orderBy'];
@@ -340,7 +339,7 @@ class DCAModuleData extends ViewContainer
                 $list['operations'][$field['fieldID']] = array(
 
                     'label' => array($field['title'], $field['description']),
-                    'icon' => $this->getToogleIcon('1', $field['description'], $field['fieldID'], true),
+                    'icon' => $this->getToggleIcon('1', $field['description'], $field['fieldID'], true),
                     'href' => $field['fieldID'],
                     'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFMField(this)"',
                     'button_callback' => array('DCAModuleData', 'iconFeatured')
@@ -390,7 +389,7 @@ class DCAModuleData extends ViewContainer
 
         $href = '&amp;fid=' . $row['id'] . '&amp;col=' . $field . '&amp;state=' . ($row[$field] ? '' : 1);
 
-        $imageHTML = $this->getToogleIcon($row[$field], $label, $field, false);
+        $imageHTML = $this->getToggleIcon($row[$field], $label, $field, false);
 
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $imageHTML . '</a> ';
 
@@ -520,11 +519,13 @@ class DCAModuleData extends ViewContainer
 
 
     /**
-     * @param array $fields
+     * @param $moduleObj
      * @return array
      */
-    public function setFields($fields = array())
+    public function setFields($moduleObj)
     {
+
+        $fields = $moduleObj['fields'];
 
         // get dca fields
         $arr = $this->dcaDataFields();
@@ -553,11 +554,11 @@ class DCAModuleData extends ViewContainer
                     $arr[$field['fieldID']] = $this->getWidgetField($field);
                     break;
                 case 'simple_choice':
-                    $options = $this->getOptions($field);
+                    $options = $this->getOptions($field, $moduleObj);
                     $arr[$field['fieldID']] = $this->getSimpleChoiceField($field, $options);
                     break;
                 case 'multi_choice':
-                    $options = $this->getOptions($field);
+                    $options = $this->getOptions($field, $moduleObj);
                     $arr[$field['fieldID']] = $this->getMultiChoiceField($field, $options);
                     break;
                 case 'search_field':

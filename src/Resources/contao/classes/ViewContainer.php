@@ -602,7 +602,6 @@ class ViewContainer extends DCAHelper
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['search'] = true;
         $field['exclude'] = true;
-        $field['filter'] = true;
         $field['sorting'] = true;
         $field['default'] = time();
         $field['inputType'] = 'text';

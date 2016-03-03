@@ -36,7 +36,6 @@ class DCACreator
     public function index()
     {
 
-
         if (TL_MODE == 'BE') {
             Config::getInstance();
             Environment::getInstance();
@@ -53,10 +52,7 @@ class DCACreator
                 $this->loadDynDCA();
                 $this->setDynLanguagePack();
             }
-
-
         }
-
     }
 
 
@@ -200,7 +196,7 @@ class DCACreator
                 'default' => $palette['default']
             ),
             'subpalettes' => $palette['subPalettes'],
-            'fields' => $dcaData->setFields($moduleObj['fields'])
+            'fields' => $dcaData->setFields($moduleObj)
         );
 
         $modname = substr($tablename, 3, strlen($tablename));

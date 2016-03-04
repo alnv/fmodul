@@ -821,6 +821,7 @@ class ViewContainer extends DCAHelper
     /**
      * @param $name
      * @param $arguments
+     * @return array
      */
     public function __call($name, $arguments)
     {

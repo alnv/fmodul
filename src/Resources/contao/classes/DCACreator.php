@@ -27,7 +27,9 @@ use Contao\BackendUser;
 class DCACreator
 {
 
-
+    /**
+     * @var array
+     */
     public $modules = array();
 
     /**
@@ -43,9 +45,7 @@ class DCACreator
             BackendUser::getInstance();
             Database::getInstance();
 
-            /**
-             * Boot BE Modules
-             */
+            // init BE Modules
             if (Database::getInstance()->tableExists('tl_fmodules')) {
                 $logLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
                 Backend::loadLanguageFile('tl_fmodules_language_pack', $logLanguage);
@@ -55,7 +55,9 @@ class DCACreator
         }
     }
 
-
+    /**
+     *
+     */
     public function setDynLanguagePack()
     {
 

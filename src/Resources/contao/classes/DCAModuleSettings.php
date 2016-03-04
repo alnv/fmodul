@@ -24,7 +24,15 @@ class DCAModuleSettings extends ViewContainer
      * @var
      */
     protected $child;
+
+    /**
+     * @var
+     */
     protected $name;
+
+    /**
+     * @var array
+     */
     protected $fields = array();
 
     /**
@@ -33,7 +41,6 @@ class DCAModuleSettings extends ViewContainer
     public function init($dcaname)
     {
         $this->name = $dcaname;
-
     }
 
     /**

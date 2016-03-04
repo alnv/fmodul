@@ -23,6 +23,9 @@ use Contao\Input;
 class DCAHelper extends Backend
 {
 
+	/**
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -161,7 +164,6 @@ class DCAHelper extends Backend
 		}
 
 		return Image::getHtml($src, $label, 'data-src="'.$temp.'" data-state="' . ($state ? 1 : 0) . '"');
-
 	}
 
 	/**
@@ -185,7 +187,6 @@ class DCAHelper extends Backend
 		}
 
 		return false;
-
 	}
 
 }

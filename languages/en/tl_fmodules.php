@@ -24,6 +24,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Access protection';
 $GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Back end palettes';
 $GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Back end sorting';
+$GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Back end navigation';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Module name';
@@ -48,6 +49,12 @@ $GLOBALS['TL_LANG']['tl_fmodules']['editDonate'] = 'Donate';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['sorting'][0] = 'Back end sorting';
 $GLOBALS['TL_LANG']['tl_fmodules']['sorting'][1] = 'select your sorting field.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['selectPosition'][0] = 'Position';
+$GLOBALS['TL_LANG']['tl_fmodules']['selectPosition'][1] = 'Please select position for your module.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['selectNavigation'][0] = 'Navigation';
+$GLOBALS['TL_LANG']['tl_fmodules']['selectNavigation'][1] = 'Please select navigation area for your module.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['orderBy'][0] = 'Order by';
 $GLOBALS['TL_LANG']['tl_fmodules']['orderBy'][1] = 'Select your order.';

@@ -38,75 +38,68 @@ class DCAHelper extends Backend
 	 */
 	public function getOptions($field, $moduleObj)
 	{
-
 		$options = array();
 		$hasOptions = array('multi_choice', 'simple_choice');
-
-		if(!in_array($field['type'], $hasOptions))
-		{
-			return $options;
-		}
-
+		$table = $moduleObj['tablename'];
 		if(!$field['fieldID'])
 		{
 			return $options;
 		}
-
+		if(!in_array($field['type'], $hasOptions))
+		{
+			return $options;
+		}
 		$id = $this->pid ? $this->pid : Input::get('id');
-
 		if( Input::get('act') && Input::get('act') == 'editAll' )
 		{
 			$id = Input::get('id');
 		}
-
-		$table = $moduleObj['tablename'];
-
-		if(!$id)
+		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.'')->execute();
+		$option = array();
+		while($optionsDB->next())
 		{
-			return $options;
+			if(!$id)
+			{
+				continue;
+			}
+			if($optionsDB->id != $id)
+			{
+				continue;
+			}
+			$option = $optionsDB->row()[$field['fieldID']] ? deserialize($optionsDB->row()[$field['fieldID']]) : array();
 		}
-
-		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.' WHERE id = ?')->execute($id);
-
-		if(!$optionsDB->count())
+		if($field['dataFromTable'] == '1')
 		{
-			return $options;
-		}
-
-		$optionsArr = deserialize($optionsDB->row()[$field['fieldID']]);
-
-		if( $field['dataFromTable'] == '1' && isset($optionsArr['table']) )
-		{
-
-			if( !$this->Database->tableExists($optionsArr['table']) )
+			if(!$option['table'])
 			{
 				return $options;
 			}
-
-			if( !$optionsArr['col'] || !$optionsArr['title'] )
+			if( !$this->Database->tableExists($option['table']) )
 			{
 				return $options;
 			}
-
-			$DataFromTableDB = $this->Database->prepare('SELECT '.$optionsArr['col'].', '.$optionsArr['title'].' FROM '.$optionsArr['table'].'')->execute();
-
+			if( !$option['col'] || !$option['title'] )
+			{
+				return $options;
+			}
+			$DataFromTableDB = $this->Database->prepare('SELECT '.$option['col'].', '.$option['title'].' FROM '.$option['table'].'')->execute();
 			while($DataFromTableDB->next())
 			{
-				$k = $DataFromTableDB->row()[$optionsArr['col']];
-				$v = $DataFromTableDB->row()[$optionsArr['title']];
+				$k = $DataFromTableDB->row()[$option['col']];
+				$v = $DataFromTableDB->row()[$option['title']];
 				$options[$k] = $v;
 			}
-
 			return $options;
 		}
-
-		foreach( $optionsArr as $value )
+		foreach( $option as $value )
 		{
+			if(!$value['value'])
+			{
+				continue;
+			}
 			$options[$value['value']] = $value['label'];
 		}
-
 		return $options;
-        
 	}
 
 	/**

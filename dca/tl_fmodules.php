@@ -127,7 +127,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
 
     'palettes' => array(
         '__selector__' => array('protected'),
-        'default' => '{main_legend},name,info,tablename;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy'
+        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy'
     ),
 
     'fields' => array
@@ -136,12 +136,10 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         (
             'sql' => "int(10) unsigned NOT NULL auto_increment"
         ),
-
         'tstamp' => array
         (
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
-
         'tablename' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['tablename'],
@@ -155,7 +153,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             )
 
         ),
-
         'name' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['name'],
@@ -168,7 +165,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'sql' => "varchar(128) NOT NULL default ''"
 
         ),
-
         'info' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['info'],
@@ -192,7 +188,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             ),
             'sql' => "varchar(64) NOT NULL default 'title'"
         ),
-
         'orderBy' => array(
 
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['orderBy'],
@@ -204,12 +199,10 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(12) NOT NULL default 'asc'"
         ),
-
         'sortingType' => array(
 
             'sql' => "varchar(64) NOT NULL default ''"
         ),
-
         'paletteBuilder' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['paletteBuilder'],
             'exclude' => true,
@@ -218,8 +211,23 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
             'eval' => array('multiple' => true),
             'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'selectNavigation' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['selectNavigation'],
+            'exclude' => true,
+            'inputType' => 'select',
+            'options_callback' => array('tl_fmodules', 'getNavigation'),
+            'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'selectPosition' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['selectPosition'],
+            'exclude' => true,
+            'inputType' => 'select',
+            'options_callback' => array('tl_fmodules', 'getPosition'),
+            'eval' => array('tl_class' => 'w50'),
+            'sql' => "varchar(255) NOT NULL default ''"
         )
-
     )
 );
 
@@ -337,6 +345,46 @@ class tl_fmodules extends \Contao\Backend
                 break;
         }
 
+    }
+
+    /**
+     * @return array
+     */
+    public function getNavigation()
+    {
+
+        $allModules = $GLOBALS['BE_MOD'] ? $GLOBALS['BE_MOD'] : array();
+        $modules = array();
+
+        if(is_array($allModules))
+        {
+            foreach($allModules as $name => $module)
+            {
+                $label = '';
+
+                if($GLOBALS['TL_LANG']['MOD'][$name] && is_array($GLOBALS['TL_LANG']['MOD'][$name]))
+                {
+                    $label = $GLOBALS['TL_LANG']['MOD'][$name][0];
+                }
+
+                if($GLOBALS['TL_LANG']['MOD'][$name] && is_string($GLOBALS['TL_LANG']['MOD'][$name]))
+                {
+                    $label = $GLOBALS['TL_LANG']['MOD'][$name];
+                }
+
+                $modules[$name] = $label ? $label : $name;
+            }
+        }
+
+        return $modules;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPosition()
+    {
+        return array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
     }
 
     /**

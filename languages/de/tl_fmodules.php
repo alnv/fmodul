@@ -46,7 +46,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] = 'Lizenz kaufen';
 $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1] = 'F Modul Store öffnen.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['sorting'][0] = 'Sortierfeld';
-$GLOBALS['TL_LANG']['tl_fmodules']['sorting'][1] = 'Wähle einen Sortierfeld aus.';
+$GLOBALS['TL_LANG']['tl_fmodules']['sorting'][1] = 'Wähle ein Sortierfeld aus.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['orderBy'][0] = 'Sortierreihenfolge';
 $GLOBALS['TL_LANG']['tl_fmodules']['orderBy'][1] = 'Die Reihenfolge der Sortierung festlegen.';

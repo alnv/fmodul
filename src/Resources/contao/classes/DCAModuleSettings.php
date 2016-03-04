@@ -337,25 +337,23 @@ class DCAModuleSettings extends ViewContainer
 
         $arr = $this->dcaSettingField();
 
-        if(empty($fields))
+        if(is_array($fields))
         {
-            return $arr;
-        }
+            foreach ($fields as $field) {
 
-        foreach ($fields as $field) {
+                //
+                if(!$field['fieldID'])
+                {
+                    continue;
+                }
 
-            //
-            if(!$field['fieldID'])
-            {
-                continue;
+                //
+                if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
+                {
+                    $arr = $this->setOptionsFields($field, $arr);
+                }
+
             }
-
-            //
-            if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
-            {
-                $arr = $this->setOptionsFields($field, $arr);
-            }
-
         }
 
         $this->fields = $arr;
@@ -447,12 +445,9 @@ class DCAModuleSettings extends ViewContainer
      */
     public function loadDefaultTable($value, $dc)
     {
-
-
         $field = $dc->field;
         $fieldname = substr($field, strlen('select_table_'), strlen($field));
         $table = deserialize($dc->activeRecord->$fieldname)['table'];
-
         $options = $this->getTables();
 
         if (isset($table) && is_string($table)) {
@@ -464,7 +459,6 @@ class DCAModuleSettings extends ViewContainer
             $GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options'] = $options;
             unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options_callback']);
         }
-
     }
 
     /**

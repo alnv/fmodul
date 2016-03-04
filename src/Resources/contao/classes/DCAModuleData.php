@@ -530,50 +530,50 @@ class DCAModuleData extends ViewContainer
         // get dca fields
         $arr = $this->dcaDataFields();
 
-        //
-        if (empty($fields)) {
-            return $arr;
-        }
-
         // set input fields
-        foreach ($fields as $field) {
+        if(is_array($fields))
+        {
+            foreach ($fields as $field) {
 
-            // skip if field id is empty
-            if (!$field['fieldID']) {
-                continue;
+                // skip if field id is empty
+                if (!$field['fieldID']) {
+                    continue;
+                }
+
+                // skip if field id or type is not allowed
+                if (in_array($field['fieldID'], $this->doNotSetByID) || in_array($field['type'], $this->doNotSetByType)) {
+                    continue;
+                }
+
+                // get field from view
+                switch ($field['type']) {
+                    case 'widget':
+                        $arr[$field['fieldID']] = $this->getWidgetField($field);
+                        break;
+                    case 'simple_choice':
+                        $options = $this->getOptions($field, $moduleObj);
+                        $arr[$field['fieldID']] = $this->getSimpleChoiceField($field, $options);
+                        break;
+                    case 'multi_choice':
+                        $options = $this->getOptions($field, $moduleObj);
+                        $arr[$field['fieldID']] = $this->getMultiChoiceField($field, $options);
+                        break;
+                    case 'search_field':
+                        $arr[$field['fieldID']] = $this->getSearchField($field);
+                        break;
+                    case 'date_field':
+                        $arr[$field['fieldID']] = $this->getDateField($field);
+                        break;
+                    case 'toggle_field':
+                        $arr[$field['fieldID']] = $this->getToggleField($field);
+                        break;
+                }
+
             }
-
-            // skip if field id or type is not allowed
-            if (in_array($field['fieldID'], $this->doNotSetByID) || in_array($field['type'], $this->doNotSetByType)) {
-                continue;
-            }
-
-            // get field from view
-            switch ($field['type']) {
-                case 'widget':
-                    $arr[$field['fieldID']] = $this->getWidgetField($field);
-                    break;
-                case 'simple_choice':
-                    $options = $this->getOptions($field, $moduleObj);
-                    $arr[$field['fieldID']] = $this->getSimpleChoiceField($field, $options);
-                    break;
-                case 'multi_choice':
-                    $options = $this->getOptions($field, $moduleObj);
-                    $arr[$field['fieldID']] = $this->getMultiChoiceField($field, $options);
-                    break;
-                case 'search_field':
-                    $arr[$field['fieldID']] = $this->getSearchField($field);
-                    break;
-                case 'date_field':
-                    $arr[$field['fieldID']] = $this->getDateField($field);
-                    break;
-                case 'toggle_field':
-                    $arr[$field['fieldID']] = $this->getToggleField($field);
-                    break;
-            }
-
         }
+
         $this->fields = $arr;
+
         return $arr;
     }
 
@@ -618,7 +618,6 @@ class DCAModuleData extends ViewContainer
      */
     public function createCols()
     {
-
         if(!$this->name)
         {
             return null;

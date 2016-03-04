@@ -105,6 +105,8 @@ class DCACreator
             $module['sortingType'] = $modulesDB->row()['sortingType'];
             $module['orderBy'] = $modulesDB->row()['orderBy'];
             $module['paletteBuilder'] = $modulesDB->row()['paletteBuilder'];
+            $module['selectNavigation'] = $modulesDB->row()['selectNavigation'];
+            $module['selectPosition'] = $modulesDB->row()['selectPosition'];
             $id = $modulesDB->row()['id'];
 			
 			//backwards compatible
@@ -147,43 +149,41 @@ class DCACreator
 
     /**
      * @param $moduleObj
+     * @return null
      */
     private function initDCA($moduleObj)
     {
-        /**
-         * tablename
-         */
+        //init tablename
         $tablename = $moduleObj['tablename'];
-
-        if ($tablename == '') {
-            return;
-        }
-
+        if (!$tablename) return null;
         $this->modules[$tablename] = $moduleObj['name'];
 
-        /**
-         * parent
-         */
+        //parent
         $dcaSettings = new DCAModuleSettings();
         $dcaSettings->init($tablename);
         $childname = $dcaSettings->getChildName();
         $modulename = substr($tablename, 3, strlen($tablename));
-        $GLOBALS['BE_MOD']['fmodules'][$modulename] = $this->getBEMod($tablename, $childname);
-        $GLOBALS['TL_DCA'][$tablename] = array(
+        $navigation = $moduleObj['selectNavigation'] ? $moduleObj['selectNavigation'] : 'fmodules';
+        $position = $moduleObj['selectPosition'] ? $moduleObj['selectPosition'] : 0;
 
+        //create be module
+        $backendModule = array();
+        $backendModule[$modulename] = $this->getBEMod($tablename, $childname);
+        array_insert($GLOBALS['BE_MOD'][$navigation], $position, $backendModule);
+
+        $GLOBALS['TL_DCA'][$tablename] = array(
             'config' => $dcaSettings->setConfig(),
             'list' => $dcaSettings->setList(),
             'palettes' => $dcaSettings->setPalettes($moduleObj),
             'subpalettes' => $dcaSettings->setSubPalettes(),
             'fields' => $dcaSettings->setFields($moduleObj['fields'])
-
         );
+
         $GLOBALS['TL_LANG']['MOD'][$modulename] = array($moduleObj['name'], $moduleObj['info']);
+
         $dcaSettings->createTable();
 
-        /**
-         * child
-         */
+        //child
         $dcaData = new DCAModuleData();
         $dcaData->init($childname, $tablename);
         $palette = $dcaData->setPalettes($moduleObj);
@@ -202,14 +202,16 @@ class DCACreator
         $modname = substr($tablename, 3, strlen($tablename));
         $GLOBALS['TL_PERMISSIONS'][] = $modname;
         $GLOBALS['TL_PERMISSIONS'][] = $modname . 'p';
-        $dcaData->createTable();
 
+        $dcaData->createTable();
 
     }
 
 
     /**
-     *
+     * @param $tablename
+     * @param $childname
+     * @return array
      */
     private function getBEMod($tablename, $childname)
     {

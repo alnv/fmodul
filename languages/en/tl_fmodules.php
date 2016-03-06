@@ -65,9 +65,11 @@ $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Table name must start 
 $GLOBALS['TL_LANG']['tl_fmodules']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_fmodules']['id'] = 'ID';
 $GLOBALS['TL_LANG']['tl_fmodules']['date'] = 'Date';
-$GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Date';
+$GLOBALS['TL_LANG']['tl_fmodules']['date.5'] = 'Date (d)';
+$GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Date (m)';
+$GLOBALS['TL_LANG']['tl_fmodules']['date.9'] = 'Date (Y)';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Ascending';
-$GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descend';
+$GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descending';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Image';

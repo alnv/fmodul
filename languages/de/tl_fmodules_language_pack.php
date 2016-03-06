@@ -46,7 +46,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][0] = 'Uhrzeit';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['time'][1] = 'Bitte geben Sie die Uhrzeit gemäß des globalen Zeitformats ein.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][0] = 'Information';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][1] = 'Diese Information sollte nicht größer als 12 Zeichen sein. Information erscheint in Klammern neben dem Titel.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'][1] = 'Diese Information sollte nicht größer als 24 Zeichen sein. Information erscheint in Klammern neben dem Titel.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][0] = 'Seitenalias';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'][1] = 'Der Alias ist eine eindeutige Referenz.';

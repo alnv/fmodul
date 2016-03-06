@@ -39,39 +39,30 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             )
         )
     ),
-
     'list' => array(
-
         'sorting' => array(
-
             'mode' => 1,
             'flag' => 1,
             'fields' => array('name'),
             'panelLayout' => 'sort,filter;search,limit'
-
         ),
-
         'label' => array(
             'fields' => array('name', 'info'),
             'format' => '%s <span style="color: #c2c2c2;">(%s)</span>'
         ),
-
         'global_operations' => array(
-
             'license' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editLicense'],
                 'href' => 'table=tl_fmodules_license',
                 'class' => 'header_icon',
                 'icon' => 'header.gif'
             ),
-
             'buy_license' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'],
                 'class' => 'header_store',
                 'href' => 'key=createBuyLink',
                 'button_callback' => array('tl_fmodules', 'createBuyLink')
             ),
-
             'feeds' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['feeds'],
@@ -80,7 +71,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'attributes' => 'onclick="Backend.getScrollOffset()"',
                 'button_callback' => array('tl_fmodules', 'manageFeeds')
             ),
-
             'all' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -88,16 +78,14 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             )
-
         ),
-
         'operations' => array(
 
             'editheader' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editheader'],
                 'href' => 'act=edit',
-                'icon' => 'header.gif'//$GLOBALS['FM_AUTO_PATH'] . 'settings.png'
+                'icon' => 'header.gif'
             ),
 
             'editFilters' => array
@@ -122,14 +110,11 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'icon' => 'show.gif'
             )
         )
-
     ),
-
     'palettes' => array(
         '__selector__' => array('protected'),
         'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy'
     ),
-
     'fields' => array
     (
         'id' => array
@@ -141,7 +126,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
         'tablename' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['tablename'],
             'inputType' => 'text',
             'exclude' => true,
@@ -151,10 +135,8 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 array('tl_fmodules', 'generateTableName'),
                 array('tl_fmodules', 'updateTable')
             )
-
         ),
         'name' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['name'],
             'search' => true,
             'sorting' => true,
@@ -163,19 +145,15 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'inputType' => 'text',
             'eval' => array('mandatory' => true, 'rgxp' => 'extnd', 'tl_class' => 'w50'),
             'sql' => "varchar(128) NOT NULL default ''"
-
         ),
         'info' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['info'],
             'inputType' => 'text',
             'exclude' => true,
             'eval' => array('tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
-
         ),
         'sorting' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['sorting'],
             'exclude' => true,
             'default' => 'title',
@@ -189,7 +167,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'sql' => "varchar(64) NOT NULL default 'title'"
         ),
         'orderBy' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['orderBy'],
             'default' => 'asc',
             'exclude' => true,
@@ -200,7 +177,6 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'sql' => "varchar(12) NOT NULL default 'asc'"
         ),
         'sortingType' => array(
-
             'sql' => "varchar(64) NOT NULL default ''"
         ),
         'paletteBuilder' => array(
@@ -231,10 +207,13 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
     )
 );
 
+use Contao\Config;
+use Contao\Backend;
+
 /**
  * Class tl_fmodules
  */
-class tl_fmodules extends \Contao\Backend
+class tl_fmodules extends Backend
 {
 
     /**
@@ -384,7 +363,7 @@ class tl_fmodules extends \Contao\Backend
      */
     public function getPosition()
     {
-        return array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
+        return array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
     }
 
     /**
@@ -426,9 +405,7 @@ class tl_fmodules extends \Contao\Backend
     {
 
         if (substr($varValue, 0, 3) == 'fm_') {
-
             return $varValue;
-
         }
 
         throw new \Exception($GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName']);
@@ -446,7 +423,7 @@ class tl_fmodules extends \Contao\Backend
         $tablename = $dc->activeRecord->tablename;
         $name = substr($tablename, 3, strlen($tablename));
 
-        if ((!$this->Database->tableExists($name)) && (!$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group'))) {
+        if ((!$this->Database->tableExists($name)) && (!$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group'))){
             $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . ' blob NULL;')->execute();
             $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . 'p blob NULL;')->execute();
 
@@ -455,7 +432,7 @@ class tl_fmodules extends \Contao\Backend
 
         }
 
-        if (!\Contao\Config::get('bypassCache')) {
+        if (!Config::get('bypassCache')) {
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }
@@ -471,7 +448,7 @@ class tl_fmodules extends \Contao\Backend
     {
         $id = $dc->activeRecord->id;
 
-        if ($varValue == '') {
+        if (!$varValue) {
             $varValue = 'id';
         }
 
@@ -499,7 +476,7 @@ class tl_fmodules extends \Contao\Backend
     {
         $id = $dc->activeRecord->id;
         $db = $this->Database->prepare('SELECT fieldID, title, type FROM tl_fmodules_filters WHERE pid = ?')->execute($id);
-        $return = array('title' => 'title', 'id' => 'id',  'date.7' => 'date');
+        $return = array('title' => 'title', 'id' => 'id', 'date.5' => 'date.5', 'date.7' => 'date.7', 'date.9' => 'date.9');
         while ($db->next()) {
 
             if($db->fieldID == 'orderBy' || $db->fieldID == 'sorting_fields' || $db->fieldID == 'pagination')
@@ -510,7 +487,7 @@ class tl_fmodules extends \Contao\Backend
             if ($db->type == 'date_field') {
                 $return[$db->fieldID . '.5'] = $db->title . ' (d)';
                 $return[$db->fieldID . '.7'] = $db->title . ' (m)';
-                $return[$db->fieldID . '.9'] = $db->title . ' (y)';
+                $return[$db->fieldID . '.9'] = $db->title . ' (Y)';
 
             }
 
@@ -548,7 +525,7 @@ class tl_fmodules extends \Contao\Backend
         $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . '')->execute();
         $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
 
-        if (!\Contao\Config::get('bypassCache')) {
+        if (!Config::get('bypassCache')) {
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }
@@ -582,7 +559,7 @@ class tl_fmodules extends \Contao\Backend
 
         }
 
-        if (!\Contao\Config::get('bypassCache')) {
+        if (!Config::get('bypassCache')) {
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }

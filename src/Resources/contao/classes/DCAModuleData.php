@@ -188,12 +188,10 @@ class DCAModuleData extends ViewContainer
         $parent = $this->parent;
 
         $config = array(
-
             'dataContainer' => 'Table',
             'ptable' => $parent,
             'ctable' => array('tl_content'),
             'enableVersioning' => true,
-
             'onload_callback' => array
             (
                 array('DCAModuleData', 'checkPermission'),
@@ -203,7 +201,6 @@ class DCAModuleData extends ViewContainer
             (
                 array('DCAModuleData', 'scheduleUpdate')
             ),
-
             'sql' => array(
 
                 'keys' => array
@@ -213,7 +210,6 @@ class DCAModuleData extends ViewContainer
                 )
 
             )
-
         );
 
         if ($detailPage) {
@@ -235,44 +231,39 @@ class DCAModuleData extends ViewContainer
         $sortingType = $moduleObj['sortingType'];
         $orderBy = $moduleObj['orderBy'];
         $fields = $moduleObj['fields'];
-
         $flag = 1;
-        $mode = 0;
+        $mode = 4;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
-
-        if ($arrField[0] && $arrField[0] != 'id') {
-            $mode = 1;
-        }
-
+				
+		if($arrField[0] && $arrField[0] == 'id')
+		{
+			$mode = 0;
+		}
+		
         if ($arrFlag[1]) {
             $flag = (int)$arrFlag[1];
         }
 
         if ($orderBy == 'desc') {
-            $flag = $flag + 1;
+            $flag = $flag += 1;
         }
-
-        $list = array(
-
+        
+        $list = array(	
             'sorting' => array(
-
                 'mode' => $mode,
                 'flag' => $flag,
                 'fields' => array($arrField[0]),
-                'panelLayout' => 'sort;search,limit,filter'
+                'headerFields' => array('title', 'info', 'id'),
+                'panelLayout' => 'sort;search,limit,filter',
+                'child_record_callback' => array('DCAModuleData', 'listData')
 
             ),
-
             'label' => array(
-
                 'fields' => array('title', 'info'),
-                'format' => '%s <span style="color: #c2c2c2">(%s)</span>'
-
+                'format' => '%s <span style="color: #c2c2c2">[%s]</span>'
             ),
-
             'global_operations' => array(
-
                 'all' => array
                 (
                     'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -280,40 +271,32 @@ class DCAModuleData extends ViewContainer
                     'class' => 'header_edit_all',
                     'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
                 )
-
             ),
-
             'operations' => array(
-
                 'editheader' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['itemheader'],
                     'href' => 'act=edit',
                     'icon' => 'header.gif'
                 ),
-
                 'editList' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'],
                     'href' => 'table=tl_content&view=list',
                     'icon' => $GLOBALS['FM_AUTO_PATH'] . 'page.png'
                 ),
-
                 'editDetail' => array(
 
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'],
                     'href' => 'table=tl_content&view=detail',
                     'icon' => $GLOBALS['FM_AUTO_PATH'] . 'detail.png'
-
                 ),
-
                 'copy' => array
                 (
                     'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'],
                     'href' => 'act=copy',
                     'icon' => 'copy.gif'
                 ),
-
                 'delete' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'],
@@ -321,7 +304,6 @@ class DCAModuleData extends ViewContainer
                     'icon' => 'delete.gif',
                     'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] . '\'))return false;Backend.getScrollOffset()"'
                 ),
-
                 'toggle' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['toggle'],
@@ -331,36 +313,48 @@ class DCAModuleData extends ViewContainer
                 )
             )
         );
-
         foreach ($fields as $field) {
-
             if ($field['fieldID'] && $field['type'] == 'toggle_field') {
-
                 $list['operations'][$field['fieldID']] = array(
-
                     'label' => array($field['title'], $field['description']),
                     'icon' => $this->getToggleIcon('1', $field['description'], $field['fieldID'], true),
                     'href' => $field['fieldID'],
                     'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFMField(this)"',
                     'button_callback' => array('DCAModuleData', 'iconFeatured')
-
                 );
-
             }
-
         }
-
         $list['operations']['show'] = array(
-
             'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'],
             'href' => 'act=show',
             'icon' => 'show.gif'
-
         );
-
         return $list;
     }
-
+	
+	/**
+     * @param $arrRow
+     * @return string
+     */	
+	public function listData($arrRow)
+	{
+		
+		$span = '<span style="color: #c2c2c2">['.$arrRow['info'].']</span>';
+		
+		if(!$arrRow['info'])
+		{
+			$span = '<span style="color: #c2c2c2">['.$arrRow['id'].']</span>';
+		}
+		
+		if(strlen($arrRow['info']) > 24)
+		{
+			$subStrInfo = substr($arrRow['info'], 0, 24);
+			$span = '<span style="color: #c2c2c2">['.$subStrInfo.'…]</span>';
+		}
+		
+		return $arrRow['title'].' '.$span;
+	}
+	
     /**
      * @param $row
      * @param $href
@@ -425,7 +419,6 @@ class DCAModuleData extends ViewContainer
         $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", " . $field . "='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
     }
-
 
     /**
      * @param $paletteBuilder
@@ -514,7 +507,6 @@ class DCAModuleData extends ViewContainer
         }
 
         return $returnPalette;
-
     }
 
 
@@ -571,9 +563,7 @@ class DCAModuleData extends ViewContainer
 
             }
         }
-
         $this->fields = $arr;
-
         return $arr;
     }
 
@@ -714,8 +704,6 @@ class DCAModuleData extends ViewContainer
 
         // Update the database
         $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
-
-
     }
 
     /**
@@ -740,7 +728,6 @@ class DCAModuleData extends ViewContainer
         $this->Automator->generateSitemap();
 
         $this->Session->set('fmodules_feed_updater', null);
-
     }
 
     /**

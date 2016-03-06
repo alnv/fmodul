@@ -212,7 +212,6 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "varchar(64) NOT NULL default ''"
         ),
         'dataFromTable' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'],
             'inputType' => 'checkbox',
             'exclude' => true,
@@ -220,7 +219,6 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "char(1) NOT NULL default ''"
         ),
         'evalCss' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'],
             'inputType' => 'text',
             'exclude' => true,
@@ -228,7 +226,6 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "varchar(255) NOT NULL default ''"
         ),
         'widgetTemplate' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'],
             'inputType' => 'select',
             'exclude' => true,
@@ -237,7 +234,6 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'sql' => "varchar(255) NOT NULL default ''"
         ),
         'isInteger' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'],
             'inputType' => 'checkbox',
             'exclude' => true,
@@ -554,9 +550,7 @@ class tl_fmodules_filters extends Backend
 
         if (!$this->Database->fieldExists($values, $tablename)) {
 
-            /**
-             * create
-             */
+            // create
             if (!$tempVal || $values == $tempVal) {
 
                 //parent
@@ -581,9 +575,7 @@ class tl_fmodules_filters extends Backend
 
             } else {
 
-                /**
-                 * rename
-                 */
+                // rename
                 if ($this->Database->fieldExists($tempVal, $tablename)) {
 
                     //parent
@@ -610,9 +602,7 @@ class tl_fmodules_filters extends Backend
 
             }
         }
-
         return $values;
-
     }
 
     /**

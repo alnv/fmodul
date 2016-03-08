@@ -246,7 +246,7 @@ class DCAModuleData extends ViewContainer
         }
 
         if ($orderBy == 'desc') {
-            $flag = $flag += 1;
+            $flag += 1;
         }
         
         $list = array(	
@@ -255,9 +255,8 @@ class DCAModuleData extends ViewContainer
                 'flag' => $flag,
                 'fields' => array($arrField[0]),
                 'headerFields' => array('title', 'info', 'id'),
-                'panelLayout' => 'sort;search,limit,filter',
+                'panelLayout' => 'search,sort;filter;limit',
                 'child_record_callback' => array('DCAModuleData', 'listData')
-
             ),
             'label' => array(
                 'fields' => array('title', 'info'),

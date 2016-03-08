@@ -34,6 +34,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['title'],
                 'inputType' => 'text',
                 'exclude' => true,
+                'sorting' => true,
                 'search' => true,
                 'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
                 'sql' => "varchar(255) NOT NULL default ''"
@@ -528,9 +529,7 @@ class ViewContainer extends DCAHelper
     public function getWidgetField($fieldData)
     {
         $field = array();
-
         $widgetType = explode('.', $fieldData['widget_type']);
-
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['exclude'] = true;
         $field['eval'] = array(
@@ -570,7 +569,6 @@ class ViewContainer extends DCAHelper
         }
 
         return $field;
-
     }
 
     /**
@@ -601,9 +599,11 @@ class ViewContainer extends DCAHelper
         $field = array();
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['search'] = true;
-        $field['exclude'] = true;
+        $field['filter'] = true;
         $field['sorting'] = true;
+        $field['exclude'] = true;
         $field['default'] = time();
+        $field['flag'] = 8;
         $field['inputType'] = 'text';
         $field['eval'] = array(
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
@@ -648,10 +648,8 @@ class ViewContainer extends DCAHelper
     {
         $field = array();
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
-
-        // filter
         $field['filter'] = true;
-        $field['search'] = true;
+        $field['sorting'] = true;
         $field['exclude'] = true;
         $field['inputType'] = 'select';
         $field['options'] = $options;
@@ -677,13 +675,9 @@ class ViewContainer extends DCAHelper
      */
     public function getMultiChoiceField($fieldData, $options)
     {
-
         $field = array();
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
-
-        // filter
         $field['filter'] = true;
-        $field['search'] = true;
         $field['exclude'] = true;
         $field['inputType'] = 'checkbox';
         $field['options'] = $options;
@@ -708,7 +702,6 @@ class ViewContainer extends DCAHelper
      */
     public function getOptionField($fieldData)
     {
-
         $field = array();
         $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
         $field['exclude'] = true;

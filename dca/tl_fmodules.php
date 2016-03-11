@@ -371,7 +371,7 @@ class tl_fmodules extends Backend
      */
     public function getPalettes()
     {
-        return array('datePalette' => 'datePalette', 'imagePalette' => 'imagePalette', 'enclosurePalette' => 'enclosurePalette');
+        return array('datePalette' => 'datePalette', 'imagePalette' => 'imagePalette', 'enclosurePalette' => 'enclosurePalette', 'geoPalette' => 'geoPalette', 'geoAddressPalette' => 'geoAddressPalette', 'addressPalette' => 'addressPalette');
     }
 
     /**

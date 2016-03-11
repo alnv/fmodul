@@ -124,6 +124,35 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'][0] = 'Bildunterschri
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'][1] = 'Hier können Sie einen kurzen Text eingeben, der unterhalb des Bildes angezeigt wird.';
 
 //
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_legend'] = 'Geo Koordinaten';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_address_legend'] = 'Adresse';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['address_legend'] = 'Adresse';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_latitude'][0] = 'Latitude';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_latitude'][1] = 'Bitte geben Sie die Latitude ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][0] = 'Longitude';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][1] = 'Bitte geben Sie die Longitude ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][0] = 'Vollständige Adresse';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][1] = 'Bitte geben Sie die vollständige Adresse ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'][0] = 'Straße / Hausnummer';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'][1] = 'Bitte geben Sie die Straße und Hausnummer ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'][0] = 'Zusatz';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'][1] = 'Bitte geben Sie den Zusatz ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'][0] = 'Ort';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'][1] = 'Bitte geben Sie den Ort ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'][0] = 'Postleitzahl';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'][1] = 'Bitte geben Sie die Postleitzahl ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'][0] = 'Land';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'][1] = 'Bitte geben Sie die Postleitzahl ein.';
+
+//
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][0] = 'Anlagen hinzufügen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][1] = 'Dem Item eine oder mehrere Dateien als Download hinzufügen.';
 

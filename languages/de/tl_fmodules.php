@@ -78,3 +78,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Bild';
 $GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Anlagen';
+$GLOBALS['TL_LANG']['tl_fmodules']['geoAddressPalette'] = 'Adresse (Ein Feld)';
+$GLOBALS['TL_LANG']['tl_fmodules']['addressPalette'] = 'Adressfelder';
+$GLOBALS['TL_LANG']['tl_fmodules']['geoPalette'] = 'Geo-Koordinaten';

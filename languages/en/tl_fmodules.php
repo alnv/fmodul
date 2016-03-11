@@ -74,3 +74,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descending';
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Image';
 $GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Enclosure';
+$GLOBALS['TL_LANG']['tl_fmodules']['geoAddressPalette'] = 'Address (one field only)';
+$GLOBALS['TL_LANG']['tl_fmodules']['addressPalette'] = 'Address fields';
+$GLOBALS['TL_LANG']['tl_fmodules']['geoPalette'] = 'Geo-coordinates';

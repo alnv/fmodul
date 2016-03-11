@@ -120,6 +120,36 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fullsize'][1] = 'Open the full
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'][0] = 'Image caption';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'][1] = 'Here you can enter a short text that will be displayed below the image.';
 
+//
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_legend'] = 'Geo coordinates';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_address_legend'] = 'Address';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['address_legend'] = 'Address';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_latitude'][0] = 'Latitude';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_latitude'][1] = 'Please enter your latitude.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][0] = 'Longitude';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][1] = 'Please enter your Longitude.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][0] = 'Full address';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][1] = 'Please enter your full address.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'][0] = 'Street / House number';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'][1] = 'Please enter your street and house number.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'][0] = 'Additional';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'][1] = 'Please enter additional.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'][0] = 'Location';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'][1] = 'Please enter your location.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'][0] = 'ZIP Code ';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'][1] = 'Please enter your ZIP Code.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'][0] = 'Country';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'][1] = 'Please select your country.';
+//
+
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'] = array('Author','Here you can change the author.');
 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][0] = 'Add enclosures';

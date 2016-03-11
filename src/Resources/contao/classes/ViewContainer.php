@@ -231,6 +231,70 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'text',
                 'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'),
                 'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            // maps
+            'address_street' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'],
+                'exclude' => true,
+                'search' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'address_addition' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 10, 'tl_class' => 'w50'),
+                'sql' => "varchar(10) NOT NULL default ''"
+            ),
+            'address_location' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'],
+                'exclude' => true,
+                'search' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 512, 'tl_class' => 'w50'),
+                'sql' => "varchar(512) NOT NULL default ''"
+            ),
+            'address_zip' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'],
+                'exclude' => true,
+                'search' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 10, 'tl_class' => 'w50'),
+                'sql' => "varchar(10) NOT NULL default ''"
+            ),
+            'address_country' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'],
+                'exclude' => true,
+                'search' => true,
+                'inputType' => 'select',
+                'options' => $this->getCountries(),
+                'eval' => array('maxlength' => 255, 'tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            // geo
+            'geo_latitude' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_latitude'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 128, 'tl_class' => 'w50'),
+                'sql' => "varchar(128) NOT NULL default ''"
+            ),
+            'geo_longitude' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 128, 'tl_class' => 'w50'),
+                'sql' => "varchar(128) NOT NULL default ''"
+            ),
+            // only address field
+            'geo_address' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 255, 'tl_class' => 'long'),
+                'sql' => "varchar(255) NOT NULL default ''"
             )
         );
 
@@ -390,6 +454,54 @@ class ViewContainer extends DCAHelper
         $palette = array(
             'fields' => array('date', 'time'),
             'palette' => '{date_legend},date,time;',
+            '__selector__' => '',
+            'subPalettes' => '',
+        );
+
+        return $palette;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function addressPalette($fields = array())
+    {
+        $palette = array(
+            'fields' => array('address_street', 'address_addition', 'address_zip', 'address_location', 'address_country'),
+            'palette' => '{address_legend},address_street,address_addition,address_zip,address_location,address_country;',
+            '__selector__' => '',
+            'subPalettes' => '',
+        );
+
+        return $palette;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function geoPalette($fields = array())
+    {
+        $palette = array(
+            'fields' => array('geo_latitude', 'geo_longitude'),
+            'palette' => '{geo_legend},geo_latitude,geo_longitude;',
+            '__selector__' => '',
+            'subPalettes' => '',
+        );
+
+        return $palette;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function geoAddressPalette($fields = array())
+    {
+        $palette = array(
+            'fields' => array('geo_address'),
+            'palette' => '{geo_address_legend},geo_address;',
             '__selector__' => '',
             'subPalettes' => '',
         );

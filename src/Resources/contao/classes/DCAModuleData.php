@@ -184,9 +184,7 @@ class DCAModuleData extends ViewContainer
      */
     public function setConfig($detailPage)
     {
-
         $parent = $this->parent;
-
         $config = array(
             'dataContainer' => 'Table',
             'ptable' => $parent,
@@ -199,23 +197,20 @@ class DCAModuleData extends ViewContainer
             ),
             'onsubmit_callback' => array
             (
-                array('DCAModuleData', 'scheduleUpdate')
+                array('DCAModuleData', 'scheduleUpdate'),
+                array('DCAModuleData', 'saveGeoCoding')
             ),
             'sql' => array(
-
                 'keys' => array
                 (
                     'id' => 'primary',
                     'pid' => 'index'
                 )
-
             )
         );
-
         if ($detailPage) {
             $config['ctable'] = array('tl_content');
         }
-
         return $config;
     }
 
@@ -226,7 +221,6 @@ class DCAModuleData extends ViewContainer
      */
     public function setList($moduleObj)
     {
-
         $sortingField = $moduleObj['sorting'];
         $sortingType = $moduleObj['sortingType'];
         $orderBy = $moduleObj['orderBy'];
@@ -337,20 +331,16 @@ class DCAModuleData extends ViewContainer
      */	
 	public function listData($arrRow)
 	{
-		
 		$span = '<span style="color: #c2c2c2">['.$arrRow['info'].']</span>';
-		
 		if(!$arrRow['info'])
 		{
 			$span = '<span style="color: #c2c2c2">['.$arrRow['id'].']</span>';
 		}
-		
 		if(strlen($arrRow['info']) > 24)
 		{
 			$subStrInfo = substr($arrRow['info'], 0, 24);
 			$span = '<span style="color: #c2c2c2">['.$subStrInfo.'…]</span>';
 		}
-		
 		return $arrRow['title'].' '.$span;
 	}
 	
@@ -365,10 +355,7 @@ class DCAModuleData extends ViewContainer
      */
     public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
     {
-
-
         $field = $href;
-
         if (strlen(Input::get('fid'))) {
 
             $id = Input::get('fid');
@@ -379,13 +366,9 @@ class DCAModuleData extends ViewContainer
             $this->redirect($this->getReferer());
 
         }
-
         $href = '&amp;fid=' . $row['id'] . '&amp;col=' . $field . '&amp;state=' . ($row[$field] ? '' : 1);
-
         $imageHTML = $this->getToggleIcon($row[$field], $label, $field, false);
-
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $imageHTML . '</a> ';
-
     }
 
     /**
@@ -398,7 +381,6 @@ class DCAModuleData extends ViewContainer
      */
     public function toggleFMField($intId, $blnVisible, $field)
     {
-
         $table = Input::get('table');
         $field = $field ? $field : Input::post('col');
 
@@ -416,7 +398,6 @@ class DCAModuleData extends ViewContainer
 
         // Update the database
         $this->Database->prepare("UPDATE " . $table . " SET tstamp=" . time() . ", " . $field . "='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
-
     }
 
     /**
@@ -433,35 +414,26 @@ class DCAModuleData extends ViewContainer
 
         // add palettes from builder into $palettes var
         if (!empty($paletteBuilder)) {
-
             foreach ($paletteBuilder as $palette) {
                 $palettes[] = $palette;
             }
-
         }
 
         // set custom fields
         if (!empty($fields)) {
-
             if (DCAHelper::isLegend($fields)) {
                 foreach ($fields as $field) {
                     if ($field['type'] != 'legend_start') {
                         continue;
                     }
-
                     $palettes[] = $field['fieldID'];
-
                 }
             }
-
             if (!DCAHelper::isLegend($fields)) {
                 $palettes[] = 'metaPalette';
             }
-
         }
-
         $palettes = array_merge($palettes, $defaultPalettes);
-
         return $palettes;
     }
 
@@ -471,10 +443,8 @@ class DCAModuleData extends ViewContainer
      */
     public function setPalettes($moduleDB)
     {
-
         // get all palettes
         $palettes = $this->palettesCollector($moduleDB['paletteBuilder'], $moduleDB['fields']);
-
         $returnPalette = array(
             '__selector__' => array(),
             'default' => '',
@@ -646,6 +616,46 @@ class DCAModuleData extends ViewContainer
             $this->createCols();
         }
 
+    }
+
+    /**
+     * @param $dc
+     * @return mixed
+     */
+    public function saveGeoCoding($dc)
+    {
+        if(!$dc->activeRecord)
+        {
+            return null;
+        }
+        $geo_address = $dc->activeRecord->geo_address;
+        $address_street = $dc->activeRecord->address_street;
+        $address_addition = $dc->activeRecord->address_addition;
+        $address_location = $dc->activeRecord->address_location;
+        $address_zip = $dc->activeRecord->address_zip;
+        $address_country = $dc->activeRecord->address_country;
+        if(!$geo_address)
+        {
+            $geo_address = $address_street .' '. $address_addition .' '. $address_zip .' '. $address_location .' '. $address_country;
+        }
+        $cords = array();
+        if($geo_address)
+        {
+            $geoCoding = new GeoCoding();
+            $cords =$geoCoding->getGeoCords($geo_address, $address_country);
+        }
+        if(!empty($cords))
+        {
+            $tableName = $dc->table ? $dc->table : Input::get('table');
+            $id = $dc->id ? $dc->id : Input::get('id');
+            $lat = $cords['lat'] ? $cords['lat'] : '';
+            $lng = $cords['lng'] ? $cords['lng'] : '';
+            if(!$tableName || !$id)
+            {
+                return null;
+            }
+            $this->Database->prepare('UPDATE '.$tableName.' SET geo_latitude=?,geo_longitude=? WHERE id = ?')->execute($lat, $lng, $id);
+        }
     }
 
     /**

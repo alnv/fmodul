@@ -33,7 +33,9 @@ ClassLoader::addClasses(array
     'FModule\FModuleAjaxApi' => $pathToFiles.'src/Resources/contao/classes/FModuleAjaxApi.php',
     'FModule\AjaxApi' => $pathToFiles.'src/Resources/contao/api/AjaxApi.php',
     'FModule\ViewContainer' => $pathToFiles.'src/Resources/contao/classes/ViewContainer.php',
-    'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php'
+    'FModule\GeoCoding' => $pathToFiles.'src/Resources/contao/classes/GeoCoding.php',
+    'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php',
+    'FModule\ModuleGoogleMapsView' => $pathToFiles.'src/Resources/contao/module/ModuleGoogleMapsView.php'
 
 ));
 
@@ -51,6 +53,8 @@ TemplateLoader::addFiles(array
 	'mod_fmodule_detail' => $pathToTemplates,
 	'mod_fmodule_list' => $pathToTemplates,
     'fm_form_filter' => $pathToTemplates.'/form',
+    'mod_fmodule_google_maps' => $pathToTemplates.'/maps',
+
     'fmodule_full' => $pathToTemplates.'/list',
     'fmodule_teaser' => $pathToTemplates.'/list',
     'mod_form_filter' => $pathToTemplates,

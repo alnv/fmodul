@@ -23,7 +23,6 @@ if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GL
 }
 
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
-
     'icon' =>  $GLOBALS['FM_AUTO_PATH'].'icon.png',
     'tables' => array(
         'tl_fmodules',
@@ -36,15 +35,12 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
  * add front end modules
  */
 array_insert($GLOBALS['FE_MOD'],5, array(
-	
 	'fmodule' => array(
-		
 		'fmodule_fe_list' => 'ModuleListView',
 		'fmodule_fe_detail' => 'ModuleDetailView',
-        'fmodule_fe_formfilter' => 'ModuleFormFilter'
-		
+        'fmodule_fe_formfilter' => 'ModuleFormFilter',
+        'fmodule_fe_googlemaps' => 'ModuleGoogleMapsView'
 	)
-	
 ));
 
 /**
@@ -71,7 +67,6 @@ $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('FModule', 'getSearchablePa
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModule', 'fm_hooks');
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('FModule', 'createUserGroupDCA');
 $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax');
-
 $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
 

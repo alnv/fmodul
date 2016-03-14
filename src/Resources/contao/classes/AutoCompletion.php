@@ -69,7 +69,6 @@ class AutoCompletion extends Frontend
         
         //
         $options = array();
-
 		
 		if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
 			
@@ -78,20 +77,15 @@ class AutoCompletion extends Frontend
 
 			//
             if ($wrapperOptionsDB[$fieldID] && is_string($wrapperOptionsDB[$fieldID])) {
-            
                 $wrapperOptionsDB = deserialize($wrapperOptionsDB[$fieldID]);
-            
             }
 			
             //
             if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] != '1') {
             
                 foreach ($wrapperOptionsDB as $option) {
-            
                     $options[$option['value']] = $option['label'];
-            
                 }
-            
             }
 			
 			//
@@ -103,29 +97,24 @@ class AutoCompletion extends Frontend
                     $optionsFromTableDB = array();
 
                     while ($dataFromTableDB->next()) {
-            
                         $keyValue = $dataFromTableDB->row();
                         $optionsFromTableDB[] = array('value' => $keyValue[$wrapperOptionsDB['col']], 'label' => $keyValue[$wrapperOptionsDB['title']]);
-            
                     }
 
                     if (!empty($optionsFromTableDB)) {
-            
                         foreach ($optionsFromTableDB as $option) {
-            
                             $options[$option['value']] = $option['label'];
-            
                         }
-
                     }
-            
                 }
-            
             }
-        
         }
-        
-		
+
+        if($field['fieldID'] == 'address_country')
+        {
+            $options = $this->getCountries();
+        }
+
 		//
 		$autoCompletionArr = array();
 		
@@ -146,9 +135,7 @@ class AutoCompletion extends Frontend
             }
 
             if ($field['type'] == 'simple_choice') {
-            
                 $autoCompletionArr[$items] = $options[$items] ? $options[$items] : $items;
-            
             }
 
             if ($field['type'] == 'date_field') {
@@ -160,7 +147,6 @@ class AutoCompletion extends Frontend
                 }
 
                 $autoCompletionArr[$items] = date($format, $items);
-
             }
 
             if ($field['type'] == 'fulltext_search') {
@@ -201,7 +187,6 @@ class AutoCompletion extends Frontend
         
         //
         return $returnActiveOptions;
-		
 	}
 
     /**

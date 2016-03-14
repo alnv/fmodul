@@ -31,7 +31,7 @@ class DCAModuleData extends ViewContainer
     protected $id;
     protected $pid;
     protected $fields = array();
-    private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search');
+    private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search', 'map_field');
     private $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
 
     /**
@@ -628,22 +628,37 @@ class DCAModuleData extends ViewContainer
         {
             return null;
         }
-        $geo_address = $dc->activeRecord->geo_address;
-        $address_street = $dc->activeRecord->address_street;
-        $address_addition = $dc->activeRecord->address_addition;
-        $address_location = $dc->activeRecord->address_location;
-        $address_zip = $dc->activeRecord->address_zip;
-        $address_country = $dc->activeRecord->address_country;
-        if(!$geo_address)
+
+        $geo_address = '';
+        $countries = $this->getCountries();
+        $address_street = $dc->activeRecord->address_street ? $dc->activeRecord->address_street : '';
+        $address_addition = $dc->activeRecord->address_addition ? $dc->activeRecord->address_addition : '';
+        $address_location = $dc->activeRecord->address_location ? $dc->activeRecord->address_location : '';
+        $address_zip = $dc->activeRecord->address_zip ? $dc->activeRecord->address_zip : '';
+        $address_country = $dc->activeRecord->address_country ? $countries[$dc->activeRecord->address_country] : '';
+
+        //
+        if($address_location || $address_zip || $address_country)
         {
             $geo_address = $address_street .' '. $address_addition .' '. $address_zip .' '. $address_location .' '. $address_country;
         }
+
+        //
+        if(!$geo_address)
+        {
+            $geo_address = $dc->activeRecord->geo_address ? $dc->activeRecord->geo_address : '';
+        }
+
+        //
         $cords = array();
+
+        //
         if($geo_address)
         {
             $geoCoding = new GeoCoding();
             $cords =$geoCoding->getGeoCords($geo_address, $address_country);
         }
+
         if(!empty($cords))
         {
             $tableName = $dc->table ? $dc->table : Input::get('table');

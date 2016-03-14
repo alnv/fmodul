@@ -35,8 +35,8 @@ ClassLoader::addClasses(array
     'FModule\ViewContainer' => $pathToFiles.'src/Resources/contao/classes/ViewContainer.php',
     'FModule\GeoCoding' => $pathToFiles.'src/Resources/contao/classes/GeoCoding.php',
     'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php',
-    'FModule\ModuleGoogleMapsView' => $pathToFiles.'src/Resources/contao/module/ModuleGoogleMapsView.php'
-
+    'FModule\ModuleGoogleMapsView' => $pathToFiles.'src/Resources/contao/module/ModuleGoogleMapsView.php',
+    'FModule\DiverseFunction' => $pathToFiles.'src/Resources/contao/classes/DiverseFunction.php'
 ));
 
 /**
@@ -54,11 +54,9 @@ TemplateLoader::addFiles(array
 	'mod_fmodule_list' => $pathToTemplates,
     'fm_form_filter' => $pathToTemplates.'/form',
     'mod_fmodule_google_maps' => $pathToTemplates.'/maps',
-
     'fmodule_full' => $pathToTemplates.'/list',
     'fmodule_teaser' => $pathToTemplates.'/list',
     'mod_form_filter' => $pathToTemplates,
-
     'fm_widget_date_field' => $pathToTemplates.'/widgets',
     'fm_widget_multi_choice' => $pathToTemplates.'/widgets',
     'fm_widget_simple_choice' => $pathToTemplates.'/widgets',
@@ -66,10 +64,9 @@ TemplateLoader::addFiles(array
     'fm_widget_fulltext_search' => $pathToTemplates.'/widgets',
     'fm_widget_wrapper_field' => $pathToTemplates.'/widgets',
     'fm_widget_toggle_field' => $pathToTemplates.'/widgets',
-
+    'fm_map_field' => $pathToTemplates.'/maps',
     'fm_field_textarea' => $pathToTemplates.'/fields',
     'fm_field_text' => $pathToTemplates.'/fields',
     'fm_field_table' => $pathToTemplates.'/fields',
     'fm_field_list' => $pathToTemplates.'/fields',
-
 ));

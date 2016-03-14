@@ -80,7 +80,6 @@ class ModuleFormFilter extends \Contao\Module
             // get options from wrapper
             if( $field['type'] == 'multi_choice' || $field['type'] == 'simple_choice' )
             {
-	       
 	       	    $wrapperOptions = deserialize($fieldsDB[$fieldID]);
 	            	       
 	            if($wrapperOptions['table'] && !in_array($fieldID, $activeOption))
@@ -92,9 +91,15 @@ class ModuleFormFilter extends \Contao\Module
 	            {
 		            $fields[$i]['options'] = $wrapperOptions;
 	            }
-	           	            
             }
-         
+
+            // set countries
+            if($field['fieldID'] == 'address_country')
+            {
+                $countries = $this->getCountries();
+                $fields[$i]['options'] = DiverseFunction::conformOptionsArray($countries);
+            }
+
             // get options
             if ($fieldID && in_array($fieldID, $activeOption)) {            
                 $results = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, $objPage->dateFormat, $objPage->timeFormat);
@@ -337,14 +342,11 @@ class ModuleFormFilter extends \Contao\Module
     protected function getOperator()
     {
         return array(
-
             'eq' => $GLOBALS['TL_LANG']['MSC']['f_eq'],
             'lt' => $GLOBALS['TL_LANG']['MSC']['f_lt'],
             'lte' => $GLOBALS['TL_LANG']['MSC']['f_lte'],
             'gt' => $GLOBALS['TL_LANG']['MSC']['f_gt'],
             'gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']
-
         );
     }
-
 }

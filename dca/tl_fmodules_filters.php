@@ -111,7 +111,8 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
-        'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;'
+        'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;',
+        'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description,mapTemplate;',
     ),
     'fields' => array
     (
@@ -140,7 +141,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'filter' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'wrapper_field', 'legend_start', 'legend_end'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'map_field', 'wrapper_field', 'legend_start', 'legend_end'),
             'eval' => array('submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
@@ -267,6 +268,14 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
+        ),
+        'mapTemplate' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'],
+            'exclude' => true,
+            'inputType' => 'select',
+            'options_callback' => array('tl_fmodules_filters', 'getMapFieldTemplates'),
+            'eval' => array('maxlength' => 255, 'mandatory' => true),
+            'sql' => "varchar(255) NOT NULL default ''"
         )
     )
 );
@@ -300,7 +309,14 @@ class tl_fmodules_filters extends Backend
         }
 
         return array();
+    }
 
+    /**
+     * @return array
+     */
+    public function getMapFieldTemplates()
+    {
+        return $this->getTemplateGroup('fm_map_field');
     }
 
     /**
@@ -485,7 +501,7 @@ class tl_fmodules_filters extends Backend
         $tablename = $this->Database->prepare("SELECT tablename FROM tl_fmodules WHERE id = ?")->execute($pid)->row()['tablename'];
         $dataTable = $tablename . '_data';
 
-        // blocked colnames
+        // blocked colNames
         $notAllowedCols = array(
             'alter',
             'key',
@@ -511,7 +527,10 @@ class tl_fmodules_filters extends Backend
             'protectedPalette',
             'expertPalette',
             'publishPalette',
-            'generalPalette'
+            'generalPalette',
+            'geoPalette',
+            'geoAddressPalette',
+            'markerPalette'
         );
 
         if (in_array(mb_strtolower($values), $notAllowedCols)) {
@@ -667,7 +686,7 @@ class tl_fmodules_filters extends Backend
     public function delete_cols(DataContainer $dc)
     {
 
-        $doNotDeleteByType = array('fulltext_search', 'wrapper_field', 'legend_start', 'legend_end');
+        $doNotDeleteByType = array('fulltext_search', 'wrapper_field', 'legend_start', 'legend_end', 'map_field');
 
         if (!$dc->activeRecord->fieldID) {
             return null;

@@ -11,7 +11,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['root_legend'] = '
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['data_legend'] = 'Eingabewerte';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['comments_legend'] = 'Kommentare';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['date_legend'] = 'Datum und Uhrzeit';
-
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['marker_legend'] = 'Icon/Marker';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['source_legend'] = 'Weiterleitungsziel';
 
 //
@@ -137,20 +137,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][1] = 'Bitte ge
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][0] = 'Vollständige Adresse';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][1] = 'Bitte geben Sie die vollständige Adresse ein.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'][0] = 'Straße / Hausnummer';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_street'][1] = 'Bitte geben Sie die Straße und Hausnummer ein.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'][0] = 'Icon auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'][1] = 'Bitte wählen Sie ein Icon aus. Dieser Icon wird als Marker für Google Maps verwendet.';
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'][0] = 'Zusatz';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_addition'][1] = 'Bitte geben Sie den Zusatz ein.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerAlt'][0] = 'Alternativer Text ';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerAlt'][1] = 'Hier können Sie einen alternativen Text für das Bild eingeben (alt-Attribut).';
 
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'][0] = 'Ort';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_location'][1] = 'Bitte geben Sie den Ort ein.';
-
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'][0] = 'Postleitzahl';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_zip'][1] = 'Bitte geben Sie die Postleitzahl ein.';
-
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'][0] = 'Land';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['address_country'][1] = 'Bitte geben Sie die Postleitzahl ein.';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerCaption'][0] = 'Bildunterschrift';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerCaption'][1] = 'Hier können Sie einen kurzen Text eingeben, der unterhalb des Bildes angezeigt wird.';
 
 //
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][0] = 'Anlagen hinzufügen';

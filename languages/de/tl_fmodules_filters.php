@@ -46,6 +46,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Wählen Sie 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][0] = 'Daten dynamisch laden.';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'Damit können Sie Ihre Auswahlliste dynamisch aus einer Tabelle laden.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][1] = 'Bitte wählen Sie ein Template für die Karte aus.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Einfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Mehrfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
@@ -56,6 +59,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Umschlag';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Eingabefeld ohne Filter';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Palette öffnen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Palette schließen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['map_field'] = 'Karte';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.blank'] = 'Textarea';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.tinyMCE'] = 'Textarea mit tinyMCE';

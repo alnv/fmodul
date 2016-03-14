@@ -46,6 +46,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Backend Styl
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][0] = 'Activate Auto page';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][1] = 'Use page alias to filter your list.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][1] = 'Please select a template for your map.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][1] = 'Define Palette.';
 
@@ -59,12 +62,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Range';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['map_field'] = 'Map';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Input field without filter';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Open palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Close palette';
 
-//
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.blank'] = 'Textarea';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['textarea.tinyMCE'] = 'Textarea with tinyMCE';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['list.blank'] = 'List';

@@ -53,7 +53,7 @@ class FModuleAjaxApi extends Frontend
     /**
      * @var array
      */
-    protected $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
+    protected $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field', 'map_field');
 
     /**
      * return list view

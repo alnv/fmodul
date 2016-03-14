@@ -224,7 +224,7 @@ class tl_module_fmodule extends tl_module
                         
             $filterFieldsDB = $this->Database->prepare('SELECT tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($selectedList);
             $filterFields = array();
-            $doNotSetByType = array('legend_start', 'legend_end', 'widget');
+            $doNotSetByType = array('legend_start', 'legend_end', 'widget', 'map_field');
             $doNotSetByID = array('auto_page', 'auto_item');
 
             $allowedOptionTypes = array('search_field', 'multi_choice', 'simple_choice', 'fulltext_search', 'date_field');
@@ -249,7 +249,6 @@ class tl_module_fmodule extends tl_module
 
                 //active options
                 $filterFields[$filterFieldsDB->id] = array(
-
                     'id' => $filterFieldsDB->id,
                     'label' => $filterFieldsDB->title,
                     'fieldID' => $filterFieldsDB->fieldID,
@@ -266,16 +265,13 @@ class tl_module_fmodule extends tl_module
                     'appearance' => \FModule\FieldAppearance::getAppearance()[$filterFieldsDB->type],
                     'used_templates' => '',
                     'used_appearance' => ''
-
                 );
-
             }
 
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['filterFields'] = $filterFields;
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['currentListID'] = $listID;
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options']['options'] = $activeOptions;
         }
-
         return $options;
     }
 
@@ -384,8 +380,5 @@ class tl_module_fmodule extends tl_module
         }
 
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields']['options'] = $sorting;
-
-
     }
-
 }

@@ -328,10 +328,8 @@ class DCAModuleSettings extends ViewContainer
     public function setSubPalettes()
     {
         return array(
-
             'addDetailPage' => 'rootPage',
             'allowComments' => 'notify,sortOrder,perPage,moderate,bbcode,requireLogin,disableCaptcha'
-
         );
     }
 
@@ -348,25 +346,18 @@ class DCAModuleSettings extends ViewContainer
         {
             foreach ($fields as $field) {
 
-                //
-                if(!$field['fieldID'])
-                {
-                    continue;
-                }
+                // do not set
+                if(!$field['fieldID'])  continue;
+                if($field['fieldID'] == 'address_country') continue;
 
-                //
                 if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
                 {
                     $arr = $this->setOptionsFields($field, $arr);
                 }
-
             }
         }
-
         $this->fields = $arr;
-
         return $arr;
-
     }
 
     /**
@@ -376,7 +367,6 @@ class DCAModuleSettings extends ViewContainer
      */
     private function setOptionsFields($field, $arr)
     {
-
         if($field['dataFromTable'] == '1')
         {
 
@@ -393,9 +383,7 @@ class DCAModuleSettings extends ViewContainer
         }else{
 
             $arr[$field['fieldID']] = $this->getOptionField($field);
-
         }
-
         return $arr;
     }
 
@@ -405,7 +393,6 @@ class DCAModuleSettings extends ViewContainer
      */
     public function loadDefaultTitle($value, $dc)
     {
-
         $field = $dc->field;
         $fieldname = substr($field, strlen('select_title_'), strlen($field));
         $title = deserialize($dc->activeRecord->$fieldname)['title'];
@@ -419,7 +406,6 @@ class DCAModuleSettings extends ViewContainer
             $GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options'] = $options;
             unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options_callback']);
         }
-
     }
 
     /**

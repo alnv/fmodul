@@ -54,6 +54,11 @@ class DCAHelper extends Backend
 			return $options;
 		}
 
+		if($field['fieldID'] == 'address_country')
+		{
+			return $this->getCountries();
+		}
+
 		$id = $this->pid ? $this->pid : Input::get('id');
 
 		if( Input::get('act') && Input::get('act') == 'editAll' )
@@ -188,5 +193,4 @@ class DCAHelper extends Backend
 
 		return false;
 	}
-
 }

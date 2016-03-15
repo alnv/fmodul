@@ -256,6 +256,13 @@ class ViewContainer extends DCAHelper
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             // marker
+            'addMarker' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addMarker'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('submitOnChange' => true),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
             'markerSRC' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'],
                 'exclude' => true,
@@ -449,12 +456,11 @@ class ViewContainer extends DCAHelper
     public function markerPalette($fields = array())
     {
         $palette = array(
-            'fields' => array('markerSRC', 'markerAlt', 'markerCaption'),
-            'palette' => '{marker_legend},markerSRC,markerAlt,markerCaption;',
-            '__selector__' => '',
-            'subPalettes' => '',
+            'fields' => array('addMarker', 'markerSRC', 'markerAlt', 'markerCaption'),
+            'palette' => '{marker_legend},addMarker;;',
+            '__selector__' => 'addMarker',
+            'subPalettes' => 'markerSRC,markerAlt,markerCaption',
         );
-
         return $palette;
     }
 
@@ -502,7 +508,6 @@ class ViewContainer extends DCAHelper
             '__selector__' => 'addImage',
             'subPalettes' => 'singleSRC,alt,size,caption',
         );
-
         return $palette;
     }
 

@@ -112,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
         'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;',
-        'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description,mapTemplate;',
+        'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{map_settings_legend},mapTemplate,mapZoom,mapType,mapScrollWheel,mapMarker,mapStyle;',
     ),
     'fields' => array
     (
@@ -269,14 +269,52 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'eval' => array('tl_class' => 'clr m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
+        // map
         'mapTemplate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'],
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getMapFieldTemplates'),
-            'eval' => array('maxlength' => 255, 'mandatory' => true),
+            'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
-        )
+        ),
+        'mapZoom' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'],
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => array('tl_class' => 'w50'),
+            'sql' => "int(10) unsigned NOT NULL default '0'"
+        ),
+        'mapScrollWheel' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr m12'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'mapMarker' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr m12'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'mapType' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'],
+            'exclude' => true,
+            'inputType' => 'select',
+            'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
+            'options' => array('ROADMAP', 'SATELLITE', 'HYBRID', 'TERRAIN'),
+            'eval' => array('tl_class' => 'w50'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'mapStyle' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapStyle'],
+            'exclude' => true,
+            'inputType' => 'textarea',
+            'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte'=>'ace|html'),
+            'sql' => "text NULL"
+        ),
     )
 );
 

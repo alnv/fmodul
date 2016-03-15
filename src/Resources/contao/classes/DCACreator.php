@@ -138,6 +138,12 @@ class DCACreator
                 $field['evalCss'] = $fieldsDB->row()['evalCss'];
                 $field['isMandatory'] = $fieldsDB->row()['isMandatory'];
                 $field['fieldAppearance'] = $fieldsDB->row()['fieldAppearance'];
+                $field['mapTemplate'] = $fieldsDB->row()['mapTemplate'];
+                $field['mapZoom'] = $fieldsDB->row()['mapZoom'];
+                $field['mapScrollWheel'] = $fieldsDB->row()['mapScrollWheel'];
+                $field['mapType'] = $fieldsDB->row()['mapType'];
+                $field['mapStyle'] = $fieldsDB->row()['mapStyle'];
+                $field['mapMarker'] = $fieldsDB->row()['mapMarker'];
                 $fields[] = $field;
             }
 

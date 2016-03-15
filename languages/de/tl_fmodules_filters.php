@@ -23,6 +23,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Details des Eingabefeld
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Eingabefeld Typ';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Einstellung';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Karten-Einstellunegn';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type'][0] = 'Eingabefeld Typ auswählen';
@@ -49,6 +50,21 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'Damit können 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template auswählen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][1] = 'Bitte wählen Sie ein Template für die Karte aus.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][0] = 'Karten Typ';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][1] = 'Bitte wählen Sie ein Karten Typ aus.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'][0] = 'Zoom aktivieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'][1] = 'Die Besucher dürfen mit dem Mausrad zoomen.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapStyle'][0] = 'Style';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapStyle'][1] = 'Die Google Map individuell Stylen.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'][0] = 'Zoom Level';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'][1] = 'Bitte geben Sie eine Zahl von 1 bis 20 ein.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][0] = 'Marker anzeigen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][1] = 'Sollte ein Marker angezeigt werden?';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Einfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Mehrfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
@@ -67,6 +83,11 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['list.blank'] = 'Normale Liste';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['list.keyValue'] = 'Erweiterte Liste';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['text.blank'] = 'Textfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['table.blank'] = 'Tabelle';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['ROADMAP'] = 'Karte';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['SATELLITE'] = 'Satellit';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['HYBRID'] = 'Hybrid';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['TERRAIN'] = 'Terrain';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahleneingabe aktivieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Erlaubt eine Zahlensuche.';

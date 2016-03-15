@@ -135,6 +135,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][1] = 'Please e
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][0] = 'Full address';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][1] = 'Please enter your full address.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addMarker'][0] = 'Add Marker/Icon';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addMarker'][1] = 'Add an Marker/Icon to the item.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'][0] = 'Icon';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'][1] = 'Please select your icon.';
 

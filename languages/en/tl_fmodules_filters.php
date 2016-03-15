@@ -23,6 +23,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['copy'][1] = 'Copy input field ID %s.
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Filter input type';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Expert-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Map-Settings';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type'][0] = 'Filter input type';
@@ -49,6 +50,21 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][1] = 'Use page alias to f
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][1] = 'Please select a template for your map.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][0] = 'Map Type';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][1] = 'Please select your map type';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'][0] = 'Enable scroll wheel';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'][1] = 'Allow user to scroll in the google map.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapStyle'][0] = 'Style';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapStyle'][1] = 'Define your custom map style.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'][0] = 'Zoom level';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'][1] = 'Please enter your zoom level.';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][0] = 'Show marker';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][1] = 'Show an Marker in the map.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][1] = 'Define Palette.';
 
@@ -64,6 +80,11 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['wrapper_field'] = 'Range';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_field'] = 'Map';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['widget'] = 'Input field without filter';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['ROADMAP'] = 'Roadmap';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['SATELLITE'] = 'Satellite';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['HYBRID'] = 'Hybrid';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['TERRAIN'] = 'Terrain';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_start'] = 'Open palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_end'] = 'Close palette';

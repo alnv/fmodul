@@ -137,6 +137,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'][1] = 'Bitte ge
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][0] = 'Vollständige Adresse';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'][1] = 'Bitte geben Sie die vollständige Adresse ein.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addMarker'][0] = 'Marker/Icon hinzufügen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addMarker'][1] = 'Dem Item ein Marker hinzufügen.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'][0] = 'Icon auswählen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'][1] = 'Bitte wählen Sie ein Icon aus. Dieser Icon wird als Marker für Google Maps verwendet.';
 

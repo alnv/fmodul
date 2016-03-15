@@ -35,4 +35,18 @@ class DiverseFunction
         }
         return $optionValueLabel;
     }
+
+    /**
+     * @param $templateName
+     * @return mixed
+     */
+    public static function parseTemplateName($templateName)
+    {
+        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
+        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
+        $strVal = str_replace($arrSearch, $arrReplace, $templateName);
+        $strVal = str_replace(' ', '', $strVal);
+        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+    }
+
 }

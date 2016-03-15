@@ -79,7 +79,7 @@ class GeoCoding extends Backend
         // save cache
         $this->geoCordsCache[$keyID] = $return;
 
-        // return  geocoding
+        // return  geoCoding
         return $return;
     }
 }

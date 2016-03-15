@@ -1,0 +1,32 @@
+<div id="map_<?php echo $this->id; ?>" class="map_field google_map" style="width: 200px; height: 150px;"></div>
+<script>
+
+    <?php $lat = $this->geo_latitude ? $this->geo_latitude : 0; ?>
+    <?php $lng = $this->geo_longitude ? $this->geo_longitude : 0; ?>
+    <?php $scrollWheel = $this->mapSettings['scrollWheel'] ? 'true' : 'false'; ?>
+
+    // init google map
+    (function(){
+
+        'use strict';
+
+        var map = new google.maps.Map(document.getElementById("map_<?php echo $this->id; ?>"), {
+            center: {lat: <?php echo $lat; ?>, lng: <?php echo $lng; ?>},
+            zoom: <?php echo $this->mapSettings['zoom']; ?>,
+            scrollwheel: <?php echo $scrollWheel; ?>,
+            <?php if($this->mapSettings['styles']):?> <?php echo 'styles: '.$this->mapSettings['styles'] ?> <?php endif; ?>
+        });
+
+        <?php if($this->mapSettings['mapMarker']):?>
+
+            new google.maps.Marker({
+                map: map,
+                position: {lat: <?php echo $lat; ?>, lng: <?php echo $lng; ?>},
+                title: "<?php echo $this->title; ?>",
+                <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "'.$this->markerSRC.'"' ?> <?php endif; ?>
+            });
+
+        <?php endif;?>
+
+    })();
+</script>

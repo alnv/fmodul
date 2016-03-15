@@ -1,0 +1,15 @@
+<div id="map_<?php echo $this->id; ?>" class="map_field google_map"></div>
+<script>
+    /**
+     * init google map
+     */
+    (function(){
+        'use strict';
+
+        new google.maps.Map(document.getElementById('map_'<?php echo $this->id; ?>), {
+            center: {lat: 0, lng: 0},
+            zoom: 3
+        });
+
+    })();
+</script>

@@ -17,6 +17,7 @@ use Contao\Config;
 use Contao\Module;
 use Contao\BackendTemplate;
 use Contao\FilesModel;
+use Contao\Environment;
 
 /**
  * Class ModuleDetailView
@@ -81,7 +82,6 @@ class ModuleDetailView extends Module
         $tablename = $listModuleDB['f_select_module'];
         $wrapperID = $listModuleDB['f_select_wrapper'];
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-
         $alias = Input::get('auto_item');
         $isAlias = QueryModel::isValue($alias);
 
@@ -95,19 +95,42 @@ class ModuleDetailView extends Module
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $fieldWidgets = array();
         $moduleArr = array();
+        $mapFields = array();
 
         while($moduleDB->next())
         {
             if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
                 continue;
             }
-			
+
+            $modArr = $moduleDB->row();
+
+            // map
+            if($moduleDB->type == 'map_field')
+            {
+                $mapFields = HelperModel::setGoogleMap($modArr);
+                $language = $objPage->language;
+                //$sensor = $moduleArr['map']['sensor'];
+
+                // check if api key exist
+                $apiKey = '';
+                if(Config::get('googleApiKey'))
+                {
+                    $apiKey = '&amp;key='.Config::get('googleApiKey').'';
+                }
+
+                // add js file
+                //if(!$this->googleMapApiJs)
+                //{
+                    //$mapJs = 'http'.(Environment::get('ssl') ? 's' : '').'://maps.google.com/maps/api/js?language='.$language.$apiKey.'&amp;sensor='. ($sensor ? 'true' : 'false');
+                    //$GLOBALS['TL_JAVASCRIPT'][] = $mapJs;
+                //}
+            }
+
 			if ($moduleDB->type == 'widget') {
 
                 $tplName = $moduleDB->widgetTemplate;
-                
                 $tpl = '';
-
                 if (!$tplName) {
                     $tplNameType = explode('.', $moduleDB->widget_type)[0];                   
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
@@ -120,10 +143,9 @@ class ModuleDetailView extends Module
                     'widgetType' => $moduleDB->widget_type,
                     'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
-                                
             }
-			
-            $moduleArr[$moduleDB->fieldID] = $moduleDB->row();
+
+            $moduleArr[$moduleDB->fieldID] =$modArr;
 
         }
 
@@ -264,6 +286,37 @@ class ModuleDetailView extends Module
                 $itemDB[$id] = $objFieldTemplate->parse();
             }
 
+        }
+
+        // create marker path
+        if($itemDB['addMarker'] && $itemDB['markerSRC'])
+        {
+            if($this->markerCache[$itemDB['markerSRC']])
+            {
+                $itemDB['markerSRC'] = $this->markerCache[$itemDB['markerSRC']];
+            }else
+            {
+                $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($itemDB['markerSRC']);
+                if($markerDB->count())
+                {
+                    $pathInfo = $markerDB->row()['path'];
+
+                    if($pathInfo)
+                    {
+                        $this->markerCache[$itemDB['markerSRC']] = $pathInfo;
+                        $itemDB['markerSRC'] = $pathInfo;
+                    }
+                }
+            }
+        }
+
+        // map
+        if(!empty($mapFields))
+        {
+            $objMapTemplate = new FrontendTemplate($mapFields['template']);
+            $itemDB['mapSettings'] = $mapFields;
+            $objMapTemplate->setData($itemDB);
+            $itemDB[$mapFields['fieldID']] = $objMapTemplate->parse();
         }
 
         $objTemplate->setData($itemDB);

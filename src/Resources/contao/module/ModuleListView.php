@@ -48,6 +48,16 @@ class ModuleListView extends Module
     public $listViewOffset = 0;
 
     /**
+     * @var string
+     */
+    protected $googleMapApiJs = null;
+
+    /**
+     * @var array
+     */
+    protected $markerCache = array();
+
+    /**
      *
      */
     public function generate()
@@ -89,11 +99,12 @@ class ModuleListView extends Module
         $tablename = $this->f_select_module;
         $wrapperID = $this->f_select_wrapper;
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
-        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field', 'map_field');
+        $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $fieldsArr = array();
         $fieldWidgets = array();
         $this->tablename = $tablename;
+        $mapFields = array();
 
         while ($moduleDB->next()) {
 
@@ -118,26 +129,43 @@ class ModuleListView extends Module
                 $modArr['enable'] = true;
             }
 
+            // map
+            if($moduleDB->type == 'map_field')
+            {
+                $mapFields = HelperModel::setGoogleMap($modArr);
+                $language = $objPage->language;
+                $sensor = $modArr['map']['sensor'];
+
+                // check if api key exist
+                $apiKey = '';
+                if(Config::get('googleApiKey'))
+                {
+                    $apiKey = '&amp;key='.Config::get('googleApiKey').'';
+                }
+
+                // add js file
+                if(!$this->googleMapApiJs)
+                {
+                    $mapJs = 'http'.(Environment::get('ssl') ? 's' : '').'://maps.google.com/maps/api/js?language='.$language.$apiKey.'&amp;sensor='. ($sensor ? 'true' : 'false');
+                    $GLOBALS['TL_JAVASCRIPT'][] = $mapJs;
+                }
+            }
+
             // field
             if ($moduleDB->type == 'widget') {
-
                 $tplName = $moduleDB->widgetTemplate;
-                
                 $tpl = '';
-
                 if (!$tplName) {
                     $tplNameType = explode('.', $moduleDB->widget_type)[0];                   
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                     $tpl = $this->parseTemplateName($tpl);
                 }
-
                 $fieldWidgets[$moduleDB->fieldID] = array(
                     'fieldID' => $moduleDB->fieldID,
                     'widgetType' => $moduleDB->widget_type,
                     'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
-                                
             }
 
             $fieldsArr[$moduleDB->fieldID] = $modArr;
@@ -298,7 +326,6 @@ class ModuleListView extends Module
             if (!empty($fieldWidgets)) {
 
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
-
                 foreach ($fieldWidgets as $widget) {
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
@@ -318,11 +345,7 @@ class ModuleListView extends Module
 
                     $item[$id] = $objFieldTemplate->parse();
                 }
-
             }
-
-            //set data
-            $objTemplate->setData($item);
 
             // set last first classes
             if ($i == 0) {
@@ -332,23 +355,60 @@ class ModuleListView extends Module
                 $item['cssClass'] .= ' last';
             }
 
+            // create marker path
+            if($item['addMarker'] && $item['markerSRC'])
+            {
+                if($this->markerCache[$item['markerSRC']])
+                {
+                    $item['markerSRC'] = $this->markerCache[$item['markerSRC']];
+                }else
+                {
+                    $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($item['markerSRC']);
+                    if($markerDB->count())
+                    {
+                        $pathInfo = $markerDB->row()['path'];
+
+                        if($pathInfo)
+                        {
+                            $this->markerCache[$item['markerSRC']] = $pathInfo;
+                            $item['markerSRC'] = $pathInfo;
+                        }
+                    }
+                }
+            }
+
+            // map
+            if(!empty($mapFields))
+            {
+                $objMapTemplate = new FrontendTemplate($mapFields['template']);
+                $item['mapSettings'] = $mapFields;
+                $objMapTemplate->setData($item);
+                $item[$mapFields['fieldID']] = $objMapTemplate->parse();
+            }
+
+            //set data
+            $objTemplate->setData($item);
+
+            //set image
+            if ($item['addImage']) {
+                $this->addImageToTemplate($objTemplate, array(
+                    'singleSRC' => $item['singleSRC'],
+                    'alt' => $item['alt'],
+                    'size' => $item['size'],
+                    'caption' => $item['caption']
+                ));
+            }
+
             // set enclosure
             $objTemplate->enclosure = array();
             if ($item['addEnclosure']) {
                 $this->addEnclosuresToTemplate($objTemplate, $item);
             }
 
-            //set image
-            if ($item['addImage']) {
-                $this->addImageToTemplate($objTemplate, $item);
-            }
-
             $strResults .= $objTemplate->parse();
-
         }
 
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
-
     }
 
     /**
@@ -374,7 +434,6 @@ class ModuleListView extends Module
             {
                 array_shift($alias);
             }
-
         }
 
         $return['value'] = $alias;
@@ -417,18 +476,14 @@ class ModuleListView extends Module
         return $qOrderByStr;
 
     }
-	
+
 	/**
-     * @param $usesTemplates
+     * @param $templateName
      * @return mixed
      */
-    public function parseTemplateName($usesTemplates)
+    public function parseTemplateName($templateName)
     {
-        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
-        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
-        $strVal = str_replace($arrSearch, $arrReplace, $usesTemplates);
-        $strVal = str_replace(' ', '', $strVal);
-        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+       return DiverseFunction::parseTemplateName($templateName);
     }
 	
     /**

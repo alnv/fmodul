@@ -26,6 +26,33 @@ class HelperModel
     }
 
     /**
+     * @param $rowField
+     * @return array
+     */
+    public static function setGoogleMap($rowField)
+    {
+        $template = DiverseFunction::parseTemplateName($rowField['mapTemplate']);
+        $zoom = $rowField['mapZoom'] ? $rowField['mapZoom'] : 15;
+        $scrollWheel = $rowField['mapScrollWheel'] ? true : false;
+        $mapType = $rowField['mapType'] ? $rowField['mapType'] : 'ROADMAP';
+        $styles = $rowField['mapStyle'] ? $rowField['mapStyle'] : '';
+        $sensor = false;
+
+        return array(
+            'fieldID' => $rowField['fieldID'],
+            'label' => $rowField['title'],
+            'description' => $rowField['description'],
+            'template' => $template,
+            'zoom' => $zoom,
+            'scrollWheel' => $scrollWheel,
+            'mapType' => $mapType,
+            'styles' => $styles,
+            'sensor' => $sensor,
+            'mapMarker' => $rowField['mapMarker'],
+        );
+    }
+
+    /**
      * @param $item
      * @param $allowedGroups
      * @return bool

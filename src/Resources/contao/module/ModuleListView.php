@@ -132,22 +132,36 @@ class ModuleListView extends Module
                 }
 
                 // add js file
-                if (is_array($GLOBALS['TL_HEAD']) && !isset($GLOBALS['TL_HEAD']['googleMapApi']) && !isset($GLOBALS['TL_HEAD']['iniGoogleMaps'])) {
-                    $callback = '&callback=FModuleInitGoogleMaps';
-                    $GLOBALS['TL_HEAD']['iniGoogleMaps'] =
-                        '<script>
-                            var FModuleInitGoogleMaps = function(){
-                                if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleInitAllMaps, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleInitAllMaps);}
-                            };
-                            var FModuleInitAllMaps = function(){
-                                if(null != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
-                            };
+                if (is_array($GLOBALS['FM_MAP']) && !isset($GLOBALS['FM_MAP']['googleMapApi']) && !isset($GLOBALS['FM_MAP']['initGoogleMaps'])) {
+
+                    $startPoint = $modArr['mapInfoBox'] ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
+
+                    $mapJSLoadTemplate =
+                        '<script async defer>
+                            (function(){
+                                var FModuleGoogleApiLoader = function(){
+                                    var mapApiScript = document.createElement("script");
+                                    mapApiScript.src = "http' . (Environment::get('ssl') ? 's' : '') . '://maps.google.com/maps/api/js?language=' . $language . $apiKey . '";
+                                    mapApiScript.onload = '.$startPoint.';
+                                    document.body.appendChild(mapApiScript);
+                                };
+                                var FModuleLoadLibraries = function()
+                                {
+                                    var mapInfoBox = document.createElement("script");
+                                    mapInfoBox.src = "http' . (Environment::get('ssl') ? 's' : '') . '://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/src/infobox_packed.js";
+                                    mapInfoBox.onload = FModuleLoadMaps;
+                                    document.body.appendChild(mapInfoBox);
+                                };
+                                var FModuleLoadMaps = function()
+                                {
+                                    if(null != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
+                                };
+                                if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleGoogleApiLoader, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleGoogleApiLoader);}
+                            })();
                         </script>';
-                    $GLOBALS['TL_HEAD']['googleMapApi'] = '<script async defer src="http' . (Environment::get('ssl') ? 's' : '') . '://maps.google.com/maps/api/js?language=' . $language . $apiKey . $callback . '"></script>';
-                    if($modArr['mapInfoBox'] && !isset($GLOBALS['TL_HEAD']['infoBox']))
-                    {
-                        $GLOBALS['TL_HEAD']['infoBox'] = '<script async defer src="http' . (Environment::get('ssl') ? 's' : '') . '://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/src/infobox_packed.js"></script>';
-                    }
+
+                    $GLOBALS['TL_HEAD'][] = $mapJSLoadTemplate;
+
                 }
             }
 

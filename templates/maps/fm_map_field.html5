@@ -1,6 +1,6 @@
 <div id="map_<?php echo $this->mapSettings['fieldID']; ?>_<?php echo $this->id; ?>" class="map_field" style="width: 100%; height: 400px;"></div>
 
-<script>
+<script async defer>
 
     'use strict';
 

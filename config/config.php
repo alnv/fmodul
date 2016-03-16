@@ -106,8 +106,8 @@ $GLOBALS['TL_MOOTOOLS'][] =
     </script>";
 
 
-// set TL_HEAD
-$GLOBALS['TL_HEAD'] = !is_array($GLOBALS['TL_HEAD']) ? array() : $GLOBALS['TL_HEAD'];
+// set FM_MAP
+$GLOBALS['FM_MAP'] = !is_array($GLOBALS['FM_MAP']) ? array() : $GLOBALS['FM_MAP'];
 
 /**
  * Add permissions

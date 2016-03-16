@@ -55,7 +55,7 @@ class GeoCoding extends Backend
         }
 
         // create google map api
-        $api = 'https://maps.googleapis.com/maps/api/geocode/json?address=%s%s&sensor=false&language=%s&region=%s';
+        $api = 'https://maps.googleapis.com/maps/api/geocode/json?address=%s%s&language=%s&region=%s';
         $strURL = sprintf($api, urlencode($address), $apiKey, urlencode($lang), strlen($lang));
 
         // send request to google maps api

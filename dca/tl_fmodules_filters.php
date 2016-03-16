@@ -112,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
         'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;',
-        'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{map_settings_legend},mapTemplate,mapZoom,mapType,mapScrollWheel,mapMarker,mapStyle;',
+        'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{map_settings_legend},mapTemplate,mapZoom,mapType,mapScrollWheel,mapMarker,mapInfoBox,mapStyle;',
     ),
     'fields' => array
     (
@@ -281,9 +281,10 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'mapZoom' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'],
             'exclude' => true,
+            'default' => '1',
             'inputType' => 'text',
             'eval' => array('tl_class' => 'w50'),
-            'sql' => "int(10) unsigned NOT NULL default '0'"
+            'sql' => "int(10) unsigned NOT NULL default '1'"
         ),
         'mapScrollWheel' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'],
@@ -294,6 +295,13 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         ),
         'mapMarker' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'clr m12'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'mapInfoBox' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => array('tl_class' => 'clr m12'),

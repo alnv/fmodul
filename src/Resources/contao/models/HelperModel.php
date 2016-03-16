@@ -11,6 +11,12 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\Environment;
+
+/**
+ * Class HelperModel
+ * @package FModule
+ */
 class HelperModel
 {
     /**
@@ -18,10 +24,7 @@ class HelperModel
      */
     public static function previewMode()
     {
-        if (BE_USER_LOGGED_IN) {
-            return true;
-        }
-
+        if (BE_USER_LOGGED_IN) return true;
         return false;
     }
 
@@ -36,9 +39,8 @@ class HelperModel
         $scrollWheel = $rowField['mapScrollWheel'] ? true : false;
         $mapType = $rowField['mapType'] ? $rowField['mapType'] : 'ROADMAP';
         $styles = $rowField['mapStyle'] ? $rowField['mapStyle'] : '';
-        $sensor = false;
 
-        return array(
+        $mapSettings = array(
             'fieldID' => $rowField['fieldID'],
             'label' => $rowField['title'],
             'description' => $rowField['description'],
@@ -47,9 +49,11 @@ class HelperModel
             'scrollWheel' => $scrollWheel,
             'mapType' => $mapType,
             'styles' => $styles,
-            'sensor' => $sensor,
             'mapMarker' => $rowField['mapMarker'],
+            'mapInfoBox' => $rowField['mapInfoBox']
         );
+
+        return $mapSettings;
     }
 
     /**
@@ -59,23 +63,14 @@ class HelperModel
      */
     public static function sortOutProtected($item, $allowedGroups)
     {
-
-        if (BE_USER_LOGGED_IN) {
-            return false;
-        }
-
-        if (FE_USER_LOGGED_IN && $item['guests'] == '1') {
-            return true;
-        }
-
+        if (BE_USER_LOGGED_IN) return false;
+        if (FE_USER_LOGGED_IN && $item['guests'] == '1') return true;
         if (FE_USER_LOGGED_IN && $item['protected'] == '1') {
-
             $dataGroup= deserialize( $item['groups'] );
             if (!is_array($dataGroup) || empty($dataGroup) || count(array_intersect($dataGroup, $allowedGroups)) < 1) {
                 return true;
             }
         }
-
         return false;
     }
 

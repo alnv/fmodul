@@ -105,6 +105,10 @@ $GLOBALS['TL_MOOTOOLS'][] =
         }
     </script>";
 
+
+// set TL_HEAD
+$GLOBALS['TL_HEAD'] = !is_array($GLOBALS['TL_HEAD']) ? array() : $GLOBALS['TL_HEAD'];
+
 /**
  * Add permissions
  */

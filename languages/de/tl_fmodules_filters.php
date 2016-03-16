@@ -65,6 +65,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'][1] = 'Bitte geben Sie eine
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][0] = 'Marker anzeigen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][1] = 'Sollte ein Marker angezeigt werden?';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][0] = 'Info Box anzeigen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][1] = 'Sollte eine Info Box angezeigt werden?';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Einfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Mehrfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';

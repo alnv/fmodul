@@ -65,6 +65,9 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'][1] = 'Please enter your zo
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][0] = 'Show marker';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][1] = 'Show an Marker in the map.';
 
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][0] = 'Show info box';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][1] = 'Show info box in the map.';
+
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][1] = 'Define Palette.';
 

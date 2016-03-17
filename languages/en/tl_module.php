@@ -3,6 +3,7 @@
 //legend
 $GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'Taxonomy';
 $GLOBALS['TL_LANG']['tl_module']['sort_legend'] = 'Sorting';
+$GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Map view-Settings';
 
 //fields
 $GLOBALS['TL_LANG']['tl_module']['f_select_module'][0] = 'Select F module';
@@ -52,6 +53,39 @@ $GLOBALS['TL_LANG']['tl_module']['f_label_select_list'] = 'Select';
 $GLOBALS['TL_LANG']['tl_module']['f_reset_button'][0] = 'Add reset button to form';
 $GLOBALS['TL_LANG']['tl_module']['f_reset_button'][1] = 'Allow to reset form filter in Frontend.';
 
+$GLOBALS['TL_LANG']['tl_module']['fm_addMap'][0] = 'Enable Map View';
+$GLOBALS['TL_LANG']['tl_module']['fm_addMap'][1] = 'Show this list as map view.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_mapType'][0] = 'Map Type';
+$GLOBALS['TL_LANG']['tl_module']['fm_mapType'][1] = 'Please select your map type.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_mapScrollWheel'][0] = 'Enable scroll wheel';
+$GLOBALS['TL_LANG']['tl_module']['fm_mapScrollWheel'][1] = 'Allow user to scroll in the google map.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_mapStyle'][0] = 'Style';
+$GLOBALS['TL_LANG']['tl_module']['fm_mapStyle'][1] = 'Define your custom map style.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_mapZoom'][0] = 'Zoom level';
+$GLOBALS['TL_LANG']['tl_module']['fm_mapZoom'][1] = 'Please enter your zoom level.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_mapMarker'][0] = 'Show marker';
+$GLOBALS['TL_LANG']['tl_module']['fm_mapMarker'][1] = 'Show an Marker in the map.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_mapInfoBox'][0] = 'Show info box';
+$GLOBALS['TL_LANG']['tl_module']['fm_mapInfoBox'][1] = 'Show info box in the map.';
+
+$GLOBALS['TL_LANG']['tl_module']['geo_latitude'][0] = 'Latitude';
+$GLOBALS['TL_LANG']['tl_module']['geo_latitude'][1] = 'Please enter your latitude.';
+
+$GLOBALS['TL_LANG']['tl_module']['geo_longitude'][0] = 'Longitude';
+$GLOBALS['TL_LANG']['tl_module']['geo_longitude'][1] = 'Please enter your Longitude.';
+
+$GLOBALS['TL_LANG']['tl_module']['geo_address'][0] = 'Full address';
+$GLOBALS['TL_LANG']['tl_module']['geo_address'][1] = 'Please enter your full address.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_map_template'][0] = 'Map tempplate';
+$GLOBALS['TL_LANG']['tl_module']['fm_map_template'][1] = 'Select your map template.';
+
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
 $GLOBALS['TL_LANG']['tl_module']['date'] = 'Date';
@@ -59,3 +93,9 @@ $GLOBALS['TL_LANG']['tl_module']['date'] = 'Date';
 $GLOBALS['TL_LANG']['tl_module']['asc'] = 'Asc';
 $GLOBALS['TL_LANG']['tl_module']['desc'] = 'Desc';
 $GLOBALS['TL_LANG']['tl_module']['rand'] = 'Random';
+
+$GLOBALS['TL_LANG']['tl_module']['ROADMAP'] = 'Roadmap';
+$GLOBALS['TL_LANG']['tl_module']['SATELLITE'] = 'Satellite';
+$GLOBALS['TL_LANG']['tl_module']['HYBRID'] = 'Hybrid';
+$GLOBALS['TL_LANG']['tl_module']['TERRAIN'] = 'Terrain';
+$GLOBALS['TL_LANG']['tl_module']['fm_google_map'] = 'Google Map';

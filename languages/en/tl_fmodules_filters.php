@@ -51,7 +51,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][1] = 'Please select a template for your map.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][0] = 'Map Type';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][1] = 'Please select your map type';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapType'][1] = 'Please select your map type.';
 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'][0] = 'Enable scroll wheel';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'][1] = 'Allow user to scroll in the google map.';

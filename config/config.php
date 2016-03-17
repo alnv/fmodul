@@ -38,8 +38,7 @@ array_insert($GLOBALS['FE_MOD'],5, array(
 	'fmodule' => array(
 		'fmodule_fe_list' => 'ModuleListView',
 		'fmodule_fe_detail' => 'ModuleDetailView',
-        'fmodule_fe_formfilter' => 'ModuleFormFilter',
-        'fmodule_fe_googlemaps' => 'ModuleGoogleMapsView'
+        'fmodule_fe_formfilter' => 'ModuleFormFilter'
 	)
 ));
 
@@ -104,10 +103,6 @@ $GLOBALS['TL_MOOTOOLS'][] =
             }
         }
     </script>";
-
-
-// set FM_MAP
-$GLOBALS['FM_MAP'] = !is_array($GLOBALS['FM_MAP']) ? array() : $GLOBALS['FM_MAP'];
 
 /**
  * Add permissions

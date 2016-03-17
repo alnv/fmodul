@@ -13,6 +13,9 @@
 
 namespace FModule;
 
+use Contao\Environment;
+use Contao\Config;
+
 /**
  * Class DiverseFunction
  */
@@ -47,6 +50,45 @@ class DiverseFunction
         $strVal = str_replace($arrSearch, $arrReplace, $templateName);
         $strVal = str_replace(' ', '', $strVal);
         return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+    }
+
+    /**
+     * @param bool $hasLibraries
+     * @param string $language
+     * @param string $GlobalMapID
+     * @return string
+     */
+    public static function setMapJs($hasLibraries = true, $language = 'en', $GlobalMapID = '')
+    {
+        $startPoint = $hasLibraries ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
+        $apiKey = '';
+        if (Config::get('googleApiKey')) {
+            $apiKey = '&amp;key=' . Config::get('googleApiKey') . '';
+        }
+        $mapJSLoadTemplate =
+            '<script async defer>
+                (function(){
+                    var FModuleGoogleApiLoader = function(){
+                        var mapApiScript = document.createElement("script");
+                        mapApiScript.src = "http' . (Environment::get('ssl') ? 's' : '') . '://maps.google.com/maps/api/js?language=' . $language . $apiKey . '";
+                        mapApiScript.onload = '.$startPoint.';
+                        document.body.appendChild(mapApiScript);
+                    };
+                    var FModuleLoadLibraries = function()
+                    {
+                        var mapInfoBox = document.createElement("script");
+                        mapInfoBox.src = "http' . (Environment::get('ssl') ? 's' : '') . '://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/src/infobox_packed.js";
+                        mapInfoBox.onload = FModuleLoadMaps;
+                        document.body.appendChild(mapInfoBox);
+                    };
+                    var FModuleLoadMaps = function()
+                    {
+                        if(null != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
+                    };
+                    if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleGoogleApiLoader, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleGoogleApiLoader);}
+                })();
+            </script>';
+        return $mapJSLoadTemplate;
     }
 
 }

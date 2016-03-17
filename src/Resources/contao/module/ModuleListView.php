@@ -53,6 +53,21 @@ class ModuleListView extends Module
     protected $markerCache = array();
 
     /**
+     * @var bool
+     */
+    protected $loadMapScript = false;
+
+    /**
+     * @var bool
+     */
+    protected $loadLibraries = false;
+
+    /**
+     * @var null
+     */
+    protected $feViewID = null;
+
+    /**
      *
      */
     public function generate()
@@ -68,6 +83,15 @@ class ModuleListView extends Module
 
         $this->import('FrontendUser', 'User');
 
+        // set fe view id
+        $this->feViewID = md5($this->id);
+
+        // change template
+        if(TL_MODE == 'FE' && $this->fm_addMap)
+        {
+            $this->strTemplate = 'mod_fmodule_map';
+        }
+
         //auto_page Attribute
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
             Input::setGet('item', Input::get('auto_item'));
@@ -82,6 +106,7 @@ class ModuleListView extends Module
     {
 
         global $objPage;
+
         $f_display_mode = deserialize($this->f_display_mode);
         $page_taxonomy = deserialize($objPage->page_taxonomy);
         $taxonomyFromFE = is_array($f_display_mode) ? $f_display_mode : array();
@@ -95,6 +120,17 @@ class ModuleListView extends Module
         $fieldWidgets = array();
         $this->tablename = $tablename;
         $mapFields = array();
+
+        // map view settings
+        $mapSettings = array();
+        if($this->fm_addMap)
+        {
+            $mapSettings['mapZoom'] = $this->fm_mapZoom;
+            $mapSettings['mapMarker'] = $this->fm_mapMarker;
+            $mapSettings['mapInfoBox'] = $this->fm_mapInfoBox;
+            $mapSettings['mapType'] = $this->fm_mapType;
+            $mapSettings['mapStyle'] = $this->fm_mapStyle;
+        }
 
         while ($moduleDB->next()) {
 
@@ -120,49 +156,14 @@ class ModuleListView extends Module
             // map
             if ($moduleDB->type == 'map_field') {
 
+                // set map settings
                 $mapFields[] = HelperModel::setGoogleMap($modArr);
 
-                // set language
-                $language = $objPage->language ? $objPage->language : 'en';
+                // set loadMapScript to true
+                $this->loadMapScript = true;
 
-                // check if api key exist
-                $apiKey = '';
-                if (Config::get('googleApiKey')) {
-                    $apiKey = '&amp;key=' . Config::get('googleApiKey') . '';
-                }
-
-                // add js file
-                if (is_array($GLOBALS['FM_MAP']) && !isset($GLOBALS['FM_MAP']['googleMapApi']) && !isset($GLOBALS['FM_MAP']['initGoogleMaps'])) {
-
-                    $startPoint = $modArr['mapInfoBox'] ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
-
-                    $mapJSLoadTemplate =
-                        '<script async defer>
-                            (function(){
-                                var FModuleGoogleApiLoader = function(){
-                                    var mapApiScript = document.createElement("script");
-                                    mapApiScript.src = "http' . (Environment::get('ssl') ? 's' : '') . '://maps.google.com/maps/api/js?language=' . $language . $apiKey . '";
-                                    mapApiScript.onload = '.$startPoint.';
-                                    document.body.appendChild(mapApiScript);
-                                };
-                                var FModuleLoadLibraries = function()
-                                {
-                                    var mapInfoBox = document.createElement("script");
-                                    mapInfoBox.src = "http' . (Environment::get('ssl') ? 's' : '') . '://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/src/infobox_packed.js";
-                                    mapInfoBox.onload = FModuleLoadMaps;
-                                    document.body.appendChild(mapInfoBox);
-                                };
-                                var FModuleLoadMaps = function()
-                                {
-                                    if(null != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
-                                };
-                                if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleGoogleApiLoader, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleGoogleApiLoader);}
-                            })();
-                        </script>';
-
-                    $GLOBALS['TL_HEAD'][] = $mapJSLoadTemplate;
-
-                }
+                // load map libraries
+                $this->loadLibraries = $modArr['mapInfoBox'] ? true : false;
             }
 
             // field
@@ -284,7 +285,8 @@ class ModuleListView extends Module
 
 
         $strResults = '';
-        $objTemplate = new FrontendTemplate($this->f_list_template);
+        $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
+        $objTemplate = new FrontendTemplate($template);
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
@@ -382,7 +384,7 @@ class ModuleListView extends Module
                 }
             }
 
-            // map
+            // map settings from field
             if (!empty($mapFields)) {
                 foreach($mapFields as $map)
                 {
@@ -392,6 +394,14 @@ class ModuleListView extends Module
                     $item[$map['fieldID']] = $objMapTemplate->parse();
                 }
             }
+
+            if(!empty($mapSettings))
+            {
+                $item['mapSettings'] = $mapSettings;
+            }
+
+            // set fe view id
+            $item['feViewID'] = $this->feViewID;
 
             //set data
             $objTemplate->setData($item);
@@ -415,6 +425,26 @@ class ModuleListView extends Module
             $strResults .= $objTemplate->parse();
         }
 
+        // set map settings
+        if(!empty($mapSettings)){
+
+            // set map settings array to template
+            $this->Template->mapSettings = $mapSettings;
+
+            // set loadMapScript to true
+            $this->loadMapScript = true;
+
+            // load map libraries
+            $this->loadLibraries = $mapSettings['mapInfoBox'] ? true : false;
+        }
+
+        // set js files
+        if($this->loadMapScript && !isset($GLOBALS['TL_HEAD']['mapJS']))
+        {
+            $language = $objPage->language ? $objPage->language : 'en';
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($this->loadLibraries, $language);
+        }
+        $this->Template->feViewID = $this->feViewID;
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
     }
 

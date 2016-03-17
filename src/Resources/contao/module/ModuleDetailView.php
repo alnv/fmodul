@@ -116,9 +116,7 @@ class ModuleDetailView extends Module
 
                 // add js file
                 if (is_array($GLOBALS['FM_MAP']) && !isset($GLOBALS['FM_MAP']['googleMapApi']) && !isset($GLOBALS['FM_MAP']['initGoogleMaps'])) {
-
                     $startPoint = $modArr['mapInfoBox'] ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
-
                     $mapJSLoadTemplate =
                         '<script async defer>
                             (function(){
@@ -142,9 +140,7 @@ class ModuleDetailView extends Module
                                 if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleGoogleApiLoader, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleGoogleApiLoader);}
                             })();
                         </script>';
-
                     $GLOBALS['TL_HEAD'][] = $mapJSLoadTemplate;
-
                 }
             }
 

@@ -1,0 +1,59 @@
+<script>
+
+    'use strict';
+
+    <?php $lat = $this->geo_latitude ? $this->geo_latitude : 0; ?>
+    <?php $lng = $this->geo_longitude ? $this->geo_longitude : 0; ?>
+
+    FModuleGoogleMap.push(function(){
+
+        var location =  new google.maps.LatLng("<?php echo $lat; ?>", "<?php echo $lng; ?>");
+
+        // marker
+        <?php if($this->mapSettings['mapMarker']):?>
+
+            var marker = new google.maps.Marker({
+                map: FModuleMap<?php echo $this->feViewID?>,
+                position: location,
+                title: "<?php echo $this->title; ?>",
+                <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "'.$this->markerSRC.'"' ?> <?php endif; ?>
+            });
+
+        <?php endif;?>
+
+        // info box
+        <?php if($this->mapSettings['mapInfoBox']):?>
+
+            // info box html template
+            var infoBoxTemplate =
+                '<div class="infobox">'+
+                '<p><strong><?php echo $this->title; ?></strong></p>'+
+                '<?php echo $this->description; ?>'+
+                <?php if($this->href): ?>'<p><a href="<?php echo $this->href; ?>"><?php echo $this->more;?></a></p>'+<?php endif; ?>
+                '</div>';
+
+            var iBox = new InfoBox({
+                content: infoBoxTemplate,
+                disableAutoPan: false,
+                maxWidth: 200,
+                pixelOffset: new google.maps.Size(-100, 10),
+                zIndex: null,
+                boxStyle: {
+                    background: '#fff',
+                    width: "200px",
+                    padding: "10px"
+                },
+                closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
+                infoBoxClearance: new google.maps.Size(1, 1)
+            });
+
+            // set click event
+            google.maps.event.addListener(marker, 'click', function() {
+                iBox.open(FModuleMap<?php echo $this->feViewID?>, this);
+            });
+
+        <?php endif;?>
+
+    });
+
+</script>

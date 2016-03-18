@@ -37,14 +37,12 @@ class DCACreator
      */
     public function index()
     {
-
         if (TL_MODE == 'BE') {
             Config::getInstance();
             Environment::getInstance();
             Input::getInstance();
             BackendUser::getInstance();
             Database::getInstance();
-
             // init BE Modules
             if (Database::getInstance()->tableExists('tl_fmodules')) {
                 $logLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
@@ -60,13 +58,10 @@ class DCACreator
      */
     public function setDynLanguagePack()
     {
-
         if (!Input::get('do') && !in_array(Input::get('do'), $this->modules)) {
             return;
         }
-
         $languages = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'];
-
         foreach ($languages as $key => $value) {
             foreach ($this->modules as $module => $name) {
                 if ($key == 'new') {
@@ -74,16 +69,13 @@ class DCACreator
                     $GLOBALS['TL_LANG'][$module . '_data']['new'] = array(sprintf($value[1][0], $name), $value[1][1]);
                     continue;
                 }
-
                 if ($key == 'fm_legend') {
                     $GLOBALS['TL_LANG'][$module] = $value;
                     $GLOBALS['TL_LANG'][$module . '_data'] = $value;
                     continue;
                 }
-
                 $GLOBALS['TL_LANG'][$module][$key] = $value;
                 $GLOBALS['TL_LANG'][$module . '_data'][$key] = $value;
-
             }
         }
     }

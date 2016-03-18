@@ -12,39 +12,39 @@
         // marker
         <?php if($this->mapSettings['mapMarker']):?>
 
-        var marker = new google.maps.Marker({
-            map: FModuleMap<?php echo $this->feViewID?>,
-            position: location,
-            title: "<?php echo $this->title; ?>",
-            <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "' . $this->markerSRC . '"' ?> <?php endif; ?>
-        });
+            var marker = new google.maps.Marker({
+                map: FModuleMap<?php echo $this->feViewID?>,
+                position: location,
+                title: "<?php echo $this->title; ?>",
+                <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "' . $this->markerSRC . '"' ?> <?php endif; ?>
+            });
 
         <?php endif;?>
 
         // info box
         <?php if($this->mapSettings['mapInfoBox']):?>
 
-        // info box html template
-        var infoBoxTemplate = '<div class="infobox">' +
-                '<p><strong><?php echo $this->title; ?></strong></p>' +
-                '<?php echo $this->description; ?>' +
-                <?php if($this->href): ?>'<p><a href="<?php echo $this->href; ?>"><?php echo $this->more;?></a></p>' +<?php endif; ?>
-            '</div>';
+            // info box html template
+            var infoBoxTemplate = '<div class="infobox">' +
+                    '<p><strong><?php echo $this->title; ?></strong></p>' +
+                    '<?php echo $this->description; ?>' +
+                    <?php if($this->href): ?>'<p><a href="<?php echo $this->href; ?>"><?php echo $this->more;?></a></p>' +<?php endif; ?>
+                '</div>';
 
-        var iBox = new InfoBox({
-            content: infoBoxTemplate,
-            boxStyle: {
-                background: '#fff',
-                width: "200px",
-                padding: "10px",
-                border: "1px solid #d6d6d6"
-            }
-        });
+            var iBox = new InfoBox({
+                content: infoBoxTemplate,
+                boxStyle: {
+                    background: '#fff',
+                    width: "200px",
+                    padding: "10px",
+                    border: "1px solid #d6d6d6"
+                }
+            });
 
-        // set click event
-        google.maps.event.addListener(marker, 'click', function () {
-            iBox.open(FModuleMap<?php echo $this->feViewID?>, this);
-        });
+            // set click event
+            google.maps.event.addListener(marker, 'click', function () {
+                iBox.open(FModuleMap<?php echo $this->feViewID?>, this);
+            });
 
         <?php endif;?>
 

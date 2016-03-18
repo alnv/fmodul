@@ -398,7 +398,7 @@ class tl_module_fmodule extends tl_module
 
         $activeOptions = array();
 
-        if (!$listID) {
+        if ($listID) {
 
             $selectedList = $filters[$listID];
             $filterFieldsDB = $this->Database->prepare('SELECT tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($selectedList);
@@ -448,6 +448,7 @@ class tl_module_fmodule extends tl_module
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['filterFields'] = $filterFields;
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['currentListID'] = $listID;
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options']['options'] = $activeOptions;
+
         }
         return $options;
     }

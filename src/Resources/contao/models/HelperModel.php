@@ -42,7 +42,7 @@ class HelperModel
 
         $mapSettings = array(
             'fieldID' => $rowField['fieldID'],
-            'label' => $rowField['title'],
+            'title' => $rowField['title'],
             'description' => $rowField['description'],
             'template' => $template,
             'mapScrollWheel' => $scrollWheel,

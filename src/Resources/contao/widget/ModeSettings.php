@@ -292,7 +292,7 @@ class ModeSettings extends Widget
                 <div>
                     <input name="' . $this->strName . '[' . $index . '][fieldID]" value="' . $viewObject['fieldID'] . '"type="hidden">
                     <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_select'] . '</label></h4>
-                    <select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
+                    <select class="tl_select tl_chosen" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
                         ' . $optionsTpl . '
                     </select>
                     <p class="tl_help tl_tip" title="">' . $desc . '</p>

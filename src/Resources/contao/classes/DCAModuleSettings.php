@@ -68,9 +68,7 @@ class DCAModuleSettings extends ViewContainer
      */
     public function checkPermission($dc)
     {
-
         $modname = substr($dc->table, 3, strlen($dc->table));
-
         $allowedFields = $modname;
         $permission = $modname.'p';
 
@@ -85,21 +83,15 @@ class DCAModuleSettings extends ViewContainer
         }
 
         if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields)) {
-
             $root = array(0);
-
         } else {
-
             $root = $this->User->$allowedFields;
-
         }
 
         $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $root;
 
         if (!$this->User->hasAccess('create', $permission)) {
-
             $GLOBALS['TL_DCA'][$dc->table]['config']['closed'] = true;
-
         }
 
         switch (Input::get('act'))
@@ -177,7 +169,6 @@ class DCAModuleSettings extends ViewContainer
                 }
                 break;
         }
-
     }
 
     /**
@@ -185,11 +176,10 @@ class DCAModuleSettings extends ViewContainer
      */
     public function setConfig()
     {
-
-        $child_table = $this->getChildName();
+        $childTable = $this->getChildName();
         $config = array(
             'dataContainer' => 'Table',
-            'ctable' => array($child_table),
+            'ctable' => array($childTable),
             'enableVersioning' => true,
             'onload_callback' => array
             (
@@ -202,9 +192,7 @@ class DCAModuleSettings extends ViewContainer
                 )
             )
         );
-
         return $config;
-
     }
 
 
@@ -213,20 +201,15 @@ class DCAModuleSettings extends ViewContainer
      */
     public function setList()
     {
-
         $list = array(
-
             'sorting' => array(
                 'mode' => 0
             ),
-
             'label' => array(
                 'fields' => array('title', 'info'),
                 'format' => '%s <span style="color: #c2c2c2;">(%s)</span>'
             ),
-
             'global_operations' => array(
-
                 'all' => array
                 (
                     'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -234,32 +217,26 @@ class DCAModuleSettings extends ViewContainer
                     'class' => 'header_edit_all',
                     'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
                 )
-
             ),
-
             'operations' => array(
-
 				'edit' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
                     'href' => 'table=' . $this->child,
                     'icon' => 'edit.gif'
                 ),
-
                 'editheader' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editheader'],
                     'href' => 'act=edit',
                     'icon' => 'header.gif'
                 ),
-
                 'copy' => array
                 (
                     'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['copy'],
                     'href' => 'act=copy',
                     'icon' => 'copy.gif'
                 ),
-
                 'delete' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['delete'],
@@ -267,7 +244,6 @@ class DCAModuleSettings extends ViewContainer
                     'icon' => 'delete.gif',
                     'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['deleteMsg'] . '\'))return false;Backend.getScrollOffset()"'
                 ),
-
                 'show' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'],
@@ -276,7 +252,6 @@ class DCAModuleSettings extends ViewContainer
                 )
             )
         );
-
         return $list;
     }
 
@@ -286,20 +261,14 @@ class DCAModuleSettings extends ViewContainer
      */
     public function setPalettes($moduleDB)
     {
-
         $fields = $moduleDB['fields'];
-
         $fieldStr = '{data_legend},';
-
         $arr = array();
-
         foreach ($fields as $field) {
-
             if(!$field['fieldID'])
             {
                 continue;
             }
-
             if ($field['type'] !== 'simple_choice' || $field['type'] !== 'multi_choice') {
                 if ($field['dataFromTable'] == '1') {
                     $arr[] = 'select_table_' . $field['fieldID'];
@@ -309,16 +278,11 @@ class DCAModuleSettings extends ViewContainer
                     $arr[] = $field['fieldID'];
                 }
             }
-
         }
-
         $fieldStr = $fieldStr . implode(',', $arr) . ';';
-
         return array(
-
             '__selector__' => array('addDetailPage', 'allowComments'),
-            'default' => '{general_legend},title,info;{root_legend},addDetailPage;' . $fieldStr . '{comments_legend:hide},allowComments'
-
+            'default' => '{general_legend},title,info;{root_legend},addDetailPage;' . $fieldStr . '{comments_legend:hide},allowComments;'
         );
     }
 
@@ -339,9 +303,7 @@ class DCAModuleSettings extends ViewContainer
      */
     public function setFields($fields = array())
     {
-
         $arr = $this->dcaSettingField();
-
         if(is_array($fields))
         {
             foreach ($fields as $field) {
@@ -369,9 +331,7 @@ class DCAModuleSettings extends ViewContainer
     {
         if($field['dataFromTable'] == '1')
         {
-
             $fieldPrefixes = array('select_table_', 'select_col_', 'select_title_');
-
             for($i=0; $i < count($fieldPrefixes); $i++)
             {
                 if($fieldPrefixes[$i])
@@ -379,9 +339,7 @@ class DCAModuleSettings extends ViewContainer
                     $arr[$fieldPrefixes[$i].$field['fieldID']] = $this->getOptionFromTableField($fieldPrefixes[$i], $field);
                 }
             }
-
         }else{
-
             $arr[$field['fieldID']] = $this->getOptionField($field);
         }
         return $arr;
@@ -414,7 +372,6 @@ class DCAModuleSettings extends ViewContainer
      */
     public function loadDefaultCol($value, $dc)
     {
-
         $field = $dc->field;
         $fieldname = substr($field, strlen('select_col_'), strlen($field));
         $col = deserialize($dc->activeRecord->$fieldname)['col'];
@@ -429,7 +386,6 @@ class DCAModuleSettings extends ViewContainer
             $GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options'] = $options;
             unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options_callback']);
         }
-
     }
 
     /**
@@ -554,19 +510,16 @@ class DCAModuleSettings extends ViewContainer
         {
             return null;
         }
-
         foreach($this->fields as $colname => $field)
         {
             if(!$field['sql'])
             {
                 continue;
             }
-
             if(!$this->Database->fieldExists($colname, $this->name))
             {
                 $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
             }
-
         }
     }
 
@@ -575,19 +528,14 @@ class DCAModuleSettings extends ViewContainer
      */
     public function createTable()
     {
-
         $defaultCols = "id int(10) unsigned NOT NULL auto_increment, tstamp int(10) unsigned NOT NULL default '0'";
-
         if( $this->name && !$this->Database->tableExists($this->name) )
         {
             $this->Database->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")->execute();
         }
-
         if(!empty($this->fields))
         {
             $this->createCols();
         }
-
     }
-
 }

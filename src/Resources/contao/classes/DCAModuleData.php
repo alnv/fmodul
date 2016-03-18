@@ -15,6 +15,7 @@ use Contao\Database;
 use Contao\Input;
 use Contao\Image;
 use Contao\StringUtil;
+use Contao\DataContainer;
 
 /**
  * Class DCAModule
@@ -619,23 +620,23 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
-     * @param $dc
-     * @return mixed
+     * @param DataContainer $dca
+     * @return null
      */
-    public function saveGeoCoding($dc)
+    public function saveGeoCoding(DataContainer $dca)
     {
-        if(!$dc->activeRecord)
+        if(!$dca->activeRecord)
         {
             return null;
         }
 
         $geo_address = '';
         $countries = $this->getCountries();
-        $address_street = $dc->activeRecord->address_street ? $dc->activeRecord->address_street : '';
-        $address_addition = $dc->activeRecord->address_addition ? $dc->activeRecord->address_addition : '';
-        $address_location = $dc->activeRecord->address_location ? $dc->activeRecord->address_location : '';
-        $address_zip = $dc->activeRecord->address_zip ? $dc->activeRecord->address_zip : '';
-        $address_country = $dc->activeRecord->address_country ? $countries[$dc->activeRecord->address_country] : '';
+        $address_street = $dca->activeRecord->address_street ? $dca->activeRecord->address_street : '';
+        $address_addition = $dca->activeRecord->address_addition ? $dca->activeRecord->address_addition : '';
+        $address_location = $dca->activeRecord->address_location ? $dca->activeRecord->address_location : '';
+        $address_zip = $dca->activeRecord->address_zip ? $dca->activeRecord->address_zip : '';
+        $address_country = $dca->activeRecord->address_country ? $countries[$dca->activeRecord->address_country] : '';
 
         //
         if($address_location || $address_zip || $address_country)
@@ -646,7 +647,7 @@ class DCAModuleData extends ViewContainer
         //
         if(!$geo_address)
         {
-            $geo_address = $dc->activeRecord->geo_address ? $dc->activeRecord->geo_address : '';
+            $geo_address = $dca->activeRecord->geo_address ? $dca->activeRecord->geo_address : '';
         }
 
         //
@@ -661,8 +662,8 @@ class DCAModuleData extends ViewContainer
 
         if(!empty($cords))
         {
-            $tableName = $dc->table ? $dc->table : Input::get('table');
-            $id = $dc->id ? $dc->id : Input::get('id');
+            $tableName = $dca->table ? $dca->table : Input::get('table');
+            $id = $dca->id ? $dca->id : Input::get('id');
             $lat = $cords['lat'] ? $cords['lat'] : '';
             $lng = $cords['lng'] ? $cords['lng'] : '';
             if(!$tableName || !$id)

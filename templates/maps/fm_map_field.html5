@@ -1,4 +1,5 @@
-<div id="map_<?php echo $this->mapSettings['fieldID']; ?>_<?php echo $this->id; ?>" class="map_field" style="width: 100%; height: 400px;"></div>
+<div id="map_<?php echo $this->mapSettings['fieldID']; ?>_<?php echo $this->id; ?>" class="map_field"
+     style="width: 100%; height: 400px;"></div>
 
 <script async defer>
 
@@ -6,68 +7,61 @@
 
     <?php $lat = $this->geo_latitude ? $this->geo_latitude : 0; ?>
     <?php $lng = $this->geo_longitude ? $this->geo_longitude : 0; ?>
-    <?php $scrollWheel = $this->mapSettings['scrollWheel'] ? 'true' : 'false'; ?>
+    <?php $scrollWheel = $this->mapSettings['mapScrollWheel'] ? 'true' : 'false'; ?>
 
     // set array for maps
-    if(null == FModuleGoogleMap) var FModuleGoogleMap = [];
+    if (null == FModuleGoogleMap) var FModuleGoogleMap = [];
 
     // init google map
-    FModuleGoogleMap.push(function(){
+    FModuleGoogleMap.push(function () {
 
         // set lat and lng
-        var location =  new google.maps.LatLng("<?php echo $lat; ?>", "<?php echo $lng; ?>");
+        var location = new google.maps.LatLng("<?php echo $lat; ?>", "<?php echo $lng; ?>");
 
         // map
         var map = new google.maps.Map(document.getElementById("map_<?php echo $this->mapSettings['fieldID']; ?>_<?php echo $this->id; ?>"), {
             center: location,
-            zoom: <?php echo $this->mapSettings['zoom']; ?>,
+            zoom: <?php echo $this->mapSettings['mapZoom']; ?>,
             scrollwheel: <?php echo $scrollWheel; ?>,
             mapTypeId: google.maps.MapTypeId.<?php echo $this->mapSettings['mapType']; ?>,
-            <?php if($this->mapSettings['styles']):?> <?php echo 'styles: '.$this->mapSettings['styles'] ?> <?php endif; ?>
+            <?php if($this->mapSettings['mapStyle']):?> <?php echo 'styles: ' . $this->mapSettings['mapStyle'] ?> <?php endif; ?>
         });
 
         // marker
         <?php if($this->mapSettings['mapMarker']):?>
 
-            var marker = new google.maps.Marker({
-                map: map,
-                position: location,
-                title: "<?php echo $this->title; ?>",
-                <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "'.$this->markerSRC.'"' ?> <?php endif; ?>
-            });
+        var marker = new google.maps.Marker({
+            map: map,
+            position: location,
+            title: "<?php echo $this->title; ?>",
+            <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "' . $this->markerSRC . '"' ?> <?php endif; ?>
+        });
 
         <?php endif;?>
 
         // info box
         <?php if($this->mapSettings['mapInfoBox']):?>
 
-            // info box html template
-            var infoBoxTemplate =
-                '<div class="infobox">'+
-                    '<p><strong><?php echo $this->title; ?></strong></p>'+
-                    '<?php echo $this->description; ?>'+
-                    <?php if($this->href): ?>'<p><a href="<?php echo $this->href; ?>"><?php echo $this->more;?></a></p>'+<?php endif; ?>
-                '</div>';
+        // info box html template
+        var infoBoxTemplate = '<div class="infobox">' +
+                '<p><strong><?php echo $this->title; ?></strong></p>' +
+                '<?php echo $this->description; ?>' +
+                <?php if($this->href): ?>'<p><a href="<?php echo $this->href; ?>"><?php echo $this->more;?></a></p>' +<?php endif; ?>
+            '</div>';
 
-            var iBox = new InfoBox({
-                content: infoBoxTemplate,
-                disableAutoPan: false,
-                maxWidth: 200,
-                pixelOffset: new google.maps.Size(-100, 10),
-                zIndex: null,
-                boxStyle: {
-                    background: '#fff',
-                    width: "200px",
-                    padding: "10px"
-                },
-                closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
-                infoBoxClearance: new google.maps.Size(1, 1)
-            });
+        var iBox = new InfoBox({
+            content: infoBoxTemplate,
+            boxStyle: {
+                background: '#fff',
+                width: "200px",
+                padding: "10px"
+            }
+        });
 
-            // set click event
-            google.maps.event.addListener(marker, 'click', function() {
-                iBox.open(map, this);
-            });
+        // set click event
+        google.maps.event.addListener(marker, 'click', function () {
+            iBox.open(map, this);
+        });
 
         <?php endif;?>
 

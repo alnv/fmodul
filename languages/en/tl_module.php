@@ -1,9 +1,10 @@
 <?php
 
 //legend
-$GLOBALS['TL_LANG']['tl_module']['mode_legend'] = 'Taxonomy';
-$GLOBALS['TL_LANG']['tl_module']['sort_legend'] = 'Sorting';
-$GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Map view-Settings';
+$GLOBALS['TL_LANG']['tl_module']['fm_mode_legend'] = 'Taxonomy';
+$GLOBALS['TL_LANG']['tl_module']['fm_sort_legend'] = 'Front end Sorting';
+$GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Map-View Settings';
+$GLOBALS['TL_LANG']['tl_module']['fm_seo_legend'] = 'SEO Settings';
 
 //fields
 $GLOBALS['TL_LANG']['tl_module']['f_select_module'][0] = 'Select F module';
@@ -48,8 +49,6 @@ $GLOBALS['TL_LANG']['tl_module']['f_form_fields'][1] = 'Edit search form';
 $GLOBALS['TL_LANG']['tl_module']['f_form_template'][0] = 'Search form template';
 $GLOBALS['TL_LANG']['tl_module']['f_form_template'][1] = 'Please select your search form template.';
 
-$GLOBALS['TL_LANG']['tl_module']['f_label_select_list'] = 'Select';
-
 $GLOBALS['TL_LANG']['tl_module']['f_reset_button'][0] = 'Add reset button to form';
 $GLOBALS['TL_LANG']['tl_module']['f_reset_button'][1] = 'Allow to reset form filter in Frontend.';
 
@@ -86,6 +85,15 @@ $GLOBALS['TL_LANG']['tl_module']['geo_address'][1] = 'Please enter your full add
 $GLOBALS['TL_LANG']['tl_module']['fm_map_template'][0] = 'Map tempplate';
 $GLOBALS['TL_LANG']['tl_module']['fm_map_template'][1] = 'Select your map template.';
 
+$GLOBALS['TL_LANG']['tl_module']['fm_overwrite_seoSettings'][0] = 'Overwrite Seo fields';
+$GLOBALS['TL_LANG']['tl_module']['fm_overwrite_seoSettings'][1] = 'Define your fields for seo.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_seoDescription'][0] = 'Description';
+$GLOBALS['TL_LANG']['tl_module']['fm_seoDescription'][1] = 'Select description field.';
+
+$GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][0] = 'Page title';
+$GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][1] = 'Select Page title field.';
+
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
 $GLOBALS['TL_LANG']['tl_module']['date'] = 'Date';
@@ -98,4 +106,3 @@ $GLOBALS['TL_LANG']['tl_module']['ROADMAP'] = 'Roadmap';
 $GLOBALS['TL_LANG']['tl_module']['SATELLITE'] = 'Satellite';
 $GLOBALS['TL_LANG']['tl_module']['HYBRID'] = 'Hybrid';
 $GLOBALS['TL_LANG']['tl_module']['TERRAIN'] = 'Terrain';
-$GLOBALS['TL_LANG']['tl_module']['fm_google_map'] = 'Google Map';

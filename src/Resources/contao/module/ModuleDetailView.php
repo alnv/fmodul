@@ -17,7 +17,6 @@ use Contao\Config;
 use Contao\Module;
 use Contao\BackendTemplate;
 use Contao\FilesModel;
-use Contao\Environment;
 
 /**
  * Class ModuleDetailView
@@ -35,6 +34,15 @@ class ModuleDetailView extends Module
      */
     protected $markerCache = array();
 
+    /**
+     * @var bool
+     */
+    protected $loadMapScript = false;
+
+    /**
+     * @var bool
+     */
+    protected $loadLibraries = false;
 
     /**
      * @return string
@@ -105,43 +113,11 @@ class ModuleDetailView extends Module
 
                 $mapFields[] = HelperModel::setGoogleMap($modArr);
 
-                // set language
-                $language = $objPage->language ? $objPage->language : 'en';
+                // set loadMapScript to true
+                $this->loadMapScript = true;
 
-                // check if api key exist
-                $apiKey = '';
-                if (Config::get('googleApiKey')) {
-                    $apiKey = '&amp;key=' . Config::get('googleApiKey') . '';
-                }
-
-                // add js file
-                if (is_array($GLOBALS['FM_MAP']) && !isset($GLOBALS['FM_MAP']['googleMapApi']) && !isset($GLOBALS['FM_MAP']['initGoogleMaps'])) {
-                    $startPoint = $modArr['mapInfoBox'] ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
-                    $mapJSLoadTemplate =
-                        '<script async defer>
-                            (function(){
-                                var FModuleGoogleApiLoader = function(){
-                                    var mapApiScript = document.createElement("script");
-                                    mapApiScript.src = "http' . (Environment::get('ssl') ? 's' : '') . '://maps.google.com/maps/api/js?language=' . $language . $apiKey . '";
-                                    mapApiScript.onload = '.$startPoint.';
-                                    document.body.appendChild(mapApiScript);
-                                };
-                                var FModuleLoadLibraries = function()
-                                {
-                                    var mapInfoBox = document.createElement("script");
-                                    mapInfoBox.src = "http' . (Environment::get('ssl') ? 's' : '') . '://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/src/infobox_packed.js";
-                                    mapInfoBox.onload = FModuleLoadMaps;
-                                    document.body.appendChild(mapInfoBox);
-                                };
-                                var FModuleLoadMaps = function()
-                                {
-                                    if(null != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
-                                };
-                                if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleGoogleApiLoader, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleGoogleApiLoader);}
-                            })();
-                        </script>';
-                    $GLOBALS['TL_HEAD'][] = $mapJSLoadTemplate;
-                }
+                // load map libraries
+                $this->loadLibraries = $modArr['mapInfoBox'] ? true : false;
             }
 
             if ($moduleDB->type == 'widget') {
@@ -248,11 +224,15 @@ class ModuleDetailView extends Module
             }
         }
 
-        $seoDescription = strip_tags($itemDB['description']);
+        // seo
+        $descriptionColName = $this->fm_seoDescription ? $this->fm_seoDescription : 'description';
+        $pageTitleColName = $this->fm_seoPageTitle ? $this->fm_seoPageTitle : 'title';
+        $seoDescription = strip_tags($itemDB[$descriptionColName]);
         $objPage->description = $seoDescription;
-        $objPage->pageTitle = $itemDB['title'];
-        $authorDB = null;
+        $objPage->pageTitle = $itemDB[$pageTitleColName];
 
+        // author
+        $authorDB = null;
         if ($itemDB['author']) {
             $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($itemDB['author'])->row();
             unset($authorDB['password']);
@@ -310,8 +290,7 @@ class ModuleDetailView extends Module
 
         // map
         if (!empty($mapFields)) {
-            foreach($mapFields as $map)
-            {
+            foreach ($mapFields as $map) {
                 $objMapTemplate = new FrontendTemplate($map['template']);
                 $itemDB['mapSettings'] = $map;
                 $objMapTemplate->setData($itemDB);
@@ -360,22 +339,23 @@ class ModuleDetailView extends Module
             $objConfig->bbcode = $wrapperDB['bbcode'];
             $objConfig->moderate = $wrapperDB['moderate'];
             $this->Comments->addCommentsToTemplate($this->Template, $objConfig, $tablename . '_data', $itemDB['id'], $arrNotifies);
+        }
 
+        // set js files
+        if ($this->loadMapScript && !isset($GLOBALS['TL_HEAD']['mapJS'])) {
+            $language = $objPage->language ? $objPage->language : 'en';
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($this->loadLibraries, $language);
         }
 
     }
 
     /**
-     * @param $usesTemplates
+     * @param $templateName
      * @return mixed
      */
-    public function parseTemplateName($usesTemplates)
+    public function parseTemplateName($templateName)
     {
-        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
-        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
-        $strVal = str_replace($arrSearch, $arrReplace, $usesTemplates);
-        $strVal = str_replace(' ', '', $strVal);
-        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+        return DiverseFunction::parseTemplateName($templateName);
     }
 
     /**

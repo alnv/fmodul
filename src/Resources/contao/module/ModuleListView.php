@@ -87,8 +87,7 @@ class ModuleListView extends Module
         $this->feViewID = md5($this->id);
 
         // change template
-        if(TL_MODE == 'FE' && $this->fm_addMap)
-        {
+        if (TL_MODE == 'FE' && $this->fm_addMap) {
             $this->strTemplate = 'mod_fmodule_map';
         }
 
@@ -123,13 +122,13 @@ class ModuleListView extends Module
 
         // map view settings
         $mapSettings = array();
-        if($this->fm_addMap)
-        {
+        if ($this->fm_addMap) {
             $mapSettings['mapZoom'] = $this->fm_mapZoom;
             $mapSettings['mapMarker'] = $this->fm_mapMarker;
             $mapSettings['mapInfoBox'] = $this->fm_mapInfoBox;
             $mapSettings['mapType'] = $this->fm_mapType;
             $mapSettings['mapStyle'] = $this->fm_mapStyle;
+            $mapSettings['mapScrollWheel'] = $this->fm_mapScrollWheel;
         }
 
         while ($moduleDB->next()) {
@@ -386,8 +385,7 @@ class ModuleListView extends Module
 
             // map settings from field
             if (!empty($mapFields)) {
-                foreach($mapFields as $map)
-                {
+                foreach ($mapFields as $map) {
                     $objMapTemplate = new FrontendTemplate($map['template']);
                     $item['mapSettings'] = $map;
                     $objMapTemplate->setData($item);
@@ -395,8 +393,7 @@ class ModuleListView extends Module
                 }
             }
 
-            if(!empty($mapSettings))
-            {
+            if (!empty($mapSettings)) {
                 $item['mapSettings'] = $mapSettings;
             }
 
@@ -426,7 +423,7 @@ class ModuleListView extends Module
         }
 
         // set map settings
-        if(!empty($mapSettings)){
+        if (!empty($mapSettings)) {
 
             // set map settings array to template
             $this->Template->mapSettings = $mapSettings;
@@ -439,8 +436,7 @@ class ModuleListView extends Module
         }
 
         // set js files
-        if($this->loadMapScript && !isset($GLOBALS['TL_HEAD']['mapJS']))
-        {
+        if ($this->loadMapScript && !isset($GLOBALS['TL_HEAD']['mapJS'])) {
             $language = $objPage->language ? $objPage->language : 'en';
             $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($this->loadLibraries, $language);
         }
@@ -475,7 +471,6 @@ class ModuleListView extends Module
 
         return $return;
     }
-
 
     /**
      * @return string

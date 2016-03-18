@@ -287,10 +287,9 @@ class ViewContainer extends DCAHelper
         );
 
         // add pid
-        if($this->parent)
-        {
+        if ($this->parent) {
             $fields['pid'] = array(
-                'foreignKey' => $this->parent.'.id',
+                'foreignKey' => $this->parent . '.id',
                 'sql' => "int(10) unsigned NOT NULL default '0'",
                 'relation' => array('type' => 'belongsTo', 'load' => 'eager')
             );

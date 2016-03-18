@@ -71,7 +71,7 @@ class DiverseFunction
                     var FModuleGoogleApiLoader = function(){
                         var mapApiScript = document.createElement("script");
                         mapApiScript.src = "http' . (Environment::get('ssl') ? 's' : '') . '://maps.google.com/maps/api/js?language=' . $language . $apiKey . '";
-                        mapApiScript.onload = '.$startPoint.';
+                        mapApiScript.onload = ' . $startPoint . ';
                         document.body.appendChild(mapApiScript);
                     };
                     var FModuleLoadLibraries = function()

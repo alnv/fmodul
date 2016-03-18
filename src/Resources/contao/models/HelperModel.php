@@ -45,10 +45,10 @@ class HelperModel
             'label' => $rowField['title'],
             'description' => $rowField['description'],
             'template' => $template,
-            'zoom' => $zoom,
-            'scrollWheel' => $scrollWheel,
+            'mapScrollWheel' => $scrollWheel,
+            'mapZoom' => $zoom,
             'mapType' => $mapType,
-            'styles' => $styles,
+            'mapStyle' => $styles,
             'mapMarker' => $rowField['mapMarker'],
             'mapInfoBox' => $rowField['mapInfoBox']
         );

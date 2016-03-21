@@ -3,7 +3,7 @@
         <ul>
             <?php foreach($this->value as $list): ?>
                 <?php if($list): ?>
-                    <li><?php echo $list; ?></li>
+                    <li><?= $list; ?></li>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ul>
@@ -12,7 +12,7 @@
         <ul>
             <?php foreach($this->value as $value): ?>
                 <?php if(!empty($value)): ?>
-                    <li><span class="key"><?php echo $value['key']; ?></span> <span class="value"><?php echo $value['value']; ?></span></li>
+                    <li><span class="key"><?= $value['key']; ?></span> <span class="value"><?= $value['value']; ?></span></li>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ul>

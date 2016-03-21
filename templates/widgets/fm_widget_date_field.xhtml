@@ -1,22 +1,28 @@
-<div class="widget-date-field form-widget <?php echo $this->cssClass; ?>">
+<div class="widget-date-field form-widget <?= $this->cssClass; ?>">
+
     <?php if($this->title):?>
-        <label for="id_<?php echo $this->fieldID; ?>" class="widget-label"><?php echo $this->title; ?></label>
+        <label for="id_<?= $this->fieldID; ?>" class="widget-label"><?= $this->title; ?></label>
     <?php endif; ?>
+
     <?php if (count($this->operator) > 1): ?>
-        <select id="id_<?php echo $this->fieldID; ?>_int" name="<?php echo $this->fieldID; ?>_int">
+        <select id="id_<?= $this->fieldID; ?>_int" name="<?= $this->fieldID; ?>_int">
             <?php foreach ($this->operator as $value => $label): ?>
                 <option
-                    value="<?php echo $value; ?>" <?php echo($this->selected_operator == $value ? 'selected' : ''); ?>><?php echo $label; ?></option>
+                    value="<?= $value; ?>" <?=($this->selected_operator == $value ? 'selected' : ''); ?>><?= $label; ?></option>
             <?php endforeach; ?>
         </select>
     <?php endif; ?>
+
     <?php if (count($this->operator) == 1): ?>
         <?php foreach ($this->operator as $value => $label): ?>
-            <input type="hidden" id="id_<?php echo $this->fieldID; ?>_int" name="<?php echo $this->fieldID; ?>_int" value="<?php echo $value; ?>"  />
+            <input type="hidden" id="id_<?= $this->fieldID; ?>_int" name="<?= $this->fieldID; ?>_int" value="<?= $value; ?>"  />
         <?php endforeach; ?>
     <?php endif; ?>
-    <input type="text" id="id_<?php echo $this->fieldID; ?>" name="<?php echo $this->fieldID; ?>" value="<?php echo $this->selected; ?>" placeholder="<?php echo $this->format; ?>"/>
+
+    <input type="text" id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>" value="<?= $this->selected; ?>" placeholder="<?= $this->format; ?>"/>
+
     <?php if ($this->description): ?>
-        <p class="description"><?php echo $this->description; ?></p>
+        <p class="description"><?= $this->description; ?></p>
     <?php endif; ?>
+
 </div>

@@ -1,7 +1,36 @@
 <?php $this->extend('block_searchable'); ?>
-
 <?php $this->block('content'); ?>
 
-<?php echo $this->fields; ?>
+    <!-- indexer::stop -->
+    <form id="form_<?= $this->id; ?>" name="form_<?= $this->id; ?>" method="GET" action="{{env::request}}">
+
+        <?= $this->fields; ?>
+
+        <?php if($this->f_reset_button): ?>
+
+            <div class="reset-form">
+                <p><a id="reset_btn_<?= $this->id; ?>" style="cursor:pointer;"><?= $this->reset; ?></a></p>
+            </div>
+
+            <script async defer>
+
+                document.getElementById("reset_btn_<?= $this->id; ?>").onclick = function () {
+
+                    clearForm();
+
+                };
+
+                function clearForm() {
+                    var form = document.getElementById("form_<?= $this->id; ?>");
+                    var urlStr = "{{env::request}}";
+                    window.location = urlStr.split('?')[0];
+                }
+
+            </script>
+
+        <?php endif; ?>
+
+    </form>
+    <!-- indexer::continue -->
 
 <?php $this->endblock(); ?>

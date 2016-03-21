@@ -1,50 +1,75 @@
-<script>
+<script async defer>
 
     'use strict';
 
-    <?php $lat = $this->geo_latitude ? $this->geo_latitude : 0; ?>
-    <?php $lng = $this->geo_longitude ? $this->geo_longitude : 0; ?>
-
+    /**
+     * load script async. optimised for google insight speed
+     */
     FModuleGoogleMap.push(function () {
 
-        var location = new google.maps.LatLng("<?php echo $lat; ?>", "<?php echo $lng; ?>");
+        // set arrData from php template to js variable
+        var self = <?= json_encode($this->arrData, 512); ?>;
 
-        // marker
+        // set marker cords
+        var location = new google.maps.LatLng("<?= $this->geo_latitude; ?>", "<?= $this->geo_longitude; ?>");
+
+        // set maker if enabled
         <?php if($this->mapSettings['mapMarker']):?>
 
-            var marker = new google.maps.Marker({
-                map: FModuleMap<?php echo $this->feViewID?>,
-                position: location,
-                title: "<?php echo $this->title; ?>",
-                <?php if($this->addMarker && $this->markerSRC):?> <?php echo 'icon: "' . $this->markerSRC . '"' ?> <?php endif; ?>
-            });
+        // declare marker obj
+        var marker = new google.maps.Marker({
+
+            // set map
+            map: FModuleMap<?= $this->feViewID?>,
+
+            // set marker cords
+            position: location,
+
+            // set title
+            title: self.title, // ensure is utf-8 format -> mb_convert_encoding('my String', 'UTF-8')
+
+            // set custom marker icon
+            // you can overwrite default google maps icon. For Example:
+            // icon: "path/to/new/icon.png"
+            <?php if($this->addMarker && $this->markerSRC):?> <?= 'icon: "' . $this->markerSRC . '"' ?> <?php endif; ?>
+
+        });
 
         <?php endif;?>
 
-        // info box
+        // set info box if enabled
         <?php if($this->mapSettings['mapInfoBox']):?>
 
-            // info box html template
-            var infoBoxTemplate = '<div class="infobox">' +
-                    '<p><strong><?php echo $this->title; ?></strong></p>' +
-                    '<?php echo $this->description; ?>' +
-                    <?php if($this->href): ?>'<p><a href="<?php echo $this->href; ?>"><?php echo $this->more;?></a></p>' +<?php endif; ?>
-                '</div>';
-
-            var iBox = new InfoBox({
-                content: infoBoxTemplate,
-                boxStyle: {
-                    background: '#fff',
-                    width: "200px",
-                    padding: "10px",
-                    border: "1px solid #d6d6d6"
+        // create info box template
+        // you have access to all variables
+        // ensure that values are utf-8 format -> mb_convert_encoding('my String', 'UTF-8')
+        var infoBoxTemplate =
+            '<div class="infobox"> <p><strong>' + self.title + '</strong></p>' + self.description + (function () {
+                if (self.href) {
+                    return '<p><a href="' + self.href + '" title="' + self.title + '">' + self.more + '</a></p>';
                 }
-            });
+            })() + '</div>';
 
-            // set click event
-            google.maps.event.addListener(marker, 'click', function () {
-                iBox.open(FModuleMap<?php echo $this->feViewID?>, this);
-            });
+        // declare info box obj
+        var iBox = new InfoBox({
+
+            // set info box template
+            content: infoBoxTemplate,
+
+            // set info box styles
+            boxStyle: {
+                background: '#fff',
+                width: "200px",
+                padding: "10px",
+                border: "1px solid #d6d6d6"
+            }
+
+        });
+
+        // set click event listener to marker for opening the info box
+        google.maps.event.addListener(marker, 'click', function () {
+            iBox.open(FModuleMap<?= $this->feViewID?>, this);
+        });
 
         <?php endif;?>
 

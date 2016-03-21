@@ -1,12 +1,12 @@
 <div class="fmodule_full">
 
     <div class="fmodule-detail-header">
-        <h2 class="title"><?php echo $this->title; ?></h2>
+        <h2 class="title"><?= $this->title; ?></h2>
         <?php if($this->info): ?>
-            <p class="info"><?php echo $this->info; ?></p>
+            <p class="info"><?= $this->info; ?></p>
         <?php endif; ?>
         <?php if($this->date): ?>
-            <?php echo $this->date;?><?php if($this->time):?><time> - <?php echo $this->time; ?></time><?php endif; ?>
+            <?= $this->date;?><?php if($this->time):?><time> - <?= $this->time; ?></time><?php endif; ?>
         <?php endif; ?>
     </div>
     <?php if($this->addImage): ?>
@@ -16,7 +16,7 @@
     <?php $this->insert('picture_default', $this->picture); ?>
 
         <?php if($this->caption): ?>
-            <figcaption <?php if(version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?php echo $this->caption; ?></figcaption>
+            <figcaption <?php if(version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
         <?php endif; ?>
 
         </figure>
@@ -26,8 +26,8 @@
     <?php if(count($this->detail) > 0): ?>
 
         <?php foreach($this->detail as $i => $detailStr): ?>
-            <div class="fmodule-detail-ce-wrapper<?php echo ( $i < 1 ? ' first' : '' ); ?><?php echo ( $i == count($this->detail) - 1 ? ' last' : '' ); ?><?php echo( $i%2 ? ' even' : ' odd' ); ?>">
-                <?php echo $detailStr; ?>
+            <div class="fmodule-detail-ce-wrapper<?= ( $i < 1 ? ' first' : '' ); ?><?= ( $i == count($this->detail) - 1 ? ' last' : '' ); ?><?= ( $i%2 ? ' even' : ' odd' ); ?>">
+                <?= $detailStr; ?>
             </div>
         <?php endforeach;?>
 
@@ -37,7 +37,7 @@
 
     <div class="enclosure">
         <?php foreach ($this->enclosure as $enclosure): ?>
-        <p><img src="<?php echo $enclosure['icon'] ?>" width="18" height="18" alt="<?php echo $enclosure['mime'] ?>" class="mime_icon"> <a href="<?php echo $enclosure['href'] ?>" title="<?php echo $enclosure['title'] ?>"><?php echo $enclosure['link'] ?> <span class="size">(<?php echo $enclosure['filesize'] ?>)</span></a></p>
+        <p><img src="<?=  $enclosure['icon'] ?>" width="18" height="18" alt="<?= $enclosure['mime'] ?>" class="mime_icon"> <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a></p>
         <?php endforeach; ?>
     </div>
 

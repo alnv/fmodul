@@ -128,7 +128,9 @@ class ModuleListView extends Module
             $mapSettings['mapInfoBox'] = $this->fm_mapInfoBox;
             $mapSettings['mapType'] = $this->fm_mapType;
             $mapSettings['mapStyle'] = $this->fm_mapStyle;
-            $mapSettings['mapScrollWheel'] = $this->fm_mapScrollWheel;
+            $mapSettings['mapScrollWheel'] = $this->fm_mapScrollWheel ? 'true' : 'false';
+            $mapSettings['lat'] = $this->fm_center_lat ? $this->fm_center_lat : '0';
+            $mapSettings['lng'] = $this->fm_center_lng ? $this->fm_center_lng : '0';
         }
 
         while ($moduleDB->next()) {
@@ -275,7 +277,7 @@ class ModuleListView extends Module
             $itemsArr[] = $listDB->row();
 
         }
-        //exit;
+
         //pagination
         $total = count($itemsArr);
         $paginationStr = $this->createPagination($total);
@@ -290,6 +292,15 @@ class ModuleListView extends Module
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
             $item = $itemsArr[$i];
+
+            // parse value if map is enabled
+            if ($this->fm_addMap) {
+                $item['geo_latitude'] = $item['geo_latitude'] ? $item['geo_latitude'] : '0';
+                $item['geo_longitude'] = $item['geo_longitude'] ? $item['geo_longitude'] : '0';
+                $item['title'] = mb_convert_encoding($item['title'], 'UTF-8');
+                $item['description'] = mb_convert_encoding($item['description'], 'UTF-8');
+                $item['info'] = mb_convert_encoding($item['info'], 'UTF-8');
+            }
 
             //set css and id
             $item['cssID'] = deserialize($item['cssID']);

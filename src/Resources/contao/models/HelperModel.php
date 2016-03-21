@@ -12,6 +12,7 @@
  */
 
 use Contao\Environment;
+use Contao\StringUtil;
 
 /**
  * Class HelperModel
@@ -36,14 +37,14 @@ class HelperModel
     {
         $template = DiverseFunction::parseTemplateName($rowField['mapTemplate']);
         $zoom = $rowField['mapZoom'] ? $rowField['mapZoom'] : 15;
-        $scrollWheel = $rowField['mapScrollWheel'] ? true : false;
+        $scrollWheel = $rowField['mapScrollWheel'] ? 'true' : 'false';
         $mapType = $rowField['mapType'] ? $rowField['mapType'] : 'ROADMAP';
         $styles = $rowField['mapStyle'] ? $rowField['mapStyle'] : '';
 
         $mapSettings = array(
             'fieldID' => $rowField['fieldID'],
-            'title' => $rowField['title'],
-            'description' => $rowField['description'],
+            'title' => mb_convert_encoding($rowField['title'], 'UTF-8'),
+            'description' => mb_convert_encoding($rowField['description'], 'UTF-8'),
             'template' => $template,
             'mapScrollWheel' => $scrollWheel,
             'mapZoom' => $zoom,

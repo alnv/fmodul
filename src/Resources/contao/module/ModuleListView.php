@@ -420,7 +420,9 @@ class ModuleListView extends Module
                     'singleSRC' => $item['singleSRC'],
                     'alt' => $item['alt'],
                     'size' => $item['size'],
-                    'caption' => $item['caption']
+                    'fullsize' => $item['fullsize'],
+                    'caption' => $item['caption'],
+                    'title' => $item['title']
                 ));
             }
 

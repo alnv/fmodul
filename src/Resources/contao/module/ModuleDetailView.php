@@ -309,7 +309,14 @@ class ModuleDetailView extends Module
 
         //add image
         if ($itemDB['addImage']) {
-            $this->addImageToTemplate($objTemplate, $itemDB);
+            $this->addImageToTemplate($objTemplate, array(
+                'singleSRC' => $itemDB['singleSRC'],
+                'alt' => $itemDB['alt'],
+                'size' => $itemDB['size'],
+                'fullsize' => $itemDB['fullsize'],
+                'caption' => $itemDB['caption'],
+                'title' => $itemDB['title']
+            ));
         }
 
         $strResult .= $objTemplate->parse();

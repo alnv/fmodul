@@ -14,5 +14,3 @@ $GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][0] = 'Detailansicht';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][1] = 'F Modul > Detailansicht auswählen.';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][0] = 'Filter Formular';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Modul > Filter Formular auswählen.';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_googlemaps'][0] = 'Google Maps Ansicht';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_googlemaps'][1] = 'F Modul > Google Maps Ansicht auswählen.';

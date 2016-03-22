@@ -1,5 +1,6 @@
 <?php
 
+// BE
 $GLOBALS['TL_LANG']['MOD']['fmodule'][0] = 'F Module';
 $GLOBALS['TL_LANG']['MOD']['fmodule'][1] = 'F Module administration';
 $GLOBALS['TL_LANG']['MOD']['fmodules'][0] = 'Extensions';
@@ -13,5 +14,3 @@ $GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][0] = 'Detail view';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][1] = 'F Module detail view';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][0] = 'Filter form';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Module Filter form';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_googlemaps'][0] = 'Google Maps View';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_googlemaps'][1] = 'F Module Google Maps view';

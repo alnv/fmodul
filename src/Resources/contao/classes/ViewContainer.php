@@ -224,6 +224,14 @@ class ViewContainer extends DCAHelper
                 'eval' => array('rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'),
                 'sql' => "varchar(64) NOT NULL default ''"
             ),
+            'fullsize' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fullsize'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50 m12'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
             'caption' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['caption'],
                 'exclude' => true,
@@ -502,10 +510,10 @@ class ViewContainer extends DCAHelper
     public function imagePalette($fields = array())
     {
         $palette = array(
-            'fields' => array('addImage', 'singleSRC', 'alt', 'size', 'caption'),
+            'fields' => array('addImage', 'singleSRC', 'alt', 'size', 'fullsize', 'caption'),
             'palette' => '{image_legend},addImage;',
             '__selector__' => 'addImage',
-            'subPalettes' => 'singleSRC,alt,size,caption',
+            'subPalettes' => 'singleSRC,alt,size,caption,fullsize',
         );
         return $palette;
     }

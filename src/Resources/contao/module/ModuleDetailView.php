@@ -353,7 +353,6 @@ class ModuleDetailView extends Module
             $language = $objPage->language ? $objPage->language : 'en';
             $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($this->loadLibraries, $language);
         }
-
     }
 
     /**
@@ -381,9 +380,6 @@ class ModuleDetailView extends Module
 
             }
         }
-
         return null;
-
     }
-
 }

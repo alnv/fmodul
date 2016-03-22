@@ -517,7 +517,6 @@ class ModuleListView extends Module
         }
 
         return $qOrderByStr;
-
     }
 
     /**
@@ -571,7 +570,6 @@ class ModuleListView extends Module
         }
 
         return 'id';
-
     }
 
     /**
@@ -680,8 +678,6 @@ class ModuleListView extends Module
             'value' => $getFilter,
             'operator' => $getOperator
         );
-
-
     }
 
     /**
@@ -732,7 +728,6 @@ class ModuleListView extends Module
         }
 
         return null;
-
     }
 
     /**
@@ -753,7 +748,6 @@ class ModuleListView extends Module
         }
 
         return null;
-
     }
 
     /**
@@ -765,6 +759,4 @@ class ModuleListView extends Module
     {
         return $this->generateFrontendUrl($objTarget, '/' . $alias);
     }
-
-
 }

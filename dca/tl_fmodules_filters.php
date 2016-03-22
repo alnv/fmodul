@@ -281,10 +281,11 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'mapZoom' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapZoom'],
             'exclude' => true,
-            'default' => '1',
-            'inputType' => 'text',
+            'default' => '10',
+            'inputType' => 'select',
+            'options' => array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20),
             'eval' => array('tl_class' => 'w50'),
-            'sql' => "int(10) unsigned NOT NULL default '1'"
+            'sql' => "int(10) unsigned NOT NULL default '10'"
         ),
         'mapScrollWheel' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'],

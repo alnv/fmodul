@@ -209,10 +209,11 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_map_template'] = array(
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapZoom'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_mapZoom'],
     'exclude' => true,
-    'default' => '1',
-    'inputType' => 'text',
+    'default' => '10',
+    'inputType' => 'select',
+    'options' => array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20),
     'eval' => array('tl_class' => 'w50'),
-    'sql' => "int(10) unsigned NOT NULL default '1'"
+    'sql' => "int(10) unsigned NOT NULL default '10'"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapScrollWheel'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_mapScrollWheel'],
@@ -509,7 +510,7 @@ class tl_module_fmodule extends tl_module
         $id = $dca->id;
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
         $modulename = '';
-        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field','toggle_field');
+        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field','toggle_field', 'map_field');
         $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields');
 
         while ($moduleDB->next()) {
@@ -519,7 +520,7 @@ class tl_module_fmodule extends tl_module
         if (!$modulename || is_null($modulename)) return null;
         if (!$this->Database->tableExists($modulename))  return null;
 
-        // get wrapper fields
+
         $fmoduleDB = $this->Database->prepare('SELECT id, title, info FROM ' . $modulename)->execute();
         $wrapper = array('' => $GLOBALS['TL_LANG']['tl_module']['f_label_select_list']);
 
@@ -529,7 +530,7 @@ class tl_module_fmodule extends tl_module
 
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper']['options'] = $wrapper;
 
-        // get filter fields
+
         $filterDB = $this->Database->prepare(
             'SELECT * FROM tl_fmodules
 			JOIN tl_fmodules_filters 
@@ -537,6 +538,7 @@ class tl_module_fmodule extends tl_module
 			WHERE tablename = ?'
         )->execute($modulename);
         $sorting = array('id' => 'ID','title' => 'Titel', 'date' => 'Datum');
+
         while ($filterDB->next()) {
             if(in_array($filterDB->fieldID, $doNotSetByID))
             {
@@ -548,6 +550,7 @@ class tl_module_fmodule extends tl_module
             }
             $sorting[$filterDB->fieldID] = $filterDB->title;
         }
+
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields']['options'] = $sorting;
     }
 }

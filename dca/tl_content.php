@@ -15,7 +15,7 @@ use Contao\Input;
 use Contao\Backend;
 
 //
-$modules = &$GLOBALS['BE_MOD']['fmodules'];
+$moduleBackendNavigation = &$GLOBALS['BE_MOD'];
 
 //
 $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
@@ -26,15 +26,17 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
 $view = Input::get('view');
 
 //
-if(!$modules) return;
+if(!$moduleBackendNavigation) return null;
 
-//
-foreach($modules as $name => $module){
-    if (Input::get('do') == $name)
-    {
-        $GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$name.'_data';
-		$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
-    }
+foreach($moduleBackendNavigation as $modules)
+{
+	foreach($modules as $name => $module){
+		if (Input::get('do') == $name)
+		{
+			$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$name.'_data';
+			$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
+		}
+	}
 }
 
 //

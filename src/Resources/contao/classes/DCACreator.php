@@ -13,6 +13,7 @@
 
 use Contao\Backend;
 use Contao\Config;
+use Contao\Controller;
 use Contao\Environment;
 use Contao\Files;
 use Contao\Input;
@@ -38,11 +39,13 @@ class DCACreator
     public function index()
     {
         if (TL_MODE == 'BE') {
+
             Config::getInstance();
             Environment::getInstance();
             Input::getInstance();
             BackendUser::getInstance();
             Database::getInstance();
+
             // init BE Modules
             if (Database::getInstance()->tableExists('tl_fmodules')) {
                 $logLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
@@ -61,21 +64,28 @@ class DCACreator
         if (!Input::get('do') && !in_array(Input::get('do'), $this->modules)) {
             return;
         }
+
         $languages = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'];
+
         foreach ($languages as $key => $value) {
+
             foreach ($this->modules as $module => $name) {
+
                 if ($key == 'new') {
                     $GLOBALS['TL_LANG'][$module]['new'] = $value[0];
                     $GLOBALS['TL_LANG'][$module . '_data']['new'] = array(sprintf($value[1][0], $name), $value[1][1]);
                     continue;
                 }
+
                 if ($key == 'fm_legend') {
                     $GLOBALS['TL_LANG'][$module] = $value;
                     $GLOBALS['TL_LANG'][$module . '_data'] = $value;
                     continue;
                 }
+
                 $GLOBALS['TL_LANG'][$module][$key] = $value;
                 $GLOBALS['TL_LANG'][$module . '_data'][$key] = $value;
+
             }
         }
     }
@@ -103,7 +113,7 @@ class DCACreator
             $module['selectPosition'] = $modulesDB->row()['selectPosition'];
             $id = $modulesDB->row()['id'];
 			
-			//backwards compatible
+			// backwards compatible
 			$orderBy = 'sorting';
 			if( !$db->fieldExists('sorting','tl_fmodules_filters') )
 			{
@@ -141,9 +151,7 @@ class DCACreator
 
             $module['fields'] = $fields;
             $modules[] = $module;
-
         }
-
         return $modules;
     }
 
@@ -153,12 +161,12 @@ class DCACreator
      */
     private function initDCA($moduleObj)
     {
-        //init tablename
+        // init tablename
         $tablename = $moduleObj['tablename'];
         if (!$tablename) return null;
         $this->modules[$tablename] = $moduleObj['name'];
 
-        //parent
+        // parent
         $dcaSettings = new DCAModuleSettings();
         $dcaSettings->init($tablename);
         $childname = $dcaSettings->getChildName();
@@ -166,11 +174,12 @@ class DCACreator
         $navigation = $moduleObj['selectNavigation'] ? $moduleObj['selectNavigation'] : 'fmodules';
         $position = $moduleObj['selectPosition'] ? $moduleObj['selectPosition'] : 0;
 
-        //create be module
+        // create be module
         $backendModule = array();
         $backendModule[$modulename] = $this->getBEMod($tablename, $childname);
         array_insert($GLOBALS['BE_MOD'][$navigation], $position, $backendModule);
 
+        // parent
         $GLOBALS['TL_DCA'][$tablename] = array(
             'config' => $dcaSettings->setConfig(),
             'list' => $dcaSettings->setList(),
@@ -178,17 +187,14 @@ class DCACreator
             'subpalettes' => $dcaSettings->setSubPalettes(),
             'fields' => $dcaSettings->setFields($moduleObj['fields'])
         );
-
         $GLOBALS['TL_LANG']['MOD'][$modulename] = array($moduleObj['name'], $moduleObj['info']);
-
         $dcaSettings->createTable();
 
-        //child
+        // child
         $dcaData = new DCAModuleData();
         $dcaData->init($childname, $tablename);
         $palette = $dcaData->setPalettes($moduleObj);
         $GLOBALS['TL_DCA'][$childname] = array(
-
             'config' => $dcaData->setConfig($moduleObj['detailPage']),
             'list' => $dcaData->setList($moduleObj),
             'palettes' => array(
@@ -199,12 +205,12 @@ class DCACreator
             'fields' => $dcaData->setFields($moduleObj)
         );
 
+        // set permissions
         $modname = substr($tablename, 3, strlen($tablename));
         $GLOBALS['TL_PERMISSIONS'][] = $modname;
         $GLOBALS['TL_PERMISSIONS'][] = $modname . 'p';
 
         $dcaData->createTable();
-
     }
 
 

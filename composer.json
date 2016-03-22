@@ -1,36 +1,49 @@
 {
-	"name":"fmodule/fmodule",
-	"description":"Frontend Filter für Contao CMS",
-	"keywords":["filter", "catalog", "meta", "views", "taxonomy", "contao", "cms", "map", "google"],
-  	"type":"contao-module",
-	"homepage":"http://fmodul.alexandernaumov.de",
-	"license":"commercial",
-	"authors":[
-		{
-			"name":"Alexander Naumov",
-		  	"homepage":"http://www.alexandernaumov.de",
-			"role":"Developer"
-		}
-	],
-	"support":{
-	  "email":"me@alexandernaumov.de",
-	  "issues":"https://github.com/alnv/fmodul/issues",
-	  "wiki":"http://fmodul.alexandernaumov.de/ressourcen.html"
-	},
-	"require":{
-	  "php":">=5.4"
-	},
-	"autoload":{
-		"classmap":["src/"]
-	},
-	"replace":{
-	  "contao-legacy/fmodule": "self.version"
-	},
-	"extra":{
-		"contao":{
-			"sources":{
-				"":"system/modules/fmodule"
-			}
-		}
-	}
+  "name": "fmodule/fmodule",
+  "description": "Mit dem F Modul kannst du eigene Backend Module erstellen. Erzeuge schnell und einfach Übersichtsseiten, Detailseiten, Filter Formularen und Taxonomies. Mache dein Backend aufgeräumter und benutzerfreundlicher. Neu: Google Maps integration.",
+  "keywords": [
+    "filter",
+    "catalog",
+    "meta",
+    "tags",
+    "taxonomy",
+    "contao",
+    "map",
+    "google",
+    "google-maps"
+  ],
+  "type": "contao-module",
+  "homepage": "http://fmodul.alexandernaumov.de",
+  "license": "commercial",
+  "authors": [
+    {
+      "name": "Alexander Naumov",
+      "homepage": "http://www.alexandernaumov.de",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "me@alexandernaumov.de",
+    "issues": "https://github.com/alnv/fmodul/issues",
+    "wiki": "http://fmodul.alexandernaumov.de/ressourcen.html"
+  },
+  "require": {
+    "php": ">=5.4",
+    "contao/core": ">=3,<4"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  },
+  "replace": {
+    "contao-legacy/fmodule": "*"
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "": "system/modules/fmodule"
+      }
+    }
+  }
 }

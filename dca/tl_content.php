@@ -13,9 +13,26 @@
 
 use Contao\Input;
 use Contao\Backend;
+use Contao\Database;
 
 //
-$moduleBackendNavigation = &$GLOBALS['BE_MOD'];
+$modules = array();
+$database = Database::getInstance();
+if($database->tableExists('tl_fmodules') && empty($modules))
+{
+	$moduleDB = $database->prepare('SELECT * FROM tl_fmodules')->execute();
+	if($moduleDB->count())
+	{
+		while($moduleDB->next())
+		{
+			if($moduleDB->tablename)
+			{
+				$modules[] = substr($moduleDB->tablename, 3, strlen($moduleDB->tablename));
+			}
+		}
+	}
+}
+
 
 //
 $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
@@ -26,16 +43,14 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
 $view = Input::get('view');
 
 //
-if(!$moduleBackendNavigation) return null;
+if(empty($modules)) return null;
 
-foreach($moduleBackendNavigation as $modules)
-{
-	foreach($modules as $name => $module){
-		if (Input::get('do') == $name)
-		{
-			$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$name.'_data';
-			$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
-		}
+//
+foreach($modules as $tablename){
+	if (Input::get('do') == $tablename)
+	{
+		$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$tablename.'_data';
+		$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
 	}
 }
 

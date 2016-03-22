@@ -83,7 +83,12 @@ class DiverseFunction
                     };
                     var FModuleLoadMaps = function()
                     {
-                        if(null != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
+                        try{
+                            if(undefined != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
+                        } catch(err)
+                        {
+                            console.warn("No Google Map found!");
+                        }
                     };
                     if (document.addEventListener){document.addEventListener("DOMContentLoaded", FModuleGoogleApiLoader, false);} else if (document.attachEvent){document.attachEvent("onload", FModuleGoogleApiLoader);}
                 })();

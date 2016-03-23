@@ -748,9 +748,14 @@ class tl_fmodules_filters extends Backend
         $col = $dc->activeRecord->fieldID;
         $tablename = $this->Database->prepare("SELECT tablename FROM tl_fmodules WHERE id = ?")->execute($pid)->row()['tablename'];
         $dataTable = $tablename . '_data';
-        SqlData::deleteCol($tablename, $col);
-        SqlData::deleteCol($dataTable, $col);
-
+        if($this->Database->fieldExists($col, $dataTable))
+        {
+            SqlData::deleteCol($dataTable, $col);
+        }
+        if($this->Database->fieldExists($col, $tablename))
+        {
+            SqlData::deleteCol($tablename, $col);
+        }
     }
 
 }

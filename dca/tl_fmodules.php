@@ -209,6 +209,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
 
 use Contao\Config;
 use Contao\Backend;
+use Contao\Automator;
 
 /**
  * Class tl_fmodules
@@ -247,8 +248,7 @@ class tl_fmodules extends Backend
             $GLOBALS['TL_DCA']['tl_fmodules']['config']['closed'] = true;
         }
 
-        switch (Input::get('act'))
-        {
+        switch (Input::get('act')) {
             case 'create':
             case 'select':
                 // Allow
@@ -335,19 +335,15 @@ class tl_fmodules extends Backend
         $allModules = $GLOBALS['BE_MOD'] ? $GLOBALS['BE_MOD'] : array();
         $modules = array();
 
-        if(is_array($allModules))
-        {
-            foreach($allModules as $name => $module)
-            {
+        if (is_array($allModules)) {
+            foreach ($allModules as $name => $module) {
                 $label = '';
 
-                if($GLOBALS['TL_LANG']['MOD'][$name] && is_array($GLOBALS['TL_LANG']['MOD'][$name]))
-                {
+                if ($GLOBALS['TL_LANG']['MOD'][$name] && is_array($GLOBALS['TL_LANG']['MOD'][$name])) {
                     $label = $GLOBALS['TL_LANG']['MOD'][$name][0];
                 }
 
-                if($GLOBALS['TL_LANG']['MOD'][$name] && is_string($GLOBALS['TL_LANG']['MOD'][$name]))
-                {
+                if ($GLOBALS['TL_LANG']['MOD'][$name] && is_string($GLOBALS['TL_LANG']['MOD'][$name])) {
                     $label = $GLOBALS['TL_LANG']['MOD'][$name];
                 }
 
@@ -363,7 +359,7 @@ class tl_fmodules extends Backend
      */
     public function getPosition()
     {
-        return array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+        return array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30);
     }
 
     /**
@@ -384,7 +380,7 @@ class tl_fmodules extends Backend
      */
     public function manageFeeds($href, $label, $title, $class, $attributes)
     {
-        return ($this->User->isAdmin || !empty($this->User->fmodulesfeed) || $this->User->hasAccess('create', 'fmodulesfeedp')) ? '<a href="'.$this->addToUrl($href).'" class="'.$class.'" title="'.specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : '';
+        return ($this->User->isAdmin || !empty($this->User->fmodulesfeed) || $this->User->hasAccess('create', 'fmodulesfeedp')) ? '<a href="' . $this->addToUrl($href) . '" class="' . $class . '" title="' . specialchars($title) . '"' . $attributes . '>' . $label . '</a> ' : '';
     }
 
     /**
@@ -409,7 +405,6 @@ class tl_fmodules extends Backend
         }
 
         throw new \Exception($GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName']);
-
     }
 
     /**
@@ -423,17 +418,15 @@ class tl_fmodules extends Backend
         $tablename = $dc->activeRecord->tablename;
         $name = substr($tablename, 3, strlen($tablename));
 
-        if ((!$this->Database->tableExists($name)) && (!$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group'))){
+        if ((!$this->Database->tableExists($name)) && (!$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group'))) {
             $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . ' blob NULL;')->execute();
             $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . 'p blob NULL;')->execute();
-
             $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $name . ' blob NULL;')->execute();
             $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $name . 'p blob NULL;')->execute();
-
         }
 
         if (!Config::get('bypassCache')) {
-            $automator = new \Contao\Automator();
+            $automator = new Automator();
             $automator->purgeInternalCache();
         }
 
@@ -479,8 +472,7 @@ class tl_fmodules extends Backend
         $return = array('title' => 'title', 'id' => 'id', 'date.5' => 'date.5', 'date.7' => 'date.7', 'date.9' => 'date.9');
         while ($db->next()) {
 
-            if($db->fieldID == 'orderBy' || $db->fieldID == 'sorting_fields' || $db->fieldID == 'pagination')
-            {
+            if ($db->fieldID == 'orderBy' || $db->fieldID == 'sorting_fields' || $db->fieldID == 'pagination') {
                 continue;
             }
 
@@ -488,48 +480,42 @@ class tl_fmodules extends Backend
                 $return[$db->fieldID . '.5'] = $db->title . ' (d)';
                 $return[$db->fieldID . '.7'] = $db->title . ' (m)';
                 $return[$db->fieldID . '.9'] = $db->title . ' (Y)';
-
             }
 
             if ($db->type == 'simple_choice') {
                 $return[$db->fieldID] = $db->title;
             }
         }
-
         return $return;
     }
 
     /**
      * @param DataContainer $dc
+     * @return null
      */
     public function deleteTable(DataContainer $dc)
     {
-
         $tablename = $dc->activeRecord->tablename;
-
-        if (!$tablename) {
-            return;
-        }
-
+        if (!$tablename) return null;
         $tablename_child = $tablename . '_data';
-
         $this->Database->prepare("DROP TABLE " . $tablename)->execute();
         $this->Database->prepare("DROP TABLE " . $tablename_child)->execute();
         $this->Database->prepare("DELETE FROM tl_content WHERE ptable = ?")->execute($tablename_child);
 
         $modname = substr($tablename, 3, strlen($tablename));
-
-        $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $modname . '')->execute();
-        $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $modname . 'p ')->execute();
-
-        $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . '')->execute();
-        $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
-
-        if (!Config::get('bypassCache')) {
-            $automator = new \Contao\Automator();
-            $automator->purgeInternalCache();
+        if ($this->Database->fieldExists($modname, 'tl_user')) {
+            $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $modname . '')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $modname . 'p ')->execute();
+        }
+        if ($this->Database->fieldExists($modname, 'tl_user_group')) {
+            $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . '')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
         }
 
+        if (!Config::get('bypassCache')) {
+            $automator = new Automator();
+            $automator->purgeInternalCache();
+        }
     }
 
     /**
@@ -539,17 +525,13 @@ class tl_fmodules extends Backend
      */
     public function updateTable($varValue, DataContainer $dc)
     {
-
         if (!$dc->activeRecord->tablename) {
             return $varValue;
         }
-
         $oldTableName = $dc->activeRecord->tablename;
         $newTableName = $varValue;
-
         $oldChildTableName = $oldTableName . '_data';
         $newChildTableName = $newTableName . '_data';
-
 
         if (!$this->Database->tableExists($varValue) && $oldTableName != $newTableName) {
 
@@ -563,8 +545,6 @@ class tl_fmodules extends Backend
             $automator = new \Contao\Automator();
             $automator->purgeInternalCache();
         }
-
         return $varValue;
     }
-
 }

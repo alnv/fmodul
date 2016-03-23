@@ -209,11 +209,11 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_map_template'] = array(
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapZoom'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_mapZoom'],
     'exclude' => true,
-    'default' => '10',
+    'default' => '6',
     'inputType' => 'select',
     'options' => array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20),
     'eval' => array('tl_class' => 'w50'),
-    'sql' => "int(10) unsigned NOT NULL default '10'"
+    'sql' => "int(10) unsigned NOT NULL default '6'"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapScrollWheel'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_mapScrollWheel'],
@@ -522,7 +522,7 @@ class tl_module_fmodule extends tl_module
 
 
         $fmoduleDB = $this->Database->prepare('SELECT id, title, info FROM ' . $modulename)->execute();
-        $wrapper = array('' => $GLOBALS['TL_LANG']['tl_module']['f_label_select_list']);
+        $wrapper = array();
 
         while ($fmoduleDB->next()) {
             $wrapper[$fmoduleDB->id] = $fmoduleDB->title . ' (' . $fmoduleDB->info . ')';

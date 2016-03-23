@@ -11,10 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
-/**
- * add back end modules
- */
-
+// path
 $GLOBALS['FM_AUTO_PATH'] = 'system/modules/fmodule/assets/';
 
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
@@ -22,6 +19,7 @@ if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GL
     $GLOBALS['FM_AUTO_PATH'] = 'bundles/fmodule/';
 }
 
+// add back end modules
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     'icon' =>  $GLOBALS['FM_AUTO_PATH'].'icon.png',
     'tables' => array(
@@ -31,9 +29,8 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
         'tl_fmodules_license'
     )
 );
-/**
- * add front end modules
- */
+
+// add front end modules
 array_insert($GLOBALS['FE_MOD'],5, array(
 	'fmodule' => array(
 		'fmodule_fe_list' => 'ModuleListView',
@@ -42,24 +39,21 @@ array_insert($GLOBALS['FE_MOD'],5, array(
 	)
 ));
 
-/**
- * widgets
- */
+// widgets
 $GLOBALS['BE_FFL']['optionWizardExtended'] = 'OptionWizardExtended';
 $GLOBALS['BE_FFL']['modeSettings'] = 'ModeSettings';
 $GLOBALS['BE_FFL']['filterFields'] = 'FilterFields';
 
 
-/**
- * files
- */
+// files
 if (TL_MODE == 'BE') {
     $GLOBALS['TL_CSS'][] = $GLOBALS['FM_AUTO_PATH'] . 'stylesheet.css';
 }
 
-/**
- * add hocks
- */
+// google maps
+$GLOBALS['loadGoogleMapLibraries'] = false;
+
+// add hocks
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('DCACreator', 'index');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('FModule', 'setLanguage');
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('FModule', 'getSearchablePages');
@@ -69,9 +63,7 @@ $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax')
 $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
 
-/**
- * Ajax Icon
- */
+// ajax
 $GLOBALS['TL_MOOTOOLS'][] =
     "<script>
         if(AjaxRequest)
@@ -104,9 +96,7 @@ $GLOBALS['TL_MOOTOOLS'][] =
         }
     </script>";
 
-/**
- * Add permissions
- */
+// add permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
 

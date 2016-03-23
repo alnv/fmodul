@@ -58,11 +58,6 @@ class ModuleListView extends Module
     protected $loadMapScript = false;
 
     /**
-     * @var bool
-     */
-    protected $loadLibraries = false;
-
-    /**
      * @var null
      */
     protected $feViewID = null;
@@ -164,7 +159,7 @@ class ModuleListView extends Module
                 $this->loadMapScript = true;
 
                 // load map libraries
-                $this->loadLibraries = $modArr['mapInfoBox'] ? true : false;
+                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
             }
 
             // field
@@ -445,13 +440,13 @@ class ModuleListView extends Module
             $this->loadMapScript = true;
 
             // load map libraries
-            $this->loadLibraries = $mapSettings['mapInfoBox'] ? true : false;
+            if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
         }
 
         // set js files
-        if ($this->loadMapScript && !isset($GLOBALS['TL_HEAD']['mapJS'])) {
+        if ($this->loadMapScript) {
             $language = $objPage->language ? $objPage->language : 'en';
-            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($this->loadLibraries, $language);
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
         }
         $this->Template->feViewID = $this->feViewID;
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
@@ -464,9 +459,7 @@ class ModuleListView extends Module
     protected function setValuesForAutoPageAttribute($return)
     {
         global $objPage;
-
         $alias = $objPage->alias;
-
         if ($return['type'] == 'multi_choice') {
 
             $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
@@ -479,9 +472,7 @@ class ModuleListView extends Module
                 array_shift($alias);
             }
         }
-
         $return['value'] = $alias;
-
         return $return;
     }
 

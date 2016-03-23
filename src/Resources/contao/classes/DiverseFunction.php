@@ -58,9 +58,9 @@ class DiverseFunction
      * @param string $GlobalMapID
      * @return string
      */
-    public static function setMapJs($hasLibraries = true, $language = 'en', $GlobalMapID = '')
+    public static function setMapJs($language = 'en', $GlobalMapID = '')
     {
-        $startPoint = $hasLibraries ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
+        $startPoint = $GLOBALS['loadGoogleMapLibraries'] ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
         $apiKey = '';
         if (Config::get('googleApiKey')) {
             $apiKey = '&amp;key=' . Config::get('googleApiKey') . '';

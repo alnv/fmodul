@@ -40,11 +40,6 @@ class ModuleDetailView extends Module
     protected $loadMapScript = false;
 
     /**
-     * @var bool
-     */
-    protected $loadLibraries = false;
-
-    /**
      * @return string
      */
     public function generate()
@@ -117,7 +112,7 @@ class ModuleDetailView extends Module
                 $this->loadMapScript = true;
 
                 // load map libraries
-                $this->loadLibraries = $modArr['mapInfoBox'] ? true : false;
+                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
             }
 
             if ($moduleDB->type == 'widget') {
@@ -348,9 +343,9 @@ class ModuleDetailView extends Module
         }
 
         // set js files
-        if ($this->loadMapScript && !isset($GLOBALS['TL_HEAD']['mapJS'])) {
+        if ($this->loadMapScript) {
             $language = $objPage->language ? $objPage->language : 'en';
-            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($this->loadLibraries, $language);
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
         }
     }
 

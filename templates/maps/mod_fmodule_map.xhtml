@@ -9,7 +9,7 @@
         'use strict';
 
         // set global variable for map data. optimised for google insight speed
-        var FModuleGoogleMap = [];
+        if (null == FModuleGoogleMap) var FModuleGoogleMap = [];
 
         // set unique global map id variable
         var FModuleMap<?= $this->feViewID; ?> = null;

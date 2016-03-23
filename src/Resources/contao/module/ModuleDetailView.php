@@ -269,7 +269,6 @@ class ModuleDetailView extends Module
 
                 $itemDB[$id] = $objFieldTemplate->parse();
             }
-
         }
 
         // create marker path

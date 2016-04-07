@@ -13,7 +13,7 @@
 
 //
 $modules = array();
-$database = Contao\Database::getInstance();
+$database = \Contao\Database::getInstance();
 if($database->tableExists('tl_fmodules') && empty($modules))
 {
 	$moduleDB = $database->prepare('SELECT * FROM tl_fmodules')->execute();
@@ -36,12 +36,12 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
 );
 
 //
-$view = Contao\Input::get('view');
+$view = \Contao\Input::get('view');
 
 //
 foreach($modules as $tablename){
 
-	if (Contao\Input::get('do') == $tablename)
+	if (\Contao\Input::get('do') == $tablename)
 	{
 		$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$tablename.'_data';
 		$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
@@ -56,16 +56,16 @@ $GLOBALS['TL_DCA']['tl_content']['config']['oncut_callback'][] = array('tl_conte
 /**
  * Class tl_content_extend
  */
-class tl_content_fmodule extends Contao\Backend
+class tl_content_fmodule extends \Contao\Backend
 {
 
 	/**
 	 * @param \Contao\DataContainer $dca
 	 * @return bool
 	 */
-	public function addView(Contao\DataContainer $dca)
+	public function addView(\Contao\DataContainer $dca)
 	{
-		$view = Contao\Input::get('view');
+		$view = \Contao\Input::get('view');
 		$id = $dca->activeRecord->id;
 
 		if($view)
@@ -78,10 +78,10 @@ class tl_content_fmodule extends Contao\Backend
 	/**
 	 * @param \Contao\DataContainer $dca
 	 */
-	public function onCutAddFView(Contao\DataContainer $dca)
+	public function onCutAddFView(\Contao\DataContainer $dca)
 	{
-		$view = Contao\Input::get('view');
-		$id = Contao\Input::get('id');
+		$view = \Contao\Input::get('view');
+		$id = \Contao\Input::get('id');
 
 		if($id && $view)
 		{
@@ -93,9 +93,9 @@ class tl_content_fmodule extends Contao\Backend
 	 * @param $id
 	 * @param \Contao\DataContainer $dca
 	 */
-	public function onCopyAddFView($id, Contao\DataContainer $dca)
+	public function onCopyAddFView($id, \Contao\DataContainer $dca)
 	{
-		$view = Contao\Input::get('view');
+		$view = \Contao\Input::get('view');
 
 		if($id && $view)
 		{

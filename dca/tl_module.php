@@ -294,7 +294,7 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getModuleCols(Contao\DataContainer $dca)
+    public function getModuleCols(\Contao\DataContainer $dca)
     {
         if(!empty($this->moduleColsCache))
         {
@@ -346,7 +346,7 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return null
      */
-    public function saveGeoCoding(Contao\DataContainer $dca)
+    public function saveGeoCoding(\Contao\DataContainer $dca)
     {
         if(!$dca->activeRecord)
         {
@@ -384,7 +384,7 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getListModules(Contao\DataContainer $dca)
+    public function getListModules(\Contao\DataContainer $dca)
     {
         $type = 'fmodule_fe_list';
         $listID = $dca->activeRecord->f_list_field;
@@ -466,7 +466,7 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getListTemplates(Contao\DataContainer $dca)
+    public function getListTemplates(\Contao\DataContainer $dca)
     {
         return $this->getTemplateGroup('fmodule_');
     }
@@ -475,7 +475,7 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getMapTemplates(Contao\DataContainer $dca)
+    public function getMapTemplates(\Contao\DataContainer $dca)
     {
         return $this->getTemplateGroup('fm_map_location');
     }
@@ -505,7 +505,7 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return null
      */
-    public function setFEModule(Contao\DataContainer $dca)
+    public function setFEModule(\Contao\DataContainer $dca)
     {
         $id = $dca->id;
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);

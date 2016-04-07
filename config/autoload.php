@@ -1,8 +1,9 @@
 <?php
 
-\Contao\ClassLoader::addNamespace('FModule');
+ClassLoader::addNamespace('FModule');
 
 $pathToFiles = 'system/modules/fmodule/';
+
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
 {
     $pathToFiles = 'vendor/fmodule/fmodule/';
@@ -42,6 +43,7 @@ ClassLoader::addClasses(array
  * Register the templates
  */
 $pathToTemplates = $pathToFiles.'templates';
+
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
 {
     $pathToTemplates = $pathToFiles.'src/Resources/contao/templates';

@@ -36,6 +36,7 @@ if($database->tableExists('tl_fmodules') && empty($modules))
 
 //
 $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
+	'label' => array("View", ""),
 	'sql' => "varchar(50) NOT NULL default ''"
 );
 
@@ -43,10 +44,8 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
 $view = Input::get('view');
 
 //
-if(empty($modules)) return null;
-
-//
 foreach($modules as $tablename){
+
 	if (Input::get('do') == $tablename)
 	{
 		$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$tablename.'_data';
@@ -55,42 +54,41 @@ foreach($modules as $tablename){
 }
 
 //
-$GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback'][] = array('tl_content_extend', 'addView');
-$GLOBALS['TL_DCA']['tl_content']['config']['oncopy_callback'][] = array('tl_content_extend', 'onCopyAddfView');
-$GLOBALS['TL_DCA']['tl_content']['config']['oncut_callback'][] = array('tl_content_extend', 'onCutAddfView');
+$GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback'][] = array('tl_content_fmodule', 'addView');
+$GLOBALS['TL_DCA']['tl_content']['config']['oncopy_callback'][] = array('tl_content_fmodule', 'onCopyAddFView');
+$GLOBALS['TL_DCA']['tl_content']['config']['oncut_callback'][] = array('tl_content_fmodule', 'onCutAddFView');
 
 /**
  * Class tl_content_extend
  */
-class tl_content_extend extends Backend
+class tl_content_fmodule extends Backend
 {
 
 	/**
-	 * @param DataContainer $dc
+	 * @param DataContainer $dca
 	 * @return bool
 	 */
-	public function addView(DataContainer $dc)
+	public function addView(DataContainer $dca)
 	{
 		$view = Input::get('view');
-					
+		$id = $dca->activeRecord->id;
+
 		if($view)
 		{
-			$id = $dc->activeRecord->id;			
 			$this->Database->prepare("UPDATE tl_content SET fview = ? WHERE id = ? LIMIT 1")->execute($view, $id);
 		}
-				
 		return true;
 	}
 
 	/**
-	 * @param DataContainer $dc
+	 * @param DataContainer $dca
 	 */
-	public function onCutAddfView(DataContainer $dc)
+	public function onCutAddFView(DataContainer $dca)
 	{
 		$view = Input::get('view');
 		$id = Input::get('id');
 
-		if( !$id && !$view )
+		if($id && $view)
 		{
 			$this->Database->prepare('UPDATE tl_content SET fview = ? WHERE id = ? LIMIT 1')->execute($view, $id);
 		}
@@ -98,13 +96,13 @@ class tl_content_extend extends Backend
 
 	/**
 	 * @param $id
-	 * @param DataContainer $dc
+	 * @param DataContainer $dca
 	 */
-	public function onCopyAddfView($id, DataContainer $dc)
+	public function onCopyAddFView($id, DataContainer $dca)
 	{
 		$view = Input::get('view');
 
-		if( !$id && !$view )
+		if($id && $view)
 		{
 			$this->Database->prepare('UPDATE tl_content SET fview = ? WHERE id = ? LIMIT 1')->execute($view, $id);
 		}

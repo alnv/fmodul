@@ -279,7 +279,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoPageTitle'] = array(
 
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
-use Contao\DataContainer;
 
 /**
  * Class tl_module_fmodule
@@ -292,10 +291,10 @@ class tl_module_fmodule extends tl_module
     protected $moduleColsCache = array();
 
     /**
-     * @param DataContainer $dca
+     * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getModuleCols(DataContainer $dca)
+    public function getModuleCols(Contao\DataContainer $dca)
     {
         if(!empty($this->moduleColsCache))
         {
@@ -344,10 +343,10 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param DataContainer $dca
+     * @param \Contao\DataContainer $dca
      * @return null
      */
-    public function saveGeoCoding(DataContainer $dca)
+    public function saveGeoCoding(Contao\DataContainer $dca)
     {
         if(!$dca->activeRecord)
         {
@@ -380,11 +379,12 @@ class tl_module_fmodule extends tl_module
             $this->Database->prepare('UPDATE '.$tableName.' SET fm_center_lat=?,fm_center_lng=? WHERE id = ?')->execute($lat, $lng, $id);
         }
     }
+
     /**
-     * @param DataContainer $dca
+     * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getListModules(DataContainer $dca)
+    public function getListModules(Contao\DataContainer $dca)
     {
         $type = 'fmodule_fe_list';
         $listID = $dca->activeRecord->f_list_field;
@@ -463,19 +463,19 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param DataContainer $dca
+     * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getListTemplates(DataContainer $dca)
+    public function getListTemplates(Contao\DataContainer $dca)
     {
         return $this->getTemplateGroup('fmodule_');
     }
 
     /**
-     * @param DataContainer $dca
+     * @param \Contao\DataContainer $dca
      * @return array
      */
-    public function getMapTemplates(DataContainer $dca)
+    public function getMapTemplates(Contao\DataContainer $dca)
     {
         return $this->getTemplateGroup('fm_map_location');
     }
@@ -502,10 +502,10 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param DataContainer $dca
+     * @param \Contao\DataContainer $dca
      * @return null
      */
-    public function setFEModule(DataContainer $dca)
+    public function setFEModule(Contao\DataContainer $dca)
     {
         $id = $dca->id;
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
@@ -520,7 +520,6 @@ class tl_module_fmodule extends tl_module
         if (!$modulename || is_null($modulename)) return null;
         if (!$this->Database->tableExists($modulename))  return null;
 
-
         $fmoduleDB = $this->Database->prepare('SELECT id, title, info FROM ' . $modulename)->execute();
         $wrapper = array();
 
@@ -529,7 +528,6 @@ class tl_module_fmodule extends tl_module
         }
 
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper']['options'] = $wrapper;
-
 
         $filterDB = $this->Database->prepare(
             'SELECT * FROM tl_fmodules

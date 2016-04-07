@@ -11,13 +11,9 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Input;
-use Contao\Backend;
-use Contao\Database;
-
 //
 $modules = array();
-$database = Database::getInstance();
+$database = Contao\Database::getInstance();
 if($database->tableExists('tl_fmodules') && empty($modules))
 {
 	$moduleDB = $database->prepare('SELECT * FROM tl_fmodules')->execute();
@@ -33,7 +29,6 @@ if($database->tableExists('tl_fmodules') && empty($modules))
 	}
 }
 
-
 //
 $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
 	'label' => array("View", ""),
@@ -41,12 +36,12 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['fview'] = array(
 );
 
 //
-$view = Input::get('view');
+$view = Contao\Input::get('view');
 
 //
 foreach($modules as $tablename){
 
-	if (Input::get('do') == $tablename)
+	if (Contao\Input::get('do') == $tablename)
 	{
 		$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_'.$tablename.'_data';
 		$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = array('fview = ?', $view);
@@ -61,16 +56,16 @@ $GLOBALS['TL_DCA']['tl_content']['config']['oncut_callback'][] = array('tl_conte
 /**
  * Class tl_content_extend
  */
-class tl_content_fmodule extends Backend
+class tl_content_fmodule extends Contao\Backend
 {
 
 	/**
-	 * @param DataContainer $dca
+	 * @param \Contao\DataContainer $dca
 	 * @return bool
 	 */
-	public function addView(DataContainer $dca)
+	public function addView(Contao\DataContainer $dca)
 	{
-		$view = Input::get('view');
+		$view = Contao\Input::get('view');
 		$id = $dca->activeRecord->id;
 
 		if($view)
@@ -81,12 +76,12 @@ class tl_content_fmodule extends Backend
 	}
 
 	/**
-	 * @param DataContainer $dca
+	 * @param \Contao\DataContainer $dca
 	 */
-	public function onCutAddFView(DataContainer $dca)
+	public function onCutAddFView(Contao\DataContainer $dca)
 	{
-		$view = Input::get('view');
-		$id = Input::get('id');
+		$view = Contao\Input::get('view');
+		$id = Contao\Input::get('id');
 
 		if($id && $view)
 		{
@@ -96,11 +91,11 @@ class tl_content_fmodule extends Backend
 
 	/**
 	 * @param $id
-	 * @param DataContainer $dca
+	 * @param \Contao\DataContainer $dca
 	 */
-	public function onCopyAddFView($id, DataContainer $dca)
+	public function onCopyAddFView($id, Contao\DataContainer $dca)
 	{
-		$view = Input::get('view');
+		$view = Contao\Input::get('view');
 
 		if($id && $view)
 		{

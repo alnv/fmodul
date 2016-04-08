@@ -15,11 +15,21 @@ use Contao\Environment;
 use Contao\Input;
 use Contao\FrontendTemplate;
 
+/**
+ * Class ModuleFormFilter
+ * @package FModule
+ */
 class ModuleFormFilter extends \Contao\Module
 {
 
+    /**
+     * @var string
+     */
     protected $strTemplate = 'mod_form_filter';
 
+    /**
+     * @return string
+     */
     public function generate()
     {
         if (TL_MODE == 'BE') {
@@ -28,18 +38,17 @@ class ModuleFormFilter extends \Contao\Module
             $objTemplate->wildcard = '### ' . $this->name . ' ###';
             $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
             return $objTemplate->parse();
-
         }
-
         return parent::generate();
-
     }
 
+    /**
+     *
+     */
     protected function compile()
     {
 
         global $objPage;
-
         $format = $objPage->dateFormat;
         $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();        
         $fields = deserialize($this->f_form_fields);
@@ -141,10 +150,8 @@ class ModuleFormFilter extends \Contao\Module
             // set tablename
             $fields[$i]['tablename'] = !strpos($listModuleTable, '_data') ? $listModuleTable . '_data' : $listModuleTable;
 
-
             // date field
             if ($field['type'] == 'date_field') {
-
                 $format = $field['addTime'] ? $objPage->datimFormat : $format;
                 $fields[$i]['format'] = $format;
                 $fields[$i]['operator'] = $this->getOperator();
@@ -159,10 +166,8 @@ class ModuleFormFilter extends \Contao\Module
 
             // search field
             if ($field['type'] == 'search_field') {
-
                 //backwards compatible
                 $fields[$i]['auto_complete'] = $fields[$i]['options'];
-
             }
 
             if ($field['type'] == 'toggle_field') {
@@ -192,7 +197,6 @@ class ModuleFormFilter extends \Contao\Module
                 'data' => $fields[$i],
                 'tpl' => $tplName
             );
-
         }
 
         $strWidget = '';
@@ -233,7 +237,6 @@ class ModuleFormFilter extends \Contao\Module
                     $to_template = $toTemplateObj->parse();
                     $widget['data']['to_template'] = $to_template;
 
-
                 } else {
 
                     // generate from field tpl
@@ -243,7 +246,6 @@ class ModuleFormFilter extends \Contao\Module
                     $fromTemplateObj->setData($fromFieldData);
                     $from_template = $fromTemplateObj->parse();
                     $widget['data']['from_template'] = $from_template;
-
 
                     // generate to field tpl
                     $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
@@ -260,7 +262,6 @@ class ModuleFormFilter extends \Contao\Module
             if ($this->sortOutFixedField($fieldID, $modeSettings)) {
                 continue;
             }
-
 
             //if not active
             if (!$widget['data']['active']) {
@@ -304,18 +305,13 @@ class ModuleFormFilter extends \Contao\Module
     public function sortOutFixedField($fieldID, $modeSettings)
     {
         $skip = false;
-
         for ($j = 0; $j < count($modeSettings); $j++) {
-
             if ($modeSettings[$j]['fieldID'] == $fieldID) {
-
                 if (isset($modeSettings[$j]['set']['overwrite']) && $modeSettings[$j]['set']['overwrite'] == '1') {
-
                     $skip = true;
                 }
             }
         }
-
         return $skip;
     }
 
@@ -358,10 +354,8 @@ class ModuleFormFilter extends \Contao\Module
         while ($dataFromTableDB->next()) {
 
             $o[] = array(
-
                 'label' => $dataFromTableDB->$opt['title'],
                 'value' => $dataFromTableDB->$opt['col'],
-
             );
 
         }

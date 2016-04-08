@@ -196,14 +196,11 @@ class QueryModel
             $orderByStr = $searchSettings['orderBy'] ? $searchSettings['orderBy'] : $orderByStr;
         }
 
-        $query = ' AND description LIKE ? OR title LIKE ?';
+        $query = '';
         $fieldsArr = explode(',', $fieldsStr);
-
         $prepareValue = array($wrapperID);
 
         if (is_array($fieldsArr)) {
-            $query = '';
-
             foreach ($fieldsArr as $n => $field) {
                 $operator = $n != 0 ? ' OR ' : ' AND ';
                 $query .= $operator . $field . ' LIKE ?';
@@ -225,15 +222,14 @@ class QueryModel
             . "ELSE 6 "
             . "END ";
 
-        $prepareValue[] = $searchStr; // 1 "Köl" matches "Kolka" -> sort it away
-        $prepareValue[] = $searchStr; // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
-        $prepareValue[] = "$searchStr %"; // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
-        $prepareValue[] = "%$searchStr"; // 4 "word%"    Sortier Anfang passt
-        $prepareValue[] = "$searchStr%"; // 5 "word%"    Sortier Ende passt
-        $prepareValue[] = "%$searchStr%"; // 6 "word%"    Irgendwo getroffen
+        $prepareValue[] = $searchStr; // Kein Match
+        $prepareValue[] = $searchStr; // Genau
+        $prepareValue[] = "$searchStr %"; // Passender Match
+        $prepareValue[] = "%$searchStr"; // Anfang
+        $prepareValue[] = "$searchStr%"; // Ende
+        $prepareValue[] = "%$searchStr%"; // Irgendwo
 
         return $searchDB->prepare($sqlStr)->execute($prepareValue);
-
     }
 
     /**

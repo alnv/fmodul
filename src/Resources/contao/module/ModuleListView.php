@@ -193,7 +193,6 @@ class ModuleListView extends Module
         //get text search results
         $textSearchResults = array();
         if ($qTextSearch) {
-
             $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID, $qResult['searchSettings']);
         }
 

@@ -109,6 +109,10 @@ class HelperModel
                         if ($isValue) {
                             $isFulltextSearch = true;
                             $qTextSearch = $field['value'];
+                            $searchSettings = array(
+                                'fields' =>  $field['fullTextSearchFields'] ? $field['fullTextSearchFields'] : 'title,description',
+                                'orderBy' => $field['fullTextSearchOrderBy'] ? $field['fullTextSearchOrderBy'] : 'title'
+                            );
                         }
                         break;
                 }
@@ -119,6 +123,7 @@ class HelperModel
             'qStr' => $qStr,
             'isFulltextSearch' => $isFulltextSearch,
             '$qTextSearch' => $qTextSearch,
+            'searchSettings' => $searchSettings
         );
     }
 

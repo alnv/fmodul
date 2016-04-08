@@ -70,7 +70,7 @@ class QueryModel
         $bind = ' AND (';
         $sql = [];
 
-        if(is_string($values)) {
+        if (is_string($values)) {
             $values = explode(',', $values);
         }
 
@@ -182,34 +182,70 @@ class QueryModel
      * @param string $searchStr
      * @param $tablename
      * @param $wrapperID
+     * @param $searchSettings
      * @return \Database\Result|object
      */
-    static public function textSearch($searchStr = '', $tablename, $wrapperID)
+    static public function textSearch($searchStr = '', $tablename, $wrapperID, $searchSettings)
     {
+        // get fields for q
+        $fieldsStr = 'title,description';
+        $orderByStr = 'title';
+
+        if (!empty($searchSettings)) {
+            $fieldsStr = $searchSettings['fields'] ? $searchSettings['fields'] : $fieldsStr;
+            $orderByStr = $searchSettings['orderBy'] ? $searchSettings['orderBy'] : $orderByStr;
+        }
+
+        $query = ' AND description LIKE ? OR title LIKE ?';
+        $fieldsArr = explode(',', $fieldsStr);
+
+        $prepareValue = array($wrapperID);
+
+        if (is_array($fieldsArr)) {
+            $query = '';
+
+            foreach ($fieldsArr as $n => $field) {
+                $operator = $n != 0 ? ' OR ' : ' AND ';
+                $query .= $operator . $field . ' LIKE ?';
+                $prepareValue[] = "%$searchStr%";
+            }
+        }
+
         $searchDB = Database::getInstance();
         $sqlStr = "SELECT * FROM " . $tablename . "_data WHERE pid = ? ";
-        $sqlStr .= " AND description LIKE ? OR title LIKE ? ORDER BY "
+        $sqlStr .= $query;
+        $sqlStr .= " ORDER BY "
             . "CASE "
-            . "WHEN (LOCATE(?, title) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
-            . "WHEN title = ? THEN 1 "                // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
-            . "WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
-            . "WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
-            . "WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
-            . "WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+            . "WHEN (LOCATE(?, title) = 0) THEN 10 "
+            . "WHEN " . $orderByStr . " = ? THEN 1 "
+            . "WHEN " . $orderByStr . " LIKE ? THEN 2 "
+            . "WHEN " . $orderByStr . " LIKE ? THEN 3 "
+            . "WHEN " . $orderByStr . " LIKE ? THEN 4 "
+            . "WHEN " . $orderByStr . " LIKE ? THEN 5 "
             . "ELSE 6 "
             . "END ";
-        return $searchDB->prepare($sqlStr)->execute($wrapperID, "%$searchStr%", "%$searchStr%", $searchStr, $searchStr, "$searchStr %", "%$searchStr", "$searchStr%", "%$searchStr%");
+
+        $prepareValue[] = $searchStr; // 1 "Köl" matches "Kolka" -> sort it away
+        $prepareValue[] = $searchStr; // 2 "word" Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+        $prepareValue[] = "$searchStr %"; // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+        $prepareValue[] = "%$searchStr"; // 4 "word%"    Sortier Anfang passt
+        $prepareValue[] = "$searchStr%"; // 5 "word%"    Sortier Ende passt
+        $prepareValue[] = "%$searchStr%"; // 6 "word%"    Irgendwo getroffen
+
+        return $searchDB->prepare($sqlStr)->execute($prepareValue);
+
     }
 
     /**
      * @param string $searchStr
      * @param $tablename
      * @param $wrapperID
+     * @param array $searchSettings
      * @return array
      */
-    static public function getTextSearchResult($searchStr = '', $tablename, $wrapperID)
+    static public function getTextSearchResult($searchStr = '', $tablename, $wrapperID, $searchSettings = array())
     {
-        $resultsDB = static::textSearch($searchStr, $tablename, $wrapperID);
+        $resultsDB = static::textSearch($searchStr, $tablename, $wrapperID, $searchSettings);
         $results = array();
         if ($resultsDB != null && $resultsDB->count() > 0) {
             while ($resultsDB->next()) {

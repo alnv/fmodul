@@ -5,6 +5,7 @@ $GLOBALS['TL_LANG']['tl_module']['fm_mode_legend'] = 'Taxonomy';
 $GLOBALS['TL_LANG']['tl_module']['fm_sort_legend'] = 'Front end Sorting';
 $GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Map-View Settings';
 $GLOBALS['TL_LANG']['tl_module']['fm_seo_legend'] = 'SEO-Settings';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Redirect-Settings';
 
 //fields
 
@@ -124,6 +125,19 @@ $GLOBALS['TL_LANG']['tl_module']['fm_seoDescription'][1] = 'Please select your m
 $GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][0] = 'Page title';
 $GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][1] = 'Please select page title field.';
 
+// fm_redirect_source
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][0] = 'Redirect';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][1] = 'Please select your redirect Page.';
+
+// fm_redirect_url
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][0] = 'URL';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][1] = 'Please enter your URL.';
+
+// fm_redirect_jumpTo
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][0] = 'Page';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][1] = 'Please select your Page';
+
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
@@ -135,3 +149,5 @@ $GLOBALS['TL_LANG']['tl_module']['ROADMAP'] = 'Roadmap';
 $GLOBALS['TL_LANG']['tl_module']['SATELLITE'] = 'Satellite';
 $GLOBALS['TL_LANG']['tl_module']['HYBRID'] = 'Hybrid';
 $GLOBALS['TL_LANG']['tl_module']['TERRAIN'] = 'Terrain';
+$GLOBALS['TL_LANG']['tl_module']['siteID'] = 'Site';
+$GLOBALS['TL_LANG']['tl_module']['siteURL'] = 'URL';

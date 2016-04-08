@@ -5,6 +5,7 @@ $GLOBALS['TL_LANG']['tl_module']['fm_mode_legend'] = 'F Modul Taxonomie';
 $GLOBALS['TL_LANG']['tl_module']['fm_sort_legend'] = 'Frontend-Sortierung';
 $GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Kartenansicht-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_seo_legend'] = 'SEO-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Weiterleitungsziel-Einstellungen';
 
 // fields
 
@@ -124,6 +125,18 @@ $GLOBALS['TL_LANG']['tl_module']['fm_seoDescription'][1] = 'Bitte wählen Sie ei
 $GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][0] = 'Seitentitel';
 $GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][1] = 'Bitte wählen Sie ein Feld für den Seitentitel aus.';
 
+// fm_redirect_source
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][0] = 'Weiterleitungsziel';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][1] = 'Bitte wählen Sie ein Weiterleitungsziel aus. Beim absenden des Formulars wird der Besucher auf eine andere Seite geleitet.';
+
+// fm_redirect_url
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][0] = 'URL';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][1] = 'Bitte geben Sie eine URL ein.';
+
+// fm_redirect_jumpTo
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][0] = 'Seite auswählen';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][1] = 'Bitte wählen Sie eine Seite aus.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
@@ -135,4 +148,5 @@ $GLOBALS['TL_LANG']['tl_module']['ROADMAP'] = 'Karte';
 $GLOBALS['TL_LANG']['tl_module']['SATELLITE'] = 'Satellit';
 $GLOBALS['TL_LANG']['tl_module']['HYBRID'] = 'Hybrid';
 $GLOBALS['TL_LANG']['tl_module']['TERRAIN'] = 'Terrain';
-
+$GLOBALS['TL_LANG']['tl_module']['siteID'] = 'Seitenbaum';
+$GLOBALS['TL_LANG']['tl_module']['siteURL'] = 'URL';

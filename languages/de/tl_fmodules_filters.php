@@ -31,6 +31,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Eingabefeld Typ';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Einstellung';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Karten-Einstellunegn';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Suche-Einstellungen';
 
 //fields
 
@@ -125,6 +126,15 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'Hier können Sie den 
 // negate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][0] = 'Zeitangabe hinzufügen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][1] = 'Hier können Sie eine Zeitangabe im Backend hinzufügen.';
+
+// fullTextSearchFields
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][0] = 'Felder auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][1] = 'Bitte wählen Sie Felder aus, die durchsucht werden sollen. Titel und Teasertext sind Standard Felder, wenn nichts ausgewählt ist.';
+
+// fullTextSearchOrderBy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][0] = 'Sortierfeld';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][1] = 'Bitte wählen Sie ein Sortierfeld aus. Standard: Titel';
+
 
 // validate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits.';

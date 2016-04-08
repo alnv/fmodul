@@ -31,6 +31,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Filter input type';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Expert-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Map-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Search-Settings';
 
 //fields
 
@@ -129,6 +130,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'][1] = 'This field will be re
 // addTime
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][0] = 'Add time';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][1] = 'Here you can enable datetime picker in Back end.';
+
+// fullTextSearchFields
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][0] = 'Fields';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][1] = 'Please select your fields.';
+
+// fullTextSearchOrderBy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][0] = 'Sorting field';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][1] = 'Please select your sorting field';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';

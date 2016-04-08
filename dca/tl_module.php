@@ -17,7 +17,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 
 // module palette
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 // selector
@@ -25,12 +25,15 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_sorting';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addMap';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_overwrite_seoSettings';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_redirect_source';
 
 // sub palettes
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_filter'] = 'f_filter_fields';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_sorting'] = 'f_sorting_fields,f_sorting_orderby';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addMap'] = 'fm_center_address,fm_center_lat,fm_center_lng,fm_map_template,fm_mapZoom,fm_mapType,fm_mapScrollWheel,fm_mapMarker,fm_mapInfoBox,fm_mapStyle';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_overwrite_seoSettings'] = 'fm_seoDescription,fm_seoPageTitle';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteID'] = 'fm_redirect_jumpTo';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteURL'] = 'fm_redirect_url';
 
 // module fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
@@ -60,7 +63,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_orderby'] = array
     'default' => 'desc',
     'eval' => array('tl_class' => 'clr m12'),
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array('desc','asc','rand'),
+    'options' => array('desc', 'asc', 'rand'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields'] = array
@@ -70,7 +73,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields'] = array
     'exclude' => true,
     'default' => 'id',
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array('id' => 'ID','title' => 'Titel', 'date' => 'Datum'),
+    'options' => array('id' => 'ID', 'title' => 'Titel', 'date' => 'Datum'),
     'eval' => array('multiple' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
@@ -156,7 +159,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['f_reset_button'],
     'inputType' => 'checkbox',
-    'exclude'=> true,
+    'exclude' => true,
     'eval' => array('tl_class' => 'clr m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
@@ -211,7 +214,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapZoom'] = array(
     'exclude' => true,
     'default' => '6',
     'inputType' => 'select',
-    'options' => array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20),
+    'options' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20),
     'eval' => array('tl_class' => 'w50'),
     'sql' => "int(10) unsigned NOT NULL default '6'"
 );
@@ -249,10 +252,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapStyle'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_mapStyle'],
     'exclude' => true,
     'inputType' => 'textarea',
-    'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte'=>'ace|html'),
+    'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte' => 'ace|html'),
     'sql' => "text NULL"
 );
-//seo settings
+// seo settings
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_overwrite_seoSettings'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_overwrite_seoSettings'],
     'exclude' => true,
@@ -265,7 +268,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoDescription'] = array(
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getModuleCols'),
-    'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-','chosen' => true),
+    'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'chosen' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoPageTitle'] = array(
@@ -273,7 +276,43 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoPageTitle'] = array(
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getModuleCols'),
-    'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-','chosen' => true),
+    'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'chosen' => true),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+
+// redirect
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_source'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'],
+    'default' => '',
+    'exclude' => true,
+    'inputType' => 'select',
+    'options' => array('siteID', 'siteURL'),
+    'reference' => &$GLOBALS['TL_LANG']['tl_module'],
+    'eval' => array('submitOnChange' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+    'sql' => "varchar(64) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_form_redirect'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true),
+    'sql' => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_jumpTo'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'],
+    'exclude' => true,
+    'inputType' => 'pageTree',
+    'foreignKey' => 'tl_page.title',
+    'eval' => array('mandatory' => true, 'fieldType' => 'radio'),
+    'sql' => "int(10) unsigned NOT NULL default '0'",
+    'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_url'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('mandatory' => true, 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
@@ -296,43 +335,36 @@ class tl_module_fmodule extends tl_module
      */
     public function getModuleCols(\Contao\DataContainer $dca)
     {
-        if(!empty($this->moduleColsCache))
-        {
+        if (!empty($this->moduleColsCache)) {
             return $this->moduleColsCache;
         }
 
         $doNotSet = array('id', 'pid', 'tstamp', 'PRIMARY');
         $cols = array();
 
-        if($dca->activeRecord->f_list_field)
-        {
+        if ($dca->activeRecord->f_list_field) {
             $feID = $dca->activeRecord->f_list_field;
             $listFeModuleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($feID);
 
-            if(!$listFeModuleDB->count())
-            {
+            if (!$listFeModuleDB->count()) {
                 return $cols;
             }
 
             $table = null;
-            while($listFeModuleDB->next())
-            {
+            while ($listFeModuleDB->next()) {
                 $table = $listFeModuleDB->f_select_module;
             }
 
-            if(!$table)
-            {
+            if (!$table) {
                 return $cols;
             }
 
-            $dataTable = $table.'_data';
+            $dataTable = $table . '_data';
 
             $colsDB = $this->Database->listFields($dataTable);
 
-            foreach($colsDB as $col)
-            {
-                if(in_array($col['name'], $doNotSet))
-                {
+            foreach ($colsDB as $col) {
+                if (in_array($col['name'], $doNotSet)) {
                     continue;
                 }
                 $cols[$col['name']] = $col['name'];
@@ -348,8 +380,7 @@ class tl_module_fmodule extends tl_module
      */
     public function saveGeoCoding(\Contao\DataContainer $dca)
     {
-        if(!$dca->activeRecord)
-        {
+        if (!$dca->activeRecord) {
             return null;
         }
 
@@ -360,23 +391,20 @@ class tl_module_fmodule extends tl_module
         $cords = array();
 
         //
-        if($geo_address)
-        {
+        if ($geo_address) {
             $geoCoding = new GeoCoding();
-            $cords =$geoCoding->getGeoCords($geo_address, $address_country);
+            $cords = $geoCoding->getGeoCords($geo_address, $address_country);
         }
 
-        if(!empty($cords))
-        {
+        if (!empty($cords)) {
             $tableName = $dca->table ? $dca->table : Input::get('table');
             $id = $dca->id ? $dca->id : Input::get('id');
             $lat = $cords['lat'] ? $cords['lat'] : '';
             $lng = $cords['lng'] ? $cords['lng'] : '';
-            if(!$tableName || !$id)
-            {
+            if (!$tableName || !$id) {
                 return null;
             }
-            $this->Database->prepare('UPDATE '.$tableName.' SET fm_center_lat=?,fm_center_lng=? WHERE id = ?')->execute($lat, $lng, $id);
+            $this->Database->prepare('UPDATE ' . $tableName . ' SET fm_center_lat=?,fm_center_lng=? WHERE id = ?')->execute($lat, $lng, $id);
         }
     }
 
@@ -411,18 +439,15 @@ class tl_module_fmodule extends tl_module
 
             while ($filterFieldsDB->next()) {
 
-                if( $filterFieldsDB->fieldID && in_array($filterFieldsDB->type, $allowedOptionTypes) && !in_array($filterFieldsDB->fieldID, $allowedOptionID))
-                {
+                if ($filterFieldsDB->fieldID && in_array($filterFieldsDB->type, $allowedOptionTypes) && !in_array($filterFieldsDB->fieldID, $allowedOptionID)) {
                     $activeOptions[$filterFieldsDB->fieldID] = $filterFieldsDB->title;
                 }
 
-                if(in_array($filterFieldsDB->type, $doNotSetByType))
-                {
+                if (in_array($filterFieldsDB->type, $doNotSetByType)) {
                     continue;
                 }
 
-                if(in_array($filterFieldsDB->fieldID, $doNotSetByID))
-                {
+                if (in_array($filterFieldsDB->fieldID, $doNotSetByID)) {
                     continue;
                 }
 
@@ -510,7 +535,7 @@ class tl_module_fmodule extends tl_module
         $id = $dca->id;
         $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
         $modulename = '';
-        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field','toggle_field', 'map_field');
+        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'toggle_field', 'map_field');
         $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields');
 
         while ($moduleDB->next()) {
@@ -518,7 +543,7 @@ class tl_module_fmodule extends tl_module
         }
 
         if (!$modulename || is_null($modulename)) return null;
-        if (!$this->Database->tableExists($modulename))  return null;
+        if (!$this->Database->tableExists($modulename)) return null;
 
         $fmoduleDB = $this->Database->prepare('SELECT id, title, info FROM ' . $modulename)->execute();
         $wrapper = array();
@@ -535,15 +560,13 @@ class tl_module_fmodule extends tl_module
 			ON tl_fmodules.id = tl_fmodules_filters.pid 
 			WHERE tablename = ?'
         )->execute($modulename);
-        $sorting = array('id' => 'ID','title' => 'Titel', 'date' => 'Datum');
+        $sorting = array('id' => 'ID', 'title' => 'Titel', 'date' => 'Datum');
 
         while ($filterDB->next()) {
-            if(in_array($filterDB->fieldID, $doNotSetByID))
-            {
+            if (in_array($filterDB->fieldID, $doNotSetByID)) {
                 continue;
             }
-            if(in_array($filterDB->type, $doNotSetByType))
-            {
+            if (in_array($filterDB->type, $doNotSetByType)) {
                 continue;
             }
             $sorting[$filterDB->fieldID] = $filterDB->title;

@@ -106,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend:hide},evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},evalCss,isMandatory;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchFields,fullTextSearchOrderBy;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
@@ -324,8 +324,26 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte'=>'ace|html'),
             'sql' => "text NULL"
         ),
+        // fullTextSearch Settings
+        'fullTextSearchFields' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'],
+            'exclude' => true,
+            'inputType' => 'select',
+            'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
+            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true, 'tl_class' => 'w50'),
+            'sql' => "text NULL"
+        ),
+        'fullTextSearchOrderBy' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'],
+            'exclude' => true,
+            'inputType' => 'select',
+            'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
+            'eval' => array('chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        )
     )
 );
+
 
 /**
  * Class tl_fmodules_filters
@@ -340,15 +358,64 @@ class tl_fmodules_filters extends Backend
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
-
     }
 
     /**
+     * @param $dca
      * @return array
      */
-    public function getWidgetTemplates($dc)
+    public function getDataCols($dca)
     {
-        $type = $dc->activeRecord->widget_type;
+        $pid = $dca->activeRecord->pid;
+        $options = array();
+        $notAllowedTypes = array('char', 'int', 'blob', 'index', 'binary');
+
+        if($pid) {
+
+            $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE id = ?')->execute($pid);
+            $tablename = '';
+
+            while ($moduleDB->next())
+            {
+                if($moduleDB->tablename)
+                {
+                    $tablename = $moduleDB->tablename . '_data';
+                }
+            }
+
+            if($tablename)
+            {
+                $colsDB = $this->Database->listFields($tablename);
+                foreach($colsDB as $col)
+                {
+                    if(in_array($col['type'], $notAllowedTypes))
+                    {
+                        continue;
+                    }
+
+                    if($col['name'])
+                    {
+                        $label = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$col['name']][0];
+                        if(!$label)
+                        {
+                            $label = $col['name'];
+                        }
+                        $options[$col['name']] = $label;
+                    }
+                }
+            }
+        }
+
+        return $options;
+    }
+
+    /**
+     * @param $dca
+     * @return array
+     */
+    public function getWidgetTemplates($dca)
+    {
+        $type = $dca->activeRecord->widget_type;
 
         if ($type) {
             $tplName = explode('.', $type)[0];

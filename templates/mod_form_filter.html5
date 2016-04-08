@@ -2,7 +2,7 @@
 <?php $this->block('content'); ?>
 
     <!-- indexer::stop -->
-    <form id="form_<?= $this->id; ?>" name="form_<?= $this->id; ?>" method="GET" action="{{env::request}}">
+    <form id="form_<?= $this->id; ?>" name="form_<?= $this->id; ?>" method="GET" action="<?= $this->action; ?>">
 
         <?= $this->fields; ?>
 

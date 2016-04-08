@@ -11,6 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\Environment;
 use Contao\Input;
 use Contao\FrontendTemplate;
 
@@ -68,6 +69,37 @@ class ModuleFormFilter extends \Contao\Module
 
         $arrWidget = array();
         $autoComplete = new AutoCompletion();
+
+        // generate action
+        $formAction = Environment::get('request');
+
+        // override action
+        if($this->fm_redirect_source)
+        {
+            $type = $this->fm_redirect_source;
+
+            if($type == 'siteID')
+            {
+                $id = $this->fm_redirect_jumpTo;
+                if($id)
+                {
+                    $pageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($id)->row();
+                }
+                if(!empty($pageDB))
+                {
+                    $formAction = $this->generateFrontendUrl($pageDB);
+                }
+            }
+
+            if($type == 'siteURL')
+            {
+                $url = $this->fm_redirect_url;
+                if($url)
+                {
+                    $formAction = $this->replaceInsertTags($url);
+                }
+            }
+        }
 
         foreach ($fields as $i => $field) {
 
@@ -256,6 +288,7 @@ class ModuleFormFilter extends \Contao\Module
         $objTemplate = new FrontendTemplate($formTemplate);
         $objTemplate->setData(array('widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit']));
         $strResult .= $objTemplate->parse();
+        $this->Template->action = $formAction;
         $this->Template->reset = $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'];
         $this->Template->cssID = $this->cssID;
         $this->Template->fields = $strResult;

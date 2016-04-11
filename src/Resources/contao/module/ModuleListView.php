@@ -48,30 +48,49 @@ class ModuleListView extends Module
     public $listViewOffset = 0;
 
     /**
+     * @var array
+     */
+    protected $markerCache = array();
+
+    /**
+     * @var bool
+     */
+    protected $loadMapScript = false;
+
+    /**
+     * @var null
+     */
+    protected $feViewID = null;
+
+    /**
      *
      */
     public function generate()
     {
-
-        //
+        // backend view
         if (TL_MODE == 'BE') {
 
             $objTemplate = new \BackendTemplate('be_wildcard');
             $objTemplate->wildcard = '### ' . $this->name . ' ###';
             $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
             return $objTemplate->parse();
-
         }
 
         $this->import('FrontendUser', 'User');
+
+        // set fe view id
+        $this->feViewID = md5($this->id);
+
+        // change template
+        if (TL_MODE == 'FE' && $this->fm_addMap) {
+            $this->strTemplate = 'mod_fmodule_map';
+        }
 
         //auto_page Attribute
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
             Input::setGet('item', Input::get('auto_item'));
         }
-
         return parent::generate();
-
     }
 
     /**
@@ -94,6 +113,20 @@ class ModuleListView extends Module
         $fieldsArr = array();
         $fieldWidgets = array();
         $this->tablename = $tablename;
+        $mapFields = array();
+
+        // map view settings
+        $mapSettings = array();
+        if ($this->fm_addMap) {
+            $mapSettings['mapZoom'] = $this->fm_mapZoom;
+            $mapSettings['mapMarker'] = $this->fm_mapMarker;
+            $mapSettings['mapInfoBox'] = $this->fm_mapInfoBox;
+            $mapSettings['mapType'] = $this->fm_mapType;
+            $mapSettings['mapStyle'] = $this->fm_mapStyle;
+            $mapSettings['mapScrollWheel'] = $this->fm_mapScrollWheel ? 'true' : 'false';
+            $mapSettings['lat'] = $this->fm_center_lat ? $this->fm_center_lat : '0';
+            $mapSettings['lng'] = $this->fm_center_lng ? $this->fm_center_lng : '0';
+        }
 
         while ($moduleDB->next()) {
 
@@ -114,34 +147,39 @@ class ModuleListView extends Module
 
             $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
 
-            if ($val) {
-                $modArr['enable'] = true;
+            if ($val) $modArr['enable'] = true;
+
+            // map
+            if ($moduleDB->type == 'map_field') {
+
+                // set map settings
+                $mapFields[] = HelperModel::setGoogleMap($modArr);
+
+                // set loadMapScript to true
+                $this->loadMapScript = true;
+
+                // load map libraries
+                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
             }
 
             // field
             if ($moduleDB->type == 'widget') {
-
                 $tplName = $moduleDB->widgetTemplate;
-                
                 $tpl = '';
-
                 if (!$tplName) {
-                    $tplNameType = explode('.', $moduleDB->widget_type)[0];                   
+                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                     $tpl = $this->parseTemplateName($tpl);
                 }
-
                 $fieldWidgets[$moduleDB->fieldID] = array(
                     'fieldID' => $moduleDB->fieldID,
                     'widgetType' => $moduleDB->widget_type,
                     'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
-                                
             }
 
             $fieldsArr[$moduleDB->fieldID] = $modArr;
-            
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
@@ -155,7 +193,7 @@ class ModuleListView extends Module
         //get text search results
         $textSearchResults = array();
         if ($qTextSearch) {
-            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID);
+            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID, $qResult['searchSettings']);
         }
 
         // get list view
@@ -165,12 +203,10 @@ class ModuleListView extends Module
         $qOrderByStr = $this->getOrderBy();
         $qProtectedStr = ' AND published = "1"';
 
-        // if preview mode
-        if (HelperModel::previewMode()) {
-            $qProtectedStr = '';
-        }
+        //  preview mode
+        if (HelperModel::previewMode()) $qProtectedStr = '';
 
-        // all items in list
+        // get all items
         $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ' . $wrapperID . $qProtectedStr . $qStr . $qOrderByStr)->query();
 
         // image size
@@ -195,8 +231,8 @@ class ModuleListView extends Module
             if (!HelperModel::outSideScope($listDB->start, $listDB->stop)) {
                 continue;
             }
-			
-		    $imagePath = $this->generateSingeSrc($listDB);
+
+            $imagePath = $this->generateSingeSrc($listDB);
             if ($imagePath) {
                 $listDB->singleSRC = $imagePath;
             }
@@ -236,7 +272,7 @@ class ModuleListView extends Module
             $itemsArr[] = $listDB->row();
 
         }
-		//exit;
+
         //pagination
         $total = count($itemsArr);
         $paginationStr = $this->createPagination($total);
@@ -245,12 +281,22 @@ class ModuleListView extends Module
 
 
         $strResults = '';
-        $objTemplate = new FrontendTemplate($this->f_list_template);
+        $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
+        $objTemplate = new FrontendTemplate($template);
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
             $item = $itemsArr[$i];
-			
+
+            // parse value if map is enabled
+            if ($this->fm_addMap) {
+                $item['geo_latitude'] = $item['geo_latitude'] ? $item['geo_latitude'] : '0';
+                $item['geo_longitude'] = $item['geo_longitude'] ? $item['geo_longitude'] : '0';
+                $item['title'] = mb_convert_encoding($item['title'], 'UTF-8');
+                $item['description'] = mb_convert_encoding($item['description'], 'UTF-8');
+                $item['info'] = mb_convert_encoding($item['info'], 'UTF-8');
+            }
+
             //set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
@@ -298,7 +344,6 @@ class ModuleListView extends Module
             if (!empty($fieldWidgets)) {
 
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
-
                 foreach ($fieldWidgets as $widget) {
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
@@ -318,11 +363,7 @@ class ModuleListView extends Module
 
                     $item[$id] = $objFieldTemplate->parse();
                 }
-
             }
-
-            //set data
-            $objTemplate->setData($item);
 
             // set last first classes
             if ($i == 0) {
@@ -332,37 +373,94 @@ class ModuleListView extends Module
                 $item['cssClass'] .= ' last';
             }
 
+            // create marker path
+            if ($item['addMarker'] && $item['markerSRC']) {
+                if ($this->markerCache[$item['markerSRC']]) {
+                    $item['markerSRC'] = $this->markerCache[$item['markerSRC']];
+                } else {
+                    $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($item['markerSRC']);
+                    if ($markerDB->count()) {
+                        $pathInfo = $markerDB->row()['path'];
+                        if ($pathInfo) {
+                            $this->markerCache[$item['markerSRC']] = $pathInfo;
+                            $item['markerSRC'] = $pathInfo;
+                        }
+                    }
+                }
+            }
+
+            // map settings from field
+            if (!empty($mapFields)) {
+                foreach ($mapFields as $map) {
+                    $objMapTemplate = new FrontendTemplate($map['template']);
+                    $item['mapSettings'] = $map;
+                    $objMapTemplate->setData($item);
+                    $item[$map['fieldID']] = $objMapTemplate->parse();
+                }
+            }
+
+            if (!empty($mapSettings)) {
+                $item['mapSettings'] = $mapSettings;
+            }
+
+            // set fe view id
+            $item['feViewID'] = $this->feViewID;
+
+            //set data
+            $objTemplate->setData($item);
+
+            //set image
+            if ($item['addImage']) {
+                $this->addImageToTemplate($objTemplate, array(
+                    'singleSRC' => $item['singleSRC'],
+                    'alt' => $item['alt'],
+                    'size' => $item['size'],
+                    'fullsize' => $item['fullsize'],
+                    'caption' => $item['caption'],
+                    'title' => $item['title']
+                ));
+            }
+
             // set enclosure
             $objTemplate->enclosure = array();
             if ($item['addEnclosure']) {
                 $this->addEnclosuresToTemplate($objTemplate, $item);
             }
 
-            //set image
-            if ($item['addImage']) {
-                $this->addImageToTemplate($objTemplate, $item);
-            }
-
             $strResults .= $objTemplate->parse();
-
         }
 
-        $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
+        // set map settings
+        if (!empty($mapSettings)) {
 
+            // set map settings array to template
+            $this->Template->mapSettings = $mapSettings;
+
+            // set loadMapScript to true
+            $this->loadMapScript = true;
+
+            // load map libraries
+            if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
+        }
+
+        // set js files
+        if ($this->loadMapScript) {
+            $language = $objPage->language ? $objPage->language : 'en';
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
+        }
+        $this->Template->feViewID = $this->feViewID;
+        $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
     }
 
     /**
-     * @param $mode
+     * @param $return
      * @return mixed
      */
     protected function setValuesForAutoPageAttribute($return)
     {
         global $objPage;
-
-        $alias =  $objPage->alias;
-
-        if($return['type'] == 'multi_choice')
-        {
+        $alias = $objPage->alias;
+        if ($return['type'] == 'multi_choice') {
 
             $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
             $alias = Environment::get('requestUri');
@@ -370,18 +468,13 @@ class ModuleListView extends Module
             $alias = array_filter($alias);
             $alias = array_values($alias);
 
-            if($language && $alias[0] && $language == $alias[0])
-            {
+            if ($language && $alias[0] && $language == $alias[0]) {
                 array_shift($alias);
             }
-
         }
-
         $return['value'] = $alias;
-
         return $return;
     }
-
 
     /**
      * @return string
@@ -415,22 +508,17 @@ class ModuleListView extends Module
         }
 
         return $qOrderByStr;
-
     }
-	
-	/**
-     * @param $usesTemplates
+
+    /**
+     * @param $templateName
      * @return mixed
      */
-    public function parseTemplateName($usesTemplates)
+    public function parseTemplateName($templateName)
     {
-        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
-        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
-        $strVal = str_replace($arrSearch, $arrReplace, $usesTemplates);
-        $strVal = str_replace(' ', '', $strVal);
-        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+        return DiverseFunction::parseTemplateName($templateName);
     }
-	
+
     /**
      * @return array|string
      */
@@ -473,11 +561,11 @@ class ModuleListView extends Module
         }
 
         return 'id';
-
     }
 
     /**
-     * @param $filterValues
+     * @param $taxonomyFromFE
+     * @param $taxonomyFromPage
      * @param $return
      * @return mixed
      */
@@ -490,16 +578,14 @@ class ModuleListView extends Module
         // die fieldID wird als key übergeben. daher kann man eine schleife sparen
         // erstmal weglassen wegen der kompatibilität
         foreach ($taxonomyFromFE as $filterValue) {
-            if($filterValue['set']['ignore'])
-            {
+            if ($filterValue['set']['ignore']) {
                 continue;
             }
             $taxonomies[$filterValue['fieldID']] = $filterValue;
         }
 
         foreach ($taxonomyFromPage as $filterValue) {
-            if($filterValue['set']['ignore'])
-            {
+            if ($filterValue['set']['ignore']) {
                 continue;
             }
             if ($filterValue['active'] == '1') {
@@ -561,7 +647,6 @@ class ModuleListView extends Module
     }
 
 
-
     /**
      * @param $fieldID
      * @param $type
@@ -584,12 +669,10 @@ class ModuleListView extends Module
             'value' => $getFilter,
             'operator' => $getOperator
         );
-
-
     }
 
     /**
-     * @param $items
+     * @param int $total
      * @return null|string
      */
     public function createPagination($total = 0)
@@ -610,8 +693,7 @@ class ModuleListView extends Module
 
         }
 
-        if($getPagination == '0' && !is_null($getPagination))
-        {
+        if ($getPagination == '0' && !is_null($getPagination)) {
             $this->f_perPage = $getPagination;
         }
 
@@ -637,7 +719,6 @@ class ModuleListView extends Module
         }
 
         return null;
-
     }
 
     /**
@@ -658,7 +739,6 @@ class ModuleListView extends Module
         }
 
         return null;
-
     }
 
     /**
@@ -670,6 +750,4 @@ class ModuleListView extends Module
     {
         return $this->generateFrontendUrl($objTarget, '/' . $alias);
     }
-
-
 }

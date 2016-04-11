@@ -5,6 +5,7 @@ Mit dieser Erweiterung ist es möglich eigene Contao Module zu erstellen.
 Damit kannst du dein Content besser strukturieren und damit deine Content Pflege optimieren.
 Aber der eigentliche Clou an der Sache ist, dass du ganz einfach und ohne viel Aufwand eigene Frontend Filter für deine Besucher erstellen kannst.
 
+
 [Mehr erfahren…][2]
 
 Systemvoraussetzung

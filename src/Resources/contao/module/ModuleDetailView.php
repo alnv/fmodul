@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   F Modul
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @copyright 2016 Alexander Naumov
  */
 
 use Contao\FrontendTemplate;
@@ -30,41 +30,40 @@ class ModuleDetailView extends Module
     protected $strTemplate = 'mod_fmodule_detail';
 
     /**
+     * @var array
+     */
+    protected $markerCache = array();
+
+    /**
+     * @var bool
+     */
+    protected $loadMapScript = false;
+
+    /**
      * @return string
      */
     public function generate()
     {
-
         if (TL_MODE == 'BE') {
-
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '. $this->name .' ###';
+            $objTemplate->wildcard = '### ' . $this->name . ' ###';
             $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
             return $objTemplate->parse();
-
         }
 
         $this->import('FrontendUser', 'User');
 
         if (!isset($_GET['auto_item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
-
             Input::setGet('auto_item', Input::get('auto_item'));
-
         }
 
-        if($this->f_doNotSet_404 == '1' && !Input::get('auto_item'))
-        {
+        if ($this->f_doNotSet_404 == '1' && !Input::get('auto_item')) {
             global $objPage;
-
             $objPage->noSearch = 1;
             $objPage->cache = 0;
-
             return '';
-
         }
-
         return parent::generate();
-
     }
 
     /**
@@ -81,7 +80,6 @@ class ModuleDetailView extends Module
         $tablename = $listModuleDB['f_select_module'];
         $wrapperID = $listModuleDB['f_select_wrapper'];
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-
         $alias = Input::get('auto_item');
         $isAlias = QueryModel::isValue($alias);
 
@@ -95,21 +93,34 @@ class ModuleDetailView extends Module
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $fieldWidgets = array();
         $moduleArr = array();
+        $mapFields = array();
 
-        while($moduleDB->next())
-        {
+        //
+        while ($moduleDB->next()) {
             if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
                 continue;
             }
-			
-			if ($moduleDB->type == 'widget') {
+
+            $modArr = $moduleDB->row();
+
+            // map
+            if ($moduleDB->type == 'map_field') {
+
+                $mapFields[] = HelperModel::setGoogleMap($modArr);
+
+                // set loadMapScript to true
+                $this->loadMapScript = true;
+
+                // load map libraries
+                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
+            }
+
+            if ($moduleDB->type == 'widget') {
 
                 $tplName = $moduleDB->widgetTemplate;
-                
                 $tpl = '';
-
                 if (!$tplName) {
-                    $tplNameType = explode('.', $moduleDB->widget_type)[0];                   
+                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                     $tpl = $this->parseTemplateName($tpl);
@@ -120,25 +131,18 @@ class ModuleDetailView extends Module
                     'widgetType' => $moduleDB->widget_type,
                     'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
                 );
-                                
             }
-			
-            $moduleArr[$moduleDB->fieldID] = $moduleDB->row();
-
+            $moduleArr[$moduleDB->fieldID] = $modArr;
         }
 
         $strResult = '';
         $objTemplate = new FrontendTemplate($detailTemplate);
-
         $qProtectedStr = ' AND published = "1"';
-        if (HelperModel::previewMode()) {
-            $qProtectedStr = '';
-        }
+        if (HelperModel::previewMode()) $qProtectedStr = '';
+        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? ' . $qProtectedStr . '')->execute($wrapperID, $alias)->row();
+        $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
 
-        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? '.$qProtectedStr.'')->execute($wrapperID, $alias)->row();
-        $wrapperDB = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($wrapperID)->row();
-
-        if ( count($itemDB) < 1) {
+        if (count($itemDB) < 1) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($objPage->id);
             exit;
@@ -149,7 +153,7 @@ class ModuleDetailView extends Module
             exit;
         }
 
-        //image
+        // image
         $imagePath = $this->generateSingeSrc($itemDB);
         if ($imagePath) {
             $itemDB['singleSRC'] = $imagePath;
@@ -159,18 +163,15 @@ class ModuleDetailView extends Module
         $imgSize = false;
 
         // Override the default image size
-        if ($this->imgSize != '')
-        {
+        if ($this->imgSize != '') {
             $size = deserialize($this->imgSize);
 
-            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
-            {
+            if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $imgSize = $this->imgSize;
             }
         }
 
-        if ($imgSize)
-        {
+        if ($imgSize) {
             $itemDB['size'] = $imgSize;
         }
 
@@ -218,13 +219,16 @@ class ModuleDetailView extends Module
             }
         }
 
-        $seoDescription = strip_tags($itemDB['description']);
+        // seo
+        $descriptionColName = $this->fm_seoDescription ? $this->fm_seoDescription : 'description';
+        $pageTitleColName = $this->fm_seoPageTitle ? $this->fm_seoPageTitle : 'title';
+        $seoDescription = strip_tags($itemDB[$descriptionColName]);
         $objPage->description = $seoDescription;
-        $objPage->pageTitle = $itemDB['title'];
-        $authorDB = null;
+        $objPage->pageTitle = $itemDB[$pageTitleColName];
 
-        if($itemDB['author'])
-        {
+        // author
+        $authorDB = null;
+        if ($itemDB['author']) {
             $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($itemDB['author'])->row();
             unset($authorDB['password']);
             unset($authorDB['session']);
@@ -237,20 +241,17 @@ class ModuleDetailView extends Module
         $itemDB['time'] = $itemDB['time'] ? date($objPage->timeFormat, $itemDB['time']) : '';
         $itemDB['filter'] = $moduleArr;
 
-        if(!empty($fieldWidgets))
-        {
+        if (!empty($fieldWidgets)) {
 
             $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
 
-            foreach($fieldWidgets as $widget)
-            {
+            foreach ($fieldWidgets as $widget) {
                 $id = $widget['fieldID'];
                 $tplName = $widget['widgetTemplate'];
                 $type = $widget['widgetType'];
                 $value = $itemDB[$id];
 
-                if( in_array( $type, $arrayAsValue ) )
-                {
+                if (in_array($type, $arrayAsValue)) {
                     $value = unserialize($value);
                 }
 
@@ -263,7 +264,32 @@ class ModuleDetailView extends Module
 
                 $itemDB[$id] = $objFieldTemplate->parse();
             }
+        }
 
+        // create marker path
+        if ($itemDB['addMarker'] && $itemDB['markerSRC']) {
+            if ($this->markerCache[$itemDB['markerSRC']]) {
+                $itemDB['markerSRC'] = $this->markerCache[$itemDB['markerSRC']];
+            } else {
+                $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($itemDB['markerSRC']);
+                if ($markerDB->count()) {
+                    $pathInfo = $markerDB->row()['path'];
+                    if ($pathInfo) {
+                        $this->markerCache[$itemDB['markerSRC']] = $pathInfo;
+                        $itemDB['markerSRC'] = $pathInfo;
+                    }
+                }
+            }
+        }
+
+        // map
+        if (!empty($mapFields)) {
+            foreach ($mapFields as $map) {
+                $objMapTemplate = new FrontendTemplate($map['template']);
+                $itemDB['mapSettings'] = $map;
+                $objMapTemplate->setData($itemDB);
+                $itemDB[$map['fieldID']] = $objMapTemplate->parse();
+            }
         }
 
         $objTemplate->setData($itemDB);
@@ -271,15 +297,20 @@ class ModuleDetailView extends Module
         //enclosure
         $objTemplate->enclosure = array();
 
-        if ( $itemDB['addEnclosure'] )
-        {
+        if ($itemDB['addEnclosure']) {
             $this->addEnclosuresToTemplate($objTemplate, $itemDB);
         }
 
         //add image
-        if( $itemDB['addImage'] )
-        {
-            $this->addImageToTemplate($objTemplate, $itemDB);
+        if ($itemDB['addImage']) {
+            $this->addImageToTemplate($objTemplate, array(
+                'singleSRC' => $itemDB['singleSRC'],
+                'alt' => $itemDB['alt'],
+                'size' => $itemDB['size'],
+                'fullsize' => $itemDB['fullsize'],
+                'caption' => $itemDB['caption'],
+                'title' => $itemDB['title']
+            ));
         }
 
         $strResult .= $objTemplate->parse();
@@ -287,19 +318,15 @@ class ModuleDetailView extends Module
 
         //allow comments
         $this->Template->allowComments = $wrapperDB['allowComments'];
-        if( $wrapperDB['allowComments'] )
-        {
+        if ($wrapperDB['allowComments']) {
             $this->import('Comments');
             $arrNotifies = array();
-            if( $wrapperDB['notify'] != 'notify_author' )
-            {
+            if ($wrapperDB['notify'] != 'notify_author') {
                 $arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
             }
 
-            if( $wrapperDB['notify'] != 'notify_admin' )
-            {
-                if($authorDB != null && $authorDB['email'] != '')
-                {
+            if ($wrapperDB['notify'] != 'notify_admin') {
+                if ($authorDB != null && $authorDB['email'] != '') {
                     $arrNotifies[] = $authorDB['email'];
                 }
             }
@@ -312,25 +339,25 @@ class ModuleDetailView extends Module
             $objConfig->disableCaptcha = $wrapperDB['disableCaptcha'];
             $objConfig->bbcode = $wrapperDB['bbcode'];
             $objConfig->moderate = $wrapperDB['moderate'];
-            $this->Comments->addCommentsToTemplate($this->Template, $objConfig, $tablename.'_data', $itemDB['id'], $arrNotifies);
-
+            $this->Comments->addCommentsToTemplate($this->Template, $objConfig, $tablename . '_data', $itemDB['id'], $arrNotifies);
         }
 
+        // set js files
+        if ($this->loadMapScript) {
+            $language = $objPage->language ? $objPage->language : 'en';
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
+        }
     }
-	
-	/**
-     * @param $usesTemplates
+
+    /**
+     * @param $templateName
      * @return mixed
      */
-    public function parseTemplateName($usesTemplates)
+    public function parseTemplateName($templateName)
     {
-        $arrReplace = array('#', '<', '>', '(', ')', '\\', '=');
-        $arrSearch = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
-        $strVal = str_replace($arrSearch, $arrReplace, $usesTemplates);
-        $strVal = str_replace(' ', '', $strVal);
-        return preg_replace('/[\[{\(].*[\]}\)]/U', '', $strVal);
+        return DiverseFunction::parseTemplateName($templateName);
     }
-	
+
     /**
      * @param $row
      * @return bool|void
@@ -347,9 +374,6 @@ class ModuleDetailView extends Module
 
             }
         }
-
         return null;
-
     }
-
 }

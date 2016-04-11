@@ -1,8 +1,8 @@
 <div class="field_textarea">
     <?php if($this->value && ( $this->type == 'textarea.blank' || $this->type == 'text.blank' ) ): ?>
-        <p><?php echo $this->value; ?></p>
+        <p><?= $this->value; ?></p>
     <?php endif; ?>
     <?php if($this->value && $this->type == 'textarea.tinyMCE'): ?>
-        <?php echo $this->value; ?>
+        <?= $this->value; ?>
     <?php endif; ?>
 </div>

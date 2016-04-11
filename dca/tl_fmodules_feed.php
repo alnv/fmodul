@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_feed'] = array
     'config' => array
     (
         'dataContainer' => 'Table',
-        'enableVersioning' => true,
+        'enableVersioning' => false,
         'onload_callback' => array
         (
             array('tl_fmodules_feed', 'checkPermission'),

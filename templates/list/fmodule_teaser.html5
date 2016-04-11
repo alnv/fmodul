@@ -1,67 +1,60 @@
-<div <?php if($this->itemID):?> id="<?php echo $this->itemID ?>" <?php endif; ?> class="fmodule_teaser <?php echo $this->cssClass;?><?php echo $this->itemCSS; ?>">
+<div <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_teaser <?= $this->cssClass; ?><?= $this->itemCSS; ?>">
 
-        <?php if( $this->href ): ?>
-            <p class="title"><a href="<?php echo $this->href; ?>" <?php if($this->target): ?> target="_blank" <?php endif; ?> title="<?php echo $this->title; ?>"><?php echo $this->title; ?></a></p>
-        <?php else: ?>
-            <p class="title" <?php if($this->target): ?> target="_blank" <?php endif; ?> ><?php echo $this->title; ?></p>
-        <?php endif; ?>
+    <?php if ($this->href): ?>
+        <p class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></p>
+    <?php else: ?>
+        <p class="title" <?php if ($this->target): ?> target="_blank" <?php endif; ?> ><?= $this->title; ?></p>
+    <?php endif; ?>
 
-        <?php if($this->info): ?>
-<p class="info"><?php echo $this->info; ?></p>
-        <?php endif; ?>
-        <?php if($this->date): ?>
-        <?php echo $this->date;?><?php if($this->time):?><time> - <?php echo $this->time; ?></time><?php endif; ?>
-        <?php endif; ?>
+    <?php if ($this->info): ?>
+        <p class="info"><?= $this->info; ?></p>
+    <?php endif; ?>
+    <?php if ($this->date): ?>
+        <p class="date"><?= $this->date; ?><?php if ($this->time): ?><time> - <?= $this->time; ?></time><?php endif; ?></p>
+    <?php endif; ?>
 
-    <?php if($this->addImage): ?>
+    <?php if ($this->addImage): ?>
 
-        <figure class="image_container" <?php if(version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
+        <figure class="image_container" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
 
-            <?php if( $this->href ): ?>
-                <a href="<?php echo $this->href; ?>" <?php if(version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if($this->target): ?> target="_blank" <?php endif; ?> title="<?php echo $this->title; ?>">
-            <?php endif; ?>
+                <?php if ($this->href): ?>
+                <a href="<?= $this->href; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if ($this->target): ?> target="_blank" <?php endif; ?>>
+                <?php endif; ?>
+
                     <?php $this->insert('picture_default', $this->picture); ?>
-            <?php if( $this->href ): ?>
-                </a>
-            <?php endif; ?>
 
-            <?php if($this->caption): ?>
-                <figcaption <?php if(version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?php echo $this->caption; ?></figcaption>
+                <?php if ($this->href): ?>
+                </a>
+                <?php endif; ?>
+
+            <?php if ($this->caption): ?>
+                <figcaption <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
             <?php endif; ?>
 
         </figure>
 
     <?php endif; ?>
 
-        <?php if($this->description): ?>
-
-            <?php echo $this->description; ?>
-
-        <?php endif; ?>
-
-    <?php if(count($this->teaser) > 0):?>
-
-        <?php foreach($this->teaser as $teaserStr): ?>
-
-            <?php echo $teaserStr; ?>
-
-        <?php endforeach;?>
-
+    <?php if ($this->description): ?>
+        <?= $this->description; ?>
     <?php endif; ?>
 
+    <?php if (count($this->teaser) > 0): ?>
+        <?php foreach ($this->teaser as $teaserStr): ?>
+            <?= $teaserStr; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
-        <?php if ($this->enclosure): ?>
-
+    <?php if ($this->enclosure): ?>
         <div class="enclosure">
             <?php foreach ($this->enclosure as $enclosure): ?>
-                <p><img src="<?php echo $enclosure['icon'] ?>" width="18" height="18" alt="<?php echo $enclosure['mime'] ?>" class="mime_icon"> <a href="<?php echo $enclosure['href'] ?>" title="<?php echo $enclosure['title'] ?>"><?php echo $enclosure['link'] ?> <span class="size">(<?php echo $enclosure['filesize'] ?>)</span></a></p>
+                <p><img src="<?= $enclosure['icon'] ?>" width="18" height="18" alt="<?= $enclosure['mime'] ?>" class="mime_icon"> <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a></p>
             <?php endforeach; ?>
         </div>
+    <?php endif; ?>
 
-        <?php endif; ?>
-
-    <?php if($this->href): ?>
-        <p class="more"><a href="<?php echo $this->href; ?>" <?php if($this->target): ?> target="_blank" <?php endif; ?> title="<?php echo $this->title; ?>"><?php echo $this->more; ?></a></p>
+    <?php if ($this->href): ?>
+        <p class="more"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->more; ?></a></p>
     <?php endif; ?>
 
 </div>

@@ -1,0 +1,52 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+    <div id="map_<?= $this->id; ?>" class="google_map" style="width: 100%; height: 800px;"></div>
+
+    <script async defer>
+
+        'use strict';
+
+        // set global variable for map data. optimised for google insight speed
+        if (null == FModuleGoogleMap) var FModuleGoogleMap = [];
+
+        // set unique global map id variable
+        var FModuleMap<?= $this->feViewID; ?> = null;
+
+        /**
+         * load script async. optimised for google insight speed
+         */
+        FModuleGoogleMap.push(function () {
+
+            // set center map view
+            var location = new google.maps.LatLng("<?= $this->fm_center_lat; ?>", "<?= $this->fm_center_lng; ?>");
+
+            // set unique map obj
+            FModuleMap<?= $this->feViewID?> = new google.maps.Map(document.getElementById("map_<?= $this->id; ?>"), {
+
+                // set center location
+                center: location,
+
+                // set zoom factor
+                zoom: <?= $this->mapSettings['mapZoom']; ?>,
+
+                // allow scroll
+                scrollwheel: <?= $this->mapSettings['mapScrollWheel']; ?>,
+
+                // set map type
+                mapTypeId: google.maps.MapTypeId.<?= $this->mapSettings['mapType']; ?>,
+
+                // set style array for map
+                <?php if($this->mapSettings['mapStyle']):?> <?= 'styles: ' . $this->mapSettings['mapStyle'] ?> <?php endif; ?>
+
+            });
+
+        });
+
+    </script>
+
+<?= $this->results; ?>
+<?= $this->pagination; ?>
+
+<?php $this->endblock(); ?>

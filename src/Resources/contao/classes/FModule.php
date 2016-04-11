@@ -284,9 +284,7 @@ class FModule extends Frontend
                 $objFeed->addItem($objItem);
             }
         }
-
         File::putContent('share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
-
     }
 
     /**
@@ -323,7 +321,6 @@ class FModule extends Frontend
         $findBy = $this->Database->prepare($sql)->execute();
 
         return $findBy;
-
     }
 
     /**
@@ -411,9 +408,7 @@ class FModule extends Frontend
                 }
             }
         }
-
         return $arrPages;
-
     }
 
     /**
@@ -493,10 +488,8 @@ class FModule extends Frontend
             if ($this->Database->tableExists($tablename)) {
                 return $this->Database->prepare('SELECT id FROM ' . $tablename . ' WHERE published = "1"' . $qPid . $q . '')->query()->count();
             }
-
             return 0;
         }
-
         return false;
     }
 
@@ -549,11 +542,8 @@ class FModule extends Frontend
             if ($allFiltersDB->type == 'toggle_field' && !$qArr[$tname]) {
                 $filterArr[$tname]['value'] = 'skip';
             }
-
         }
-
         return $filterArr;
-
     }
 
     /**
@@ -633,6 +623,7 @@ class FModule extends Frontend
      */
     public function createFModuleUserGroupDCA()
     {
+
 
         if (!$this->Database->tableExists('tl_fmodules')) {
             return;
@@ -726,7 +717,6 @@ class FModule extends Frontend
                 'sql' => "blob NULL"
 
             );
-
         }
     }
 
@@ -781,7 +771,6 @@ class FModule extends Frontend
 
         echo json_encode($return);
         exit;
-
     }
 
     /**
@@ -822,8 +811,5 @@ class FModule extends Frontend
         }
 
         return array_unique($return);
-
     }
-
-
 }

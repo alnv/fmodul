@@ -1,4 +1,4 @@
-<?php echo $this->widgets; ?>
+<?= $this->widgets; ?>
 <div class="widget-submit form-widget">
-    <input type="submit" class="submit" value="<?php echo $this->filter; ?>"/>
+    <input type="submit" class="submit" value="<?= $this->filter; ?>"/>
 </div>

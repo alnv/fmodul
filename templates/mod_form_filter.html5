@@ -1,29 +1,36 @@
-
 <?php $this->extend('block_searchable'); ?>
 <?php $this->block('content'); ?>
 
-    <form id="form_<?php echo $this->id; ?>" name="form_<?php echo $this->id; ?>" method="GET" action="{{env::request}}">
+    <!-- indexer::stop -->
+    <form id="form_<?= $this->id; ?>" name="form_<?= $this->id; ?>" method="GET" action="<?= $this->action; ?>">
 
-        <?php echo $this->fields; ?>
+        <?= $this->fields; ?>
 
-        <!-- reset button -->
         <?php if($this->f_reset_button): ?>
+
             <div class="reset-form">
-                <p><a id="reset_btn_<?php echo $this->id; ?>" style="cursor:pointer;"><?php echo $this->reset; ?></a></p>
+                <p><a id="reset_btn_<?= $this->id; ?>" style="cursor:pointer;"><?= $this->reset; ?></a></p>
             </div>
-            <script>
-                document.getElementById("reset_btn_<?php echo $this->id; ?>").onclick = function () {
+
+            <script async defer>
+
+                document.getElementById("reset_btn_<?= $this->id; ?>").onclick = function () {
 
                     clearForm();
 
                 };
+
                 function clearForm() {
-                    var form = document.getElementById("form_<?php echo $this->id; ?>");
+                    var form = document.getElementById("form_<?= $this->id; ?>");
                     var urlStr = "{{env::request}}";
                     window.location = urlStr.split('?')[0];
                 }
+
             </script>
+
         <?php endif; ?>
+
     </form>
+    <!-- indexer::continue -->
 
 <?php $this->endblock(); ?>

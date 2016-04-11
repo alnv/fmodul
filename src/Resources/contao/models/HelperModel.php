@@ -11,6 +11,13 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\Environment;
+use Contao\StringUtil;
+
+/**
+ * Class HelperModel
+ * @package FModule
+ */
 class HelperModel
 {
     /**
@@ -18,36 +25,53 @@ class HelperModel
      */
     public static function previewMode()
     {
-        if (BE_USER_LOGGED_IN) {
-            return true;
-        }
-
+        if (BE_USER_LOGGED_IN) return true;
         return false;
     }
 
     /**
+     * @param $rowField
+     * @return array
+     */
+    public static function setGoogleMap($rowField)
+    {
+        $template = DiverseFunction::parseTemplateName($rowField['mapTemplate']);
+        $zoom = $rowField['mapZoom'] ? $rowField['mapZoom'] : 15;
+        $scrollWheel = $rowField['mapScrollWheel'] ? 'true' : 'false';
+        $mapType = $rowField['mapType'] ? $rowField['mapType'] : 'ROADMAP';
+        $styles = $rowField['mapStyle'] ? $rowField['mapStyle'] : '';
+
+        $mapSettings = array(
+            'fieldID' => $rowField['fieldID'],
+            'title' => mb_convert_encoding($rowField['title'], 'UTF-8'),
+            'description' => mb_convert_encoding($rowField['description'], 'UTF-8'),
+            'template' => $template,
+            'mapScrollWheel' => $scrollWheel,
+            'mapZoom' => $zoom,
+            'mapType' => $mapType,
+            'mapStyle' => $styles,
+            'mapMarker' => $rowField['mapMarker'],
+            'mapInfoBox' => $rowField['mapInfoBox']
+        );
+
+        return $mapSettings;
+    }
+
+    /**
      * @param $item
+     * @param $allowedGroups
      * @return bool
      */
     public static function sortOutProtected($item, $allowedGroups)
     {
-
-        if (BE_USER_LOGGED_IN) {
-            return false;
-        }
-
-        if (FE_USER_LOGGED_IN && $item['guests'] == '1') {
-            return true;
-        }
-
+        if (BE_USER_LOGGED_IN) return false;
+        if (FE_USER_LOGGED_IN && $item['guests'] == '1') return true;
         if (FE_USER_LOGGED_IN && $item['protected'] == '1') {
-
             $dataGroup= deserialize( $item['groups'] );
             if (!is_array($dataGroup) || empty($dataGroup) || count(array_intersect($dataGroup, $allowedGroups)) < 1) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -85,6 +109,10 @@ class HelperModel
                         if ($isValue) {
                             $isFulltextSearch = true;
                             $qTextSearch = $field['value'];
+                            $searchSettings = array(
+                                'fields' =>  $field['fullTextSearchFields'] ? $field['fullTextSearchFields'] : 'title,description',
+                                'orderBy' => $field['fullTextSearchOrderBy'] ? $field['fullTextSearchOrderBy'] : 'title'
+                            );
                         }
                         break;
                 }
@@ -95,6 +123,7 @@ class HelperModel
             'qStr' => $qStr,
             'isFulltextSearch' => $isFulltextSearch,
             '$qTextSearch' => $qTextSearch,
+            'searchSettings' => $searchSettings
         );
     }
 

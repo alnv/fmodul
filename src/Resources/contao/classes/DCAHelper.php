@@ -22,6 +22,7 @@ use Contao\Input;
  */
 class DCAHelper extends Backend
 {
+
 	/**
 	 *
 	 */
@@ -39,67 +40,94 @@ class DCAHelper extends Backend
 	public function getOptions($field, $moduleObj)
 	{
 		$options = array();
+
 		$hasOptions = array('multi_choice', 'simple_choice');
 		$table = $moduleObj['tablename'];
+
 		if(!$field['fieldID'])
 		{
 			return $options;
 		}
+
 		if(!in_array($field['type'], $hasOptions))
 		{
 			return $options;
 		}
+
+		if($field['fieldID'] == 'address_country')
+		{
+			return $this->getCountries();
+		}
+
 		$id = $this->pid ? $this->pid : Input::get('id');
+
 		if( Input::get('act') && Input::get('act') == 'editAll' )
 		{
 			$id = Input::get('id');
 		}
+
 		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.'')->execute();
+
 		$option = array();
+
 		while($optionsDB->next())
 		{
 			if(!$id)
 			{
 				continue;
 			}
+
 			if($optionsDB->id != $id)
 			{
 				continue;
 			}
+
 			$option = $optionsDB->row()[$field['fieldID']] ? deserialize($optionsDB->row()[$field['fieldID']]) : array();
+
 		}
+
 		if($field['dataFromTable'] == '1')
 		{
 			if(!$option['table'])
 			{
 				return $options;
 			}
+
 			if( !$this->Database->tableExists($option['table']) )
 			{
 				return $options;
 			}
+
 			if( !$option['col'] || !$option['title'] )
 			{
 				return $options;
 			}
+
 			$DataFromTableDB = $this->Database->prepare('SELECT '.$option['col'].', '.$option['title'].' FROM '.$option['table'].'')->execute();
+
 			while($DataFromTableDB->next())
 			{
 				$k = $DataFromTableDB->row()[$option['col']];
 				$v = $DataFromTableDB->row()[$option['title']];
 				$options[$k] = $v;
 			}
+
 			return $options;
 		}
+
 		foreach( $option as $value )
 		{
+
 			if(!$value['value'])
 			{
 				continue;
 			}
+
 			$options[$value['value']] = $value['label'];
 		}
+
 		return $options;
+
 	}
 
 	/**
@@ -141,7 +169,6 @@ class DCAHelper extends Backend
 		}
 
 		return Image::getHtml($src, $label, 'data-src="'.$temp.'" data-state="' . ($state ? 1 : 0) . '"');
-
 	}
 
 	/**
@@ -165,60 +192,5 @@ class DCAHelper extends Backend
 		}
 
 		return false;
-
 	}
-
-	/**
-	 * @param $field
-	 * @return array
-	 */
-	public function getFieldFromWidget($field)
-	{
-
-		$widgetArr = explode('.', $field['widget_type']);
-		$mandatory = $field['isMandatory'] ? true: false;
-
-		$return = array(
-
-			'label' => array($field['title'], $field['description']),
-			'inputType' => 'text',
-			'exclude' => true,
-			'eval' => array('mandatory' => $mandatory),
-			'sql' => "text NULL"
-
-		);
-
-		if($widgetArr[0] == 'textarea' && $widgetArr[1] == 'blank')
-		{
-			$return['inputType'] = 'textarea';
-		}
-
-		if($widgetArr[0] == 'textarea' && $widgetArr[1] == 'tinyMCE')
-		{
-			$return['inputType'] = 'textarea';
-			$return['eval']['rte'] = 'tinyMCE';
-		}
-
-		if($widgetArr[0] == 'list' && $widgetArr[1] == 'blank')
-		{
-			$return['inputType'] = 'listWizard';
-		}
-
-		if($widgetArr[0] == 'list' && $widgetArr[1] == 'keyValue')
-		{
-			$return['inputType'] = 'keyValueWizard';
-		}
-
-		if($widgetArr[0] == 'table' && $widgetArr[1] == 'blank')
-		{
-			$return['inputType'] = 'tableWizard';
-			$return['eval']['allowHtml'] = true;
-			$return['eval']['doNotSaveEmpty'] = true;
-			$return['eval']['style'] = 'width:142px;height:66px';
-		}
-
-		return $return;
-
-	}
-
 }

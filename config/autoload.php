@@ -1,8 +1,9 @@
 <?php
 
-\Contao\ClassLoader::addNamespace('FModule');
+ClassLoader::addNamespace('FModule');
 
 $pathToFiles = 'system/modules/fmodule/';
+
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
 {
     $pathToFiles = 'vendor/fmodule/fmodule/';
@@ -32,13 +33,17 @@ ClassLoader::addClasses(array
     'FModule\HelperModel' => $pathToFiles.'src/Resources/contao/models/HelperModel.php',
     'FModule\FModuleAjaxApi' => $pathToFiles.'src/Resources/contao/classes/FModuleAjaxApi.php',
     'FModule\AjaxApi' => $pathToFiles.'src/Resources/contao/api/AjaxApi.php',
-    'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php'
+    'FModule\ViewContainer' => $pathToFiles.'src/Resources/contao/classes/ViewContainer.php',
+    'FModule\GeoCoding' => $pathToFiles.'src/Resources/contao/classes/GeoCoding.php',
+    'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php',
+    'FModule\DiverseFunction' => $pathToFiles.'src/Resources/contao/classes/DiverseFunction.php'
 ));
 
 /**
  * Register the templates
  */
 $pathToTemplates = $pathToFiles.'templates';
+
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
 {
     $pathToTemplates = $pathToFiles.'src/Resources/contao/templates';
@@ -49,10 +54,11 @@ TemplateLoader::addFiles(array
 	'mod_fmodule_detail' => $pathToTemplates,
 	'mod_fmodule_list' => $pathToTemplates,
     'fm_form_filter' => $pathToTemplates.'/form',
+    'mod_fmodule_map' => $pathToTemplates.'/maps',
+    'fm_map_location' => $pathToTemplates.'/maps',
     'fmodule_full' => $pathToTemplates.'/list',
     'fmodule_teaser' => $pathToTemplates.'/list',
     'mod_form_filter' => $pathToTemplates,
-
     'fm_widget_date_field' => $pathToTemplates.'/widgets',
     'fm_widget_multi_choice' => $pathToTemplates.'/widgets',
     'fm_widget_simple_choice' => $pathToTemplates.'/widgets',
@@ -60,10 +66,9 @@ TemplateLoader::addFiles(array
     'fm_widget_fulltext_search' => $pathToTemplates.'/widgets',
     'fm_widget_wrapper_field' => $pathToTemplates.'/widgets',
     'fm_widget_toggle_field' => $pathToTemplates.'/widgets',
-
+    'fm_map_field' => $pathToTemplates.'/maps',
     'fm_field_textarea' => $pathToTemplates.'/fields',
     'fm_field_text' => $pathToTemplates.'/fields',
     'fm_field_table' => $pathToTemplates.'/fields',
     'fm_field_list' => $pathToTemplates.'/fields',
-
 ));

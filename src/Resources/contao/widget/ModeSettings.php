@@ -50,7 +50,7 @@ class ModeSettings extends Widget
     {
 
         $allowedDCA = array('tl_module', 'tl_page');
-        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget', 'fulltext_search');
+        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget', 'fulltext_search', 'map_field');
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination', 'auto_item', 'auto_page');
 
         if (!in_array($this->strTable, $allowedDCA)) {
@@ -111,7 +111,6 @@ class ModeSettings extends Widget
 
             $optionsDB = $options;
             $modeSettingsDB->reset();
-
         }
 
 
@@ -160,6 +159,12 @@ class ModeSettings extends Widget
                 "set" => ($input[$modeSettingsDB->fieldID]['set'] ? $input[$modeSettingsDB->fieldID]['set'] : $defaultSet)
             );
 
+            if($viewObject['fieldID'] == 'address_country')
+            {
+                $countries = $this->getCountries();
+                $viewObject['options'] = DiverseFunction::conformOptionsArray($countries);
+            }
+
             $this->modeViewObject[] = $viewObject;
 
         }
@@ -184,8 +189,6 @@ class ModeSettings extends Widget
     {
         $html = '<div class="fmode_settings">';
 
-        //$index = 0;
-
         $methods = array(
             'simple_choice' => 'setSimpleChoiceSettings',
             'multi_choice' => 'setMultiChoiceSettings',
@@ -195,10 +198,6 @@ class ModeSettings extends Widget
         );
 
         foreach ($this->modeViewObject as $viewObject) {
-
-            //if ($viewObject['type'] == 'fulltext_search') {
-            //    continue;
-            //}
 
             $str = '<div class="f_checkbox">
                        <h4><input type="checkbox" value="1" name="%s" id="%s" %s %s> <label for="%s">%s</label></h4>
@@ -223,9 +222,6 @@ class ModeSettings extends Widget
                 $box = '<div class="f_settings">' . $temp . '</div>';;
                 $html = $html . $box;
             }
-
-            //$index++;
-
         }
 
         return $html . '</div>';
@@ -296,7 +292,7 @@ class ModeSettings extends Widget
                 <div>
                     <input name="' . $this->strName . '[' . $index . '][fieldID]" value="' . $viewObject['fieldID'] . '"type="hidden">
                     <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_select'] . '</label></h4>
-                    <select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
+                    <select class="tl_select tl_chosen" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
                         ' . $optionsTpl . '
                     </select>
                     <p class="tl_help tl_tip" title="">' . $desc . '</p>

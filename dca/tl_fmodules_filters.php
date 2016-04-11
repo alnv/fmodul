@@ -370,6 +370,15 @@ class tl_fmodules_filters extends Backend
         $options = array();
         $notAllowedTypes = array('char', 'int', 'blob', 'index', 'binary');
 
+        // get labels
+        $labelsDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE pid = ?')->execute($pid);
+        $labels= array();
+
+        while($labelsDB->next())
+        {
+            $labels[$labelsDB->fieldID] = $labelsDB->title;
+        }
+
         if($pid) {
 
             $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE id = ?')->execute($pid);
@@ -392,20 +401,16 @@ class tl_fmodules_filters extends Backend
                     {
                         continue;
                     }
-
                     if($col['name'])
                     {
                         $label = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$col['name']][0];
-                        if(!$label)
-                        {
-                            $label = $col['name'];
-                        }
+                        $label = $label ? $label : $labels[$col['name']];
+                        if(!$label) $label = $col['name'];
                         $options[$col['name']] = $label;
                     }
                 }
             }
         }
-
         return $options;
     }
 

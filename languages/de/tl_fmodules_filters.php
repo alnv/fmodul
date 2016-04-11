@@ -128,12 +128,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][0] = 'Zeitangabe hinzufüg
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'][1] = 'Hier können Sie eine Zeitangabe im Backend hinzufügen.';
 
 // fullTextSearchFields
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][0] = 'Felder auswählen';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][1] = 'Bitte wählen Sie Felder aus, die durchsucht werden sollen. Titel und Teasertext sind Standard Felder, wenn nichts ausgewählt ist.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][0] = 'Suchfelder auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][1] = 'Hier können Sie Suchfelder für Ihre Volltextsuche zuweisen. Standard: Titel und Teasertext.';
 
 // fullTextSearchOrderBy
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][0] = 'Sortierfeld';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][1] = 'Bitte wählen Sie ein Sortierfeld aus. Standard: Titel';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][1] = 'Bitte wählen Sie ein Sortierfeld aus. Standard: Titel.';
 
 
 // validate

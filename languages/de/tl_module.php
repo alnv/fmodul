@@ -126,8 +126,8 @@ $GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][0] = 'Seitentitel';
 $GLOBALS['TL_LANG']['tl_module']['fm_seoPageTitle'][1] = 'Bitte wählen Sie ein Feld für den Seitentitel aus.';
 
 // fm_redirect_source
-$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][0] = 'Weiterleitungsziel';
-$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][1] = 'Bitte wählen Sie ein Weiterleitungsziel aus. Beim absenden des Formulars wird der Besucher auf eine andere Seite geleitet.';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][0] = 'Weiterleitungsziel (Optional)';
+$GLOBALS['TL_LANG']['tl_module']['fm_redirect_source'][1] = 'Bitte wählen Sie ein Weiterleitungsziel aus.';
 
 // fm_redirect_url
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][0] = 'URL';

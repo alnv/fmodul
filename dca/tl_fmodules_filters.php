@@ -106,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend:hide},evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},evalCss,isMandatory;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchFields,fullTextSearchOrderBy;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings:hide},fullTextSearchFields,fullTextSearchOrderBy;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
@@ -330,7 +330,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
-            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true, 'tl_class' => 'w50'),
+            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true),
             'sql' => "text NULL"
         ),
         'fullTextSearchOrderBy' => array(
@@ -338,7 +338,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
-            'eval' => array('chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+            'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
             'sql' => "varchar(255) NOT NULL default ''"
         )
     )

@@ -57,11 +57,14 @@ $GLOBALS['loadGoogleMapLibraries'] = false;
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('DCACreator', 'index');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('FModule', 'setLanguage');
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('FModule', 'getSearchablePages');
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModule', 'fm_hooks');
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('FModule', 'createUserGroupDCA');
 $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax');
 $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
+
+// inserttags
+$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModuleInsertTags', 'setHooks');
+
 
 // ajax
 $GLOBALS['TL_MOOTOOLS'][] =

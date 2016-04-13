@@ -53,7 +53,6 @@ class DiverseFunction
     }
 
     /**
-     * @param bool $hasLibraries
      * @param string $language
      * @param string $GlobalMapID
      * @return string

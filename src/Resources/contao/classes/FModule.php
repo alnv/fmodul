@@ -84,18 +84,13 @@ class FModule extends Frontend
     );
 
     /**
-     * @param $intId
+     * @param $table
      */
     public function generateFeed($table)
     {
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
-
-        if ($objFeed === null) {
-            return;
-        }
-
+        if ($objFeed === null) return;
         $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
-
         // Delete XML file
         if (\Input::get('act') == 'delete') {
             $this->import('Files');
@@ -114,9 +109,7 @@ class FModule extends Frontend
     {
         $this->import('Automator');
         $this->Automator->purgeXmlFiles();
-
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed')->execute();
-
         if ($objFeed !== null) {
             while ($objFeed->next()) {
                 $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
@@ -127,16 +120,14 @@ class FModule extends Frontend
     }
 
     /**
-     * @param $intId
+     * @param $table
      */
     public function generateFeedsByArchive($table)
     {
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
-
         if ($objFeed !== null) {
             while ($objFeed->next()) {
                 $objFeed->feedName = $objFeed->alias ?: 'fmodules' . $objFeed->id;
-
                 // Update the XML file
                 $this->generateFiles($objFeed->row());
                 $this->log('Generated F Module feed "' . $objFeed->feedName . '.xml"', __METHOD__, TL_CRON);
@@ -146,19 +137,17 @@ class FModule extends Frontend
 
     /**
      * @param $arrFeed
+     * @return null
      */
     protected function generateFiles($arrFeed)
     {
         $arrArchives = deserialize($arrFeed['wrappers']);
 
-        if (!is_array($arrArchives) || empty($arrArchives)) {
-            return;
-        }
+        if (!is_array($arrArchives) || empty($arrArchives)) return null;
 
         $strType = ($arrFeed['format'] == 'atom') ? 'generateAtom' : 'generateRss';
         $strLink = $arrFeed['feedBase'] ?: Environment::get('base');
         $strFile = $arrFeed['feedName'];
-
         $objFeed = new \Feed($strFile);
         $objFeed->link = $strLink;
         $objFeed->title = $arrFeed['title'];
@@ -174,40 +163,27 @@ class FModule extends Frontend
 
         if ($objArticle !== null) {
             $arrUrls = array();
-
             while ($objArticle->next()) {
-
                 $pid = $objArticle->pid;
                 $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $arrFeed['fmodule'] . ' WHERE id = ?')->execute($pid)->row();
-
                 if ($wrapperDB['addDetailPage'] == '1') {
-
-
                     $rootPage = $wrapperDB['rootPage'];
-
                     if (!isset($arrUrls[$rootPage])) {
                         $objParent = PageModel::findWithDetails($rootPage);
-
                         if ($objParent === null) {
                             $arrUrls[$rootPage] = false;
                         } else {
                             $arrUrls[$rootPage] = $this->generateFrontendUrl($objParent->row(), ((Config::get('useAutoItem') && !Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
                         }
                     }
-
-
                     $strUrl = $arrUrls[$rootPage];
-
                 }
                 $authorName = '';
-
                 if ($objArticle->author) {
                     $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($objArticle->author)->row();
                     $authorName = $authorDB['name'];
                 }
-
                 $objItem = new \FeedItem();
-
                 $objItem->title = $objArticle->title;
                 $objItem->link = $this->getLink($objArticle, $strUrl, $strLink);
                 $objItem->published = $objArticle->date ? $objArticle->date : $arrFeed['tstamp'];
@@ -216,36 +192,27 @@ class FModule extends Frontend
                 // Prepare the description
                 if ($arrFeed['source'] == 'source_text') {
                     $strDescription = '';
-
                     $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'] . '_data', array('fview' => 'detail'));
-
                     if ($objElement !== null) {
                         // Overwrite the request (see #7756)
                         $strRequest = Environment::get('request');
-
                         Environment::set('request', $objItem->link);
-
                         while ($objElement->next()) {
                             $strDescription .= $this->getContentElement($objElement->current());
                         }
-
                         Environment::set('request', $strRequest);
                     }
                 } else {
                     $strDescription = '';
-
                     $objElement = ContentModelExtend::findPublishedByPidAndTable($objArticle->id, $arrFeed['fmodule'] . '_data', array('fview' => 'list'));
 
                     if ($objElement !== null) {
                         // Overwrite the request (see #7756)
                         $strRequest = Environment::get('request');
-
                         Environment::set('request', $objItem->link);
-
                         while ($objElement->next()) {
                             $strDescription .= $this->getContentElement($objElement->current());
                         }
-
                         Environment::set('request', $strRequest);
                     }
 
@@ -260,7 +227,6 @@ class FModule extends Frontend
                 // Add the article image as enclosure
                 if ($objArticle->addImage) {
                     $objFile = \FilesModel::findByUuid($objArticle->singleSRC);
-
                     if ($objFile !== null) {
                         $objItem->addEnclosure($objFile->path);
                     }
@@ -269,10 +235,8 @@ class FModule extends Frontend
                 // Enclosures
                 if ($objArticle->addEnclosure) {
                     $arrEnclosure = deserialize($objArticle->enclosure, true);
-
                     if (is_array($arrEnclosure)) {
                         $objFile = \FilesModel::findMultipleByUuids($arrEnclosure);
-
                         if ($objFile !== null) {
                             while ($objFile->next()) {
                                 $objItem->addEnclosure($objFile->path);
@@ -280,7 +244,6 @@ class FModule extends Frontend
                         }
                     }
                 }
-
                 $objFeed->addItem($objItem);
             }
         }
@@ -295,31 +258,19 @@ class FModule extends Frontend
      */
     public function findPublishedByPids($arrPids, $intLimit = 0, $tablename)
     {
-
-        if (!is_array($arrPids) || empty($arrPids)) {
-            return null;
-        }
-
-        if (!$tablename || $tablename == 'no-value') {
-            return null;
-        }
-
+        if (!is_array($arrPids) || empty($arrPids)) return null;
+        if (!$tablename || $tablename == 'no-value') return null;
         $sql = 'SELECT * FROM ' . $tablename . ' WHERE ';
         $sql .= '' . $tablename . '.pid IN(' . implode(',', array_map('intval', $arrPids)) . ') ';
-
         if (!BE_USER_LOGGED_IN || TL_MODE == 'BE') {
             $time = Date::floorToMinute();
             $sql .= 'AND (' . $tablename . '.start="" OR ' . $tablename . '.start <= ' . $time . ') AND (' . $tablename . '.stop="" OR ' . $tablename . '.stop > ' . ($time + 60) . ') AND ' . $tablename . '.published = "1" ';
         }
-
         $sql .= 'ORDER BY ' . $tablename . '.date DESC ';
-
         if ($intLimit > 0) {
             $sql .= 'LIMIT ' . $intLimit . '';
         }
-
         $findBy = $this->Database->prepare($sql)->execute();
-
         return $findBy;
     }
 
@@ -343,17 +294,15 @@ class FModule extends Frontend
     /**
      * @param $arrPages
      * @param int $intRoot
-     * @param bool|false $blnIsSitemap
+     * @param bool $blnIsSitemap
+     * @return array
      */
     public function getSearchablePages($arrPages, $intRoot = 0, $blnIsSitemap = false)
     {
-
         $arrRoot = array();
-
         if ($intRoot > 0) {
             $arrRoot = $this->Database->getChildRecords($intRoot, 'tl_page');
         }
-
         $arrProcessed = array();
         $time = method_exists(Date, 'floorToMinute') ? \Date::floorToMinute() : time();
         $fmodulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
@@ -393,9 +342,7 @@ class FModule extends Frontend
                     }
 
                     $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
-
                     $arrProcessed[$wrapper['rootPage']] = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-
                 }
 
                 $strUrl = $arrProcessed[$wrapper['rootPage']];
@@ -455,96 +402,6 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     * @param $strTag
-     * @return bool|string
-     */
-    public function fm_hooks($strTag)
-    {
-
-        $arrSplit = explode('::', $strTag);
-
-        // get url
-        if ($arrSplit[0] == 'fm_url' && count($arrSplit) > 2) {
-            return $this->getUrlFromItem($arrSplit);
-        }
-
-        // count items
-        if ($arrSplit[0] == 'fm_count' && $arrSplit[1]) {
-
-            $tablename = $arrSplit[1] . '_data';
-            $qPid = $arrSplit[2] ? ' AND pid = "' . $arrSplit[2] . '"' : '';
-            $q = $arrSplit[3] ? Input::decodeEntities($arrSplit[3]) : '';
-            $q = str_replace('[&]', '&', $q);
-
-            if ($q) {
-
-                $filterArr = $this->getFilterFields($q);
-                $qResult = HelperModel::generateSQLQueryFromFilterArray($filterArr);
-                $q = $qResult['qStr'];
-
-            }
-
-            if ($this->Database->tableExists($tablename)) {
-                return $this->Database->prepare('SELECT id FROM ' . $tablename . ' WHERE published = "1"' . $qPid . $q . '')->query()->count();
-            }
-            return 0;
-        }
-        return false;
-    }
-
-    /**
-     * @param $q
-     * @return array
-     */
-    protected function getFilterFields($q)
-    {
-
-        $notSupportedTypes = array('legend_start', 'legend_end', 'fulltext_search', 'widget');
-        $notSupportedID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
-
-        parse_str($q, $qRow);
-        $qArr = array();
-
-        foreach ($qRow as $k => $v) {
-            $qArr[$k] = $v;
-        }
-
-        if (empty($qArr)) {
-            return array();
-        }
-
-        $allFiltersDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters')->execute();
-        $filterArr = array();
-
-        while ($allFiltersDB->next()) {
-
-            $tname = $allFiltersDB->fieldID;
-
-            if (in_array($tname, $notSupportedID) || in_array($allFiltersDB->type, $notSupportedTypes)) {
-                continue;
-            }
-
-            if ($qArr[$tname] || $allFiltersDB->type == 'toggle_field') {
-
-                $filterArr[$tname] = $allFiltersDB->row();
-                $filterArr[$tname]['value'] = $qArr[$tname];
-                $filterArr[$tname]['enable'] = true;
-                $filterArr[$tname]['operator'] = $qArr[$tname . '_int'] ? $qArr[$tname . '_int'] : '';
-
-            }
-
-            if ($allFiltersDB->type == 'wrapper_field' && ($allFiltersDB->from_field == $allFiltersDB->to_field)) {
-                $fname = $allFiltersDB->from_field . '_btw';
-                Input::setGet($fname, $qArr[$fname]);
-            }
-
-            if ($allFiltersDB->type == 'toggle_field' && !$qArr[$tname]) {
-                $filterArr[$tname]['value'] = 'skip';
-            }
-        }
-        return $filterArr;
-    }
 
     /**
      * @param $strName
@@ -561,73 +418,11 @@ class FModule extends Frontend
     }
 
     /**
-     * @param $arrSplit
-     * @return bool|string
-     */
-    private function getUrlFromItem($arrSplit)
-    {
-
-        if ($arrSplit[1] && $arrSplit[2]) {
-            $tablename = $arrSplit[1];
-            $tablename_data = $tablename . '_data';
-            $id = $arrSplit[2];
-
-            if (!$this->Database->tableExists($tablename) || !$this->Database->tableExists($tablename_data)) {
-                return false;
-            }
-
-            $dataDB = $this->Database->prepare('SELECT * FROM ' . $tablename_data . ' WHERE id = ?')->execute($id);
-
-            if ($dataDB->count() < 1) {
-                return false;
-            }
-
-            $item = $dataDB->row();
-
-            $pid = $item['pid'];
-
-            $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($pid);
-
-            if ($wrapperDB->count() < 1) {
-                return false;
-            }
-
-            $wrapper = $wrapperDB->row();
-
-            if ($wrapper['addDetailPage'] != '1') {
-                return false;
-            }
-
-            $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
-
-            if ($objParent === null) {
-                return false;
-            }
-
-            $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
-
-            $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-
-            $url = $this->getLink($dataDB, $strUrl);
-
-            return $url;
-
-        }
-
-        return false;
-
-    }
-
-    /**
-     *
+     * @return null
      */
     public function createFModuleUserGroupDCA()
     {
-
-
-        if (!$this->Database->tableExists('tl_fmodules')) {
-            return;
-        }
+        if (!$this->Database->tableExists('tl_fmodules')) return null;
 
         $fmodulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
 
@@ -636,27 +431,20 @@ class FModule extends Frontend
             $cleanName = $fmodulesDB->name;
             $modname = substr($fmodulesDB->tablename, 3, strlen($fmodulesDB->tablename));
 
-            if (!$this->permissionFieldExist($modname)) {
-                return;
-            }
+            if (!$this->permissionFieldExist($modname)) return null;
 
             $GLOBALS['TL_LANG']['tl_user_group'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user_group']['fm_dyn_legend'], $cleanName);
             $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
-
             $GLOBALS['TL_DCA']['tl_user_group']['fields'][$modname] = array(
-
                 'label' => &$GLOBALS['TL_LANG']['tl_user_group']['fields']['select_wrapper'],
                 'exclude' => false,
                 'inputType' => 'checkbox',
                 'foreignKey' => $fmodulesDB->tablename . '.title',
                 'eval' => array('multiple' => true),
                 'sql' => "blob NULL"
-
             );
-
             $GLOBALS['TL_DCA']['tl_user_group']['fields'][$modname . 'p'] = array
             (
-
                 'label' => &$GLOBALS['TL_LANG']['tl_user_group']['fields']['select_fields'],
                 'exclude' => false,
                 'inputType' => 'checkbox',
@@ -664,20 +452,16 @@ class FModule extends Frontend
                 'reference' => &$GLOBALS['TL_LANG']['MSC'],
                 'eval' => array('multiple' => true),
                 'sql' => "blob NULL"
-
             );
         }
     }
 
     /**
-     *
+     * @return null
      */
     public function createFModuleUserDCA()
     {
-
-        if (!$this->Database->tableExists('tl_fmodules')) {
-            return;
-        }
+        if (!$this->Database->tableExists('tl_fmodules')) return null;
 
         $fmodulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
 
@@ -686,28 +470,21 @@ class FModule extends Frontend
             $cleanName = $fmodulesDB->name;
             $modname = substr($fmodulesDB->tablename, 3, strlen($fmodulesDB->tablename));
 
-            if (!$this->permissionFieldExist($modname)) {
-                return;
-            }
+            if (!$this->permissionFieldExist($modname)) return null;
 
             $GLOBALS['TL_LANG']['tl_user'][$modname . '_legend'] = sprintf($GLOBALS['TL_LANG']['tl_user']['fm_dyn_legend'], $cleanName);
             $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
             $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('formp;', 'formp;{' . $modname . '_legend},' . $modname . ',' . $modname . 'p;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
-
             $GLOBALS['TL_DCA']['tl_user']['fields'][$modname] = array(
-
                 'label' => &$GLOBALS['TL_LANG']['tl_user']['fields']['select_wrapper'],
                 'exclude' => false,
                 'inputType' => 'checkbox',
                 'foreignKey' => $fmodulesDB->tablename . '.title',
                 'eval' => array('multiple' => true),
                 'sql' => "blob NULL"
-
             );
-
             $GLOBALS['TL_DCA']['tl_user']['fields'][$modname . 'p'] = array
             (
-
                 'label' => &$GLOBALS['TL_LANG']['tl_user']['fields']['select_fields'],
                 'exclude' => false,
                 'inputType' => 'checkbox',
@@ -715,7 +492,6 @@ class FModule extends Frontend
                 'reference' => &$GLOBALS['TL_LANG']['MSC'],
                 'eval' => array('multiple' => true),
                 'sql' => "blob NULL"
-
             );
         }
     }
@@ -738,11 +514,6 @@ class FModule extends Frontend
     }
 
     /**
-     * @param $tablename
-     * @param $fieldname
-     * @param string $value
-     * @param string $limit
-     * @return array|void
      * @throws \Exception
      */
     public function getAutoCompleteAjax()
@@ -784,30 +555,22 @@ class FModule extends Frontend
     {
 
         if (!strpos($tablename, '_data') && substr($tablename, 0, 3) != 'tl_') {
-
             $tablename = $tablename . '_data';
-
         }
 
         if (!$this->Database->tableExists($tablename)) {
-
             return null;
-
         }
 
         $arrDB = $this->Database->prepare('SELECT ' . $fieldname . ' FROM ' . $tablename . ' WHERE pid = ?')->execute($pid);
         $return = array();
 
         while ($arrDB->next()) {
-
             $val = $arrDB->row()[$fieldname];
-
             if (!$val || $val == '' || $val == ' ') {
                 continue;
             }
-
             $return[] = $val;
-
         }
 
         return array_unique($return);

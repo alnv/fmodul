@@ -36,7 +36,8 @@ ClassLoader::addClasses(array
     'FModule\ViewContainer' => $pathToFiles.'src/Resources/contao/classes/ViewContainer.php',
     'FModule\GeoCoding' => $pathToFiles.'src/Resources/contao/classes/GeoCoding.php',
     'FModule\AutoCompletion' => $pathToFiles.'src/Resources/contao/classes/AutoCompletion.php',
-    'FModule\DiverseFunction' => $pathToFiles.'src/Resources/contao/classes/DiverseFunction.php'
+    'FModule\DiverseFunction' => $pathToFiles.'src/Resources/contao/classes/DiverseFunction.php',
+    'FModule\FModuleInsertTags' => $pathToFiles.'src/Resources/contao/classes/FModuleInsertTags.php'
 ));
 
 /**

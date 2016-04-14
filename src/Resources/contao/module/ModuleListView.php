@@ -159,7 +159,7 @@ class ModuleListView extends Module
                 $this->loadMapScript = true;
 
                 // load map libraries
-                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
+                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
             }
 
             // field
@@ -278,7 +278,6 @@ class ModuleListView extends Module
         $paginationStr = $this->createPagination($total);
         $paginationStr = $paginationStr ? $paginationStr : '';
         $this->Template->pagination = $paginationStr;
-
         $strResults = '';
         $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
         $objTemplate = new FrontendTemplate($template);
@@ -296,16 +295,20 @@ class ModuleListView extends Module
                 $item['info'] = mb_convert_encoding($item['info'], 'UTF-8');
             }
 
-            //set css and id
+            // set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
             $item['itemCSS'] = ' ' . $item['cssID'][1];
 
             // set date format
+            $date = date('Y-m-d', $item['date']);
+            $time = date('H:i', $item['time']);
+            $dateTime = $time ? $date . ' ' . $time : $date;
+            $item['dateTime'] = $dateTime;
             $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
             $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
 
-            //set more
+            // set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 
             // get list view ce
@@ -439,7 +442,7 @@ class ModuleListView extends Module
             $this->loadMapScript = true;
 
             // load map libraries
-            if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
+            if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
         }
 
         // set js files
@@ -573,9 +576,11 @@ class ModuleListView extends Module
 
         $taxonomies = array();
 
-        // nachdem 1.4.2 update ändern!
-        // die fieldID wird als key übergeben. daher kann man eine schleife sparen
-        // erstmal weglassen wegen der kompatibilität
+        /*
+         * nachdem 1.4.2 update ändern!
+         * die fieldID wird als key übergeben. daher kann man eine schleife sparen
+         * erstmal weglassen wegen der kompatibilität
+         */
         foreach ($taxonomyFromFE as $filterValue) {
             if ($filterValue['set']['ignore']) {
                 continue;
@@ -727,16 +732,11 @@ class ModuleListView extends Module
     private function generateSingeSrc($row)
     {
         if ($row->singleSRC != '') {
-
             $objModel = \FilesModel::findByUuid($row->singleSRC);
-
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
-
                 return $objModel->path;
-
             }
         }
-
         return null;
     }
 

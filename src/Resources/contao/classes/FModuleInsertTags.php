@@ -11,6 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\Cache;
 use Contao\Frontend;
 use Contao\Input;
 use Contao\FrontendTemplate;
@@ -21,6 +22,11 @@ use Contao\FrontendTemplate;
  */
 class FModuleInsertTags extends Frontend
 {
+    /**
+     * @var bool
+     */
+    protected $loadMapScript = false;
+
     /**
      * @param $strTag
      * @return bool|string
@@ -34,11 +40,16 @@ class FModuleInsertTags extends Frontend
             return $this->generateTemplate($arrSplit);
         }
 
-        // get url
+        // generate Field
+        if (($arrSplit[0] == 'fm_field' || $arrSplit[0] == 'fmField') && $arrSplit) {
+            return $this->generateField($arrSplit);
+        }
+
+        // Generate URL
         if (($arrSplit[0] == 'fm_url' || $arrSplit[0] == 'fmUrl') && count($arrSplit) > 2) {
             return $this->getUrlFromItem($arrSplit);
         }
-        // count items
+        // Count Items
         if (($arrSplit[0] == 'fm_count' || $arrSplit[0] == 'fmCount') && $arrSplit[1]) {
 
             $tablename = $arrSplit[1] . '_data';
@@ -62,44 +73,150 @@ class FModuleInsertTags extends Frontend
     }
 
     /**
+     *
+     * {{fmField::fm_tablename::8::title}}
+     *
      * @param $arrSplit
      * @return string
      */
-    private function generateTemplate($arrSplit)
+    private function generateField($arrSplit)
     {
-        // {{fmView::fm_tablename::8::fm_view::hl=h2&class=meineKlasse&id=jsID}}
-        if($arrSplit[1] && $arrSplit[2])
-        {
-            global $objPage;
-            $this->import('FrontendUser', 'User');
+        if ($arrSplit[1] && $arrSplit[2] && $arrSplit[3]) {
 
             $tablename = $arrSplit[1];
+            $tableData = $tablename . '_data';
             $id = $arrSplit[2];
-            $template = $arrSplit[3] ? $arrSplit[3] : 'fm_view';
-
-            // get parameter & parse parameter
-            $params = $arrSplit[4] ? $arrSplit[4] : '';
-            parse_str($params, $qRow);
-            $headline = $qRow['hl'] ? $qRow['hl'] : 'h3';
-            $className = $qRow['class'] ? $qRow['class'].' ' : '';
-            $jsID = $qRow['id'] ? $qRow['id'] : '';
+            $field = $arrSplit[3];
+            $cacheID = md5($arrSplit[1] . $arrSplit[2]);
 
             // check if table exist
-            if(!$this->Database->tableExists($tablename))
-            {
-                return 'no table exist';
+            if (!$this->Database->tableExists($tableData)) {
+                return 'table do not exist';
             }
 
-            // check if cache exist
+            // get field from cache
+            $cachedItem = Cache::get($cacheID);
+            if ($cachedItem) {
+                return $this->getField($cachedItem, $field);
+            }
 
             // get data
             $qProtectedStr = 'AND published = "1"';
 
             //  check for preview mode
             if (HelperModel::previewMode()) $qProtectedStr = '';
-            $viewDB = $this->Database->prepare('SELECT * FROM '.$tablename.'_data WHERE id = ? '.$qProtectedStr.'')->execute($id);
-            if(!$viewDB->count())
-            {
+
+            // q
+            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE id = ? ' . $qProtectedStr . ' LIMIT 1')->execute($id);
+
+            // find and set map
+            $maps = $this->findMapAndSet($tablename);
+
+            //
+            while ($itemDB->next()) {
+                $item = $this->parseItem($itemDB, $tablename);
+
+                if (!$item) return '';
+
+                // parse map
+                if (!empty($maps)) {
+                    foreach ($maps as $map) {
+                        $objMapTemplate = new FrontendTemplate($map['template']);
+                        $item['mapSettings'] = $map;
+                        $objMapTemplate->setData($item);
+                        $item[$map['fieldID']] = $objMapTemplate->parse();
+                    }
+                }
+
+                Cache::set($cacheID, $item);
+
+                return $this->getField($item, $field);
+
+            }
+
+        }
+
+        return 'no valid arguments';
+    }
+
+    /**
+     * @param $item
+     * @return mixed
+     */
+    private function getField($item, $field)
+    {
+        // objPage
+        global $objPage;
+
+        if (!$item[$field]) {
+            return 'field do not exist';
+        }
+
+        // set js files
+        if ($this->loadMapScript) {
+            $language = $objPage->language ? $objPage->language : 'en';
+            $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
+        }
+
+        return $item[$field];
+    }
+
+    /**
+     *
+     * {{fmView::fm_tablename::8::fm_view::hl=h2&class=myClass&id=jsID}}
+     *
+     * @param $arrSplit
+     * @return string
+     */
+    private function generateTemplate($arrSplit)
+    {
+        if ($arrSplit[1] && $arrSplit[2]) {
+
+            // objPage
+            global $objPage;
+
+            $this->import('FrontendUser', 'User');
+
+            // tablename
+            $tablename = $arrSplit[1];
+
+            // id
+            $id = $arrSplit[2];
+
+            // template fm_view
+            $template = $arrSplit[3] ? $arrSplit[3] : 'fm_view';
+
+            // get parameter & parse parameter
+            $params = $arrSplit[4] ? $arrSplit[4] : '';
+            parse_str($params, $qRow);
+            $headline = $qRow['hl'] ? $qRow['hl'] : 'h3';
+            $className = $qRow['class'] ? $qRow['class'] . ' ' : '';
+            $jsID = $qRow['id'] ? $qRow['id'] : '';
+
+            // check if table exist
+            if (!$this->Database->tableExists($tablename)) {
+                return 'table do not exist';
+            }
+
+            // get data
+            $qProtectedStr = 'published = "1"';
+
+            //  check for preview mode
+            if (HelperModel::previewMode()) $qProtectedStr = '';
+
+            // build query
+            $sqlQuery = 'SELECT * FROM ' . $tablename . '_data WHERE id = ' . $id . ' AND ' . $qProtectedStr . ' LIMIT 1';
+            if ($id == 'RAND') {
+                $sqlQuery = 'SELECT * FROM ' . $tablename . '_data WHERE ' . $qProtectedStr . ' ORDER BY RAND() LIMIT 1';
+            }
+
+            $maps = $this->findMapAndSet($tablename);
+
+            // search for item
+            $viewDB = $this->Database->prepare($sqlQuery)->execute();
+
+            // check if item exist
+            if (!$viewDB->count()) {
                 return 'no item found';
             }
 
@@ -108,60 +225,26 @@ class FModuleInsertTags extends Frontend
             $objTemplate = new FrontendTemplate($template);
 
             // render
-            while($viewDB->next())
-            {
-                // get wrapper
-                $wrapper = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($viewDB->pid)->row();
+            while ($viewDB->next()) {
 
-                // get href
-                $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
-                $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
-                $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-                $url = $this->getLink($viewDB, $strUrl);
+                // parse item
+                $item = $this->parseItem($viewDB, $tablename);
 
-                // cast item obj to array
-                $item = $viewDB->row();
+                if (!$item) return '';
 
-                // check permission
-                if (HelperModel::sortOutProtected($item, $this->User->groups)) {
-                    continue;
-                }
-
-                // check scope
-                if (!HelperModel::outSideScope($item['start'], $item['stop'])) {
-                    continue;
-                }
-
-                // parse cssID
-                $cssID = deserialize($item['cssID']);
-                $item['cssID'] = $cssID;
-                $cssClass = $cssID[1] ? $cssID[1].' ' : '';
+                // parse css & id
+                $cssClass = $item['cssID'][1] ? $item['cssID'][1] . ' ' : '';
                 $item['cssClass'] = $cssClass . $className;
-                $item['jsID'] = $jsID ? $jsID : $cssID[0];
+                $item['jsID'] = $jsID ? $jsID : $item['cssID'][0];
                 $item['templateName'] = $template;
                 $item['tableName'] = $tablename;
 
                 // parse headline
                 $item['hl'] = $headline;
 
-                // parse date
-                $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
-                $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
-
-                // parse href
-                $item['href'] = $url;
-
-                // parse details
-
-                // parse list
-
                 // parse image
-                $imagePath = $this->generateSingeSrc($viewDB);
-                if ($imagePath) {
-                    $item['singleSRC'] = $imagePath;
-                }
                 if ($item['addImage']) {
-                    $item['fullsize'] = ''; // disable fullsize
+                    $item['fullsize'] = ''; // disable full size
                     $objTemplate->addImageToTemplate($objTemplate, $item);
                     $item['picture'] = $objTemplate->picture;
                 }
@@ -174,9 +257,14 @@ class FModuleInsertTags extends Frontend
                 $item['enclosure'] = $objTemplate->enclosure;
 
                 // parse map
-
-                // parse more
-                $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
+                if (!empty($maps)) {
+                    foreach ($maps as $map) {
+                        $objMapTemplate = new FrontendTemplate($map['template']);
+                        $item['mapSettings'] = $map;
+                        $objMapTemplate->setData($item);
+                        $item[$map['fieldID']] = $objMapTemplate->parse();
+                    }
+                }
 
                 // set data to template
                 $objTemplate->setData($item);
@@ -185,7 +273,11 @@ class FModuleInsertTags extends Frontend
                 $strTemplate .= $objTemplate->parse();
             }
 
-            // set cache
+            // set js files
+            if ($this->loadMapScript) {
+                $language = $objPage->language ? $objPage->language : 'en';
+                $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
+            }
 
             // return template
             return $strTemplate;
@@ -195,22 +287,176 @@ class FModuleInsertTags extends Frontend
     }
 
     /**
+     * @param $viewDB
+     * @param $tablename
+     * @return mixed
+     */
+    private function parseItem($viewDB, $tablename)
+    {
+
+        global $objPage;
+
+        // get wrapper
+        $wrapper = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($viewDB->pid)->row();
+
+        // get href
+        $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
+        $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
+        $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+        $url = $this->getLink($viewDB, $strUrl);
+
+        // cast item obj to array
+        $item = $viewDB->row();
+
+        // check permission
+        if (HelperModel::sortOutProtected($item, $this->User->groups)) {
+            return false;
+        }
+
+        // check scope
+        if (!HelperModel::outSideScope($item['start'], $item['stop'])) {
+            return false;
+        }
+
+        // parse cssID
+        $cssID = deserialize($item['cssID']);
+        $item['cssID'] = $cssID;
+
+        // parse date
+        $date = date('Y-m-d', $item['date']);
+        $time = date('H:i', $item['time']);
+        $dateTime = $time ? $date . ' ' . $time : $date;
+        $item['dateTime'] = $dateTime;
+
+        $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
+        $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
+
+        // parse href
+        $item['href'] = $url;
+
+        // parse details
+        $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $tablename . '_data', array('fview' => 'detail'));
+        $detailStr = '';
+        if ($objCte !== null) {
+            $intCount = 0;
+            $intLast = $objCte->count() - 1;
+
+            while ($objCte->next()) {
+                $arrCss = array();
+                $objRow = $objCte->current();
+
+                if ($intCount == 0 || $intCount == $intLast) {
+                    if ($intCount == 0) {
+                        $arrCss[] = 'first';
+                    }
+
+                    if ($intCount == $intLast) {
+                        $arrCss[] = 'last';
+                    }
+                }
+
+                $objRow->classes = $arrCss;
+                $detailStr .= $this->getContentElement($objRow, $this->strColumn);
+                ++$intCount;
+            }
+        }
+        $item['detail'] = $detailStr;
+
+        // parse list
+        $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $tablename . '_data', array('fview' => 'list'));
+        $teaserStr = '';
+        if ($objCte !== null) {
+            $intCount = 0;
+            $intLast = $objCte->count() - 1;
+
+            while ($objCte->next()) {
+                $arrCss = array();
+                $objRow = $objCte->current();
+
+                if ($intCount == 0 || $intCount == $intLast) {
+                    if ($intCount == 0) {
+                        $arrCss[] = 'first';
+                    }
+
+                    if ($intCount == $intLast) {
+                        $arrCss[] = 'last';
+                    }
+                }
+
+                $objRow->classes = $arrCss;
+                $teaserStr .= $this->getContentElement($objRow, $this->strColumn);
+                ++$intCount;
+            }
+        }
+        $item['teaser'] = $teaserStr;
+
+        // parse image
+        $imagePath = $this->generateSingeSrc($viewDB);
+        if ($imagePath) {
+            $item['singleSRC'] = $imagePath;
+        }
+
+        // parse marker
+        if ($item['addMarker'] && $item['markerSRC']) {
+            $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($item['markerSRC']);
+            if ($markerDB->count()) {
+                $pathInfo = $markerDB->row()['path'];
+                if ($pathInfo) {
+                    $item['markerSRC'] = $pathInfo;
+                }
+            }
+        }
+
+        // parse more
+        $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
+
+        return $item;
+    }
+
+    /**
+     * @param $tablename
+     * @return array
+     */
+    private function findMapAndSet($tablename)
+    {
+        // get map_field
+        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
+        $maps = array();
+
+        while ($moduleDB->next()) {
+
+            $module = $moduleDB->row();
+
+            // map
+            if ($moduleDB->type == 'map_field') {
+
+                // set map settings
+                $maps[] = HelperModel::setGoogleMap($module);
+
+                // set loadMapScript to true
+                $this->loadMapScript = true;
+
+                // load map libraries
+                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $module['mapInfoBox'] ? true : false;
+            }
+
+        }
+
+        return $maps;
+    }
+
+    /**
      * @param $row
      * @return bool|void
      */
     private function generateSingeSrc($row)
     {
         if ($row->singleSRC != '') {
-
             $objModel = \FilesModel::findByUuid($row->singleSRC);
-
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
-
                 return $objModel->path;
-
             }
         }
-
         return null;
     }
 

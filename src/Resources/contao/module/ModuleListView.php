@@ -279,7 +279,6 @@ class ModuleListView extends Module
         $paginationStr = $paginationStr ? $paginationStr : '';
         $this->Template->pagination = $paginationStr;
 
-
         $strResults = '';
         $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
         $objTemplate = new FrontendTemplate($template);

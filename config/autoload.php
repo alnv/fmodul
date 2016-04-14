@@ -72,4 +72,5 @@ TemplateLoader::addFiles(array
     'fm_field_text' => $pathToTemplates.'/fields',
     'fm_field_table' => $pathToTemplates.'/fields',
     'fm_field_list' => $pathToTemplates.'/fields',
+    'fm_view' => $pathToTemplates.'/inserttags',
 ));

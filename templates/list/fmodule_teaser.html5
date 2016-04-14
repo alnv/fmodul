@@ -10,7 +10,7 @@
         <p class="info"><?= $this->info; ?></p>
     <?php endif; ?>
     <?php if ($this->date): ?>
-        <p class="date"><?= $this->date; ?><?php if ($this->time): ?><time> - <?= $this->time; ?></time><?php endif; ?></p>
+        <p class="date"><?= $this->date; ?><?php if ($this->time): ?> - <time datetime="<?= $this->date; ?>T<?= $this->time; ?>"><?= $this->time; ?></time><?php endif; ?></p>
     <?php endif; ?>
 
     <?php if ($this->addImage): ?>

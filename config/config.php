@@ -11,7 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
-// path
+// Path
 $GLOBALS['FM_AUTO_PATH'] = 'system/modules/fmodule/assets/';
 
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
@@ -19,7 +19,7 @@ if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GL
     $GLOBALS['FM_AUTO_PATH'] = 'bundles/fmodule/';
 }
 
-// add back end modules
+// Back End Modules
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     'icon' =>  $GLOBALS['FM_AUTO_PATH'].'icon.png',
     'tables' => array(
@@ -30,7 +30,7 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     )
 );
 
-// add front end modules
+// Front End Modules
 array_insert($GLOBALS['FE_MOD'],5, array(
 	'fmodule' => array(
 		'fmodule_fe_list' => 'ModuleListView',
@@ -39,21 +39,21 @@ array_insert($GLOBALS['FE_MOD'],5, array(
 	)
 ));
 
-// widgets
+// Widget
 $GLOBALS['BE_FFL']['optionWizardExtended'] = 'OptionWizardExtended';
 $GLOBALS['BE_FFL']['modeSettings'] = 'ModeSettings';
 $GLOBALS['BE_FFL']['filterFields'] = 'FilterFields';
 
 
-// files
+// Files
 if (TL_MODE == 'BE') {
     $GLOBALS['TL_CSS'][] = $GLOBALS['FM_AUTO_PATH'] . 'stylesheet.css';
 }
 
-// google maps
+// Google Maps
 $GLOBALS['loadGoogleMapLibraries'] = false;
 
-// add hocks
+// Hooks
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('DCACreator', 'index');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('FModule', 'setLanguage');
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('FModule', 'getSearchablePages');
@@ -62,11 +62,11 @@ $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax')
 $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
 
-// inserttags
+// InsertTags
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModuleInsertTags', 'setHooks');
 
 
-// ajax
+// Ajax
 $GLOBALS['TL_MOOTOOLS'][] =
     "<script>
         if(AjaxRequest)
@@ -99,7 +99,7 @@ $GLOBALS['TL_MOOTOOLS'][] =
         }
     </script>";
 
-// add permissions
+// Permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
 
@@ -109,7 +109,7 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfilters';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfiltersp';
 
-// add to prosearch
+// ProSearch
 $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
     'tables' => array('tl_fmodules', 'tl_fmodules_filters'),
     'searchIn' => array('name','tablename', 'info', 'title', 'type', 'fieldID'),
@@ -118,5 +118,6 @@ $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
     'setCustomShortcut' => array(array('ProSearchApi', 'setCustomShortcut'))
 );
 
+// Wrapper
 $GLOBALS['TL_WRAPPERS']['start'][] = 'legend_start';
 $GLOBALS['TL_WRAPPERS']['stop'][] = 'legend_end';

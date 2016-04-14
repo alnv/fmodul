@@ -11,9 +11,6 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Environment;
-use Contao\StringUtil;
-
 /**
  * Class HelperModel
  * @package FModule

@@ -20,7 +20,6 @@ use Contao\Input;
  */
 class ViewContainer extends DCAHelper
 {
-
     /**
      * @return array
      */
@@ -641,6 +640,14 @@ class ViewContainer extends DCAHelper
             'tl_class' => $this->setTLClass($fieldData),
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
         );
+
+        // set regular expression
+        $rgxp = $this->setRgxp($fieldData);
+        if($rgxp)
+        {
+            $field['eval']['rgxp'] = $rgxp;
+        }
+
         $field['inputType'] = 'text';
         $field['sql'] = "text NULL";
 
@@ -718,6 +725,7 @@ class ViewContainer extends DCAHelper
             'datepicker' => true,
         );
         $field['sql'] = 'int(10) unsigned NULL';
+
         // if time is enable
         if ($fieldData['addTime']) {
             $field['eval']['rgxp'] = 'datim';
@@ -740,6 +748,14 @@ class ViewContainer extends DCAHelper
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData)
         );
+
+        // set regular expression
+        $rgxp = $this->setRgxp($fieldData);
+        if($rgxp)
+        {
+            $field['eval']['rgxp'] = $rgxp;
+        }
+
         $field['sql'] = 'text NULL';
         return $field;
     }
@@ -765,6 +781,14 @@ class ViewContainer extends DCAHelper
             'chosen' => true,
             'blankOptionLabel' => '-'
         );
+
+        // set regular expression
+        $rgxp = $this->setRgxp($fieldData);
+        if($rgxp)
+        {
+            $field['eval']['rgxp'] = $rgxp;
+        }
+
         $field['sql'] = 'text NULL';
 
         // radio
@@ -775,7 +799,8 @@ class ViewContainer extends DCAHelper
     }
 
     /**
-     * @param $field
+     * @param $fieldData
+     * @param $options
      * @return array
      */
     public function getMultiChoiceField($fieldData, $options)
@@ -793,11 +818,21 @@ class ViewContainer extends DCAHelper
             'csv' => ','
         );
         $field['sql'] = 'text NULL';
-        // tags
+
+        // set regular expression
+        $rgxp = $this->setRgxp($fieldData);
+        if($rgxp)
+        {
+            $field['eval']['rgxp'] = $rgxp;
+
+        }
+
+        // set tags
         if ($fieldData['fieldAppearance'] == 'tags') {
             $field['inputType'] = 'select';
             $field['eval']['chosen'] = true;
         }
+
         return $field;
     }
 
@@ -914,6 +949,20 @@ class ViewContainer extends DCAHelper
             }
         }
         return $id;
+    }
+
+
+    /**
+     * @param $fieldData
+     * @return null
+     */
+    protected function setRgxp($fieldData)
+    {
+        if($fieldData['rgxp'])
+        {
+            return $fieldData['rgxp'];
+        }
+        return null;
     }
 
     /**

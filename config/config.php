@@ -31,11 +31,12 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
 );
 
 // Front End Modules
-array_insert($GLOBALS['FE_MOD'],5, array(
+array_insert($GLOBALS['FE_MOD'], 5, array(
 	'fmodule' => array(
 		'fmodule_fe_list' => 'ModuleListView',
 		'fmodule_fe_detail' => 'ModuleDetailView',
-        'fmodule_fe_formfilter' => 'ModuleFormFilter'
+        'fmodule_fe_formfilter' => 'ModuleFormFilter',
+		'fmodule_fe_registration' => 'ModuleFModuleRegistration'
 	)
 ));
 

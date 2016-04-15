@@ -19,6 +19,8 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha;{redirect_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+
 
 // selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
@@ -316,6 +318,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_url'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
+// registration
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_editable_fields'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'],
+    'exclude' => true,
+    'inputType' => 'checkboxWizard',
+    'options_callback' => array('tl_module_fmodule', 'getEditableFModuleProperties'),
+    'eval' => array('multiple' => true),
+    'sql' => "blob NULL"
+);
+
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
 
@@ -333,6 +345,36 @@ class tl_module_fmodule extends tl_module
      * @param \Contao\DataContainer $dca
      * @return array
      */
+    public function getEditableFModuleProperties(\Contao\DataContainer $dca)
+    {
+        // set variables here
+        $return = array();
+        $modulename = $dca->activeRecord->f_select_module;
+        $tableData = $modulename . '_data';
+        $doNotSetByName = array('tstamp', 'pid', 'id');
+
+        // return empty array
+        if (!$modulename) return $return;
+
+        // get editable fields
+        System::loadLanguageFile('tl_fmodules_language_pack');
+        $this->loadDataContainer($tableData);
+
+        foreach ($GLOBALS['TL_DCA'][$tableData]['fields'] as $name => $field) {
+            if(in_array($name, $doNotSetByName))
+            {
+                continue;
+            }
+            $return[$name] = $field['label'][0] ? $field['label'][0] . ' (' . $name . ')' : $name;
+        }
+
+        return $return;
+    }
+
+    /**
+     * @param \Contao\DataContainer $dca
+     * @return array
+     */
     public function getModuleCols(\Contao\DataContainer $dca)
     {
         if (!empty($this->moduleColsCache)) {
@@ -343,6 +385,7 @@ class tl_module_fmodule extends tl_module
         $cols = array();
 
         if ($dca->activeRecord->f_list_field) {
+
             $feID = $dca->activeRecord->f_list_field;
             $listFeModuleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($feID);
 
@@ -351,6 +394,7 @@ class tl_module_fmodule extends tl_module
             }
 
             $table = null;
+
             while ($listFeModuleDB->next()) {
                 $table = $listFeModuleDB->f_select_module;
             }
@@ -360,7 +404,6 @@ class tl_module_fmodule extends tl_module
             }
 
             $dataTable = $table . '_data';
-
             $colsDB = $this->Database->listFields($dataTable);
 
             foreach ($colsDB as $col) {
@@ -533,43 +576,48 @@ class tl_module_fmodule extends tl_module
     public function setFEModule(\Contao\DataContainer $dca)
     {
         $id = $dca->id;
-        $moduleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($id);
+        $moduleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ? LIMIT 1')->execute($id);
         $modulename = '';
         $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'toggle_field', 'map_field');
         $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields');
+        $type = '';
 
         while ($moduleDB->next()) {
             $modulename = $moduleDB->f_select_module;
+            $type = $moduleDB->type;
         }
 
         if (!$modulename || is_null($modulename)) return null;
         if (!$this->Database->tableExists($modulename)) return null;
 
-        $fmoduleDB = $this->Database->prepare('SELECT id, title, info FROM ' . $modulename)->execute();
+        $modulesDB = $this->Database->prepare('SELECT id, title, info FROM ' . $modulename)->execute();
         $wrapper = array();
 
-        while ($fmoduleDB->next()) {
-            $wrapper[$fmoduleDB->id] = $fmoduleDB->title . ' (' . $fmoduleDB->info . ')';
+        while ($modulesDB->next()) {
+            $wrapper[$modulesDB->id] = $modulesDB->title . ' (' . $modulesDB->info . ')';
         }
-
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper']['options'] = $wrapper;
 
-        $filterDB = $this->Database->prepare(
-            'SELECT * FROM tl_fmodules
-			JOIN tl_fmodules_filters 
-			ON tl_fmodules.id = tl_fmodules_filters.pid 
-			WHERE tablename = ?'
-        )->execute($modulename);
+        // break up
+        if ($type != 'fmodule_fe_list') {
+            return null;
+        }
+
+        // set sorting fields
+        $filterDB = $this->Database->prepare('SELECT * FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ?')->execute($modulename);
         $sorting = array('id' => 'ID', 'title' => 'Titel', 'date' => 'Datum');
 
         while ($filterDB->next()) {
+
             if (in_array($filterDB->fieldID, $doNotSetByID)) {
                 continue;
             }
+
             if (in_array($filterDB->type, $doNotSetByType)) {
                 continue;
             }
             $sorting[$filterDB->fieldID] = $filterDB->title;
+
         }
 
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields']['options'] = $sorting;

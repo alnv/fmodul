@@ -137,6 +137,10 @@ $GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][1] = 'Bitte geben Sie eine U
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][0] = 'Seite auswählen';
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][1] = 'Bitte wählen Sie eine Seite aus.';
 
+// fm_editable_fields
+$GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][0] = 'Editierbare Felder';
+$GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][1] = 'Diese Felder im Frontend-Formular anzeigen.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

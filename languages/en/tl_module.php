@@ -137,6 +137,9 @@ $GLOBALS['TL_LANG']['tl_module']['fm_redirect_url'][1] = 'Please enter your URL.
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][0] = 'Page';
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][1] = 'Please select your Page';
 
+// fm_redirect_jumpTo
+$GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][0] = 'Editable fields';
+$GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][1] = 'Show these fields in the front end form.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';

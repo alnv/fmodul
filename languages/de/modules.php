@@ -9,8 +9,10 @@ $GLOBALS['TL_LANG']['MOD']['fmodules'][1] = 'Auflistung aller Backend Module.';
 // FE
 $GLOBALS['TL_LANG']['FMD']['fmodule'] = 'F Modul';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][0] = 'Listenansicht';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][1] = 'F Modul > Listenansicht auswählen.';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][1] = 'F Modul Listenansicht auswählen.';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][0] = 'Detailansicht';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][1] = 'F Modul > Detailansicht auswählen.';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][1] = 'F Modul Detailansicht auswählen.';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][0] = 'Filter Formular';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Modul > Filter Formular auswählen.';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Modul Filter Formular auswählen.';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_registration'][0] = 'Registration Formular';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_registration'][1] = 'F Modul Registrations Formular auswählen.';

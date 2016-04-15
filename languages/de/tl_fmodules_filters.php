@@ -28,7 +28,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['show'][1] = 'Hier können Sie die De
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['type_legend'] = 'Eingabefeld Typ';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Einstellung';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Feld-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Karten-Einstellunegn';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Suche-Einstellungen';
@@ -109,7 +109,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][1] = 'Bitte wählen Si
 
 // evalCss
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][0] = 'Backend-CSS';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'Das Contao-Backend verwendet ein 2-spaltiges Grid-System, um Formularfelder innerhalb ihrer Gruppen auszurichten. Folgende CSS-Klassen können vergeben werden: w50 clr wizard long m12';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'Bitte geben Sie eine Backend-CSS Klasse ein. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">In der Dokumentation nachlesen</a>';
 
 // to_field
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][0] = 'Bis';
@@ -135,6 +135,13 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][1] = 'Hier k�
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][0] = 'Sortierfeld';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][1] = 'Bitte wählen Sie ein Sortierfeld aus. Standard: Titel.';
 
+// fmGroup
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][0] = 'Gruppenbezeichnung';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][1] = 'Bitte geben Sie eine Gruppenbezeichnung ein. Diese wird im Frontend angezeigt.';
+
+// rgxp
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regulärer Ausdruck';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Bitte wählen Sie einen Regulären Ausdruck aus. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">In der Dokumentation nachlesen</a>';
 
 // validate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits.';

@@ -13,7 +13,6 @@
 
 use Contao\Backend;
 use Contao\Config;
-use Contao\Controller;
 use Contao\Environment;
 use Contao\Files;
 use Contao\Input;
@@ -34,24 +33,45 @@ class DCACreator
     public $modules = array();
 
     /**
-     *
+     * @var null
+     */
+    static private $instance = null;
+
+    /**
+     * @return DCACreator|null
+     */
+    static public function getInstance()
+    {
+        if(self::$instance == null)
+        {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+    /**
+     * F Module start point
      */
     public function index()
     {
         if (TL_MODE == 'BE') {
 
             Config::getInstance();
-            Environment::getInstance();
-            Input::getInstance();
             BackendUser::getInstance();
             Database::getInstance();
 
+            // backwards
+            Environment::getInstance();
+            Input::getInstance();
+
             // init BE Modules
             if (Database::getInstance()->tableExists('tl_fmodules')) {
-                $logLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
-                Backend::loadLanguageFile('tl_fmodules_language_pack', $logLanguage);
-                $this->loadDynDCA();
-                $this->setDynLanguagePack();
+
+                $saveLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
+                Backend::loadLanguageFile('tl_fmodules_language_pack', $saveLanguage);
+                $this->loadModules();
+                $this->createLabels();
+
             }
         }
     }
@@ -59,7 +79,7 @@ class DCACreator
     /**
      *
      */
-    public function setDynLanguagePack()
+    public function createLabels()
     {
         if (!Input::get('do') && !in_array(Input::get('do'), $this->modules)) {
             return;
@@ -68,24 +88,19 @@ class DCACreator
         $languages = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'];
 
         foreach ($languages as $key => $value) {
-
             foreach ($this->modules as $module => $name) {
-
                 if ($key == 'new') {
                     $GLOBALS['TL_LANG'][$module]['new'] = $value[0];
                     $GLOBALS['TL_LANG'][$module . '_data']['new'] = array(sprintf($value[1][0], $name), $value[1][1]);
                     continue;
                 }
-
                 if ($key == 'fm_legend') {
                     $GLOBALS['TL_LANG'][$module] = $value;
                     $GLOBALS['TL_LANG'][$module . '_data'] = $value;
                     continue;
                 }
-
                 $GLOBALS['TL_LANG'][$module][$key] = $value;
                 $GLOBALS['TL_LANG'][$module . '_data'][$key] = $value;
-
             }
         }
     }
@@ -93,7 +108,7 @@ class DCACreator
     /**
      * @return array
      */
-    private function getModulesObj()
+    private function createModules()
     {
         $db = Database::getInstance();
         $modulesDB = $db->prepare("SELECT * FROM tl_fmodules")->execute();
@@ -146,6 +161,8 @@ class DCACreator
                 $field['mapType'] = $fieldsDB->row()['mapType'];
                 $field['mapStyle'] = $fieldsDB->row()['mapStyle'];
                 $field['mapMarker'] = $fieldsDB->row()['mapMarker'];
+                $field['rgxp'] = $fieldsDB->row()['rgxp'];
+                $field['fmGroup'] = $fieldsDB->row()['fmGroup'];
                 $fields[] = $field;
             }
 
@@ -156,61 +173,76 @@ class DCACreator
     }
 
     /**
-     * @param $moduleObj
+     * @param $modulename
      * @return null
      */
-    private function initDCA($moduleObj)
+    public function getModuleByTableName($modulename)
+    {
+        $modules = $this->createModules();
+        foreach($modules as $module)
+        {
+            if($modulename == $module['tablename'])
+            {
+                return $module;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $module
+     * @return null
+     */
+    private function createDCA($module)
     {
         // init tablename
-        $tablename = $moduleObj['tablename'];
+        $tablename = $module['tablename'];
         if (!$tablename) return null;
-        $this->modules[$tablename] = $moduleObj['name'];
+        $this->modules[$tablename] = $module['name'];
 
         // parent
         $dcaSettings = new DCAModuleSettings();
         $dcaSettings->init($tablename);
         $childname = $dcaSettings->getChildName();
         $modulename = substr($tablename, 3, strlen($tablename));
-        $navigation = $moduleObj['selectNavigation'] ? $moduleObj['selectNavigation'] : 'fmodules';
-        $position = $moduleObj['selectPosition'] ? $moduleObj['selectPosition'] : 0;
+        $navigation = $module['selectNavigation'] ? $module['selectNavigation'] : 'fmodules';
+        $position = $module['selectPosition'] ? $module['selectPosition'] : 0;
 
         // create be module
         $backendModule = array();
-        $backendModule[$modulename] = $this->getBEMod($tablename, $childname);
+        $backendModule[$modulename] = $this->createBackendModule($tablename, $childname);
         array_insert($GLOBALS['BE_MOD'][$navigation], $position, $backendModule);
 
         // parent
         $GLOBALS['TL_DCA'][$tablename] = array(
             'config' => $dcaSettings->setConfig(),
             'list' => $dcaSettings->setList(),
-            'palettes' => $dcaSettings->setPalettes($moduleObj),
+            'palettes' => $dcaSettings->setPalettes($module),
             'subpalettes' => $dcaSettings->setSubPalettes(),
-            'fields' => $dcaSettings->setFields($moduleObj['fields'])
+            'fields' => $dcaSettings->setFields($module['fields'])
         );
-        $GLOBALS['TL_LANG']['MOD'][$modulename] = array($moduleObj['name'], $moduleObj['info']);
+        $GLOBALS['TL_LANG']['MOD'][$modulename] = array($module['name'], $module['info']);
         $dcaSettings->createTable();
 
         // child
         $dcaData = new DCAModuleData();
         $dcaData->init($childname, $tablename);
-        $palette = $dcaData->setPalettes($moduleObj);
+        $palette = $dcaData->setPalettes($module);
         $GLOBALS['TL_DCA'][$childname] = array(
-            'config' => $dcaData->setConfig($moduleObj['detailPage']),
-            'list' => $dcaData->setList($moduleObj),
-            'palettes' => array(
-                '__selector__' => $palette['__selector__'],
-                'default' => $palette['default']
-            ),
+            'config' => $dcaData->setConfig($module['detailPage']),
+            'list' => $dcaData->setList($module),
+            'palettes' => array('__selector__' => $palette['__selector__'], 'default' => $palette['default']),
             'subpalettes' => $palette['subPalettes'],
-            'fields' => $dcaData->setFields($moduleObj)
+            'fields' => $dcaData->setFields($module)
         );
 
         // set permissions
         $modname = substr($tablename, 3, strlen($tablename));
         $GLOBALS['TL_PERMISSIONS'][] = $modname;
         $GLOBALS['TL_PERMISSIONS'][] = $modname . 'p';
-
         $dcaData->createTable();
+
     }
 
 
@@ -219,7 +251,7 @@ class DCACreator
      * @param $childname
      * @return array
      */
-    private function getBEMod($tablename, $childname)
+    private function createBackendModule($tablename, $childname)
     {
         $icon = $GLOBALS['FM_AUTO_PATH'] . 'fmodule.png';
         $path = $this->getModuleIcon($tablename);
@@ -240,7 +272,6 @@ class DCACreator
      */
     public function getModuleIcon($tablename)
     {
-
         $path = TL_ROOT . '/' . 'files/fmodule/assets/' . $tablename . '_icon';
         $file = Files::getInstance();
         $allowedFormat = array('gif', 'png', 'svg');
@@ -258,16 +289,15 @@ class DCACreator
         }
 
         return false;
-
     }
 
     /**
      *
      */
-    private function loadDynDCA()
+    private function loadModules()
     {
-        foreach ($this->getModulesObj() as $moduleObj) {
-            $this->initDCA($moduleObj);
+        foreach ($this->createModules() as $module) {
+            $this->createDCA($module);
         }
     }
 

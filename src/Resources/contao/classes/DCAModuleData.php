@@ -28,15 +28,57 @@ class DCAModuleData extends ViewContainer
      * @var
      */
     protected $name;
+
+    /**
+     * @var
+     */
     protected $parent;
+
+    /**
+     * @var
+     */
     protected $id;
+
+    /**
+     * @var
+     */
     protected $pid;
+
+    /**
+     * @var
+     */
     protected $fields = array();
+
+    /**
+     * @var
+     */
     private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search', 'map_field');
+
+    /**
+     * @var
+     */
     private $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
 
     /**
-     *
+     * @var null
+     */
+    static private $instance = null;
+
+    /**
+     * @return DCAModuleData|null
+     */
+    static public function getInstance()
+    {
+        if(self::$instance == null)
+        {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+    /**
+     * @param $dcaname
+     * @param $parentdcaname
      */
     public function init($dcaname, $parentdcaname)
     {
@@ -70,7 +112,6 @@ class DCAModuleData extends ViewContainer
 
         $modname = substr($dc->table, 3, strlen($dc->table));
         $modname = str_replace('_data', '', $modname);
-
         $allowedFields = $modname;
 
         if (!$this->permissionFieldExist($modname)) {
@@ -162,7 +203,6 @@ class DCAModuleData extends ViewContainer
                 }
                 break;
         }
-
     }
 
     /**
@@ -594,9 +634,7 @@ class DCAModuleData extends ViewContainer
             {
                 $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
             }
-
         }
-
     }
 
     /**
@@ -604,7 +642,6 @@ class DCAModuleData extends ViewContainer
      */
     public function createTable()
     {
-
         $defaultCols = "id int(10) unsigned NOT NULL auto_increment, tstamp int(10) unsigned NOT NULL default '0', pid int(10) unsigned NOT NULL default '0'";
 
         if( $this->name && !$this->Database->tableExists($this->name) )
@@ -616,7 +653,6 @@ class DCAModuleData extends ViewContainer
         {
             $this->createCols();
         }
-
     }
 
     /**

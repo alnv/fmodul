@@ -110,7 +110,13 @@ class FModuleInsertTags extends Frontend
             $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE id = ? ' . $qProtectedStr . ' LIMIT 1')->execute($id);
 
             // find and set map
-            $maps = $this->findMapAndSet($tablename);
+            $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
+            if($moduleDB->next())
+            {
+                $moduleInputFields = $moduleDB->row();
+                $maps = $this->findMapAndSet($moduleInputFields);
+                $widgets = $this->findWidgetAndSet($moduleInputFields);
+            }
 
             //
             while ($itemDB->next()) {
@@ -125,6 +131,32 @@ class FModuleInsertTags extends Frontend
                         $item['mapSettings'] = $map;
                         $objMapTemplate->setData($item);
                         $item[$map['fieldID']] = $objMapTemplate->parse();
+                    }
+                }
+
+                // field
+                if (!empty($widgets)) {
+
+                    $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+                    foreach ($widgets as $widget) {
+
+                        $id = $widget['fieldID'];
+                        $tplName = $widget['widgetTemplate'];
+                        $type = $widget['widgetType'];
+                        $value = $item[$id];
+
+                        if (in_array($type, $arrayAsValue)) {
+                            $value = unserialize($value);
+                        }
+
+                        $objFieldTemplate = new FrontendTemplate($tplName);
+                        $objFieldTemplate->setData(array(
+                            'value' => $value,
+                            'type' => $type,
+                            'item' => $item
+                        ));
+
+                        $item[$id.'AsTemplate'] = $objFieldTemplate->parse();
                     }
                 }
 
@@ -163,7 +195,7 @@ class FModuleInsertTags extends Frontend
 
     /**
      *
-     * {{fmView::fm_tablename::8::fm_view::hl=h2&class=myClass&id=jsID}}
+     * {{fmView::fm_tablename::8::template=fm_viewhl=h2&class=myClass&id=jsID}}
      *
      * @param $arrSplit
      * @return string
@@ -183,12 +215,11 @@ class FModuleInsertTags extends Frontend
             // id
             $id = $arrSplit[2];
 
-            // template fm_view
-            $template = $arrSplit[3] ? $arrSplit[3] : 'fm_view';
 
             // get parameter & parse parameter
             $params = $arrSplit[4] ? $arrSplit[4] : '';
             parse_str($params, $qRow);
+            $template = $qRow['template'] ? $qRow['template'] : 'fm_view';
             $headline = $qRow['hl'] ? $qRow['hl'] : 'h3';
             $className = $qRow['class'] ? $qRow['class'] . ' ' : '';
             $jsID = $qRow['id'] ? $qRow['id'] : '';
@@ -210,7 +241,13 @@ class FModuleInsertTags extends Frontend
                 $sqlQuery = 'SELECT * FROM ' . $tablename . '_data WHERE ' . $qProtectedStr . ' ORDER BY RAND() LIMIT 1';
             }
 
-            $maps = $this->findMapAndSet($tablename);
+            $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
+            if($moduleDB->next())
+            {
+                $moduleInputFields = $moduleDB->row();
+                $maps = $this->findMapAndSet($moduleInputFields);
+                $widgets = $this->findWidgetAndSet($moduleInputFields);
+            }
 
             // search for item
             $viewDB = $this->Database->prepare($sqlQuery)->execute();
@@ -263,6 +300,32 @@ class FModuleInsertTags extends Frontend
                         $item['mapSettings'] = $map;
                         $objMapTemplate->setData($item);
                         $item[$map['fieldID']] = $objMapTemplate->parse();
+                    }
+                }
+
+                // field
+                if (!empty($widgets)) {
+
+                    $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+                    foreach ($widgets as $widget) {
+
+                        $id = $widget['fieldID'];
+                        $tplName = $widget['widgetTemplate'];
+                        $type = $widget['widgetType'];
+                        $value = $item[$id];
+
+                        if (in_array($type, $arrayAsValue)) {
+                            $value = unserialize($value);
+                        }
+
+                        $objFieldTemplate = new FrontendTemplate($tplName);
+                        $objFieldTemplate->setData(array(
+                            'value' => $value,
+                            'type' => $type,
+                            'item' => $item
+                        ));
+
+                        $item[$id.'AsTemplate'] = $objFieldTemplate->parse();
                     }
                 }
 
@@ -414,35 +477,58 @@ class FModuleInsertTags extends Frontend
     }
 
     /**
-     * @param $tablename
+     * @param $field
      * @return array
      */
-    private function findMapAndSet($tablename)
+    private function findMapAndSet($field)
     {
         // get map_field
-        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $maps = array();
 
-        while ($moduleDB->next()) {
+        // map
+        if ($field['type'] == 'map_field') {
 
-            $module = $moduleDB->row();
+            // set map settings
+            $maps[] = HelperModel::setGoogleMap($field);
 
-            // map
-            if ($moduleDB->type == 'map_field') {
+            // set loadMapScript to true
+            $this->loadMapScript = true;
 
-                // set map settings
-                $maps[] = HelperModel::setGoogleMap($module);
-
-                // set loadMapScript to true
-                $this->loadMapScript = true;
-
-                // load map libraries
-                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $module['mapInfoBox'] ? true : false;
-            }
-
+            // load map libraries
+            if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $field['mapInfoBox'] ? true : false;
         }
 
         return $maps;
+    }
+
+    /**
+     * @param $field
+     * @return array
+     */
+    private function findWidgetAndSet($field)
+    {
+        // get widget
+        $widgets = array();
+
+        // widget
+        if ($field['type'] == 'widget') {
+
+            $tplName = $field['widgetTemplate'];
+            $tpl = '';
+            if (!$tplName) {
+                $tplNameType = explode('.', $field['widget_type'])[0];
+                $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
+                $tpl = current($tplNameArr);
+                $tpl = DiverseFunction::parseTemplateName($tpl);
+            }
+            $widgets[$field['fieldID']] = array(
+                'fieldID' => $field['fieldID'],
+                'widgetType' => $field['widget_type'],
+                'widgetTemplate' => $field['widgetTemplate'] ? $field['widgetTemplate'] : $tpl
+            );
+        }
+
+        return $widgets;
     }
 
     /**

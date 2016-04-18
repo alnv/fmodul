@@ -346,10 +346,13 @@ class FModule extends Frontend
                 }
 
                 $strUrl = $arrProcessed[$wrapper['rootPage']];
-                $dataDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ?')->execute($wrapper['id']);
+
+                DataModel::setTable($tablename.'_data');
+                $dataDB = DataModel::findPublishedByPid($wrapper['id']);  //$this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ?')->execute($wrapper['id']);
 
                 if ($dataDB->count()) {
                     while ($dataDB->next()) {
+
                         $arrPages[] = $this->getLink($dataDB, $strUrl);
                     }
                 }
@@ -375,9 +378,9 @@ class FModule extends Frontend
 
             // Link to an internal page
             case 'internal':
-                if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
-                    return $strBase . $this->generateFrontendUrl($objTarget->row());
-                }
+                //if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
+                //    return $strBase . $this->generateFrontendUrl($objTarget->row());
+                //}
                 break;
 
             // Link to an article

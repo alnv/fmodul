@@ -227,7 +227,7 @@ class DCAModuleData extends ViewContainer
         $orderBy = $moduleObj['orderBy'];
         $fields = $moduleObj['fields'];
         $flag = 1;
-        $mode = 4;
+        $mode = 1;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
 				

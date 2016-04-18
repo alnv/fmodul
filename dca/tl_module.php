@@ -361,6 +361,12 @@ class tl_module_fmodule extends tl_module
         $this->loadDataContainer($tableData);
 
         foreach ($GLOBALS['TL_DCA'][$tableData]['fields'] as $name => $field) {
+
+            if(!isset($field['eval']['fmEditable']) && $field['eval']['fmEditable'] != true)
+            {
+                continue;
+            }
+
             if(in_array($name, $doNotSetByName))
             {
                 continue;

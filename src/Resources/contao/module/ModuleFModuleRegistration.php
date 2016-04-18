@@ -124,6 +124,11 @@ class ModuleFModuleRegistration extends Module
 
             $arrData = $dcaFields[$field];
 
+            if(!isset($arrData['eval']['fmEditable']) && $arrData['eval']['fmEditable'] != true)
+            {
+                continue;
+            }
+
             // Map checkboxWizards to regular checkbox widgets
             if ($arrData['inputType'] == 'checkboxWizard')
             {
@@ -197,6 +202,8 @@ class ModuleFModuleRegistration extends Module
         if (\Input::post('FORM_SUBMIT') == 'fm_registration' && !$doNotSubmit)
         {
             // create new item
+            var_dump(\Input::post('title'));
+            exit;
         }
 
         /*

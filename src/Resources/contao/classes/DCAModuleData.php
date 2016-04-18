@@ -267,7 +267,7 @@ class DCAModuleData extends ViewContainer
         $orderBy = $moduleObj['orderBy'];
         $fields = $moduleObj['fields'];
         $flag = 1;
-        $mode = 4;
+        $mode = 1;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
 				
@@ -283,14 +283,14 @@ class DCAModuleData extends ViewContainer
         if ($orderBy == 'desc') {
             $flag += 1;
         }
-        
+
         $list = array(	
             'sorting' => array(
                 'mode' => $mode,
                 'flag' => $flag,
                 'fields' => array($arrField[0]),
                 'headerFields' => array('title', 'info', 'id'),
-                'panelLayout' => 'search,sort;filter;limit',
+                'panelLayout' => 'search;filter;limit',
                 'child_record_callback' => array('DCAModuleData', 'listData')
             ),
             'label' => array(
@@ -510,7 +510,16 @@ class DCAModuleData extends ViewContainer
 
                 // set subpallets
                 if ($paletteData['subPalettes'] && $paletteData['__selector__']) {
-                    $returnPalette['subPalettes'][$paletteData['__selector__']] = $paletteData['subPalettes'];
+
+                    if(!is_array($paletteData['subPalettes']))
+                    {
+                        $returnPalette['subPalettes'][$paletteData['__selector__']] = $paletteData['subPalettes'];
+                    }else{
+                        foreach($paletteData['subPalettes'] as $k => $v)
+                        {
+                            $returnPalette['subPalettes'][$k] = $v;
+                        }
+                    }
                 }
 
             }

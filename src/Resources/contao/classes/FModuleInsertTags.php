@@ -98,9 +98,8 @@ class FModuleInsertTags extends Frontend
      * @return string
      * @throws \Exception
      */
-    private function getLink($objItem, $strUrl, $strBase = '')
+    protected function getLink($objItem, $strUrl, $strBase = '')
     {
-        // switch
         switch ($objItem->source) {
             // Link to an external page
             case 'external':
@@ -109,8 +108,10 @@ class FModuleInsertTags extends Frontend
 
             // Link to an internal page
             case 'internal':
-                if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
-                    return $strBase . $this->generateFrontendUrl($objTarget->row());
+                if ($objItem->jumpTo) {
+                    $objPage = \PageModel::findWithDetails($objItem->jumpTo);
+                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                    return $domain . $this->generateFrontendUrl($objPage->row(), '', $objPage->language);
                 }
                 break;
 

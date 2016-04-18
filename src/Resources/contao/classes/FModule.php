@@ -375,8 +375,10 @@ class FModule extends Frontend
 
             // Link to an internal page
             case 'internal':
-                if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
-                    return $strBase . $this->generateFrontendUrl($objTarget->row());
+                if ($objItem->jumpTo) {
+                    $objPage = \PageModel::findWithDetails($objItem->jumpTo);
+                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                    return $domain . $this->generateFrontendUrl($objPage->row(), '', $objPage->language);
                 }
                 break;
 

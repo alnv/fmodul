@@ -227,7 +227,7 @@ class DCAModuleData extends ViewContainer
         $orderBy = $moduleObj['orderBy'];
         $fields = $moduleObj['fields'];
         $flag = 1;
-        $mode = 4;
+        $mode = 1;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
 				
@@ -373,7 +373,7 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
-     * Feature/unfeature a news item
+     * toggle item
      *
      * @param integer $intId
      * @param boolean $blnVisible
@@ -468,9 +468,18 @@ class DCAModuleData extends ViewContainer
                     $returnPalette['__selector__'][] = $paletteData['__selector__'];
                 }
 
-                // set subpallets
+                // set sub palettes
                 if ($paletteData['subPalettes'] && $paletteData['__selector__']) {
-                    $returnPalette['subPalettes'][$paletteData['__selector__']] = $paletteData['subPalettes'];
+
+                    if(!is_array($paletteData['subPalettes']))
+                    {
+                        $returnPalette['subPalettes'][$paletteData['__selector__']] = $paletteData['subPalettes'];
+                    }else{
+                        foreach($paletteData['subPalettes'] as $k => $v)
+                        {
+                            $returnPalette['subPalettes'][$k] = $v;
+                        }
+                    }
                 }
 
             }

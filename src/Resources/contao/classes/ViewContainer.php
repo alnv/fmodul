@@ -35,7 +35,7 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'sorting' => true,
                 'search' => true,
-                'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50'),
+                'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'info' => array(
@@ -43,7 +43,7 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'text',
                 'exclude' => true,
                 'search' => true,
-                'eval' => array('maxlength' => 255, 'tl_class' => 'long clr'),
+                'eval' => array('maxlength' => 255, 'tl_class' => 'clr long', 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'author' => array(
@@ -65,7 +65,7 @@ class ViewContainer extends DCAHelper
                 'sorting' => true,
                 'flag' => 8,
                 'inputType' => 'text',
-                'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+                'eval' => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'date'),
                 'sql' => "int(10) unsigned NULL"
             ),
             'time' => array(
@@ -73,7 +73,7 @@ class ViewContainer extends DCAHelper
                 'default' => time(),
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('rgxp' => 'time', 'doNotCopy' => true, 'tl_class' => 'w50'),
+                'eval' => array('rgxp' => 'time', 'doNotCopy' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'date'),
                 'sql' => "int(10) unsigned NULL"
             ),
             'description' => array(
@@ -81,14 +81,14 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'textarea',
                 'exclude' => true,
                 'search' => true,
-                'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE'),
+                'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE', 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'sql' => "mediumtext NULL"
             ),
             'alias' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true),
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
             ),
@@ -153,7 +153,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['cssID'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr'),
+                'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr', 'fmEditable' => true, 'fmGroup' => 'expert'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'published' => array(
@@ -161,21 +161,21 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'checkbox',
                 'filter' => true,
                 'exclude' => true,
-                'eval' => array('submitOnChange' => true, 'doNotCopy' => true),
+                'eval' => array('submitOnChange' => true, 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'expert'),
                 'sql' => "char(1) NOT NULL default ''"
             ),
             'start' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['start'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
                 'sql' => "varchar(10) NOT NULL default ''"
             ),
             'stop' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['stop'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
                 'sql' => "varchar(10) NOT NULL default ''"
             ),
             'addEnclosure' => array(
@@ -189,7 +189,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'],
                 'exclude' => true,
                 'inputType' => 'fileTree',
-                'eval' => array('multiple' => true, 'fieldType' => 'checkbox', 'filesOnly' => true, 'isDownloads' => true, 'mandatory' => true, 'extensions' => \Config::get('allowedDownload')),
+                'eval' => array('multiple' => true, 'fieldType' => 'checkbox', 'filesOnly' => true, 'isDownloads' => true, 'mandatory' => true, 'extensions' => \Config::get('allowedDownload'), 'fmEditable' => true, 'fmGroup' => 'enclosure'),
                 'sql' => "blob NULL"
             ),
             'addImage' => array(
@@ -203,7 +203,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['singleSRC'],
                 'exclude' => true,
                 'inputType' => 'fileTree',
-                'eval' => array('filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => true, 'extensions' => \Config::get('validImageTypes')),
+                'eval' => array('filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => true, 'extensions' => \Config::get('validImageTypes'), 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "binary(16) NULL"
             ),
             'alt' => array(
@@ -211,7 +211,7 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'search' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 255, 'tl_class' => 'long'),
+                'eval' => array('maxlength' => 255, 'tl_class' => 'long', 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'size' => array(
@@ -220,7 +220,7 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'imageSize',
                 'options' => System::getImageSizes(),
                 'reference' => &$GLOBALS['TL_LANG']['MSC'],
-                'eval' => array('rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'),
+                'eval' => array('rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "varchar(64) NOT NULL default ''"
             ),
             'fullsize' => array
@@ -228,7 +228,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fullsize'],
                 'exclude' => true,
                 'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50 m12'),
+                'eval' => array('tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "char(1) NOT NULL default ''"
             ),
             'caption' => array(
@@ -236,7 +236,7 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'search' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'),
+                'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             // geo
@@ -244,14 +244,14 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_latitude'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 128, 'tl_class' => 'w50'),
+                'eval' => array('maxlength' => 128, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "varchar(128) NOT NULL default ''"
             ),
             'geo_longitude' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_longitude'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 128, 'tl_class' => 'w50'),
+                'eval' => array('maxlength' => 128, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "varchar(128) NOT NULL default ''"
             ),
             // only address field
@@ -259,7 +259,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['geo_address'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 255, 'tl_class' => 'long'),
+                'eval' => array('maxlength' => 255, 'tl_class' => 'long', 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             // marker
@@ -274,21 +274,21 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerSRC'],
                 'exclude' => true,
                 'inputType' => 'fileTree',
-                'eval' => array('filesOnly' => true, 'fieldType' => 'radio', 'extensions' => \Config::get('validImageTypes')),
+                'eval' => array('filesOnly' => true, 'fieldType' => 'radio', 'extensions' => \Config::get('validImageTypes'), 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "binary(16) NULL"
             ),
             'markerAlt' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerAlt'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+                'eval' => array('maxlength' => 255, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'markerCaption' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['markerCaption'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'),
+                'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "varchar(255) NOT NULL default ''"
             )
         );
@@ -639,6 +639,8 @@ class ViewContainer extends DCAHelper
         $field['eval'] = array(
             'tl_class' => $this->setTLClass($fieldData),
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
+            'fmEditable' => true,
+            'fmGroup' => 'no'
         );
 
         // set regular expression
@@ -696,7 +698,9 @@ class ViewContainer extends DCAHelper
         $field['inputType'] = 'checkbox';
         $field['eval'] = array(
             'tl_class' => $this->setTLClass($fieldData),
-            'doNotCopy' => true
+            'doNotCopy' => true,
+            'fmEditable' => true,
+            'fmGroup' => 'no'
         );
         $field['sql'] = "char(1) NOT NULL default ''";
         return $field;
@@ -723,6 +727,8 @@ class ViewContainer extends DCAHelper
             'rgxp' => 'date',
             'doNotCopy' => true,
             'datepicker' => true,
+            'fmEditable' => true,
+            'fmGroup' => 'no'
         );
         $field['sql'] = 'int(10) unsigned NULL';
 
@@ -746,7 +752,9 @@ class ViewContainer extends DCAHelper
         $field['inputType'] = 'text';
         $field['eval'] = array(
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
-            'tl_class' => $this->setTLClass($fieldData)
+            'tl_class' => $this->setTLClass($fieldData),
+            'fmEditable' => true,
+            'fmGroup' => 'no'
         );
 
         // set regular expression
@@ -779,7 +787,9 @@ class ViewContainer extends DCAHelper
             'tl_class' => $this->setTLClass($fieldData),
             'includeBlankOption' => true,
             'chosen' => true,
-            'blankOptionLabel' => '-'
+            'blankOptionLabel' => '-',
+            'fmEditable' => true,
+            'fmGroup' => 'no'
         );
 
         // set regular expression
@@ -815,7 +825,9 @@ class ViewContainer extends DCAHelper
             'multiple' => true,
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData),
-            'csv' => ','
+            'csv' => ',',
+            'fmEditable' => true,
+            'fmGroup' => 'no'
         );
         $field['sql'] = 'text NULL';
 

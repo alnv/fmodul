@@ -718,7 +718,7 @@ class ViewContainer extends DCAHelper
             'datepicker' => true,
         );
         $field['sql'] = 'int(10) unsigned NULL';
-        
+
         // if time is enable
         if ($fieldData['addTime']) {
             $field['eval']['rgxp'] = 'datim';
@@ -873,8 +873,8 @@ class ViewContainer extends DCAHelper
         $globLabel = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$fieldID];
         $title = $globLabel[0] ? $globLabel[0] : $title;
         $description = $globLabel[1] ? $globLabel[1] : $description;
-        if(!$title) $title = 'no-title-set';
-        if(!$description) $description = '';
+        if (!$title) $title = 'no-title-set';
+        if (!$description) $description = '';
         return array($title, $description);
     }
 

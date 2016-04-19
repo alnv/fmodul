@@ -65,7 +65,6 @@ TemplateLoader::addFiles(array
     // modules
     'mod_fmodule_detail' => $pathToTemplates,
     'mod_fmodule_list' => $pathToTemplates,
-    'mod_fmodule_registration' => $pathToTemplates,
     'mod_form_filter' => $pathToTemplates,
     'mod_fmodule_map' => $pathToTemplates . '/maps',
 
@@ -86,6 +85,10 @@ TemplateLoader::addFiles(array
     // maps
     'fm_map_field' => $pathToTemplates . '/maps',
     'fm_map_location' => $pathToTemplates . '/maps',
+
+    // registration
+    'sign_default' => $pathToTemplates . '/registration',
+    'sign_grouped' => $pathToTemplates . '/registration',
 
     // fields
     'fm_field_textarea' => $pathToTemplates . '/fields',

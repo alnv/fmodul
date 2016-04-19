@@ -601,9 +601,9 @@ class FModuleInsertTags extends Frontend
 
             // Link to an internal page
             case 'internal':
-                if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
-                    return $strBase . $this->generateFrontendUrl($objTarget->row());
-                }
+                //if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
+                //    return $strBase . $this->generateFrontendUrl($objTarget->row());
+                //}
                 break;
 
             // Link to an article

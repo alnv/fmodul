@@ -6,6 +6,7 @@ $GLOBALS['TL_LANG']['tl_module']['fm_sort_legend'] = 'Front end Sorting';
 $GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Map-View Settings';
 $GLOBALS['TL_LANG']['tl_module']['fm_seo_legend'] = 'SEO-Settings';
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Redirect-Settings';
+$GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Datei speichern';
 
 //fields
 
@@ -140,6 +141,34 @@ $GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][1] = 'Please select your 
 // fm_redirect_jumpTo
 $GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][0] = 'Editable fields';
 $GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][1] = 'Show these fields in the front end form.';
+
+// fm_sign_template
+$GLOBALS['TL_LANG']['tl_module']['fm_sign_template'][0] = 'Template';
+$GLOBALS['TL_LANG']['tl_module']['fm_sign_template'][1] = 'Please select your Template.';
+
+// fm_extensions
+$GLOBALS['TL_LANG']['tl_module']['fm_extensions'][0] = 'Allowed file types';
+$GLOBALS['TL_LANG']['tl_module']['fm_extensions'][1] = 'A comma separated list of valid file extensions.';
+
+// fm_maxlength
+$GLOBALS['TL_LANG']['tl_module']['fm_maxlength'][0] = 'Maximum length';
+$GLOBALS['TL_LANG']['tl_module']['fm_maxlength'][1] = 'Limit the field length to a certain number of characters (text) or bytes (file uploads).';
+
+// fm_storeFile
+$GLOBALS['TL_LANG']['tl_module']['fm_storeFile'][0] = 'Store uploaded files';
+$GLOBALS['TL_LANG']['tl_module']['fm_storeFile'][1] = 'Move the uploaded files to a folder on the server.';
+
+// fm_uploadFolder
+$GLOBALS['TL_LANG']['tl_module']['fm_uploadFolder'][0] = 'Target folder';
+$GLOBALS['TL_LANG']['tl_module']['fm_uploadFolder'][1] = 'Please select the target folder from the files directory.';
+
+// fm_useHomeDir
+$GLOBALS['TL_LANG']['tl_module']['fm_useHomeDir'][0] = 'Use home directory';
+$GLOBALS['TL_LANG']['tl_module']['fm_useHomeDir'][1] = 'Store the file in the home directory if there is an authenticated user.';
+
+// fm_doNotOverwrite
+$GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'][0] = 'Preserve existing files';
+$GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'][1] = 'Add a numeric suffix to the new file if the file name already exists.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';

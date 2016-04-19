@@ -205,6 +205,15 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'] = array('Requir
 // disableCaptcha
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'] = array('Disable the security question','Use this option only if you have limited comments to authenticated users.');
 
+// Details
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['teaserData'] = 'Teaser';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['dateDetails'] = 'Date and time';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['expertDetails'] = 'Expert settings';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imageDetails'] = 'Image settings';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'] = 'Enclosures';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Google Map';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Other';
+
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_admin'] = 'Admin';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_author'] = 'Author';

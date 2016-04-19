@@ -203,6 +203,15 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'] = array('Login 
 // disableCaptcha
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'] = array('Sicherheitsfrage deaktivieren','Wählen Sie diese Option nur, wenn das Erstellen von Kommentaren auf authentifizierte Benutzer beschränkt ist.');
 
+// Details
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['teaserData'] = 'Teaser';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['dateDetails'] = 'Datum und Uhrzeit';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['expertDetails'] = 'Experten-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imageDetails'] = 'Bild-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'] = 'Anlagen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Karten-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Sonstiges';
+
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['default'] = 'Standard';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['internal'] = 'Seite';

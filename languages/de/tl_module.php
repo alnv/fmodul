@@ -6,6 +6,7 @@ $GLOBALS['TL_LANG']['tl_module']['fm_sort_legend'] = 'Frontend-Sortierung';
 $GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Kartenansicht-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_seo_legend'] = 'SEO-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Weiterleitungsziel-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Store file';
 
 // fields
 
@@ -140,6 +141,34 @@ $GLOBALS['TL_LANG']['tl_module']['fm_redirect_jumpTo'][1] = 'Bitte wählen Sie e
 // fm_editable_fields
 $GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][0] = 'Editierbare Felder';
 $GLOBALS['TL_LANG']['tl_module']['fm_editable_fields'][1] = 'Diese Felder im Frontend-Formular anzeigen.';
+
+// fm_sign_template
+$GLOBALS['TL_LANG']['tl_module']['fm_sign_template'][0] = 'Template';
+$GLOBALS['TL_LANG']['tl_module']['fm_sign_template'][1] = 'Bitte wählen Sie ein Template aus.';
+
+// fm_extensions
+$GLOBALS['TL_LANG']['tl_module']['fm_extensions'][0] = 'Erlaubte Dateitypen';
+$GLOBALS['TL_LANG']['tl_module']['fm_extensions'][1] = 'Eine kommagetrennte Liste gültiger Dateiendungen.';
+
+// fm_maxlength
+$GLOBALS['TL_LANG']['tl_module']['fm_maxlength'][0] = 'Maximale Eingabelänge';
+$GLOBALS['TL_LANG']['tl_module']['fm_maxlength'][1] = 'Hier können Sie die maximale Anzahl an Zeichen (Text) bzw. Bytes (Datei-Uploads) festlegen.';
+
+// fm_storeFile
+$GLOBALS['TL_LANG']['tl_module']['fm_storeFile'][0] = 'Hochgeladene Dateien speichern';
+$GLOBALS['TL_LANG']['tl_module']['fm_storeFile'][1] = 'Die hochgeladenen Dateien in einen Ordner auf dem Server verschieben.';
+
+// fm_uploadFolder
+$GLOBALS['TL_LANG']['tl_module']['fm_uploadFolder'][0] = 'Zielverzeichnis';
+$GLOBALS['TL_LANG']['tl_module']['fm_uploadFolder'][1] = 'Bitte wählen Sie das Zielverzeichnis aus der Dateiübersicht.';
+
+// fm_useHomeDir
+$GLOBALS['TL_LANG']['tl_module']['fm_useHomeDir'][0] = 'Benutzerverzeichnis verwenden';
+$GLOBALS['TL_LANG']['tl_module']['fm_useHomeDir'][1] = 'Die Datei im Benutzerverzeichnis speichern, wenn sich ein Benutzer angemeldet hat.';
+
+// fm_doNotOverwrite
+$GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'][0] = 'Bestehende Dateien erhalten';
+$GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'][1] = 'Der neuen Datei ein numerisches Suffix hinzufügen, wenn der Dateiname bereits existiert.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';

@@ -74,7 +74,14 @@ class ModuleFModuleRegistration extends Module
         $doNotSubmit = false;
 
         //
-        $arrGroups = array();
+        $arrGroups = array(
+            'teaser' => array(),
+            'date' => array(),
+            'image' => array(),
+            'enclosure' => array(),
+            'map' => array(),
+            'expert' => array()
+        );
 
         // load language
         \System::loadLanguageFile('tl_fmodules_language_pack');
@@ -164,7 +171,7 @@ class ModuleFModuleRegistration extends Module
                 $objWidget->rowClassConfirm = 'row_' . ++$i . ((($i % 2) == 0) ? ' even' : ' odd');
             }
 
-            // create new item
+            // Validate input
             if (\Input::post('FORM_SUBMIT') == 'fm_registration')
             {
                 //

@@ -13,19 +13,14 @@
             </div>
 
             <script async defer>
-
                 document.getElementById("reset_btn_<?= $this->id; ?>").onclick = function () {
-
                     clearForm();
-
                 };
-
                 function clearForm() {
                     var form = document.getElementById("form_<?= $this->id; ?>");
                     var urlStr = "{{env::request}}";
                     window.location = urlStr.split('?')[0];
                 }
-
             </script>
 
         <?php endif; ?>

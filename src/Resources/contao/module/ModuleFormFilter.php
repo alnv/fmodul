@@ -115,6 +115,12 @@ class ModuleFormFilter extends \Contao\Module
             // get field id
             $fieldID = $field['fieldID'];
 
+
+            // set labels
+            $label = $this->setLabels($field);
+            $fields[$i]['title'] = $label[0];
+            $fields[$i]['description'] = $label[1];
+
             // get filter value
             $inputValue = Input::get($fieldID) ? Input::get($fieldID) : '';
 
@@ -296,6 +302,19 @@ class ModuleFormFilter extends \Contao\Module
 
     }
 
+    /**
+     * @param $field
+     * @return array
+     */
+    private function setLabels($field)
+    {
+        $globLabel = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$field['fieldID']];
+        $title = $globLabel[0] ? $globLabel[0] : $field['title'];
+        $description = $globLabel[1] ? $globLabel[1] : $field['description'];
+        if(!$title) $title = 'no-title-set';
+        if(!$description) $description = '';
+        return array($title, $description);
+    }
 
     /**
      * @param $fieldID

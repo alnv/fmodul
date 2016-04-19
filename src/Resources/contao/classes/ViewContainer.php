@@ -635,7 +635,7 @@ class ViewContainer extends DCAHelper
     {
         $field = array();
         $widgetType = explode('.', $fieldData['widget_type']);
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['exclude'] = true;
         $field['eval'] = array(
             'tl_class' => $this->setTLClass($fieldData),
@@ -683,7 +683,7 @@ class ViewContainer extends DCAHelper
     public function getToggleField($fieldData)
     {
         $field = array();
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['exclude'] = true;
         $field['filter'] = true;
         $field['inputType'] = 'checkbox';
@@ -702,7 +702,7 @@ class ViewContainer extends DCAHelper
     public function getDateField($fieldData)
     {
         $field = array();
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['search'] = true;
         $field['filter'] = true;
         $field['sorting'] = true;
@@ -718,6 +718,7 @@ class ViewContainer extends DCAHelper
             'datepicker' => true,
         );
         $field['sql'] = 'int(10) unsigned NULL';
+        
         // if time is enable
         if ($fieldData['addTime']) {
             $field['eval']['rgxp'] = 'datim';
@@ -732,7 +733,7 @@ class ViewContainer extends DCAHelper
     public function getSearchField($fieldData)
     {
         $field = array();
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['search'] = true;
         $field['exclude'] = true;
         $field['inputType'] = 'text';
@@ -752,7 +753,7 @@ class ViewContainer extends DCAHelper
     public function getSimpleChoiceField($fieldData, $options)
     {
         $field = array();
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['filter'] = true;
         $field['sorting'] = true;
         $field['exclude'] = true;
@@ -775,13 +776,14 @@ class ViewContainer extends DCAHelper
     }
 
     /**
-     * @param $field
+     * @param $fieldData
+     * @param $options
      * @return array
      */
     public function getMultiChoiceField($fieldData, $options)
     {
         $field = array();
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['filter'] = true;
         $field['exclude'] = true;
         $field['inputType'] = 'checkbox';
@@ -808,7 +810,7 @@ class ViewContainer extends DCAHelper
     public function getOptionField($fieldData)
     {
         $field = array();
-        $field['label'] = $this->setLabel($fieldData['title'], $fieldData['description']);
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['exclude'] = true;
         $field['fmodule_filter'] = true;
         $field['eval'] = array('tl_class' => 'clr m12');
@@ -863,11 +865,16 @@ class ViewContainer extends DCAHelper
     /**
      * @param $title
      * @param $description
+     * @param $fieldID
      * @return array
      */
-    protected function setLabel($title, $description)
+    protected function setLabels($title, $description, $fieldID = '')
     {
-        $description = $description ? $description : 'No description found';
+        $globLabel = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$fieldID];
+        $title = $globLabel[0] ? $globLabel[0] : $title;
+        $description = $globLabel[1] ? $globLabel[1] : $description;
+        if(!$title) $title = 'no-title-set';
+        if(!$description) $description = '';
         return array($title, $description);
     }
 

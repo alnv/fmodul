@@ -19,8 +19,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha;{redirect_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength;{redirect_legend},jumpTo;{store_legend:hide},fm_storeFile;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
 
 // selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
@@ -28,6 +27,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_sorting';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addMap';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_overwrite_seoSettings';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_redirect_source';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_storeFile';
 
 // sub palettes
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_filter'] = 'f_filter_fields';
@@ -36,6 +36,7 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addMap'] = 'fm_center_address
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_overwrite_seoSettings'] = 'fm_seoDescription,fm_seoPageTitle';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteID'] = 'fm_redirect_jumpTo';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteURL'] = 'fm_redirect_url';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_storeFile'] = 'fm_uploadFolder,fm_useHomeDir,fm_doNotOverwrite';
 
 // module fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
@@ -119,7 +120,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_template'] = array
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getListTemplates'),
-    'eval' => array('tl_class' => 'w50'),
+    'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_detail_template'] = array
@@ -129,7 +130,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_detail_template'] = array
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getDetailTemplates'),
-    'eval' => array('tl_class' => 'w50'),
+    'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_template'] = array
@@ -139,7 +140,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_template'] = array
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getFormTemplates'),
-    'eval' => array('tl_class' => 'w50'),
+    'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields'] = array(
@@ -327,6 +328,72 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_editable_fields'] = array(
     'eval' => array('multiple' => true),
     'sql' => "blob NULL"
 );
+// fm_sign_template
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_sign_template'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_sign_template'],
+    'exclude' => true,
+    'default' => 'sign_default',
+    'inputType' => 'select',
+    'options_callback' => array('tl_module_fmodule', 'getSignTemplate'),
+    'eval' => array('tl_class' => 'w50', 'chosen' => true),
+    'sql' => "varchar(32) NOT NULL default ''"
+);
+// fm_storeFile
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_storeFile'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_storeFile'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true),
+    'sql' => "char(1) NOT NULL default ''"
+);
+// fm_uploadFolder
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_uploadFolder'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_uploadFolder'],
+    'exclude' => true,
+    'inputType' => 'fileTree',
+    'eval' => array('fieldType' => 'radio', 'tl_class' => 'clr'),
+    'sql' => "binary(16) NULL"
+);
+// fm_useHomeDir
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_useHomeDir'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_useHomeDir'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+// fm_useHomeDir
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_doNotOverwrite'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+// maxlength
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_maxlength'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_maxlength'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+    'sql' => "int(10) unsigned NOT NULL default '0'"
+);
+// fm_extensions
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_extensions'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_extensions'],
+    'exclude' => true,
+    'default' => 'jpg,jpeg,gif,png,pdf,doc,xls,ppt',
+    'inputType' => 'text',
+    'eval' => array('rgxp' => 'extnd', 'maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
 
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
@@ -340,6 +407,14 @@ class tl_module_fmodule extends tl_module
      * @var array
      */
     protected $moduleColsCache = array();
+
+    /**
+     * @return array
+     */
+    public function getSignTemplate()
+    {
+        return $this->getTemplateGroup('sign_');
+    }
 
     /**
      * @param \Contao\DataContainer $dca
@@ -362,13 +437,11 @@ class tl_module_fmodule extends tl_module
 
         foreach ($GLOBALS['TL_DCA'][$tableData]['fields'] as $name => $field) {
 
-            if(!isset($field['eval']['fmEditable']) && $field['eval']['fmEditable'] != true)
-            {
+            if (!isset($field['eval']['fmEditable']) && $field['eval']['fmEditable'] != true) {
                 continue;
             }
 
-            if(in_array($name, $doNotSetByName))
-            {
+            if (in_array($name, $doNotSetByName)) {
                 continue;
             }
             $return[$name] = $field['label'][0] ? $field['label'][0] . ' (' . $name . ')' : $name;

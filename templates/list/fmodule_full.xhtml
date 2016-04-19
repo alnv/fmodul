@@ -1,4 +1,4 @@
-<section class="fmodule_full">
+<section <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_full<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
     <div class="fmodule-detail-header header">
         <h2 class="title"><?= $this->title; ?></h2>
         <?php if ($this->info): ?>

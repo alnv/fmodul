@@ -178,7 +178,7 @@ class ModuleDetailView extends Module
         //set css and id
         $itemDB['cssID'] = deserialize($itemDB['cssID']);
         $itemDB['itemID'] = $itemDB['cssID'][0];
-        $itemDB['itemCSS'] = ' ' . $itemDB['cssID'][1];
+        $itemDB['itemCSS'] = $itemDB['itemCSS'][1] ? ' ' . $itemDB['itemCSS'][1] : '';
 
         $objCte = \ContentModel::findPublishedByPidAndTable($itemDB['id'], $tablename . '_data');
 

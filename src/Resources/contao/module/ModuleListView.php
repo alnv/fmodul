@@ -300,7 +300,7 @@ class ModuleListView extends Module
             //set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
-            $item['itemCSS'] = ' ' . $item['cssID'][1];
+            $item['itemCSS'] = $item['cssID'][1] ? ' ' . $item['cssID'][1] : '';
 
             // set date format
             $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
@@ -338,7 +338,7 @@ class ModuleListView extends Module
             $item['teaser'] = $arrElements;
 
             // set odd and even classes
-            $item['cssClass'] = $i % 2 ? 'even' : 'odd';
+            $item['cssClass'] = $i % 2 ? ' even' : ' odd';
 
             //field
             if (!empty($fieldWidgets)) {

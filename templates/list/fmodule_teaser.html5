@@ -1,4 +1,4 @@
-<div <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_teaser <?= $this->cssClass; ?><?= $this->itemCSS; ?>">
+<div <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_teaser<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
 
     <?php if ($this->href): ?>
         <p class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></p>

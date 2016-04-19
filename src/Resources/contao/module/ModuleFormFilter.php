@@ -50,7 +50,7 @@ class ModuleFormFilter extends \Contao\Module
 
         global $objPage;
         $format = $objPage->dateFormat;
-        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();        
+        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();
         $fields = deserialize($this->f_form_fields);
         $listID = $this->f_list_field;
         $formTemplate = $this->f_form_template;
@@ -60,12 +60,11 @@ class ModuleFormFilter extends \Contao\Module
         $modeSettings = deserialize($listModuleDB['f_display_mode']);
         $modeSettings = is_array($modeSettings) ? array_values($modeSettings) : array();
         $activeOption = $this->f_active_options ? deserialize($this->f_active_options) : array();
-				
-		if(!is_array($pageTaxonomy))
-        {
-	        $pageTaxonomy = array();
+
+        if (!is_array($pageTaxonomy)) {
+            $pageTaxonomy = array();
         }
-		
+
         if (!$listModuleTable && !$listModuleID) {
             return;
         }
@@ -83,28 +82,22 @@ class ModuleFormFilter extends \Contao\Module
         $formAction = Environment::get('request');
 
         // override action
-        if($this->fm_redirect_source)
-        {
+        if ($this->fm_redirect_source) {
             $type = $this->fm_redirect_source;
 
-            if($type == 'siteID')
-            {
+            if ($type == 'siteID') {
                 $id = $this->fm_redirect_jumpTo;
-                if($id)
-                {
+                if ($id) {
                     $pageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($id)->row();
                 }
-                if(!empty($pageDB))
-                {
+                if (!empty($pageDB)) {
                     $formAction = $this->generateFrontendUrl($pageDB);
                 }
             }
 
-            if($type == 'siteURL')
-            {
+            if ($type == 'siteURL') {
                 $url = $this->fm_redirect_url;
-                if($url)
-                {
+                if ($url) {
                     $formAction = $this->replaceInsertTags($url);
                 }
             }
@@ -115,7 +108,6 @@ class ModuleFormFilter extends \Contao\Module
             // get field id
             $fieldID = $field['fieldID'];
 
-
             // set labels
             $label = $this->setLabels($field);
             $fields[$i]['title'] = $label[0];
@@ -125,34 +117,30 @@ class ModuleFormFilter extends \Contao\Module
             $inputValue = Input::get($fieldID) ? Input::get($fieldID) : '';
 
             // get options from wrapper
-            if( $field['type'] == 'multi_choice' || $field['type'] == 'simple_choice' )
-            {
-	       	    $wrapperOptions = deserialize($fieldsDB[$fieldID]);
-	            	       
-	            if($wrapperOptions['table'] && !in_array($fieldID, $activeOption))
-	            {
-		            $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);		           
-	            }
-	            
-	            if(is_null($wrapperOptions['table']) && !in_array($fieldID, $activeOption))
-	            {
-		            $fields[$i]['options'] = $wrapperOptions;
-	            }
+            if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
+                $wrapperOptions = deserialize($fieldsDB[$fieldID]);
+
+                if ($wrapperOptions['table'] && !in_array($fieldID, $activeOption)) {
+                    $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);
+                }
+
+                if (is_null($wrapperOptions['table']) && !in_array($fieldID, $activeOption)) {
+                    $fields[$i]['options'] = $wrapperOptions;
+                }
             }
 
             // set countries
-            if($field['fieldID'] == 'address_country')
-            {
+            if ($field['fieldID'] == 'address_country') {
                 $countries = $this->getCountries();
                 $fields[$i]['options'] = DiverseFunction::conformOptionsArray($countries);
             }
 
             // get options
-            if ($fieldID && in_array($fieldID, $activeOption)) {            
+            if ($fieldID && in_array($fieldID, $activeOption)) {
                 $results = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, $objPage->dateFormat, $objPage->timeFormat);
-				$fields[$i]['options'] = is_array($results) ? $results : array();				
+                $fields[$i]['options'] = is_array($results) ? $results : array();
             }
-            
+
             // set tablename
             $fields[$i]['tablename'] = !strpos($listModuleTable, '_data') ? $listModuleTable . '_data' : $listModuleTable;
 
@@ -278,11 +266,10 @@ class ModuleFormFilter extends \Contao\Module
             if ($widget['data']['overwrite'] == '1') {
                 continue;
             }
-            
-			//
-            if($pageTaxonomy[$fieldID] && $pageTaxonomy[$fieldID]['set']['overwrite'] == '1')
-            {
-	            continue;
+
+            //
+            if ($pageTaxonomy[$fieldID] && $pageTaxonomy[$fieldID]['set']['overwrite'] == '1') {
+                continue;
             }
 
             $widgetTemplate = new FrontendTemplate($widget['tpl']);
@@ -311,8 +298,8 @@ class ModuleFormFilter extends \Contao\Module
         $globLabel = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$field['fieldID']];
         $title = $globLabel[0] ? $globLabel[0] : $field['title'];
         $description = $globLabel[1] ? $globLabel[1] : $field['description'];
-        if(!$title) $title = 'no-title-set';
-        if(!$description) $description = '';
+        if (!$title) $title = 'no-title-set';
+        if (!$description) $description = '';
         return array($title, $description);
     }
 

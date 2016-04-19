@@ -640,7 +640,7 @@ class ViewContainer extends DCAHelper
             'tl_class' => $this->setTLClass($fieldData),
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'fmEditable' => true,
-            'fmGroup' => 'no'
+            'fmGroup' => 'other'
         );
 
         // set regular expression
@@ -700,7 +700,7 @@ class ViewContainer extends DCAHelper
             'tl_class' => $this->setTLClass($fieldData),
             'doNotCopy' => true,
             'fmEditable' => true,
-            'fmGroup' => 'no'
+            'fmGroup' => 'other'
         );
         $field['sql'] = "char(1) NOT NULL default ''";
         return $field;
@@ -728,7 +728,7 @@ class ViewContainer extends DCAHelper
             'doNotCopy' => true,
             'datepicker' => true,
             'fmEditable' => true,
-            'fmGroup' => 'no'
+            'fmGroup' => 'other'
         );
         $field['sql'] = 'int(10) unsigned NULL';
 
@@ -754,7 +754,7 @@ class ViewContainer extends DCAHelper
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData),
             'fmEditable' => true,
-            'fmGroup' => 'no'
+            'fmGroup' => 'other'
         );
 
         // set regular expression
@@ -789,7 +789,7 @@ class ViewContainer extends DCAHelper
             'chosen' => true,
             'blankOptionLabel' => '-',
             'fmEditable' => true,
-            'fmGroup' => 'no'
+            'fmGroup' => 'other'
         );
 
         // set regular expression
@@ -827,7 +827,7 @@ class ViewContainer extends DCAHelper
             'tl_class' => $this->setTLClass($fieldData),
             'csv' => ',',
             'fmEditable' => true,
-            'fmGroup' => 'no'
+            'fmGroup' => 'other'
         );
         $field['sql'] = 'text NULL';
 
@@ -919,7 +919,7 @@ class ViewContainer extends DCAHelper
         $title = $globLabel[0] ? $globLabel[0] : $title;
         $description = $globLabel[1] ? $globLabel[1] : $description;
         if(!$title) $title = 'no-title-set';
-        if(!$description) $description = 'no-description-set';
+        if(!$description) $description = '';
         return array($title, $description);
     }
 

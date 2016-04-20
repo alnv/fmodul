@@ -11,6 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\Controller;
 use Contao\Module;
 
 /**
@@ -23,6 +24,21 @@ class ModuleFModuleRegistration extends Module
      * @var string
      */
     protected $strTemplate = 'sign_default';
+
+    /**
+     * @var string
+     */
+    protected $strTableData = '';
+
+    /**
+     * @var string
+     */
+    protected $strTableName = '';
+
+    /**
+     * @var string
+     */
+    protected $strPid = '';
 
     /**
      * @return string
@@ -60,10 +76,11 @@ class ModuleFModuleRegistration extends Module
         $GLOBALS['TL_LANGUAGE'] = $objPage->language;
 
         // get fields
-        $tablename = $this->f_select_module;
-        $tableData = $tablename . '_data';
+        $this->strTableName = $this->f_select_module;
+        $this->strTableData = $this->strTableName . '_data';
+        $this->strPid = $this->f_select_wrapper;
         $moduleDCA = DCACreator::getInstance();
-        $arrModule = $moduleDCA->getModuleByTableName($tablename);
+        $arrModule = $moduleDCA->getModuleByTableName($this->strTableName);
         $dcaData = DCAModuleData::getInstance();
         $dcaFields = $dcaData->setFields($arrModule);
 
@@ -167,8 +184,7 @@ class ModuleFModuleRegistration extends Module
             $objWidget->storeValues = true;
             $objWidget->rowClass = 'row_' . $i . (($i == 0) ? ' row_first' : '') . ((($i % 2) == 0) ? ' even' : ' odd');
 
-            if($arrData['inputType'] == 'upload')
-            {
+            if ($arrData['inputType'] == 'upload') {
                 $objWidget->storeFile = $this->fm_storeFile;
                 $objWidget->uploadFolder = $this->fm_uploadFolder;
                 $objWidget->useHomeDir = $this->fm_useHomeDir;
@@ -192,65 +208,47 @@ class ModuleFModuleRegistration extends Module
                 $rgxp = $arrData['eval']['rgxp'];
 
                 // Convert date formats into timestamps (check the eval setting first -> #3063)
-                if ($varValue != '' && in_array($rgxp, array('date', 'time', 'datim')))
-                {
-                    try
-                    {
+                if ($varValue != '' && in_array($rgxp, array('date', 'time', 'datim'))) {
+                    try {
                         $objDate = new \Date($varValue, \Date::getFormatFromRgxp($rgxp));
                         $varValue = $objDate->tstamp;
-                    }
-                    catch (\OutOfBoundsException $e)
-                    {
+                    } catch (\OutOfBoundsException $e) {
                         $objWidget->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
                     }
                 }
 
                 // Make sure that unique fields are unique (check the eval setting first -> #3063)
-                if ($arrData['eval']['unique'] && $varValue != '' && !$this->Database->isUniqueValue($tableData, $field, $varValue))
-                {
+                if ($arrData['eval']['unique'] && $varValue != '' && !$this->Database->isUniqueValue($this->strTableData, $field, $varValue)) {
                     $objWidget->addError(sprintf($GLOBALS['TL_LANG']['ERR']['unique'], $arrData['label'][0] ?: $field));
                 }
 
                 // Save callback
-                if ($objWidget->submitInput() && !$objWidget->hasErrors() && is_array($arrData['save_callback']))
-                {
-                    foreach ($arrData['save_callback'] as $callback)
-                    {
-                        try
-                        {
-                            if (is_array($callback))
-                            {
+                if ($objWidget->submitInput() && !$objWidget->hasErrors() && is_array($arrData['save_callback'])) {
+                    foreach ($arrData['save_callback'] as $callback) {
+                        try {
+                            if (is_array($callback)) {
                                 $this->import($callback[0]);
                                 $varValue = $this->{$callback[0]}->{$callback[1]}($varValue, null);
-                            }
-                            elseif (is_callable($callback))
-                            {
+                            } elseif (is_callable($callback)) {
                                 $varValue = $callback($varValue, null);
                             }
-                        }
-                        catch (\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                             $objWidget->class = 'error';
                             $objWidget->addError($e->getMessage());
                         }
                     }
                 }
-                // Store the current value
-                if ($objWidget->hasErrors())
-                {
-                    $doNotSubmit = true;
-                }
 
-                elseif ($objWidget->submitInput())
-                {
+                // Store the current value
+                if ($objWidget->hasErrors()) {
+                    $doNotSubmit = true;
+                } elseif ($objWidget->submitInput()) {
                     // Set the correct empty value (see #6284, #6373)
-                    if ($varValue === '')
-                    {
+                    if ($varValue === '') {
                         $varValue = $objWidget->getEmptyValue();
                     }
                     // Encrypt the value (see #7815)
-                    if ($arrData['eval']['encrypt'])
-                    {
+                    if ($arrData['eval']['encrypt']) {
                         $varValue = \Encryption::encrypt($varValue);
                     }
                     // Set the new value
@@ -259,13 +257,11 @@ class ModuleFModuleRegistration extends Module
 
                 // store file
                 $Files = $_SESSION['FILES'];
-                if($Files && $Files[$field])
-                {
+                if ($Files && $Files[$field]) {
                     $strRoot = TL_ROOT . '/';
                     $strUuid = $Files[$field]['uuid'];
                     $strFile = substr($Files[$field]['tmp_name'], strlen($strRoot));
-                    if($strUuid === null)
-                    {
+                    if ($strUuid === null && class_exists('StringUtil')) {
                         $strUuid = \StringUtil::binToUuid(\Dbafs::addResource($strFile)->uuid);
                     }
                     $arrValidData[$field] = $strUuid;
@@ -309,6 +305,7 @@ class ModuleFModuleRegistration extends Module
         $this->Template->enclosureDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'];
         $this->Template->expertDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['expertDetails'];
         $this->Template->mapDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'];
+        $this->Template->authorDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'];
         $this->Template->otherDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'];
         $this->Template->captchaDetails = $GLOBALS['TL_LANG']['MSC']['securityQuestion'];
 
@@ -330,12 +327,244 @@ class ModuleFModuleRegistration extends Module
 
     /**
      * @param $arrData
+     * @throws \Exception
      */
     protected function createNewEntity($arrData)
     {
+        $tableData = $this->strTableData;
+
+        // set default values
         $arrData['tstamp'] = time();
-        var_dump($arrData);
-        exit;
+        $arrData['pid'] = $this->strPid;
+        $arrData['alias'] = $this->generateAlias($arrData['alias'], $arrData);
+
+        // image and enclosure
+        // @todo solve mandatory problem
+
+        // @todo set default values from fe module
+
+        // set author
+        if (!$arrData['author']) {
+            $arrData['author'] = $this->fm_EntityAuthor;
+        }
+
+        // generate sql query
+        $values = array();
+        $cols = array();
+        $placeholder = array();
+
+        foreach ($arrData as $col => $value) {
+            $cols[] = $col;
+            $values[] = $value;
+            $placeholder[] = '?';
+        }
+
+        $strCols = implode(',', $cols);
+        $strPlaceholder = implode(',', $placeholder);
+        $strQuery = 'INSERT INTO ' . $tableData . ' (' . $strCols . ') VALUES (' . $strPlaceholder . ')';
+
+        // create new entity
+        $this->Database->prepare($strQuery)->execute($values);
+
+        // send Notification
+        if($this->fm_addNotificationEmail)
+        {
+            $this->sendNotification($arrData);
+        }
+
+        // send Confirmation
+        if($this->fm_addConfirmationEmail)
+        {
+            $this->sendConfirmation($arrData);
+        }
+
+        // Check whether there is a jumpTo page
+        if ($this->jumpTo) {
+            $objPage = \PageModel::findWithDetails($this->jumpTo);
+            $this->jumpToOrReload($objPage->row());
+        }
+
+        $this->reload();
+
     }
 
+    /**
+     * @param $varValue
+     * @param array $arrData
+     * @return string
+     * @throws \Exception
+     */
+    protected function generateAlias($varValue, $arrData = array())
+    {
+        $autoAlias = false;
+
+        if (empty($arrData)) {
+            return 'Alias-' . substr(md5(time()), 12);
+        }
+
+        // Generate alias if there is none
+        if ($varValue == '') {
+            $autoAlias = true;
+            $varValue = \StringUtil::generateAlias($arrData['title']);
+        }
+
+        $table = $this->strTableData;
+        $pid = $this->strPid;
+
+        $objAlias = null;
+
+        if ($table && $pid) {
+            $objAlias = $this->Database->prepare("SELECT id FROM " . $table . " WHERE alias = ? AND pid = ?")->execute($varValue, $pid);
+        }
+
+        // Check whether the alias exists
+        if ($objAlias && $objAlias->numRows > 1 && !$autoAlias) {
+            throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+
+        }
+
+        // Add hash to alias
+        if ($objAlias && $objAlias->numRows && $autoAlias) {
+            $varValue .= '-' . substr(md5(time()), 12);
+        }
+
+        return $varValue;
+    }
+
+    /**
+     * @param $arrData
+     */
+    protected function sendNotification($arrData)
+    {
+        // set
+        $name = $this->fm_notificationEmailName ? Controller::replaceInsertTags($this->fm_notificationEmailName) : '';
+        $subject = $this->fm_notificationEmailSubject ? Controller::replaceInsertTags($this->fm_notificationEmailSubject) : '';
+        $adminEmail = $this->getAdminEmailFromContext($this->fm_sendNotificationToAdmin);
+        $strToEmails = $this->fm_notificationEmailList ? $this->fm_notificationEmailList : '';
+        $fromEmail = $this->fm_notificationSender ? $this->fm_notificationSender : $this->getAdminEmail();
+
+        $toEmails = array();
+        $arrToEmails = explode(',', $strToEmails);
+
+        foreach($arrToEmails as $email)
+        {
+            $toEmails[] = $email;
+        }
+
+        if($adminEmail)
+        {
+            $toEmails[] = $adminEmail;
+        }
+
+        // clean sendTo emails
+        $toEmails = array_filter($toEmails);
+        $toEmails = array_unique($toEmails);
+
+        $body = '';
+        foreach($arrData as $key => $value)
+        {
+            // parse array
+            if(is_array($value))
+            {
+                $value = implode(',', $value);
+            }
+
+            // replace insert tags
+            $value = Controller::replaceInsertTags($value);
+
+            $body .= $key . ': ' . $value . '</br>';
+        }
+
+        // send email
+        $objEmail = new \Email();
+        $objEmail->from = $fromEmail;
+        $objEmail->fromName = $name;
+        $objEmail->subject = $subject;
+        $objEmail->html = $body;
+        $objEmail->sendTo($toEmails);
+
+    }
+
+    /**
+     * @param $arrData
+     * @return null
+     */
+    protected function sendConfirmation($arrData)
+    {
+        // set
+        $name = $this->fm_confirmationEmailName ? Controller::replaceInsertTags($this->fm_confirmationEmailName) : '';
+        $subject = $this->fm_confirmationEmailSubject ? Controller::replaceInsertTags($this->fm_confirmationEmailSubject) : '';
+        $adminEmail = $this->getAdminEmailFromContext($this->fm_sendConfirmationToAdmin);
+        $strToEmails = $this->fm_confirmationEmailList ? $this->fm_confirmationEmailList : '';
+        $fromEmail = $this->fm_confirmationSender ? $this->fm_confirmationSender : $this->getAdminEmail();
+        $recipient = $this->fm_confirmationRecipientEmail ? $arrData[$this->fm_confirmationRecipientEmail] : '';
+        $body = $this->fm_confirmationBody ? Controller::replaceInsertTags($this->fm_confirmationBody) : '';
+
+        $toEmails = array();
+        $ccEmails = array();
+        $arrToEmails = explode(',', $strToEmails);
+
+        foreach($arrToEmails as $email)
+        {
+            $ccEmails[] = $email;
+        }
+
+        if($adminEmail)
+        {
+            $ccEmails[] = $adminEmail;
+        }
+
+        if($recipient)
+        {
+            $toEmails[] = $recipient;
+        }
+
+        // break up if no recipient given
+        if(empty($toEmails))
+        {
+            return null;
+        }
+
+        // clean sendTo emails
+        $toEmails = array_filter($toEmails);
+        $toEmails = array_unique($toEmails);
+
+        // clean sendBcc emails
+        $ccEmails = array_filter($ccEmails);
+        $ccEmails = array_unique($ccEmails);
+
+        // send email
+        $objEmail = new \Email();
+        $objEmail->from = $fromEmail;
+        $objEmail->fromName = $name;
+        $objEmail->subject = $subject;
+        $objEmail->html = $body;
+        $objEmail->sendBcc($ccEmails);
+        $objEmail->sendTo($toEmails);
+
+    }
+
+    /**
+     * @param $adminEmail
+     * @return mixed|null|string
+     */
+    private function getAdminEmailFromContext($adminEmail)
+    {
+        $return = '';
+
+        if($adminEmail)
+        {
+            $return = \Config::get('adminEmail');
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    private function getAdminEmail()
+    {
+        return \Config::get('adminEmail');
+    }
 }

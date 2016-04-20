@@ -38,6 +38,14 @@ class ViewContainer extends DCAHelper
                 'eval' => array('maxlength' => 255, 'mandatory' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
+            'alias' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
+                'inputType' => 'text',
+                'exclude' => true,
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
+                'save_callback' => array(array('DCAModuleData', 'generateAlias')),
+                'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
+            ),
             'info' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['info'],
                 'inputType' => 'text',
@@ -46,6 +54,14 @@ class ViewContainer extends DCAHelper
                 'eval' => array('maxlength' => 255, 'tl_class' => 'clr long', 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
+            'description' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'],
+                'inputType' => 'textarea',
+                'exclude' => true,
+                'search' => true,
+                'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE', 'fmEditable' => true, 'fmGroup' => 'teaser'),
+                'sql' => "mediumtext NULL"
+            ),
             'author' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'],
                 'default' => $userID,
@@ -53,7 +69,7 @@ class ViewContainer extends DCAHelper
                 'filter' => true,
                 'inputType' => 'select',
                 'foreignKey' => 'tl_user.name',
-                'eval' => array('doNotCopy' => true, 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
+                'eval' => array('doNotCopy' => true, 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'author'),
                 'relation' => array('type' => 'hasOne', 'load' => 'eager'),
                 'sql' => "int(10) unsigned NOT NULL default '0'",
             ),
@@ -76,36 +92,6 @@ class ViewContainer extends DCAHelper
                 'eval' => array('rgxp' => 'time', 'doNotCopy' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'date'),
                 'sql' => "int(10) unsigned NULL"
             ),
-            'description' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['description'],
-                'inputType' => 'textarea',
-                'exclude' => true,
-                'search' => true,
-                'eval' => array('tl_class' => 'clr', 'rte' => 'tinyMCE', 'fmEditable' => true, 'fmGroup' => 'teaser'),
-                'sql' => "mediumtext NULL"
-            ),
-            'alias' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
-                'inputType' => 'text',
-                'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
-                'save_callback' => array(array('DCAModuleData', 'generateAlias')),
-                'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
-            ),
-            'url' => array(
-                'label' => &$GLOBALS['TL_LANG']['MSC']['url'],
-                'exclude' => true,
-                'inputType' => 'text',
-                'eval' => array('mandatory' => true, 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
-                'sql' => "varchar(255) NOT NULL default ''"
-            ),
-            'target' => array(
-                'label' => &$GLOBALS['TL_LANG']['MSC']['target'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50 m12'),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
             'source' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['source'],
                 'default' => 'default',
@@ -116,6 +102,13 @@ class ViewContainer extends DCAHelper
                 'eval' => array('submitOnChange' => true, 'helpwizard' => true),
                 'sql' => "varchar(32) NOT NULL default ''"
             ),
+            'url' => array(
+                'label' => &$GLOBALS['TL_LANG']['MSC']['url'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('mandatory' => true, 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
             'jumpTo' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['jumpTo'],
                 'exclude' => true,
@@ -125,58 +118,12 @@ class ViewContainer extends DCAHelper
                 'sql' => "int(10) unsigned NOT NULL default '0'",
                 'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
             ),
-            'protected' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'],
-                'inputType' => 'checkbox',
+            'target' => array(
+                'label' => &$GLOBALS['TL_LANG']['MSC']['target'],
                 'exclude' => true,
-                'eval' => array('submitOnChange' => true),
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50 m12'),
                 'sql' => "char(1) NOT NULL default ''"
-            ),
-            'groups' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['groups'],
-                'inputType' => 'checkbox',
-                'exclude' => true,
-                'foreignKey' => 'tl_member_group.name',
-                'eval' => array('mandatory' => true, 'multiple' => true),
-                'sql' => "blob NULL",
-                'relation' => array('type' => 'hasMany', 'load' => 'lazy')
-            ),
-            'guests' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['guests'],
-                'filter' => true,
-                'exclude' => true,
-                'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50'),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-            'cssID' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['cssID'],
-                'inputType' => 'text',
-                'exclude' => true,
-                'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr', 'fmEditable' => true, 'fmGroup' => 'expert'),
-                'sql' => "varchar(255) NOT NULL default ''"
-            ),
-            'published' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['published'],
-                'inputType' => 'checkbox',
-                'filter' => true,
-                'exclude' => true,
-                'eval' => array('submitOnChange' => true, 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'expert'),
-                'sql' => "char(1) NOT NULL default ''"
-            ),
-            'start' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['start'],
-                'inputType' => 'text',
-                'exclude' => true,
-                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
-                'sql' => "varchar(10) NOT NULL default ''"
-            ),
-            'stop' => array(
-                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['stop'],
-                'inputType' => 'text',
-                'exclude' => true,
-                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
-                'sql' => "varchar(10) NOT NULL default ''"
             ),
             'addEnclosure' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'],
@@ -290,6 +237,59 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'text',
                 'eval' => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'map'),
                 'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'protected' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['protected'],
+                'inputType' => 'checkbox',
+                'exclude' => true,
+                'eval' => array('submitOnChange' => true),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'groups' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['groups'],
+                'inputType' => 'checkbox',
+                'exclude' => true,
+                'foreignKey' => 'tl_member_group.name',
+                'eval' => array('mandatory' => true, 'multiple' => true),
+                'sql' => "blob NULL",
+                'relation' => array('type' => 'hasMany', 'load' => 'lazy')
+            ),
+            'guests' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['guests'],
+                'filter' => true,
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'cssID' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['cssID'],
+                'inputType' => 'text',
+                'exclude' => true,
+                'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'published' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['published'],
+                'inputType' => 'checkbox',
+                'filter' => true,
+                'exclude' => true,
+                'eval' => array('submitOnChange' => true, 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'expert'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'start' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['start'],
+                'inputType' => 'text',
+                'exclude' => true,
+                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
+                'sql' => "varchar(10) NOT NULL default ''"
+            ),
+            'stop' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['stop'],
+                'inputType' => 'text',
+                'exclude' => true,
+                'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
+                'sql' => "varchar(10) NOT NULL default ''"
             )
         );
 

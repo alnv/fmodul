@@ -19,7 +19,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength;{redirect_legend},jumpTo;{store_legend:hide},fm_storeFile;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
 
 // selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
@@ -28,6 +28,8 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addMap';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_overwrite_seoSettings';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_redirect_source';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_storeFile';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addNotificationEmail';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addConfirmationEmail';
 
 // sub palettes
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_filter'] = 'f_filter_fields';
@@ -37,6 +39,8 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_overwrite_seoSettings'] = 'fm
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteID'] = 'fm_redirect_jumpTo';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteURL'] = 'fm_redirect_url';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_storeFile'] = 'fm_uploadFolder,fm_useHomeDir,fm_doNotOverwrite';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addNotificationEmail'] = 'fm_notificationEmailSubject,fm_notificationSender,fm_notificationEmailName,fm_notificationEmailList,fm_sendNotificationToAdmin';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addConfirmationEmail'] = 'fm_confirmationEmailSubject,fm_confirmationSender,fm_confirmationEmailName,fm_confirmationEmailList,fm_confirmationRecipientEmail,fm_sendConfirmationToAdmin,fm_confirmationBody';
 
 // module fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
@@ -394,6 +398,147 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_extensions'] = array
     'eval' => array('rgxp' => 'extnd', 'maxlength' => 255, 'tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+// fm_EntityAuthor
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_EntityAuthor'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'],
+    'exclude' => true,
+    'inputType' => 'select',
+    'foreignKey' => 'tl_user.name',
+    'eval' => array('chosen' => true, 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'),
+    'relation' => array('type' => 'hasOne', 'load' => 'eager'),
+    'sql' => "int(10) unsigned NOT NULL default '0'",
+);
+
+// fm_addNotificationEmail
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_addNotificationEmail'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_addNotificationEmail'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'long clr', 'submitOnChange' => true),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+// fm_notificationEmailSubject
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailSubject'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailSubject'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('mandatory' => true, 'tl_class' => 'long clr'),
+    'sql' => "varchar(512) NOT NULL default ''"
+);
+
+// fm_notificationEmailName
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailName'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailName'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "varchar(128) NOT NULL default ''"
+);
+
+// fm_sendNotificationToAdmin
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_sendNotificationToAdmin'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_sendNotificationToAdmin'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'clr'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+// fm_notificationEmailList
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailList'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailList'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50', 'rgxp'=>'emails'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+
+// fm_notificationSender
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationSender'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_notificationSender'],
+    'exclude' => true,
+    'default' => \Config::get('adminEmail'),
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50', 'rgxp'=>'email'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+
+// fm_addConfirmationEmail
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_addConfirmationEmail'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_addConfirmationEmail'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'long clr', 'submitOnChange' => true),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+// fm_confirmationEmailSubject
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailSubject'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailSubject'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('mandatory' => true, 'tl_class' => 'long clr'),
+    'sql' => "varchar(512) NOT NULL default ''"
+);
+
+// fm_confirmationEmailName
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailName'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailName'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50'),
+    'sql' => "varchar(128) NOT NULL default ''"
+);
+
+// fm_sendConfirmationToAdmin
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_sendConfirmationToAdmin'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_sendConfirmationToAdmin'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'long clr'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+// fm_confirmationEmailList
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailList'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailList'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50', 'rgxp'=>'emails'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+
+// fm_confirmationSender
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationSender'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_confirmationSender'],
+    'exclude' => true,
+    'default' => \Config::get('adminEmail'),
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50', 'rgxp'=>'email'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+
+// fm_confirmationRecipientEmail
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationRecipientEmail'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_confirmationRecipientEmail'],
+    'exclude' => true,
+    'inputType' => 'select',
+    'options_callback' => array('tl_module_fmodule', 'getEmailFields'),
+    'eval' => array('chosen' => true, 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+
+// fm_confirmationBody
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationBody'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_confirmationBody'],
+    'exclude' => true,
+    'inputType' => 'textarea',
+    'eval' => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+    'sql' => "text NULL"
+);
 
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
@@ -414,6 +559,33 @@ class tl_module_fmodule extends tl_module
     public function getSignTemplate()
     {
         return $this->getTemplateGroup('sign_');
+    }
+
+    /**
+     * @param \Contao\DataContainer $dca
+     * @return array
+     */
+    public function getEmailFields(\Contao\DataContainer $dca)
+    {
+        // set variables here
+        $return = array();
+        $modulename = $dca->activeRecord->f_select_module;
+        $tableData = $modulename . '_data';
+
+        // return empty array
+        if (!$modulename) return $return;
+
+        // get editable fields
+        System::loadLanguageFile('tl_fmodules_language_pack');
+        $this->loadDataContainer($tableData);
+
+        foreach ($GLOBALS['TL_DCA'][$tableData]['fields'] as $name => $field) {
+            if (isset($field['eval']['rgxp']) && ( $field['eval']['rgxp'] == 'email' || $field['eval']['rgxp'] == 'emails' ) ) {
+                $return[$name] = $field['label'][0] ? $field['label'][0] . ' (' . $name . ')' : $name;
+            }
+        }
+
+        return $return;
     }
 
     /**

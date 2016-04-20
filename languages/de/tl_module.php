@@ -6,7 +6,9 @@ $GLOBALS['TL_LANG']['tl_module']['fm_sort_legend'] = 'Frontend-Sortierung';
 $GLOBALS['TL_LANG']['tl_module']['fm_map_legend'] = 'Kartenansicht-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_seo_legend'] = 'SEO-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Weiterleitungsziel-Einstellungen';
-$GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Store file';
+$GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Datei speichern';
+$GLOBALS['TL_LANG']['tl_module']['fm_notification_legend'] = 'E-Mail Benachrichtigung';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Bestätigung';
 
 // fields
 
@@ -169,6 +171,66 @@ $GLOBALS['TL_LANG']['tl_module']['fm_useHomeDir'][1] = 'Die Datei im Benutzerver
 // fm_doNotOverwrite
 $GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'][0] = 'Bestehende Dateien erhalten';
 $GLOBALS['TL_LANG']['tl_module']['fm_doNotOverwrite'][1] = 'Der neuen Datei ein numerisches Suffix hinzufügen, wenn der Dateiname bereits existiert.';
+
+// fm_addNotificationEmail
+$GLOBALS['TL_LANG']['tl_module']['fm_addNotificationEmail'][0] = 'E-Mail Benachrichtigung versenden';
+$GLOBALS['TL_LANG']['tl_module']['fm_addNotificationEmail'][1] = 'Sie können eine Email Benachrichtigung versenden. Die erfassten Daten in der E-mail übermittelt.';
+
+// fm_addConfirmationEmail
+$GLOBALS['TL_LANG']['tl_module']['fm_addConfirmationEmail'][0] = 'E-Mail Bestätigung versenden';
+$GLOBALS['TL_LANG']['tl_module']['fm_addConfirmationEmail'][1] = 'Sie können eine Email Bestätigung versenden.';
+
+// fm_notificationEmailSubject
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailSubject'][0] = 'Betreff';
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailSubject'][1] = 'Bitte geben Sie einen Betreff ein.';
+
+// fm_confirmationEmailSubject
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailSubject'][0] = 'Betreff';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailSubject'][1] = 'Bitte geben Sie einen Betreff ein.';
+
+// fm_notificationEmailName
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailName'][0] = 'Name';
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailName'][1] = 'Bitte geben Sie eine E-Mail Bezeichnung an.';
+
+// fm_confirmationEmailName
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailName'][0] = 'Name';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailName'][1] = 'Bitte geben Sie eine E-Mail Bezeichnung an.';
+
+// fm_sendConfirmationToAdmin
+$GLOBALS['TL_LANG']['tl_module']['fm_sendConfirmationToAdmin'][0] = 'E-Mail an den Administrator schicken';
+$GLOBALS['TL_LANG']['tl_module']['fm_sendConfirmationToAdmin'][1] = 'Es wird eine E-Mail an den Administrator gesendet. Siehe Einstellungen > Globale Einstellungen > E-Mail-Adresse des Systemadministrators.';
+
+// fm_sendNotificationToAdmin
+$GLOBALS['TL_LANG']['tl_module']['fm_sendNotificationToAdmin'][0] = 'E-Mail an den Administrator schicken';
+$GLOBALS['TL_LANG']['tl_module']['fm_sendNotificationToAdmin'][1] = 'Es wird eine E-Mail an den Administrator gesendet. Siehe Einstellungen > Globale Einstellungen > E-Mail-Adresse des Systemadministrators.';
+
+// fm_confirmationEmailList
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailList'][0] = 'Weitere Empfänger E-Mails';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationEmailList'][1] = 'Sie können weitere Empfänger E-Mails eintragen. Mehrere E-Mail-Adressen können mit Komma getrennt werden.';
+
+// fm_notificationEmailList
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailList'][0] = 'Weitere Empfänger E-Mails';
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationEmailList'][1] = 'Sie können weitere Empfänger E-Mails eintragen. Mehrere E-Mail-Adressen können mit Komma getrennt werden.';
+
+// fm_confirmationRecipientEmail
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationRecipientEmail'][0] = 'Empfänger E-Mail auswählen';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationRecipientEmail'][1] = 'Bitte wählen Sie ein Feld für die Empfänger E-Mail aus.';
+
+// fm_confirmationRecipientEmail
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationBody'][0] = 'Bestätigungsmail';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationBody'][1] = '-';
+
+// fm_confirmationSender
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationSender'][0] = 'Absender E-Mail';
+$GLOBALS['TL_LANG']['tl_module']['fm_confirmationSender'][1] = 'Bitte geben Sie die Absender E-Mail ein.';
+
+// fm_notificationSender
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationSender'][0] = 'Absender E-Mail';
+$GLOBALS['TL_LANG']['tl_module']['fm_notificationSender'][1] = 'Bitte geben Sie die Absender E-Mail ein.';
+
+// fm_EntityAuthor
+$GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'][0] = 'Redakteur';
+$GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'][1] = 'Bitte wählen Sie einen Redakteur aus.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';

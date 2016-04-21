@@ -28,9 +28,13 @@ ClassLoader::addClasses(array
     'FModule\FModuleAjaxApi' => $pathToFiles . 'src/Resources/contao/classes/FModuleAjaxApi.php',
 
     // widgets
-    'FModule\OptionWizardExtended' => $pathToFiles . 'src/Resources/contao/widget/OptionWizardExtended.php',
-    'FModule\ModeSettings' => $pathToFiles . 'src/Resources/contao/widget/ModeSettings.php',
-    'FModule\FilterFields' => $pathToFiles . 'src/Resources/contao/widget/FilterFields.php',
+    'FModule\OptionWizardExtended' => $pathToFiles . 'src/Resources/contao/widgets/OptionWizardExtended.php',
+    'FModule\ModeSettings' => $pathToFiles . 'src/Resources/contao/widgets/ModeSettings.php',
+    'FModule\FilterFields' => $pathToFiles . 'src/Resources/contao/widgets/FilterFields.php',
+    'FModule\KeyValueWizardCustom' => $pathToFiles . 'src/Resources/contao/widgets/KeyValueWizardCustom.php',
+
+    // forms
+    'FModule\FormTextFieldCustom' => $pathToFiles . 'src/Resources/contao/forms/FormTextFieldCustom.php',
 
     // modules
     'FModule\ModuleDetailView' => $pathToFiles . 'src/Resources/contao/module/ModuleDetailView.php',

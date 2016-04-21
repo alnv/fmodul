@@ -9,6 +9,7 @@ $GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Redirect-Settings';
 $GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Store file';
 $GLOBALS['TL_LANG']['tl_module']['fm_notification_legend'] = 'E-Mail Notification';
 $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Confirmation';
+$GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Default values-Settings';
 
 //fields
 
@@ -232,6 +233,10 @@ $GLOBALS['TL_LANG']['tl_module']['fm_notificationSender'][1] = 'Please enter a s
 $GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'][0] = 'Author';
 $GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'][1] = 'Please select an author.';
 
+// fm_defaultValues
+$GLOBALS['TL_LANG']['tl_module']['fm_defaultValues'][0] = 'Default values';
+$GLOBALS['TL_LANG']['tl_module']['fm_defaultValues'][1] = 'Here you can define your default values.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
@@ -245,3 +250,4 @@ $GLOBALS['TL_LANG']['tl_module']['HYBRID'] = 'Hybrid';
 $GLOBALS['TL_LANG']['tl_module']['TERRAIN'] = 'Terrain';
 $GLOBALS['TL_LANG']['tl_module']['siteID'] = 'Site';
 $GLOBALS['TL_LANG']['tl_module']['siteURL'] = 'URL';
+$GLOBALS['TL_LANG']['tl_module']['ow_key'] = 'Column';

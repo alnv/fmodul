@@ -9,6 +9,7 @@ $GLOBALS['TL_LANG']['tl_module']['fm_redirect_legend'] = 'Weiterleitungsziel-Ein
 $GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Datei speichern';
 $GLOBALS['TL_LANG']['tl_module']['fm_notification_legend'] = 'E-Mail Benachrichtigung';
 $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Bestätigung';
+$GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Standardwert-Einstellungen';
 
 // fields
 
@@ -232,6 +233,10 @@ $GLOBALS['TL_LANG']['tl_module']['fm_notificationSender'][1] = 'Bitte geben Sie 
 $GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'][0] = 'Redakteur';
 $GLOBALS['TL_LANG']['tl_module']['fm_EntityAuthor'][1] = 'Bitte wählen Sie einen Redakteur aus.';
 
+// fm_defaultValues
+$GLOBALS['TL_LANG']['tl_module']['fm_defaultValues'][0] = 'Standardwerte';
+$GLOBALS['TL_LANG']['tl_module']['fm_defaultValues'][1] = 'Hier können Sie Ihre Standardwerte festlegen.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';
@@ -245,3 +250,4 @@ $GLOBALS['TL_LANG']['tl_module']['HYBRID'] = 'Hybrid';
 $GLOBALS['TL_LANG']['tl_module']['TERRAIN'] = 'Terrain';
 $GLOBALS['TL_LANG']['tl_module']['siteID'] = 'Seitenbaum';
 $GLOBALS['TL_LANG']['tl_module']['siteURL'] = 'URL';
+$GLOBALS['TL_LANG']['tl_module']['ow_key'] = 'Spalte';

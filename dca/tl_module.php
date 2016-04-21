@@ -19,7 +19,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{defaultValues_legend},fm_defaultValues;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
 
 // selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
@@ -540,6 +540,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationBody'] = array
     'sql' => "text NULL"
 );
 
+// fm_defaultValues
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_defaultValues'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fm_defaultValues'],
+    'exclude' => true,
+    'inputType' => 'keyValueWizardCustom',
+    'options_callback' => array('tl_module_fmodule', 'getEditableFModuleProperties'),
+    'sql' => "blob NULL"
+);
+
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
 
@@ -599,6 +609,12 @@ class tl_module_fmodule extends tl_module
         $modulename = $dca->activeRecord->f_select_module;
         $tableData = $modulename . '_data';
         $doNotSetByName = array('tstamp', 'pid', 'id');
+        if($dca->field && $dca->field == 'fm_defaultValues')
+        {
+            $doNotSetByName[] = 'markerSRC';
+            $doNotSetByName[] = 'singleSRC';
+            $doNotSetByName[] = 'enclosure';
+        }
 
         // return empty array
         if (!$modulename) return $return;
@@ -616,6 +632,7 @@ class tl_module_fmodule extends tl_module
             if (in_array($name, $doNotSetByName)) {
                 continue;
             }
+
             $return[$name] = $field['label'][0] ? $field['label'][0] . ' (' . $name . ')' : $name;
         }
 

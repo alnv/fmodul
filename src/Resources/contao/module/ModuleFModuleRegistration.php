@@ -36,6 +36,11 @@ class ModuleFModuleRegistration extends Module
     protected $strTableName = '';
 
     /**
+     * @var array
+     */
+    protected $dcaFields = array();
+
+    /**
      * @var string
      */
     protected $strPid = '';
@@ -67,7 +72,6 @@ class ModuleFModuleRegistration extends Module
      */
     protected function compile()
     {
-
         global $objPage;
 
         // needed for options
@@ -82,7 +86,7 @@ class ModuleFModuleRegistration extends Module
         $moduleDCA = DCACreator::getInstance();
         $arrModule = $moduleDCA->getModuleByTableName($this->strTableName);
         $dcaData = DCAModuleData::getInstance();
-        $dcaFields = $dcaData->setFields($arrModule);
+        $this->dcaFields = $dcaData->setFields($arrModule);
 
         // set tpl
         if ($this->fm_sign_template != '') {
@@ -152,32 +156,19 @@ class ModuleFModuleRegistration extends Module
 
         foreach ($this->fm_editable_fields as $field) {
 
-            $arrData = $dcaFields[$field];
+            $arrData = $this->dcaFields[$field];
+            $arrData = $this->convertWidgetToField($arrData);
 
             if (!isset($arrData['eval']['fmEditable']) && $arrData['eval']['fmEditable'] != true) {
                 continue;
             }
 
-            // Map checkboxWizards to regular checkbox widgets
-            if ($arrData['inputType'] == 'checkboxWizard') {
-                $arrData['inputType'] = 'checkbox';
-            }
+            $strClass = $this->fieldClassExist($arrData['inputType']);
 
-            // Map fileTrees to upload widgets (see #8091)
-            if ($arrData['inputType'] == 'fileTree') {
-                $arrData['inputType'] = 'upload';
-            }
-
-            /** @var \Widget $strClass */
-            $strClass = $GLOBALS['TL_FFL'][$arrData['inputType']];
-
-            // Continue if the class is not defined
-            if (!class_exists($strClass)) {
+            if($strClass == false)
+            {
                 continue;
             }
-
-            $arrData['eval']['tableless'] = $this->tableless;
-            $arrData['eval']['required'] = $arrData['eval']['mandatory'];
 
             $objWidget = new $strClass($strClass::getAttributesFromDca($arrData, $field, $arrData['default'], '', '', $this));
 
@@ -326,6 +317,50 @@ class ModuleFModuleRegistration extends Module
     }
 
     /**
+     * @param $inputType
+     * @return bool|\Widget
+     */
+    private function fieldClassExist($inputType)
+    {
+        /** @var \Widget $strClass */
+        $strClass = $GLOBALS['TL_FFL'][$inputType];
+
+        if($inputType == 'text')
+        {
+            $strClass = '\FModule\FormTextFieldCustom';
+        }
+
+        // Continue if the class is not defined
+        if (!class_exists($strClass)) {
+            return false;
+        }
+
+        return $strClass;
+    }
+
+    /**
+     * @param $arrData
+     * @return mixed
+     */
+    protected function convertWidgetToField($arrData)
+    {
+        // Map checkboxWizards to regular checkbox widgets
+        if ($arrData['inputType'] == 'checkboxWizard') {
+            $arrData['inputType'] = 'checkbox';
+        }
+
+        // Map fileTrees to upload widgets (see #8091)
+        if ($arrData['inputType'] == 'fileTree') {
+            $arrData['inputType'] = 'upload';
+        }
+
+        $arrData['eval']['tableless'] = $this->tableless;
+        $arrData['eval']['required'] = $arrData['eval']['mandatory'];
+
+        return $arrData;
+    }
+
+    /**
      * @param $arrData
      * @throws \Exception
      */
@@ -341,7 +376,92 @@ class ModuleFModuleRegistration extends Module
         // image and enclosure
         // @todo solve mandatory problem
 
-        // @todo set default values from fe module
+        // set default values from fe
+        if($this->fm_defaultValues)
+        {
+            $defaultValues = $this->fm_defaultValues ? deserialize($this->fm_defaultValues) : array();
+
+            foreach($defaultValues as $defaultValue)
+            {
+                $col = $defaultValue['key'];
+
+                // parse value
+                $value = $defaultValue['value'];
+                if(class_exists('StringUtil'))
+                {
+                    $value = \StringUtil::decodeEntities($value);
+                }else{
+                    // backwards compatible
+                    $value = \Input::decodeEntities($value);
+                }
+                $value = \Controller::replaceInsertTags($value);
+
+                $dcaData = $this->dcaFields[$col];
+                $dcaData = $this->convertWidgetToField($dcaData);
+
+                \Input::setPost($col, $value); // check if get or post
+
+                $strClass = $this->fieldClassExist($dcaData['inputType']);
+
+                if($strClass == false)
+                {
+                    continue;
+                }
+
+                // validate
+                $objWidget = new $strClass($strClass::getAttributesFromDca($dcaData, $col, $dcaData['default'], '', '', $this));
+                $objWidget->storeValues = true;
+                $objWidget->validate();
+                $varValue = $objWidget->value;
+                $rgxp = $dcaData['eval']['rgxp'];
+
+                // Convert date formats into timestamps (check the eval setting first -> #3063)
+                if ($varValue != '' && in_array($rgxp, array('date', 'time', 'datim'))) {
+                    try {
+                        $objDate = new \Date($varValue, \Date::getFormatFromRgxp($rgxp));
+                        $varValue = $objDate->tstamp;
+                    } catch (\OutOfBoundsException $e) {
+                        $objWidget->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
+                    }
+                }
+
+                // Make sure that unique fields are unique (check the eval setting first -> #3063)
+                if ($dcaData['eval']['unique'] && $varValue != '' && !$this->Database->isUniqueValue($this->strTableData, $col, $varValue)) {
+                    $objWidget->addError(sprintf($GLOBALS['TL_LANG']['ERR']['unique'], $dcaData['label'][0] ?: $col));
+                }
+
+                // Save callback
+                if ($objWidget->submitInput() && !$objWidget->hasErrors() && is_array($dcaData['save_callback'])) {
+                    foreach ($dcaData['save_callback'] as $callback) {
+                        try {
+                            if (is_array($callback)) {
+                                $this->import($callback[0]);
+                                $varValue = $this->{$callback[0]}->{$callback[1]}($varValue, null);
+                            } elseif (is_callable($callback)) {
+                                $varValue = $callback($varValue, null);
+                            }
+                        } catch (\Exception $e) {
+                            $objWidget->class = 'error';
+                            $objWidget->addError($e->getMessage());
+                        }
+                    }
+                }
+
+                if (!$objWidget->hasErrors()) {
+                    // Set the correct empty value (see #6284, #6373)
+                    if ($varValue === '') {
+                        $varValue = $objWidget->getEmptyValue();
+                    }
+                    // Encrypt the value (see #7815)
+                    if ($dcaData['eval']['encrypt']) {
+                        $varValue = \Encryption::encrypt($varValue);
+                    }
+                    // Set the new value
+                    $arrData[$col] = $varValue;
+                }
+
+            }
+        }
 
         // set author
         if (!$arrData['author']) {
@@ -420,7 +540,6 @@ class ModuleFModuleRegistration extends Module
         // Check whether the alias exists
         if ($objAlias && $objAlias->numRows > 1 && !$autoAlias) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-
         }
 
         // Add hash to alias

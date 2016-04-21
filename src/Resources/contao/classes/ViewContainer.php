@@ -266,7 +266,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['cssID'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr'),
+                'eval' => array('multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr', 'fmEditable' => true, 'fmGroup' => 'expert'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'published' => array(

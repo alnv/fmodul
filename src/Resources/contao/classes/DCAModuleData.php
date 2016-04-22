@@ -538,8 +538,26 @@ class DCAModuleData extends ViewContainer
 
         $fields = $moduleObj['fields'];
 
+        // create settings array
+        $arrSettings = array();
+
+        // set mandatory
+        $arrMandatory =  array();
+        if($moduleObj['addMandatoryHandler'] && $moduleObj['mandatoryHandler'] !== null)
+        {
+            $arrMandatory = $moduleObj['mandatoryHandler'] ? deserialize($moduleObj['mandatoryHandler']) : array();
+            if(!is_array($arrMandatory)) $arrMandatory = array();
+            // cast
+            foreach($arrMandatory as $value)
+            {
+                $arrMandatory[$value] = $value;
+            }
+        }
+        $arrSettings['addMandatory'] = $moduleObj['addMandatoryHandler'];
+        $arrSettings['arrMandatory'] = $arrMandatory;
+
         // get dca fields
-        $arr = $this->dcaDataFields();
+        $arr = $this->dcaDataFields($arrSettings);
 
         // set input fields
         if(is_array($fields))

@@ -159,19 +159,13 @@ class ModuleFModuleRegistration extends Module
             $arrData = $this->dcaFields[$field];
             $arrData = $this->convertWidgetToField($arrData);
 
-            if (!isset($arrData['eval']['fmEditable']) && $arrData['eval']['fmEditable'] != true) {
-                continue;
-            }
+            if (!isset($arrData['eval']['fmEditable']) && $arrData['eval']['fmEditable'] != true) continue;
 
             $strClass = $this->fieldClassExist($arrData['inputType']);
 
-            if($strClass == false)
-            {
-                continue;
-            }
+            if($strClass == false) continue;
 
             $objWidget = new $strClass($strClass::getAttributesFromDca($arrData, $field, $arrData['default'], '', '', $this));
-
             $objWidget->storeValues = true;
             $objWidget->rowClass = 'row_' . $i . (($i == 0) ? ' row_first' : '') . ((($i % 2) == 0) ? ' even' : ' odd');
 
@@ -193,9 +187,7 @@ class ModuleFModuleRegistration extends Module
             if (\Input::post('FORM_SUBMIT') == 'fm_registration') {
 
                 $objWidget->validate();
-
                 $varValue = $objWidget->value;
-
                 $rgxp = $arrData['eval']['rgxp'];
 
                 // Convert date formats into timestamps (check the eval setting first -> #3063)
@@ -248,14 +240,21 @@ class ModuleFModuleRegistration extends Module
 
                 // store file
                 $Files = $_SESSION['FILES'];
+
                 if ($Files && $Files[$field]) {
+
                     $strRoot = TL_ROOT . '/';
                     $strUuid = $Files[$field]['uuid'];
                     $strFile = substr($Files[$field]['tmp_name'], strlen($strRoot));
-                    if ($strUuid === null && class_exists('StringUtil')) {
-                        $strUuid = \StringUtil::binToUuid(\Dbafs::addResource($strFile)->uuid);
+
+                    if ($strUuid === null && class_exists('StringUtil') && $strFile) {
+                        $resource = \Dbafs::addResource($strFile);
+                        $strUuid = \StringUtil::binToUuid($resource->uuid);
                     }
+
                     $arrValidData[$field] = $strUuid;
+
+                    unset($_SESSION['FILES'][$field]);
                 }
             }
 
@@ -263,7 +262,7 @@ class ModuleFModuleRegistration extends Module
                 $hasUpload = true;
             }
 
-            $temp = $objWidget->parse();
+            $temp = $objWidget->parse(); // $objWidget->generate();
 
             $this->Template->fields .= $temp;
             $arrFields[$arrData['eval']['fmGroup']][$field] .= $temp;
@@ -373,9 +372,6 @@ class ModuleFModuleRegistration extends Module
         $arrData['pid'] = $this->strPid;
         $arrData['alias'] = $this->generateAlias($arrData['alias'], $arrData);
 
-        // image and enclosure
-        // @todo solve mandatory problem
-
         // set default values from fe
         if($this->fm_defaultValues)
         {
@@ -473,8 +469,47 @@ class ModuleFModuleRegistration extends Module
         $cols = array();
         $placeholder = array();
 
+        $arrCheckBoxes = array('markerSRC' => 'addMarker', 'singleSRC' => 'addImage', 'enclosure' => 'addEnclosure'); // nur ein Hack
+
         foreach ($arrData as $col => $value) {
+
+            $eval = $this->dcaFields[$col]['eval'];
+
+            // activate palette in BE
+            if($arrCheckBoxes[$col] && $value)
+            {
+                $cols[] = $arrCheckBoxes[$col];
+                $values[] = '1';
+                $placeholder[] = '?';
+            }
+
             $cols[] = $col;
+
+            // check for multiple values
+            if(isset($eval['multiple']) && $eval['multiple'] === true)
+            {
+                $delimiter = $eval['csv'];
+
+                // cssID exception
+                if(is_string($value) && isset($eval['size']))
+                {
+                    $value = explode(',', $value);
+                }
+
+                // delimiter
+                if(isset($delimiter) && $delimiter !== null && is_array($value))
+                {
+                    $value = implode($delimiter, $value);
+                }
+
+                // no delimiter
+                if($delimiter === null)
+                {
+                    $value = serialize($value);
+                }
+
+            }
+
             $values[] = $value;
             $placeholder[] = '?';
         }
@@ -518,7 +553,8 @@ class ModuleFModuleRegistration extends Module
     {
         $autoAlias = false;
 
-        if (empty($arrData)) {
+        if(!$arrData['title'] || empty($arrData))
+        {
             return 'Alias-' . substr(md5(time()), 12);
         }
 

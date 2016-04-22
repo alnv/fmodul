@@ -126,6 +126,8 @@ class DCACreator
             $module['paletteBuilder'] = $modulesDB->row()['paletteBuilder'];
             $module['selectNavigation'] = $modulesDB->row()['selectNavigation'];
             $module['selectPosition'] = $modulesDB->row()['selectPosition'];
+            $module['addMandatoryHandler'] = $modulesDB->row()['addMandatoryHandler'];
+            $module['mandatoryHandler'] = $modulesDB->row()['mandatoryHandler'];
             $id = $modulesDB->row()['id'];
 			
 			// backwards compatible

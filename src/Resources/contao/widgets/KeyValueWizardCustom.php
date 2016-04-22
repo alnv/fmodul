@@ -180,7 +180,7 @@ class KeyValueWizardCustom extends \Widget
         // Add fields
         for ($i=0, $c=count($this->varValue); $i<$c; $i++)
         {
-            $strOptions = '';
+            $strOptions = '<option value="">-</option>';
 
             foreach($options as $key => $value)
             {

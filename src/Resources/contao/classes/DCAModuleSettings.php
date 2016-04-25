@@ -12,6 +12,7 @@
  */
 
 use Contao\Database;
+use Contao\DataContainer;
 use Contao\Input;
 
 /**
@@ -353,7 +354,7 @@ class DCAModuleSettings extends ViewContainer
     {
         $field = $dc->field;
         $fieldname = substr($field, strlen('select_title_'), strlen($field));
-        $title = deserialize($dc->activeRecord->$fieldname)['title'];
+        $title = deserialize($dc->activeRecord->{$fieldname})['title'];
         $options = $this->getTitle($dc);
         if (isset($title) && is_string($title)) {
             foreach ($options as $value) {
@@ -374,7 +375,7 @@ class DCAModuleSettings extends ViewContainer
     {
         $field = $dc->field;
         $fieldname = substr($field, strlen('select_col_'), strlen($field));
-        $col = deserialize($dc->activeRecord->$fieldname)['col'];
+        $col = deserialize($dc->activeRecord->{$fieldname})['col'];
         $options = $this->getCols($dc);
 
         if (isset($col) && is_string($col)) {
@@ -390,13 +391,13 @@ class DCAModuleSettings extends ViewContainer
 
     /**
      * @param $value
-     * @param $dc
+     * @param DataContainer $dca
      */
-    public function loadDefaultTable($value, $dc)
+    public function loadDefaultTable($value, DataContainer $dca)
     {
-        $field = $dc->field;
+        $field = $dca->field;
         $fieldname = substr($field, strlen('select_table_'), strlen($field));
-        $table = deserialize($dc->activeRecord->$fieldname)['table'];
+        $table = deserialize($dca->activeRecord->{$fieldname})['table'];
         $options = $this->getTables();
 
         if (isset($table) && is_string($table)) {
@@ -405,8 +406,8 @@ class DCAModuleSettings extends ViewContainer
                     array_unshift($options, $value);
                 }
             }
-            $GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options'] = $options;
-            unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['options_callback']);
+            $GLOBALS['TL_DCA'][$dca->table]['fields'][$field]['options'] = $options;
+            unset($GLOBALS['TL_DCA'][$dca->table]['fields'][$field]['options_callback']);
         }
     }
 
@@ -419,14 +420,14 @@ class DCAModuleSettings extends ViewContainer
     }
 
     /**
-     * @param $dc
+     * @param DataContainer $dca
      * @return array
      */
-    public function getTitle($dc)
+    public function getTitle(DataContainer $dca)
     {
-        $field = $dc->field;
+        $field = $dca->field;
         $fieldname = substr($field, strlen('select_title_'), strlen($field));
-        $table = deserialize($dc->activeRecord->$fieldname)['table'];
+        $table = deserialize($dca->activeRecord->{$fieldname})['table'];
         if (isset($table) && is_string($table) && $this->Database->tableExists($table)) {
             return $this->Database->getFieldNames($table);
         }
@@ -434,14 +435,14 @@ class DCAModuleSettings extends ViewContainer
     }
 
     /**
-     * @param $dc
+     * @param DataContainer $dca
      * @return array
      */
-    public function getCols($dc)
+    public function getCols(DataContainer $dca)
     {
-        $field = $dc->field;
+        $field = $dca->field;
         $fieldname = substr($field, strlen('select_col_'), strlen($field));
-        $table = deserialize($dc->activeRecord->$fieldname)['table'];
+        $table = deserialize($dca->activeRecord->{$fieldname})['table'];
         if (isset($table) && is_string($table) && $this->Database->tableExists($table)) {
             return $this->Database->getFieldNames($table);
         }
@@ -450,47 +451,47 @@ class DCAModuleSettings extends ViewContainer
 
     /**
      * @param $value
-     * @param $dc
+     * @param DataContainer $dca
      */
-    public function save_select_table($value, $dc)
+    public function save_select_table($value, DataContainer $dca)
     {
-        $id = $dc->id;
+        $id = $dca->id;
         $database = array();
         $database['table'] = $value;
-        $field = $dc->field;
+        $field = $dca->field;
         $fieldname = substr($field, strlen('select_table_'), strlen($field));
-        $dc->activeRecord->$fieldname = serialize($database);
-        $this->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
+        $dca->activeRecord->{$fieldname} = serialize($database);
+        $this->Database->prepare('UPDATE ' . $dca->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 
     /**
      * @param $value
-     * @param $dc
+     * @param DataContainer $dca
      */
-    public function save_select_title($value, $dc)
+    public function save_select_title($value, DataContainer $dca)
     {
-        $id = $dc->id;
-        $field = $dc->field;
+        $id = $dca->id;
+        $field = $dca->field;
         $fieldname = substr($field, strlen('select_title_'), strlen($field));
-        $database = deserialize($dc->activeRecord->$fieldname);
+        $database = deserialize($dca->activeRecord->{fieldname});
         $database['title'] = $value;
-        $dc->activeRecord->$fieldname = serialize($database);
-        $this->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
+        $dca->activeRecord->$fieldname = serialize($database);
+        $this->Database->prepare('UPDATE ' . $dca->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 
     /**
      * @param $value
-     * @param $dc
+     * @param DataContainer $dca
      */
-    public function save_select_col($value, $dc)
+    public function save_select_col($value, DataContainer $dca)
     {
-        $id = $dc->id;
-        $field = $dc->field;
+        $id = $dca->id;
+        $field = $dca->field;
         $fieldname = substr($field, strlen('select_col_'), strlen($field));
-        $database = deserialize($dc->activeRecord->$fieldname);
+        $database = deserialize($dca->activeRecord->${fieldname});
         $database['col'] = $value;
-        $dc->activeRecord->$fieldname = serialize($database);
-        $this->Database->prepare('UPDATE ' . $dc->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
+        $dca->activeRecord->$fieldname = serialize($database);
+        $this->Database->prepare('UPDATE ' . $dca->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 
     /**

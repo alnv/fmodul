@@ -703,7 +703,7 @@ class tl_module_fmodule extends tl_module
 
         //
         if ($geo_address) {
-            $geoCoding = new GeoCoding();
+            $geoCoding = GeoCoding::getInstance();
             $cords = $geoCoding->getGeoCords($geo_address, $address_country);
         }
 

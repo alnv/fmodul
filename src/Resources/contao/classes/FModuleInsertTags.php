@@ -36,7 +36,7 @@ class FModuleInsertTags extends Frontend
         $arrSplit = explode('::', $strTag);
 
         // generate Template
-        if (($arrSplit[0] == 'fm_template' || $arrSplit[0] == 'fmTemplate') && $arrSplit) {
+        if (($arrSplit[0] == 'fm_view' || $arrSplit[0] == 'fmView') && $arrSplit) {
             return $this->generateTemplate($arrSplit);
         }
 
@@ -111,8 +111,7 @@ class FModuleInsertTags extends Frontend
 
             // find and set map
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-            if($moduleDB->next())
-            {
+            if ($moduleDB->next()) {
                 $moduleInputFields = $moduleDB->row();
                 $maps = $this->findMapAndSet($moduleInputFields);
                 $widgets = $this->findWidgetAndSet($moduleInputFields);
@@ -156,7 +155,7 @@ class FModuleInsertTags extends Frontend
                             'item' => $item
                         ));
 
-                        $item[$id.'AsTemplate'] = $objFieldTemplate->parse();
+                        $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
                     }
                 }
 
@@ -195,7 +194,7 @@ class FModuleInsertTags extends Frontend
 
     /**
      *
-     * {{fmView::fm_tablename::8::template=fm_viewhl=h2&class=myClass&id=jsID}}
+     * {{fmView::fm_tablename::8::template=fm_view::hl=h2&class=myClass&id=jsID}}
      *
      * @param $arrSplit
      * @return string
@@ -214,10 +213,9 @@ class FModuleInsertTags extends Frontend
 
             // id
             $id = $arrSplit[2];
-
-
+            
             // get parameter & parse parameter
-            $params = $arrSplit[4] ? $arrSplit[4] : '';
+            $params = $arrSplit[3] ? $arrSplit[3] : '';
             parse_str($params, $qRow);
             $template = $qRow['template'] ? $qRow['template'] : 'fm_view';
             $headline = $qRow['hl'] ? $qRow['hl'] : 'h3';
@@ -242,8 +240,7 @@ class FModuleInsertTags extends Frontend
             }
 
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-            if($moduleDB->next())
-            {
+            if ($moduleDB->next()) {
                 $moduleInputFields = $moduleDB->row();
                 $maps = $this->findMapAndSet($moduleInputFields);
                 $widgets = $this->findWidgetAndSet($moduleInputFields);
@@ -325,7 +322,7 @@ class FModuleInsertTags extends Frontend
                             'item' => $item
                         ));
 
-                        $item[$id.'AsTemplate'] = $objFieldTemplate->parse();
+                        $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
                     }
                 }
 
@@ -576,6 +573,7 @@ class FModuleInsertTags extends Frontend
             $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
             $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
             $url = $this->getLink($dataDB, $strUrl);
+
             return $url;
 
         }
@@ -601,9 +599,11 @@ class FModuleInsertTags extends Frontend
 
             // Link to an internal page
             case 'internal':
-                //if (($objTarget = $objItem->getRelated('jumpTo')) !== null) {
-                //    return $strBase . $this->generateFrontendUrl($objTarget->row());
-                //}
+                if ($objItem->jumpTo) {
+                    $objPage = \PageModel::findWithDetails($objItem->jumpTo);
+                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                    return $domain . $this->generateFrontendUrl($objPage->row(), '', $objPage->language);
+                }
                 break;
 
             // Link to an article

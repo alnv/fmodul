@@ -213,6 +213,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imageDetails'] = 'Image settin
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'] = 'Enclosures';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Google Map';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'] = 'Author';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'] = 'Redirect target';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Other';
 
 // reference

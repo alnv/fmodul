@@ -212,6 +212,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'] = 'Anlagen'
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Karten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Sonstiges';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'] = 'Redakteur';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'] = 'Weiterleitungsziel';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['default'] = 'Standard';

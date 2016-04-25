@@ -22,6 +22,23 @@ class DCAModuleSettings extends ViewContainer
 {
 
     /**
+     * @var null
+     */
+    static private $instance = null;
+
+    /**
+     * @return DCAModuleData|null
+     */
+    static public function getInstance()
+    {
+        if(self::$instance == null)
+        {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+    /**
      * @var
      */
     protected $child;
@@ -473,9 +490,9 @@ class DCAModuleSettings extends ViewContainer
         $id = $dca->id;
         $field = $dca->field;
         $fieldname = substr($field, strlen('select_title_'), strlen($field));
-        $database = deserialize($dca->activeRecord->{fieldname});
+        $database = deserialize($dca->activeRecord->{$fieldname});
         $database['title'] = $value;
-        $dca->activeRecord->$fieldname = serialize($database);
+        $dca->activeRecord->{$fieldname} = serialize($database);
         $this->Database->prepare('UPDATE ' . $dca->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 
@@ -488,9 +505,9 @@ class DCAModuleSettings extends ViewContainer
         $id = $dca->id;
         $field = $dca->field;
         $fieldname = substr($field, strlen('select_col_'), strlen($field));
-        $database = deserialize($dca->activeRecord->${fieldname});
+        $database = deserialize($dca->activeRecord->{$fieldname});
         $database['col'] = $value;
-        $dca->activeRecord->$fieldname = serialize($database);
+        $dca->activeRecord->{$fieldname} = serialize($database);
         $this->Database->prepare('UPDATE ' . $dca->table . ' SET ' . $fieldname . '= ? WHERE id = ?')->execute(serialize($database), $id);
     }
 

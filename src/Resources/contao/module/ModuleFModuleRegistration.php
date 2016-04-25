@@ -163,7 +163,7 @@ class ModuleFModuleRegistration extends Module
 
             $strClass = $this->fieldClassExist($arrData['inputType']);
 
-            if($strClass == false) continue;
+            if ($strClass == false) continue;
 
             $objWidget = new $strClass($strClass::getAttributesFromDca($arrData, $field, $arrData['default'], '', '', $this));
             $objWidget->storeValues = true;
@@ -240,20 +240,18 @@ class ModuleFModuleRegistration extends Module
 
                 // store file
                 $Files = $_SESSION['FILES'];
-
-                if ($Files && $Files[$field]) {
+                if ($Files && isset($Files[$field]) && $this->fm_storeFile) {
 
                     $strRoot = TL_ROOT . '/';
                     $strUuid = $Files[$field]['uuid'];
                     $strFile = substr($Files[$field]['tmp_name'], strlen($strRoot));
+                    $arrFiles = \FilesModel::findByPath($strFile);
 
-                    if ($strUuid === null && class_exists('StringUtil') && $strFile) {
-                        $resource = \Dbafs::addResource($strFile);
-                        $strUuid = \StringUtil::binToUuid($resource->uuid);
+                    if ($arrFiles !== null) {
+                        $strUuid = $arrFiles->uuid;
                     }
 
                     $arrValidData[$field] = $strUuid;
-
                     unset($_SESSION['FILES'][$field]);
                 }
             }
@@ -268,7 +266,6 @@ class ModuleFModuleRegistration extends Module
             $arrFields[$arrData['eval']['fmGroup']][$field] .= $temp;
 
             ++$i;
-
         }
 
         // Captcha
@@ -324,8 +321,7 @@ class ModuleFModuleRegistration extends Module
         /** @var \Widget $strClass */
         $strClass = $GLOBALS['TL_FFL'][$inputType];
 
-        if($inputType == 'text')
-        {
+        if ($inputType == 'text') {
             $strClass = '\FModule\FormTextFieldCustom';
         }
 
@@ -373,20 +369,17 @@ class ModuleFModuleRegistration extends Module
         $arrData['alias'] = $this->generateAlias($arrData['alias'], $arrData);
 
         // set default values from fe
-        if($this->fm_defaultValues)
-        {
+        if ($this->fm_defaultValues) {
             $defaultValues = $this->fm_defaultValues ? deserialize($this->fm_defaultValues) : array();
 
-            foreach($defaultValues as $defaultValue)
-            {
+            foreach ($defaultValues as $defaultValue) {
                 $col = $defaultValue['key'];
 
                 // parse value
                 $value = $defaultValue['value'];
-                if(class_exists('StringUtil'))
-                {
+                if (class_exists('StringUtil')) {
                     $value = \StringUtil::decodeEntities($value);
-                }else{
+                } else {
                     // backwards compatible
                     $value = \Input::decodeEntities($value);
                 }
@@ -399,8 +392,7 @@ class ModuleFModuleRegistration extends Module
 
                 $strClass = $this->fieldClassExist($dcaData['inputType']);
 
-                if($strClass == false)
-                {
+                if ($strClass == false) {
                     continue;
                 }
 
@@ -476,8 +468,7 @@ class ModuleFModuleRegistration extends Module
             $eval = $this->dcaFields[$col]['eval'];
 
             // activate palette in BE
-            if($arrCheckBoxes[$col] && $value)
-            {
+            if ($arrCheckBoxes[$col] && $value) {
                 $cols[] = $arrCheckBoxes[$col];
                 $values[] = '1';
                 $placeholder[] = '?';
@@ -486,28 +477,19 @@ class ModuleFModuleRegistration extends Module
             $cols[] = $col;
 
             // check for multiple values
-            if(isset($eval['multiple']) && $eval['multiple'] === true)
-            {
-                $delimiter = $eval['csv'];
-
-                // cssID exception
-                if(is_string($value) && isset($eval['size']))
-                {
-                    $value = explode(',', $value);
-                }
-
+            if (isset($eval['multiple']) && $eval['multiple'] == true && isset($eval['csv'])) {
                 // delimiter
-                if(isset($delimiter) && $delimiter !== null && is_array($value))
-                {
+                $delimiter = $eval['csv'];
+                if ($delimiter === ',' && is_array($value)) {
                     $value = implode($delimiter, $value);
                 }
+            }
 
-                // no delimiter
-                if($delimiter === null)
-                {
-                    $value = serialize($value);
-                }
-
+            // exception for cssID
+            if($col == 'cssID')
+            {
+                $value = explode(',', $value);
+                $value = serialize($value);
             }
 
             $values[] = $value;
@@ -522,14 +504,12 @@ class ModuleFModuleRegistration extends Module
         $this->Database->prepare($strQuery)->execute($values);
 
         // send Notification
-        if($this->fm_addNotificationEmail)
-        {
+        if ($this->fm_addNotificationEmail) {
             $this->sendNotification($arrData);
         }
 
         // send Confirmation
-        if($this->fm_addConfirmationEmail)
-        {
+        if ($this->fm_addConfirmationEmail) {
             $this->sendConfirmation($arrData);
         }
 
@@ -553,8 +533,7 @@ class ModuleFModuleRegistration extends Module
     {
         $autoAlias = false;
 
-        if(!$arrData['title'] || empty($arrData))
-        {
+        if (!$arrData['title'] || empty($arrData)) {
             return 'Alias-' . substr(md5(time()), 12);
         }
 
@@ -601,13 +580,11 @@ class ModuleFModuleRegistration extends Module
         $toEmails = array();
         $arrToEmails = explode(',', $strToEmails);
 
-        foreach($arrToEmails as $email)
-        {
+        foreach ($arrToEmails as $email) {
             $toEmails[] = $email;
         }
 
-        if($adminEmail)
-        {
+        if ($adminEmail) {
             $toEmails[] = $adminEmail;
         }
 
@@ -616,11 +593,9 @@ class ModuleFModuleRegistration extends Module
         $toEmails = array_unique($toEmails);
 
         $body = '';
-        foreach($arrData as $key => $value)
-        {
+        foreach ($arrData as $key => $value) {
             // parse array
-            if(is_array($value))
-            {
+            if (is_array($value)) {
                 $value = implode(',', $value);
             }
 
@@ -659,24 +634,20 @@ class ModuleFModuleRegistration extends Module
         $ccEmails = array();
         $arrToEmails = explode(',', $strToEmails);
 
-        foreach($arrToEmails as $email)
-        {
+        foreach ($arrToEmails as $email) {
             $ccEmails[] = $email;
         }
 
-        if($adminEmail)
-        {
+        if ($adminEmail) {
             $ccEmails[] = $adminEmail;
         }
 
-        if($recipient)
-        {
+        if ($recipient) {
             $toEmails[] = $recipient;
         }
 
         // break up if no recipient given
-        if(empty($toEmails))
-        {
+        if (empty($toEmails)) {
             return null;
         }
 
@@ -707,8 +678,7 @@ class ModuleFModuleRegistration extends Module
     {
         $return = '';
 
-        if($adminEmail)
-        {
+        if ($adminEmail) {
             $return = \Config::get('adminEmail');
         }
 

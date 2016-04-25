@@ -213,7 +213,7 @@ class FModuleInsertTags extends Frontend
 
             // id
             $id = $arrSplit[2];
-            
+
             // get parameter & parse parameter
             $params = $arrSplit[3] ? $arrSplit[3] : '';
             parse_str($params, $qRow);

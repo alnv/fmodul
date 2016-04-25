@@ -357,6 +357,50 @@ class ModuleFModuleRegistration extends Module
 
     /**
      * @param $arrData
+     * @return mixed
+     */
+    protected function createGeoCoding($arrData)
+    {
+
+        $countries = $this->getCountries();
+        $address_street = $arrData['address_street'] ? $arrData['address_location'] : '';
+        $address_addition = $arrData['address_addition'] ? $arrData['address_location'] : '';
+        $address_location = $arrData['address_location'] ? $arrData['address_location'] : '';
+        $address_zip = $arrData['address_zip'] ? $arrData['address_zip'] : '';
+        $address_country = $arrData['address_country'] ? $countries[$arrData['address_country']] : '';
+        $geo_address = '';
+
+        if($address_location || $address_zip || $address_country)
+        {
+            $geo_address = $address_street .' '. $address_addition .' '. $address_zip .' '. $address_location .' '. $address_country;
+        }
+
+        if(!$geo_address)
+        {
+            $geo_address = $arrData['geo_address'] ? $arrData['geo_address'] : '';
+        }
+
+        //
+        $cords = array();
+
+        //
+        if($geo_address)
+        {
+            $geoCoding = GeoCoding::getInstance();
+            $cords = $geoCoding->getGeoCords($geo_address, $address_country);
+        }
+
+        if(!empty($cords))
+        {
+            $arrData['geo_latitude'] = $cords['lat'] ? $cords['lat'] : '';
+            $arrData['geo_longitude'] = $cords['lng'] ? $cords['lng'] : '';
+        }
+
+        return $arrData;
+    }
+
+    /**
+     * @param $arrData
      * @throws \Exception
      */
     protected function createNewEntity($arrData)
@@ -367,6 +411,9 @@ class ModuleFModuleRegistration extends Module
         $arrData['tstamp'] = time();
         $arrData['pid'] = $this->strPid;
         $arrData['alias'] = $this->generateAlias($arrData['alias'], $arrData);
+
+        // search for geo cords
+        $arrData = $this->createGeoCoding($arrData);
 
         // set default values from fe
         if ($this->fm_defaultValues) {

@@ -293,6 +293,7 @@ class ModuleFModuleRegistration extends Module
         $this->Template->expertDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['expertDetails'];
         $this->Template->mapDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'];
         $this->Template->authorDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'];
+        $this->Template->sourceDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'];
         $this->Template->otherDetails = $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'];
         $this->Template->captchaDetails = $GLOBALS['TL_LANG']['MSC']['securityQuestion'];
 

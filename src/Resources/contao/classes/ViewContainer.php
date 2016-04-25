@@ -122,17 +122,17 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['source'],
                 'default' => 'default',
                 'exclude' => true,
-                'inputType' => 'radio',
+                'inputType' => 'select',
                 'options' => array('default', 'internal', 'external'),
                 'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'],
-                'eval' => array('submitOnChange' => true, 'helpwizard' => true),
+                'eval' => array('submitOnChange' => true, 'helpwizard' => true, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'source'), 'fmEditable' => true, 'fmGroup' => 'source'),
                 'sql' => "varchar(32) NOT NULL default ''"
             ),
             'url' => array(
                 'label' => &$GLOBALS['TL_LANG']['MSC']['url'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('mandatory' => true, 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+                'eval' => array('decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => $this->setCustomMandatory($arrMandatory, 'url', '1'), 'fmEditable' => true, 'fmGroup' => 'source'),
                 'sql' => "varchar(255) NOT NULL default ''"
             ),
             'jumpTo' => array(
@@ -140,7 +140,7 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'inputType' => 'pageTree',
                 'foreignKey' => 'tl_page.title',
-                'eval' => array('mandatory' => true, 'fieldType' => 'radio'),
+                'eval' => array('fieldType' => 'radio', 'mandatory' => $this->setCustomMandatory($arrMandatory, 'jumpTo', '1'), 'fmEditable' => true, 'fmGroup' => 'source'),
                 'sql' => "int(10) unsigned NOT NULL default '0'",
                 'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
             ),
@@ -148,7 +148,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['MSC']['target'],
                 'exclude' => true,
                 'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50 m12'),
+                'eval' => array('tl_class' => 'w50 m12', 'mandatory' => $this->setCustomMandatory($arrMandatory, 'target'), 'fmEditable' => true, 'fmGroup' => 'source'),
                 'sql' => "char(1) NOT NULL default ''"
             ),
             'addEnclosure' => array(

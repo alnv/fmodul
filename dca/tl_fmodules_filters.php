@@ -106,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},fmGroup,evalCss,isMandatory;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchFields,fullTextSearchOrderBy;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchOrderBy,fullTextSearchFields;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{expert_legend:hide},fmGroup,evalCss;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
@@ -345,7 +345,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
-            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true, 'tl_class' => 'w50'),
+            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true, 'tl_class' => 'clr'),
             'sql' => "text NULL"
         ),
         'fullTextSearchOrderBy' => array(
@@ -353,7 +353,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
-            'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'),
+            'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'clr'),
             'sql' => "varchar(255) NOT NULL default ''"
         )
     )

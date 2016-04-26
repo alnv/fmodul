@@ -187,7 +187,18 @@ class ModuleFModuleRegistration extends Module
             if (\Input::post('FORM_SUBMIT') == 'fm_registration') {
 
                 $objWidget->validate();
+
                 $varValue = $objWidget->value;
+
+                if (class_exists('StringUtil')) {
+                    $varValue = \StringUtil::decodeEntities($varValue);
+                } else {
+                    // backwards compatible
+                    $varValue = \Input::decodeEntities($varValue);
+                }
+
+                $varValue = $this->replaceInsertTags($varValue);
+
                 $rgxp = $arrData['eval']['rgxp'];
 
                 // Convert date formats into timestamps (check the eval setting first -> #3063)
@@ -371,13 +382,11 @@ class ModuleFModuleRegistration extends Module
         $address_country = $arrData['address_country'] ? $countries[$arrData['address_country']] : '';
         $geo_address = '';
 
-        if($address_location || $address_zip || $address_country)
-        {
-            $geo_address = $address_street .' '. $address_addition .' '. $address_zip .' '. $address_location .' '. $address_country;
+        if ($address_location || $address_zip || $address_country) {
+            $geo_address = $address_street . ' ' . $address_addition . ' ' . $address_zip . ' ' . $address_location . ' ' . $address_country;
         }
 
-        if(!$geo_address)
-        {
+        if (!$geo_address) {
             $geo_address = $arrData['geo_address'] ? $arrData['geo_address'] : '';
         }
 
@@ -385,14 +394,12 @@ class ModuleFModuleRegistration extends Module
         $cords = array();
 
         //
-        if($geo_address)
-        {
+        if ($geo_address) {
             $geoCoding = GeoCoding::getInstance();
             $cords = $geoCoding->getGeoCords($geo_address, $address_country);
         }
 
-        if(!empty($cords))
-        {
+        if (!empty($cords)) {
             $arrData['geo_latitude'] = $cords['lat'] ? $cords['lat'] : '';
             $arrData['geo_longitude'] = $cords['lng'] ? $cords['lng'] : '';
         }
@@ -418,20 +425,25 @@ class ModuleFModuleRegistration extends Module
 
         // set default values from fe
         if ($this->fm_defaultValues) {
+
             $defaultValues = $this->fm_defaultValues ? deserialize($this->fm_defaultValues) : array();
 
             foreach ($defaultValues as $defaultValue) {
+
+
                 $col = $defaultValue['key'];
 
                 // parse value
                 $value = $defaultValue['value'];
+
                 if (class_exists('StringUtil')) {
                     $value = \StringUtil::decodeEntities($value);
                 } else {
                     // backwards compatible
                     $value = \Input::decodeEntities($value);
                 }
-                $value = \Controller::replaceInsertTags($value);
+
+                $value = $this->replaceInsertTags($value);
 
                 $dcaData = $this->dcaFields[$col];
                 $dcaData = $this->convertWidgetToField($dcaData);
@@ -534,8 +546,7 @@ class ModuleFModuleRegistration extends Module
             }
 
             // exception for cssID
-            if($col == 'cssID')
-            {
+            if ($col == 'cssID') {
                 $value = explode(',', $value);
                 $value = serialize($value);
             }
@@ -619,8 +630,8 @@ class ModuleFModuleRegistration extends Module
     protected function sendNotification($arrData)
     {
         // set
-        $name = $this->fm_notificationEmailName ? Controller::replaceInsertTags($this->fm_notificationEmailName) : '';
-        $subject = $this->fm_notificationEmailSubject ? Controller::replaceInsertTags($this->fm_notificationEmailSubject) : '';
+        $name = $this->fm_notificationEmailName ? $this->replaceInsertTags($this->fm_notificationEmailName) : '';
+        $subject = $this->fm_notificationEmailSubject ? $this->replaceInsertTags($this->fm_notificationEmailSubject) : '';
         $adminEmail = $this->getAdminEmailFromContext($this->fm_sendNotificationToAdmin);
         $strToEmails = $this->fm_notificationEmailList ? $this->fm_notificationEmailList : '';
         $fromEmail = $this->fm_notificationSender ? $this->fm_notificationSender : $this->getAdminEmail();
@@ -648,7 +659,7 @@ class ModuleFModuleRegistration extends Module
             }
 
             // replace insert tags
-            $value = Controller::replaceInsertTags($value);
+            $value = $this->replaceInsertTags($value);
 
             $body .= $key . ': ' . $value . '</br>';
         }
@@ -670,13 +681,13 @@ class ModuleFModuleRegistration extends Module
     protected function sendConfirmation($arrData)
     {
         // set
-        $name = $this->fm_confirmationEmailName ? Controller::replaceInsertTags($this->fm_confirmationEmailName) : '';
-        $subject = $this->fm_confirmationEmailSubject ? Controller::replaceInsertTags($this->fm_confirmationEmailSubject) : '';
+        $name = $this->fm_confirmationEmailName ? $this->replaceInsertTags($this->fm_confirmationEmailName) : '';
+        $subject = $this->fm_confirmationEmailSubject ? $this->replaceInsertTags($this->fm_confirmationEmailSubject) : '';
         $adminEmail = $this->getAdminEmailFromContext($this->fm_sendConfirmationToAdmin);
         $strToEmails = $this->fm_confirmationEmailList ? $this->fm_confirmationEmailList : '';
         $fromEmail = $this->fm_confirmationSender ? $this->fm_confirmationSender : $this->getAdminEmail();
         $recipient = $this->fm_confirmationRecipientEmail ? $arrData[$this->fm_confirmationRecipientEmail] : '';
-        $body = $this->fm_confirmationBody ? Controller::replaceInsertTags($this->fm_confirmationBody) : '';
+        $body = $this->fm_confirmationBody ? $this->replaceInsertTags($this->fm_confirmationBody) : '';
 
         $toEmails = array();
         $ccEmails = array();

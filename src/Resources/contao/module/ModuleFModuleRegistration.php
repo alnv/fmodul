@@ -187,18 +187,9 @@ class ModuleFModuleRegistration extends Module
             if (\Input::post('FORM_SUBMIT') == 'fm_registration') {
 
                 $objWidget->validate();
-
                 $varValue = $objWidget->value;
-
-                if (class_exists('StringUtil')) {
-                    $varValue = \StringUtil::decodeEntities($varValue);
-                } else {
-                    // backwards compatible
-                    $varValue = \Input::decodeEntities($varValue);
-                }
-
+                $varValue = $this->decodeValue($varValue);
                 $varValue = $this->replaceInsertTags($varValue);
-
                 $rgxp = $arrData['eval']['rgxp'];
 
                 // Convert date formats into timestamps (check the eval setting first -> #3063)
@@ -263,6 +254,10 @@ class ModuleFModuleRegistration extends Module
                     }
 
                     $arrValidData[$field] = $strUuid;
+                }
+                // reset session
+                if ($Files && isset($Files[$field]))
+                {
                     unset($_SESSION['FILES'][$field]);
                 }
             }
@@ -323,6 +318,22 @@ class ModuleFModuleRegistration extends Module
         $this->Template->captcha = $arrFields['captcha']['captcha']; // backwards compatibility
 
     }
+
+    /**
+     * @param $varValue
+     * @return mixed|string
+     */
+    private function decodeValue($varValue)
+    {
+        if (class_exists('StringUtil')) {
+            $varValue = \StringUtil::decodeEntities($varValue);
+        } else {
+            // backwards compatible
+            $varValue = \Input::decodeEntities($varValue);
+        }
+        return $varValue;
+    }
+
 
     /**
      * @param $inputType
@@ -430,21 +441,12 @@ class ModuleFModuleRegistration extends Module
 
             foreach ($defaultValues as $defaultValue) {
 
-
                 $col = $defaultValue['key'];
 
                 // parse value
                 $value = $defaultValue['value'];
-
-                if (class_exists('StringUtil')) {
-                    $value = \StringUtil::decodeEntities($value);
-                } else {
-                    // backwards compatible
-                    $value = \Input::decodeEntities($value);
-                }
-
+                $value = $this->decodeValue($value);
                 $value = $this->replaceInsertTags($value);
-
                 $dcaData = $this->dcaFields[$col];
                 $dcaData = $this->convertWidgetToField($dcaData);
 

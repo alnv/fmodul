@@ -45,10 +45,21 @@ class FModuleInsertTags extends Frontend
             return $this->generateField($arrSplit);
         }
 
+        // get values from current item
+        if (($arrSplit[0] == 'fm_detail' || $arrSplit[0] == 'fmDetail') && $arrSplit) {
+            return $this->getDetailFieldValue($arrSplit);
+        }
+
         // Generate URL
         if (($arrSplit[0] == 'fm_url' || $arrSplit[0] == 'fmUrl') && count($arrSplit) > 2) {
             return $this->getUrlFromItem($arrSplit);
         }
+
+        // Get active values
+        if (($arrSplit[0] == 'fm_active' || $arrSplit[0] == 'fmActive')) {
+            return $this->getActiveFieldValue($arrSplit);
+        }
+
         // Count Items
         if (($arrSplit[0] == 'fm_count' || $arrSplit[0] == 'fmCount') && $arrSplit[1]) {
 
@@ -74,6 +85,98 @@ class FModuleInsertTags extends Frontend
 
     /**
      *
+     * {{fmDetail::fm_tablename::alias}}
+     *
+     * @param $arrSplit
+     * @return string
+     */
+    private function getDetailFieldValue($arrSplit)
+    {
+        $tablename = $arrSplit[1] ? $arrSplit[1] : '';
+        $field = $arrSplit[2] ? $arrSplit[2] : '';
+        $cacheID = md5($tablename);
+        $strValue = '';
+
+        if(!$field || !$tablename)
+        {
+            return $strValue;
+        }
+
+        $auto_item = \Input::get('auto_item');
+
+        if(!$auto_item)
+        {
+            return $strValue;
+        }
+
+        $arrItem = array();
+        $cachedArrItem = Cache::get($cacheID);
+
+        if($cachedArrItem)
+        {
+            $arrItem = $cachedArrItem;
+        }
+
+        if(empty($arrItem))
+        {
+            $itemDB = $this->Database->prepare('SELECT * FROM '.$tablename.'_data WHERE id = ? OR alias = ?')->execute($auto_item, $auto_item);
+            if(!$itemDB->count())
+            {
+                return $strValue;
+            }
+
+            $arrItem = $itemDB->row();
+        }
+
+        Cache::set($cacheID, $arrItem);
+        $strValue = $arrItem[$field] ? $arrItem[$field] : '';
+        $strValue = $this->decodeValue($strValue);
+        $strValue = \Controller::replaceInsertTags($strValue);
+        return $strValue;
+    }
+
+    /**
+     *
+     * {{fmActive::alias}}
+     *
+     * @param $arrSplit
+     * @return string
+     */
+    private function getActiveFieldValue($arrSplit)
+    {
+        $field = $arrSplit[1] ? $arrSplit[1] : '';
+
+        $strValue = '';
+
+        if(!$field)
+        {
+            return $strValue;
+        }
+
+        $strValue = \Input::post($field) ? \Input::post($field) : \Input::get($field);
+        $strValue = $strValue ? $strValue : '';
+        $strValue = $this->decodeValue($strValue);
+        $strValue = \Controller::replaceInsertTags($strValue);
+        return $strValue;
+    }
+
+    /**
+     * @param $varValue
+     * @return mixed|string
+     */
+    private function decodeValue($varValue)
+    {
+        if (class_exists('StringUtil')) {
+            $varValue = \StringUtil::decodeEntities($varValue);
+        } else {
+            // backwards compatible
+            $varValue = \Input::decodeEntities($varValue);
+        }
+        return $varValue;
+    }
+
+    /**
+     *
      * {{fmField::fm_tablename::8::title}}
      *
      * @param $arrSplit
@@ -91,7 +194,7 @@ class FModuleInsertTags extends Frontend
 
             // check if table exist
             if (!$this->Database->tableExists($tableData)) {
-                return 'table do not exist';
+                return 'table does not exist';
             }
 
             // get field from cache
@@ -119,6 +222,8 @@ class FModuleInsertTags extends Frontend
 
             //
             while ($itemDB->next()) {
+
+                //
                 $item = $this->parseItem($itemDB, $tablename);
 
                 if (!$item) return '';
@@ -160,7 +265,6 @@ class FModuleInsertTags extends Frontend
                 }
 
                 Cache::set($cacheID, $item);
-
                 return $this->getField($item, $field);
 
             }
@@ -180,7 +284,7 @@ class FModuleInsertTags extends Frontend
         global $objPage;
 
         if (!$item[$field]) {
-            return 'field do not exist';
+            return 'field does not exist';
         }
 
         // set js files
@@ -224,7 +328,7 @@ class FModuleInsertTags extends Frontend
 
             // check if table exist
             if (!$this->Database->tableExists($tablename)) {
-                return 'table do not exist';
+                return 'table does not exist';
             }
 
             // get data

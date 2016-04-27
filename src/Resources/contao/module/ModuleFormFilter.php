@@ -175,7 +175,7 @@ class ModuleFormFilter extends \Contao\Module
             //
             if ($field['type'] == 'search_field' && $field['isInteger'] == '1') {
                 if (!$fields[$i]['selected'] && !is_null(Input::get($field['fieldID']))) {
-                    $fields[$i]['selected'] = '0';
+                    $fields[$i]['selected'] = '';
                 }
             }
 
@@ -222,7 +222,7 @@ class ModuleFormFilter extends \Contao\Module
                     $toFieldData['description'] = '';
                     $selectValue = Input::get($toFieldData['fieldID']);
                     if (!is_null($selectValue) && !$selectValue && $toFieldData['type'] != 'date_field') {
-                        $selectValue = '0';
+                        $selectValue = '';
                     }
                     $toFieldData['selected'] = $selectValue;
                     $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);

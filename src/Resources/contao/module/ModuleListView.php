@@ -134,32 +134,43 @@ class ModuleListView extends Module
                 continue;
             }
 
-            $modArr = $moduleDB->row();
+            $arrModule = $moduleDB->row();
             $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
-            $modArr['value'] = $getFilter['value'];
-            $modArr['operator'] = $getFilter['operator'];
-            $modArr['overwrite'] = null;
-            $modArr['active'] = null;
+            $arrModule['value'] = $getFilter['value'];
+            $arrModule['operator'] = $getFilter['operator'];
+            $arrModule['overwrite'] = null;
+            $arrModule['active'] = null;
 
             if ($moduleDB->fieldID == 'auto_page' || $moduleDB->autoPage) {
-                $modArr = $this->setValuesForAutoPageAttribute($modArr);
+                $arrModule = $this->setValuesForAutoPageAttribute($arrModule);
             }
 
-            $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
+            $val = QueryModel::isValue($arrModule['value'], $moduleDB->type);
+            if ($val) $arrModule['enable'] = true;
 
-            if ($val) $modArr['enable'] = true;
+            // check if has an wrapper
+            if(( $arrModule['type'] === 'search_field' && $arrModule['isInteger'] ) || $arrModule['type'] === 'date_field')
+            {
+                $btw = Input::get($arrModule['fieldID'] . '_btw') ? Input::get($arrModule['fieldID'] . '_btw') : '';
+                $btwHasValue = QueryModel::isValue($btw, $arrModule['type']);
+                if($btwHasValue && !$val)
+                {
+                    $arrModule['enable'] = true;
+                    $arrModule['value'] = 0;
+                }
+            }
 
             // map
             if ($moduleDB->type == 'map_field') {
 
                 // set map settings
-                $mapFields[] = HelperModel::setGoogleMap($modArr);
+                $mapFields[] = HelperModel::setGoogleMap($arrModule);
 
                 // set loadMapScript to true
                 $this->loadMapScript = true;
 
                 // load map libraries
-                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
+                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
             }
 
             // field
@@ -179,7 +190,7 @@ class ModuleListView extends Module
                 );
             }
 
-            $fieldsArr[$moduleDB->fieldID] = $modArr;
+            $fieldsArr[$moduleDB->fieldID] = $arrModule;
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {

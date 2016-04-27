@@ -96,9 +96,9 @@ class FModuleInsertTags extends Frontend
         $field = $arrSplit[2] ? $arrSplit[2] : '';
         $auto_item = \Input::get('auto_item');
 
-        if(!$tablename) return '';
-        if(!$field) return '';
-        if(!$auto_item) return '';
+        if (!$tablename) return '';
+        if (!$field) return '';
+        if (!$auto_item) return '';
 
         $arrSplit = array(); // reset arr
         $arrSplit[0] = 'fmField'; // key
@@ -121,15 +121,13 @@ class FModuleInsertTags extends Frontend
         $field = $arrSplit[1] ? $arrSplit[1] : '';
         $strValue = '';
 
-        if(!$field)
-        {
+        if (!$field) {
             return $strValue;
         }
 
         $strValue = \Session::getInstance()->get('FModuleActiveAttributes');
 
-        if(is_array($strValue))
-        {
+        if (is_array($strValue)) {
             return $strValue[$field];
         }
 
@@ -171,16 +169,25 @@ class FModuleInsertTags extends Frontend
             if (HelperModel::previewMode()) $qProtectedStr = '';
 
             // q
-            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE id = ? OR alias = ?' . $qProtectedStr . ' LIMIT 1')->execute($id, $id);
+            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tableData . ' WHERE id = ? OR alias = ?' . $qProtectedStr . ' LIMIT 1')->execute($id, $id);
 
             // find and set map
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-            if ($moduleDB->next()) {
-                $moduleInputFields = $moduleDB->row();
-                $maps = $this->findMapAndSet($moduleInputFields);
-                $widgets = $this->findWidgetAndSet($moduleInputFields);
-            }
+            $maps = array();
+            $widgets = array();
+            while ($moduleDB->next()) {
 
+                $moduleInputFields = $moduleDB->row();
+
+                // get map
+                if ($moduleInputFields['type'] == 'map_field') {
+
+                    $maps[] = $this->findMapAndSet($moduleInputFields);
+                }
+                if ($moduleInputFields['type'] == 'widget') {
+                    $widgets[] = $this->findWidgetAndSet($moduleInputFields);
+                }
+            }
             //
             while ($itemDB->next()) {
 
@@ -305,10 +312,19 @@ class FModuleInsertTags extends Frontend
             }
 
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-            if ($moduleDB->next()) {
+            $maps = array();
+            $widgets = array();
+            while ($moduleDB->next()) {
+
                 $moduleInputFields = $moduleDB->row();
-                $maps = $this->findMapAndSet($moduleInputFields);
-                $widgets = $this->findWidgetAndSet($moduleInputFields);
+
+                // get map
+                if ($moduleInputFields['type'] == 'map_field') {
+                    $maps[] = $this->findMapAndSet($moduleInputFields);
+                }
+                if ($moduleInputFields['type'] == 'widget') {
+                    $widgets[] = $this->findWidgetAndSet($moduleInputFields);
+                }
             }
 
             // search for item
@@ -545,13 +561,13 @@ class FModuleInsertTags extends Frontend
     private function findMapAndSet($field)
     {
         // get map_field
-        $maps = array();
+        $map = array();
 
         // map
         if ($field['type'] == 'map_field') {
 
             // set map settings
-            $maps[] = HelperModel::setGoogleMap($field);
+            $map = HelperModel::setGoogleMap($field);
 
             // set loadMapScript to true
             $this->loadMapScript = true;
@@ -560,7 +576,7 @@ class FModuleInsertTags extends Frontend
             if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $field['mapInfoBox'] ? true : false;
         }
 
-        return $maps;
+        return $map;
     }
 
     /**
@@ -570,7 +586,7 @@ class FModuleInsertTags extends Frontend
     private function findWidgetAndSet($field)
     {
         // get widget
-        $widgets = array();
+        $widget = array();
 
         // widget
         if ($field['type'] == 'widget') {
@@ -583,14 +599,14 @@ class FModuleInsertTags extends Frontend
                 $tpl = current($tplNameArr);
                 $tpl = DiverseFunction::parseTemplateName($tpl);
             }
-            $widgets[$field['fieldID']] = array(
+            $widget[$field['fieldID']] = array(
                 'fieldID' => $field['fieldID'],
                 'widgetType' => $field['widget_type'],
                 'widgetTemplate' => $field['widgetTemplate'] ? $field['widgetTemplate'] : $tpl
             );
         }
 
-        return $widgets;
+        return $widget;
     }
 
     /**

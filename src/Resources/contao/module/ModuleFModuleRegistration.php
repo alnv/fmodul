@@ -524,7 +524,7 @@ class ModuleFModuleRegistration extends Module
         $placeholder = array();
 
         $arrCheckBoxes = array('markerSRC' => 'addMarker', 'singleSRC' => 'addImage', 'enclosure' => 'addEnclosure'); // nur ein Hack
-
+        $arrActive = array();
         foreach ($arrData as $col => $value) {
 
             $eval = $this->dcaFields[$col]['eval'];
@@ -553,6 +553,7 @@ class ModuleFModuleRegistration extends Module
                 $value = serialize($value);
             }
 
+            $arrActive[$col] = $value;
             $values[] = $value;
             $placeholder[] = '?';
         }
@@ -560,6 +561,10 @@ class ModuleFModuleRegistration extends Module
         $strCols = implode(',', $cols);
         $strPlaceholder = implode(',', $placeholder);
         $strQuery = 'INSERT INTO ' . $tableData . ' (' . $strCols . ') VALUES (' . $strPlaceholder . ')';
+
+        // save item
+        \Session::getInstance()->set('FModuleActiveAttributes', $arrActive);
+        unset($arrActive);
 
         // create new entity
         $this->Database->prepare($strQuery)->execute($values);

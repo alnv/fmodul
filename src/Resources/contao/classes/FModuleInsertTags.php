@@ -94,45 +94,19 @@ class FModuleInsertTags extends Frontend
     {
         $tablename = $arrSplit[1] ? $arrSplit[1] : '';
         $field = $arrSplit[2] ? $arrSplit[2] : '';
-        $cacheID = md5($tablename);
-        $strValue = '';
-
-        if(!$field || !$tablename)
-        {
-            return $strValue;
-        }
-
         $auto_item = \Input::get('auto_item');
 
-        if(!$auto_item)
-        {
-            return $strValue;
-        }
+        if(!$tablename) return '';
+        if(!$field) return '';
+        if(!$auto_item) return '';
 
-        $arrItem = array();
-        $cachedArrItem = Cache::get($cacheID);
+        $arrSplit = array(); // reset arr
+        $arrSplit[0] = 'fmField'; // key
+        $arrSplit[1] = $tablename; // tablename
+        $arrSplit[2] = $auto_item; // id
+        $arrSplit[3] = $field; // field
 
-        if($cachedArrItem)
-        {
-            $arrItem = $cachedArrItem;
-        }
-
-        if(empty($arrItem))
-        {
-            $itemDB = $this->Database->prepare('SELECT * FROM '.$tablename.'_data WHERE id = ? OR alias = ?')->execute($auto_item, $auto_item);
-            if(!$itemDB->count())
-            {
-                return $strValue;
-            }
-
-            $arrItem = $itemDB->row();
-        }
-
-        Cache::set($cacheID, $arrItem);
-        $strValue = $arrItem[$field] ? $arrItem[$field] : '';
-        $strValue = $this->decodeValue($strValue);
-        $strValue = \Controller::replaceInsertTags($strValue);
-        return $strValue;
+        return $this->generateField($arrSplit);
     }
 
     /**
@@ -145,7 +119,6 @@ class FModuleInsertTags extends Frontend
     private function getActiveFieldValue($arrSplit)
     {
         $field = $arrSplit[1] ? $arrSplit[1] : '';
-
         $strValue = '';
 
         if(!$field)
@@ -153,26 +126,14 @@ class FModuleInsertTags extends Frontend
             return $strValue;
         }
 
-        $strValue = \Input::post($field) ? \Input::post($field) : \Input::get($field);
-        $strValue = $strValue ? $strValue : '';
-        $strValue = $this->decodeValue($strValue);
-        $strValue = \Controller::replaceInsertTags($strValue);
-        return $strValue;
-    }
+        $strValue = \Session::getInstance()->get('FModuleActiveAttributes');
 
-    /**
-     * @param $varValue
-     * @return mixed|string
-     */
-    private function decodeValue($varValue)
-    {
-        if (class_exists('StringUtil')) {
-            $varValue = \StringUtil::decodeEntities($varValue);
-        } else {
-            // backwards compatible
-            $varValue = \Input::decodeEntities($varValue);
+        if(is_array($strValue))
+        {
+            return $strValue[$field];
         }
-        return $varValue;
+
+        return $strValue;
     }
 
     /**
@@ -210,7 +171,7 @@ class FModuleInsertTags extends Frontend
             if (HelperModel::previewMode()) $qProtectedStr = '';
 
             // q
-            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE id = ? ' . $qProtectedStr . ' LIMIT 1')->execute($id);
+            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE id = ? OR alias = ?' . $qProtectedStr . ' LIMIT 1')->execute($id, $id);
 
             // find and set map
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);

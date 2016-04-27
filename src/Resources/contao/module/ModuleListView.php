@@ -146,8 +146,19 @@ class ModuleListView extends Module
             }
 
             $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
-
             if ($val) $modArr['enable'] = true;
+
+            // check if has an wrapper
+            if(( $modArr['type'] === 'search_field' && $modArr['isInteger'] ) || $modArr['type'] === 'date_field')
+            {
+                $btw = Input::get($modArr['fieldID'] . '_btw') ? Input::get($modArr['fieldID'] . '_btw') : '';
+                $btwHasValue = QueryModel::isValue($btw, $modArr['type']);
+                if($btwHasValue && !$val)
+                {
+                    $modArr['enable'] = true;
+                    $modArr['value'] = 0;
+                }
+            }
 
             // map
             if ($moduleDB->type == 'map_field') {

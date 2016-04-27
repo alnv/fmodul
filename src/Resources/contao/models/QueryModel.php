@@ -161,7 +161,7 @@ class QueryModel
         if (!$isNum) {
 
             $likeValue = '"%' . $searchValue . '%"';
-            return ' AND ' . $query['fieldID'] . ' LIKE ' . $likeValue . ' OR ' . $query['fieldID'] . ' = "' . $searchValue . '"';
+            return ' AND (' . $query['fieldID'] . ' LIKE ' . $likeValue . ' OR ' . $query['fieldID'] . ' = "' . $searchValue . '")';
 
         }
 

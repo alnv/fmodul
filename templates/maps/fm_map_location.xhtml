@@ -45,9 +45,10 @@
         // ensure that values are utf-8 format -> mb_convert_encoding('my String', 'UTF-8')
         var infoBoxTemplate =
             '<div class="infobox"> <p><strong>' + self.title + '</strong></p>' + self.description + (function () {
-                if (self.href) {
+                if (self.href !== null) {
                     return '<p><a href="' + self.href + '" title="' + self.title + '">' + self.more + '</a></p>';
                 }
+                return '';
             })() + '</div>';
 
         // declare info box obj

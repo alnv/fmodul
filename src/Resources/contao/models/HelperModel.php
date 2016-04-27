@@ -84,7 +84,7 @@ class HelperModel
         $qStr = '';
         $qTextSearch = '';
         $isFulltextSearch = false;
-
+        $searchSettings = array();
         foreach ($filterArr as $field) {
 
             if ($field['enable']) {

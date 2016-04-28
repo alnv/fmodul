@@ -169,7 +169,7 @@ class FModuleInsertTags extends Frontend
             if (HelperModel::previewMode()) $qProtectedStr = '';
 
             // q
-            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tableData . ' WHERE id = ? OR alias = ?' . $qProtectedStr . ' LIMIT 1')->execute($id, $id);
+            $itemDB = $this->Database->prepare('SELECT * FROM ' . $tableData . ' WHERE id = ? OR alias = ?' . $qProtectedStr . ' LIMIT 1')->execute((int)$id, $id);
 
             // find and set map
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);

@@ -26,6 +26,7 @@ ClassLoader::addClasses(array
     'FModule\FieldAppearance' => $pathToFiles . 'src/Resources/contao/classes/FieldAppearance.php',
     'FModule\FModule' => $pathToFiles . 'src/Resources/contao/classes/FModule.php',
     'FModule\FModuleAjaxApi' => $pathToFiles . 'src/Resources/contao/classes/FModuleAjaxApi.php',
+    'FModule\FModuleLanguage' => $pathToFiles . 'src/Resources/contao/classes/FModuleLanguage.php',
 
     // widgets
     'FModule\OptionWizardExtended' => $pathToFiles . 'src/Resources/contao/widgets/OptionWizardExtended.php',

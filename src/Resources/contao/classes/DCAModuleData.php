@@ -69,8 +69,7 @@ class DCAModuleData extends ViewContainer
      */
     static public function getInstance()
     {
-        if(self::$instance == null)
-        {
+        if (self::$instance == null) {
             self::$instance = new self;
         }
         return self::$instance;
@@ -206,6 +205,54 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
+     * @todo edit all
+     * @param DataContainer $dc
+     * @return array
+     */
+    public function getFallbackData(DataContainer $dc)
+    {
+        $arrData = array();
+
+        // create ptable
+        $do = \Input::get('do');
+        $table = $do ? 'fm_' . $do : '';
+
+        if (!$table) return $arrData;
+
+        $objData = $this->Database->prepare('SELECT * FROM '.$dc->table.' WHERE pid = (SELECT id FROM '.$table.' WHERE fallback = ? LIMIT 1)')->execute('1');
+
+        while($objData->next())
+        {
+            $arrData[$objData->alias] = $objData->title;
+        }
+
+        return $arrData;
+    }
+
+    /**
+     * @todo edit all
+     * @param DataContainer $dc
+     * @return null
+     */
+    public function showMainLanguage(DataContainer $dc)
+    {
+        if (\Input::get('act') == "edit") {
+
+            $do = \Input::get('do');
+            $table = $do ? 'fm_' . $do : '';
+            if (!$table) return null;
+
+            $objData = $this->Database->prepare('SELECT ' . $table . '.* FROM ' . $table . ' LEFT OUTER JOIN ' . $dc->table . ' ON ' . $dc->table . '.pid=' . $table . '.id WHERE ' . $dc->table . '.id=?')
+                ->limit(1)
+                ->execute($dc->id);
+
+            if ($objData->numRows && !$objData->fallback) {
+                $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
+            }
+        }
+    }
+
+    /**
      *
      */
     public function getIDs()
@@ -234,7 +281,8 @@ class DCAModuleData extends ViewContainer
             'onload_callback' => array
             (
                 array('DCAModuleData', 'checkPermission'),
-                array('DCAModuleData', 'generateFeed')
+                array('DCAModuleData', 'generateFeed'),
+                array('DCAModuleData', 'showMainLanguage')
             ),
             'onsubmit_callback' => array
             (
@@ -270,12 +318,11 @@ class DCAModuleData extends ViewContainer
         $mode = 1;
         $arrFlag = explode('.', $sortingType);
         $arrField = explode('.', $sortingField);
-				
-		if($arrField[0] && $arrField[0] == 'id')
-		{
-			$mode = 0;
-		}
-		
+
+        if ($arrField[0] && $arrField[0] == 'id') {
+            $mode = 0;
+        }
+
         if ($arrFlag[1]) {
             $flag = (int)$arrFlag[1];
         }
@@ -284,7 +331,7 @@ class DCAModuleData extends ViewContainer
             $flag += 1;
         }
 
-        $list = array(	
+        $list = array(
             'sorting' => array(
                 'mode' => $mode,
                 'flag' => $flag,
@@ -365,26 +412,24 @@ class DCAModuleData extends ViewContainer
         );
         return $list;
     }
-	
-	/**
+
+    /**
      * @param $arrRow
      * @return string
-     */	
-	public function listData($arrRow)
-	{
-		$span = '<span style="color: #c2c2c2">['.$arrRow['info'].']</span>';
-		if(!$arrRow['info'])
-		{
-			$span = '<span style="color: #c2c2c2">['.$arrRow['id'].']</span>';
-		}
-		if(strlen($arrRow['info']) > 24)
-		{
-			$subStrInfo = substr($arrRow['info'], 0, 24);
-			$span = '<span style="color: #c2c2c2">['.$subStrInfo.'…]</span>';
-		}
-		return $arrRow['title'].' '.$span;
-	}
-	
+     */
+    public function listData($arrRow)
+    {
+        $span = '<span style="color: #c2c2c2">[' . $arrRow['info'] . ']</span>';
+        if (!$arrRow['info']) {
+            $span = '<span style="color: #c2c2c2">[' . $arrRow['id'] . ']</span>';
+        }
+        if (strlen($arrRow['info']) > 24) {
+            $subStrInfo = substr($arrRow['info'], 0, 24);
+            $span = '<span style="color: #c2c2c2">[' . $subStrInfo . '…]</span>';
+        }
+        return $arrRow['title'] . ' ' . $span;
+    }
+
     /**
      * @param $row
      * @param $href
@@ -511,12 +556,10 @@ class DCAModuleData extends ViewContainer
                 // set subpallets
                 if ($paletteData['subPalettes'] && $paletteData['__selector__']) {
 
-                    if(!is_array($paletteData['subPalettes']))
-                    {
+                    if (!is_array($paletteData['subPalettes'])) {
                         $returnPalette['subPalettes'][$paletteData['__selector__']] = $paletteData['subPalettes'];
-                    }else{
-                        foreach($paletteData['subPalettes'] as $k => $v)
-                        {
+                    } else {
+                        foreach ($paletteData['subPalettes'] as $k => $v) {
                             $returnPalette['subPalettes'][$k] = $v;
                         }
                     }
@@ -542,14 +585,12 @@ class DCAModuleData extends ViewContainer
         $arrSettings = array();
 
         // set mandatory
-        $arrMandatory =  array();
-        if($moduleObj['addMandatoryHandler'] && $moduleObj['mandatoryHandler'] !== null)
-        {
+        $arrMandatory = array();
+        if ($moduleObj['addMandatoryHandler'] && $moduleObj['mandatoryHandler'] !== null) {
             $arrMandatory = $moduleObj['mandatoryHandler'] ? deserialize($moduleObj['mandatoryHandler']) : array();
-            if(!is_array($arrMandatory)) $arrMandatory = array();
+            if (!is_array($arrMandatory)) $arrMandatory = array();
             // cast
-            foreach($arrMandatory as $value)
-            {
+            foreach ($arrMandatory as $value) {
                 $arrMandatory[$value] = $value;
             }
         }
@@ -560,8 +601,7 @@ class DCAModuleData extends ViewContainer
         $arr = $this->dcaDataFields($arrSettings);
 
         // set input fields
-        if(is_array($fields))
-        {
+        if (is_array($fields)) {
             foreach ($fields as $field) {
 
                 // skip if field id is empty
@@ -616,8 +656,7 @@ class DCAModuleData extends ViewContainer
         $autoAlias = false;
 
         // create alias if no dca defined
-        if($dc === null)
-        {
+        if ($dc === null) {
             $strValue = $varValue ? $varValue : '';
             return $strValue;
         }
@@ -652,20 +691,16 @@ class DCAModuleData extends ViewContainer
      */
     public function createCols()
     {
-        if(!$this->name)
-        {
+        if (!$this->name) {
             return null;
         }
 
-        foreach($this->fields as $colname => $field)
-        {
-            if(!$field['sql'])
-            {
-               continue;
+        foreach ($this->fields as $colname => $field) {
+            if (!$field['sql']) {
+                continue;
             }
 
-            if(!$this->Database->fieldExists($colname, $this->name))
-            {
+            if (!$this->Database->fieldExists($colname, $this->name)) {
                 $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
             }
         }
@@ -678,13 +713,11 @@ class DCAModuleData extends ViewContainer
     {
         $defaultCols = "id int(10) unsigned NOT NULL auto_increment, tstamp int(10) unsigned NOT NULL default '0', pid int(10) unsigned NOT NULL default '0'";
 
-        if( $this->name && !$this->Database->tableExists($this->name) )
-        {
+        if ($this->name && !$this->Database->tableExists($this->name)) {
             $this->Database->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")->execute();
         }
 
-        if(!empty($this->fields))
-        {
+        if (!empty($this->fields)) {
             $this->createCols();
         }
     }
@@ -695,8 +728,7 @@ class DCAModuleData extends ViewContainer
      */
     public function saveGeoCoding(DataContainer $dca)
     {
-        if(!$dca->activeRecord)
-        {
+        if (!$dca->activeRecord) {
             return null;
         }
 
@@ -709,14 +741,12 @@ class DCAModuleData extends ViewContainer
         $address_country = $dca->activeRecord->address_country ? $countries[$dca->activeRecord->address_country] : '';
 
         //
-        if($address_location || $address_zip || $address_country)
-        {
-            $geo_address = $address_street .' '. $address_addition .' '. $address_zip .' '. $address_location .' '. $address_country;
+        if ($address_location || $address_zip || $address_country) {
+            $geo_address = $address_street . ' ' . $address_addition . ' ' . $address_zip . ' ' . $address_location . ' ' . $address_country;
         }
 
         //
-        if(!$geo_address)
-        {
+        if (!$geo_address) {
             $geo_address = $dca->activeRecord->geo_address ? $dca->activeRecord->geo_address : '';
         }
 
@@ -724,23 +754,20 @@ class DCAModuleData extends ViewContainer
         $cords = array();
 
         //
-        if($geo_address)
-        {
+        if ($geo_address) {
             $geoCoding = GeoCoding::getInstance();
             $cords = $geoCoding->getGeoCords($geo_address, $address_country);
         }
 
-        if(!empty($cords))
-        {
+        if (!empty($cords)) {
             $tableName = $dca->table ? $dca->table : Input::get('table');
             $id = $dca->id ? $dca->id : Input::get('id');
             $lat = $cords['lat'] ? $cords['lat'] : '';
             $lng = $cords['lng'] ? $cords['lng'] : '';
-            if(!$tableName || !$id)
-            {
+            if (!$tableName || !$id) {
                 return null;
             }
-            $this->Database->prepare('UPDATE '.$tableName.' SET geo_latitude=?,geo_longitude=? WHERE id = ?')->execute($lat, $lng, $id);
+            $this->Database->prepare('UPDATE ' . $tableName . ' SET geo_latitude=?,geo_longitude=? WHERE id = ?')->execute($lat, $lng, $id);
         }
     }
 

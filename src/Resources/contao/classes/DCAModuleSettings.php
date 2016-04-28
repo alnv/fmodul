@@ -31,8 +31,7 @@ class DCAModuleSettings extends ViewContainer
      */
     static public function getInstance()
     {
-        if(self::$instance == null)
-        {
+        if (self::$instance == null) {
             self::$instance = new self;
         }
         return self::$instance;
@@ -67,13 +66,11 @@ class DCAModuleSettings extends ViewContainer
      */
     private function permissionFieldExist($fieldname)
     {
-        if(!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname.'p', 'tl_user'))
-        {
+        if (!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user')) {
             return false;
         }
 
-        if(!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname.'p', 'tl_user_group'))
-        {
+        if (!$this->Database->fieldExists($fieldname, 'tl_user_group') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user_group')) {
             return false;
         }
 
@@ -88,15 +85,13 @@ class DCAModuleSettings extends ViewContainer
     {
         $modname = substr($dc->table, 3, strlen($dc->table));
         $allowedFields = $modname;
-        $permission = $modname.'p';
+        $permission = $modname . 'p';
 
-        if( !$this->permissionFieldExist($modname) )
-        {
+        if (!$this->permissionFieldExist($modname)) {
             return;
         }
 
-        if($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
@@ -112,8 +107,7 @@ class DCAModuleSettings extends ViewContainer
             $GLOBALS['TL_DCA'][$dc->table]['config']['closed'] = true;
         }
 
-        switch (Input::get('act'))
-        {
+        switch (Input::get('act')) {
             case 'create':
             case 'select':
                 break;
@@ -125,7 +119,7 @@ class DCAModuleSettings extends ViewContainer
                     if (is_array($arrNew[$dc->table]) && in_array(Input::get('id'), $arrNew[$dc->table])) {
                         // Add permissions on user level
                         if ($this->User->inherit == 'custom' || !$this->User->groups[0]) {
-                            $objUser = $this->Database->prepare("SELECT ".$allowedFields.", ".$permission." FROM tl_user WHERE id=?")
+                            $objUser = $this->Database->prepare("SELECT " . $allowedFields . ", " . $permission . " FROM tl_user WHERE id=?")
                                 ->limit(1)
                                 ->execute($this->User->id);
 
@@ -135,12 +129,12 @@ class DCAModuleSettings extends ViewContainer
                                 $arrFModules = deserialize($objUser->$allowedFields);
                                 $arrFModules[] = Input::get('id');
 
-                                $this->Database->prepare("UPDATE tl_user SET ".$allowedFields."=? WHERE id=?")
+                                $this->Database->prepare("UPDATE tl_user SET " . $allowedFields . "=? WHERE id=?")
                                     ->execute(serialize($arrFModules), $this->User->id);
                             }
                         } // Add permissions on group level
                         elseif ($this->User->groups[0] > 0) {
-                            $objGroup = $this->Database->prepare("SELECT ".$allowedFields.", ".$permission." FROM tl_user_group WHERE id=?")
+                            $objGroup = $this->Database->prepare("SELECT " . $allowedFields . ", " . $permission . " FROM tl_user_group WHERE id=?")
                                 ->limit(1)
                                 ->execute($this->User->groups[0]);
 
@@ -150,7 +144,7 @@ class DCAModuleSettings extends ViewContainer
                                 $arrFModules = deserialize($objGroup->$allowedFields);
                                 $arrFModules[] = Input::get('id');
 
-                                $this->Database->prepare("UPDATE tl_user_group SET ".$allowedFields."=? WHERE id=?")
+                                $this->Database->prepare("UPDATE tl_user_group SET " . $allowedFields . "=? WHERE id=?")
                                     ->execute(serialize($arrFModules), $this->User->groups[0]);
                             }
                         }
@@ -164,7 +158,7 @@ class DCAModuleSettings extends ViewContainer
             case 'delete':
             case 'show':
                 if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', $permission))) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' '.$allowedFields.' ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' ' . $allowedFields . ' ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
@@ -182,11 +176,40 @@ class DCAModuleSettings extends ViewContainer
 
             default:
                 if (strlen(Input::get('act'))) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' '.$allowedFields.' ', __METHOD__, TL_ERROR);
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' ' . $allowedFields . ' ', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
         }
+    }
+
+    /**
+     * @param $varValue
+     * @param DataContainer $dc
+     * @return string
+     * @throws \Exception
+     */
+    public function checkFallback($varValue, DataContainer $dc)
+    {
+        if ($varValue == '') {
+            return '';
+        }
+
+        $table = \Input::get('do');
+
+        if (!$table) {
+            return '';
+        }
+
+        $table = 'fm_' . $table;
+
+        $objDataSettings = $this->Database->prepare('SELECT id FROM ' . $table . ' WHERE fallback = ? AND id != ?')->execute(1, $dc->activeRecord->id);
+
+        if ($objDataSettings->numRows) {
+            throw new \Exception($GLOBALS['TL_LANG']['ERR']['fallbackExist']);
+        }
+
+        return $varValue;
     }
 
     /**
@@ -237,7 +260,7 @@ class DCAModuleSettings extends ViewContainer
                 )
             ),
             'operations' => array(
-				'edit' => array
+                'edit' => array
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['edit'],
                     'href' => 'table=' . $this->child,
@@ -283,8 +306,7 @@ class DCAModuleSettings extends ViewContainer
         $fieldStr = '{data_legend},';
         $arr = array();
         foreach ($fields as $field) {
-            if(!$field['fieldID'])
-            {
+            if (!$field['fieldID']) {
                 continue;
             }
             if ($field['type'] !== 'simple_choice' || $field['type'] !== 'multi_choice') {
@@ -300,7 +322,7 @@ class DCAModuleSettings extends ViewContainer
         $fieldStr = $fieldStr . implode(',', $arr) . ';';
         return array(
             '__selector__' => array('addDetailPage', 'allowComments'),
-            'default' => '{general_legend},title,info;{root_legend},addDetailPage;' . $fieldStr . '{comments_legend:hide},allowComments;'
+            'default' => '{general_legend},title,info,language,fallback;{root_legend},addDetailPage;' . $fieldStr . '{comments_legend:hide},allowComments;'
         );
     }
 
@@ -322,16 +344,14 @@ class DCAModuleSettings extends ViewContainer
     public function setFields($fields = array())
     {
         $arr = $this->dcaSettingField();
-        if(is_array($fields))
-        {
+        if (is_array($fields)) {
             foreach ($fields as $field) {
 
                 // do not set
-                if(!$field['fieldID'])  continue;
-                if($field['fieldID'] == 'address_country') continue;
+                if (!$field['fieldID']) continue;
+                if ($field['fieldID'] == 'address_country') continue;
 
-                if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
-                {
+                if ($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice') {
                     $arr = $this->setOptionsFields($field, $arr);
                 }
             }
@@ -347,17 +367,14 @@ class DCAModuleSettings extends ViewContainer
      */
     private function setOptionsFields($field, $arr)
     {
-        if($field['dataFromTable'] == '1')
-        {
+        if ($field['dataFromTable'] == '1') {
             $fieldPrefixes = array('select_table_', 'select_col_', 'select_title_');
-            for($i=0; $i < count($fieldPrefixes); $i++)
-            {
-                if($fieldPrefixes[$i])
-                {
-                    $arr[$fieldPrefixes[$i].$field['fieldID']] = $this->getOptionFromTableField($fieldPrefixes[$i], $field);
+            for ($i = 0; $i < count($fieldPrefixes); $i++) {
+                if ($fieldPrefixes[$i]) {
+                    $arr[$fieldPrefixes[$i] . $field['fieldID']] = $this->getOptionFromTableField($fieldPrefixes[$i], $field);
                 }
             }
-        }else{
+        } else {
             $arr[$field['fieldID']] = $this->getOptionField($field);
         }
         return $arr;
@@ -524,18 +541,14 @@ class DCAModuleSettings extends ViewContainer
      */
     public function createCols()
     {
-        if(!$this->name)
-        {
+        if (!$this->name) {
             return null;
         }
-        foreach($this->fields as $colname => $field)
-        {
-            if(!$field['sql'])
-            {
+        foreach ($this->fields as $colname => $field) {
+            if (!$field['sql']) {
                 continue;
             }
-            if(!$this->Database->fieldExists($colname, $this->name))
-            {
+            if (!$this->Database->fieldExists($colname, $this->name)) {
                 $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
             }
         }
@@ -547,12 +560,10 @@ class DCAModuleSettings extends ViewContainer
     public function createTable()
     {
         $defaultCols = "id int(10) unsigned NOT NULL auto_increment, tstamp int(10) unsigned NOT NULL default '0'";
-        if( $this->name && !$this->Database->tableExists($this->name) )
-        {
+        if ($this->name && !$this->Database->tableExists($this->name)) {
             $this->Database->prepare("CREATE TABLE IF NOT EXISTS " . $this->name . " (" . $defaultCols . ", PRIMARY KEY (id))")->execute();
         }
-        if(!empty($this->fields))
-        {
+        if (!empty($this->fields)) {
             $this->createCols();
         }
     }

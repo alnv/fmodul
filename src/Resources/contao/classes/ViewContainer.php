@@ -31,8 +31,7 @@ class ViewContainer extends DCAHelper
      */
     static public function getInstance()
     {
-        if(self::$instance == null)
-        {
+        if (self::$instance == null) {
             self::$instance = new self;
         }
         return self::$instance;
@@ -316,7 +315,17 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'stop'), 'tl_class' => 'w50 wizard', 'fmEditable' => true, 'fmGroup' => 'expert'),
                 'sql' => "varchar(10) NOT NULL default ''"
+            ),
+            // languageMain
+            'mainLanguage' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'],
+                'exclude' => false,
+                'inputType' => 'select',
+                'options_callback' => array('DCAModuleData', 'getFallbackData'),
+                'eval' => array('includeBlankOption' => true, 'chosen' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'),
+                'sql' => "varchar(255) NOT NULL default ''"
             )
+
         );
 
         // add pid
@@ -356,6 +365,22 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
                 'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'language' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'search' => true,
+                'eval' => array('mandatory' => true, 'rgxp' => 'language', 'maxlength' => 5, 'nospace' => true, 'doNotCopy' => true, 'tl_class' => 'w50'),
+                'sql' => "varchar(5) NOT NULL default ''"
+            ),
+            'fallback' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('doNotCopy' => true, 'tl_class' => 'w50 m12'),
+                'save_callback' => array(array('DCAModuleSettings', 'checkFallback')),
+                'sql' => "char(1) NOT NULL default ''"
             ),
             'addDetailPage' => array
             (
@@ -671,8 +696,7 @@ class ViewContainer extends DCAHelper
 
         // set regular expression
         $rgxp = $this->setRgxp($fieldData);
-        if($rgxp)
-        {
+        if ($rgxp) {
             $field['eval']['rgxp'] = $rgxp;
         }
 
@@ -785,8 +809,7 @@ class ViewContainer extends DCAHelper
 
         // set regular expression
         $rgxp = $this->setRgxp($fieldData);
-        if($rgxp)
-        {
+        if ($rgxp) {
             $field['eval']['rgxp'] = $rgxp;
         }
 
@@ -820,8 +843,7 @@ class ViewContainer extends DCAHelper
 
         // set regular expression
         $rgxp = $this->setRgxp($fieldData);
-        if($rgxp)
-        {
+        if ($rgxp) {
             $field['eval']['rgxp'] = $rgxp;
         }
 
@@ -859,8 +881,7 @@ class ViewContainer extends DCAHelper
 
         // set regular expression
         $rgxp = $this->setRgxp($fieldData);
-        if($rgxp)
-        {
+        if ($rgxp) {
             $field['eval']['rgxp'] = $rgxp;
 
         }
@@ -944,8 +965,8 @@ class ViewContainer extends DCAHelper
         $globLabel = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$fieldID];
         $title = $globLabel[0] ? $globLabel[0] : $title;
         $description = $globLabel[1] ? $globLabel[1] : $description;
-        if(!$title) $title = 'no-title-set';
-        if(!$description) $description = '';
+        if (!$title) $title = 'no-title-set';
+        if (!$description) $description = '';
         return array($title, $description);
     }
 
@@ -966,13 +987,11 @@ class ViewContainer extends DCAHelper
      */
     protected function setCustomMandatory($arrMandatory, $field, $defaultMandatory = '0')
     {
-        if(!$this->overwriteMandatory)
-        {
+        if (!$this->overwriteMandatory) {
             return $this->setMandatory($defaultMandatory);
         }
 
-        if(isset($arrMandatory[$field]) && $this->overwriteMandatory)
-        {
+        if (isset($arrMandatory[$field]) && $this->overwriteMandatory) {
             return true;
         }
 
@@ -1005,8 +1024,7 @@ class ViewContainer extends DCAHelper
      */
     protected function getFMGroup($fieldData)
     {
-        if(isset($fieldData['fmGroup']) && $fieldData['fmGroup'])
-        {
+        if (isset($fieldData['fmGroup']) && $fieldData['fmGroup']) {
             return $fieldData['fmGroup'];
         }
         return 'other';
@@ -1035,8 +1053,7 @@ class ViewContainer extends DCAHelper
      */
     protected function setRgxp($fieldData)
     {
-        if($fieldData['rgxp'])
-        {
+        if ($fieldData['rgxp']) {
             return $fieldData['rgxp'];
         }
         return null;

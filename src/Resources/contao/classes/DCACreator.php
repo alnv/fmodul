@@ -66,12 +66,10 @@ class DCACreator
 
             // init BE Modules
             if (Database::getInstance()->tableExists('tl_fmodules')) {
-
                 $saveLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
                 Backend::loadLanguageFile('tl_fmodules_language_pack', $saveLanguage);
                 $this->loadModules();
                 $this->createLabels();
-
             }
         }
     }
@@ -244,7 +242,6 @@ class DCACreator
         $GLOBALS['TL_PERMISSIONS'][] = $modname;
         $GLOBALS['TL_PERMISSIONS'][] = $modname . 'p';
         $dcaData->createTable();
-
     }
 
 

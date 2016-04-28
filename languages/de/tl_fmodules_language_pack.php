@@ -184,6 +184,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][1] = 'Bitte geben S
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][0] = 'Sprachen-Fallback';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][1] = 'Diese Seite anzeigen, wenn es keine in der Sprache des Besuchers gibt.';
 
+// mainLanguage
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][0] = 'Fallback Item';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][1] = 'Bitte wählen Sie einen Fallback Item aus.';
+
 // author
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'] = array('Redakteur','Hier können Sie einen Redakteur auswählen.');
 

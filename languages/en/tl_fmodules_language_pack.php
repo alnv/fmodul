@@ -189,6 +189,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][1] = 'Please enter 
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][0] = 'Language fallback';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][1] = 'Show this page if there is none that matches the visitor\'s language.';
 
+// mainLanguage
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][0] = 'Fallback Item';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][1] = 'Please select an fallback item.';
+
 // allowComments
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['allowComments'] = array('Enable comments', 'Allow visitors to comment.');
 

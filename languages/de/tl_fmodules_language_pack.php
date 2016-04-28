@@ -176,6 +176,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][1] = 'Hier kön
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'][0] = 'Anlagen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'][1] = 'Bitte wählen Sie die Dateien aus, die Sie hinzufügen möchten.';
 
+// language
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][0] = 'Sprache';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][1] = 'Bitte geben Sie die Sprache der Seite gemäß des ISO-639-1 Standards ein (z.B. "de" für Deutsch oder "de-CH" für Schweizerdeutsch).';
+
+// fallback
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][0] = 'Sprachen-Fallback';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][1] = 'Diese Seite anzeigen, wenn es keine in der Sprache des Besuchers gibt.';
+
 // author
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'] = array('Redakteur','Hier können Sie einen Redakteur auswählen.');
 

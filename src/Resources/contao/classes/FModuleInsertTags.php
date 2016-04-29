@@ -409,6 +409,7 @@ class FModuleInsertTags extends Frontend
     }
 
     /**
+     * @todo set redirects default, external, internal
      * @param $viewDB
      * @param $tablename
      * @return mixed

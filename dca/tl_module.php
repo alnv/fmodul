@@ -636,14 +636,8 @@ class tl_module_fmodule extends tl_module
 
         foreach ($GLOBALS['TL_DCA'][$tableData]['fields'] as $name => $field) {
 
-            if (!isset($field['eval']['fmEditable']) && $field['eval']['fmEditable'] != true) {
-                continue;
-            }
-
-            if (in_array($name, $doNotSetByName)) {
-                continue;
-            }
-
+            if ((isset($field['eval']['fmEditable']) && $field['eval']['fmEditable'] === false) || !isset($field['eval']['fmEditable'])) continue;
+            if (in_array($name, $doNotSetByName)) continue;
             $return[$name] = $field['label'][0] ? $field['label'][0] . ' (' . $name . ')' : $name;
         }
 

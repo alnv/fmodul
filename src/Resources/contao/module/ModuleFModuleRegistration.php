@@ -159,7 +159,7 @@ class ModuleFModuleRegistration extends Module
             $arrData = $this->dcaFields[$field];
             $arrData = $this->convertWidgetToField($arrData);
 
-            if (!isset($arrData['eval']['fmEditable']) && $arrData['eval']['fmEditable'] != true) continue;
+            if ( ( isset($arrData['eval']['fmEditable']) && $arrData['eval']['fmEditable'] === false ) || !isset($arrData['eval']['fmEditable']) ) continue;
 
             $strClass = $this->fieldClassExist($arrData['inputType']);
 

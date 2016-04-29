@@ -139,7 +139,7 @@ class ModuleDetailView extends Module
         $objTemplate = new FrontendTemplate($detailTemplate);
         $qProtectedStr = ' AND published = "1"';
         if (HelperModel::previewMode()) $qProtectedStr = '';
-        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND alias = ? ' . $qProtectedStr . '')->execute($wrapperID, $alias)->row();
+        $itemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ? AND (alias = ? OR id = ?) ' . $qProtectedStr . '')->execute($wrapperID, $alias, (int)$alias)->row();
         $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
 
         if (count($itemDB) < 1) {
@@ -221,11 +221,21 @@ class ModuleDetailView extends Module
         }
 
         // seo
-        $descriptionColName = $this->fm_seoDescription ? $this->fm_seoDescription : 'description';
-        $pageTitleColName = $this->fm_seoPageTitle ? $this->fm_seoPageTitle : 'title';
-        $seoDescription = strip_tags($itemDB[$descriptionColName]);
-        $objPage->description = $seoDescription;
-        $objPage->pageTitle = $itemDB[$pageTitleColName];
+        if($this->fm_overwrite_seoSettings)
+        {
+            $descriptionColName = $this->fm_seoDescription ? $this->fm_seoDescription : 'description';
+            $pageTitleColName = $this->fm_seoPageTitle ? $this->fm_seoPageTitle : 'title';
+            $seoDescription = strip_tags($itemDB[$descriptionColName]);
+            $objPage->description = $seoDescription;
+            $objPage->pageTitle = $itemDB[$pageTitleColName];
+
+            // set hreflang
+            if($this->fm_seoHrefLang)
+            {
+                $strHrefLangAttributes = HelperModel::getHrefAttributes($tablename, $alias, null, $itemDB, $wrapperDB);
+                $GLOBALS['TL_HEAD'][] = $strHrefLangAttributes;
+            }
+        }
 
         // author
         $authorDB = null;

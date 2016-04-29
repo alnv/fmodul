@@ -208,37 +208,27 @@ class FModuleInsertTags extends Frontend
 
                 // field
                 if (!empty($widgets)) {
-
                     $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
                     foreach ($widgets as $widget) {
-
                         $id = $widget['fieldID'];
                         $tplName = $widget['widgetTemplate'];
                         $type = $widget['widgetType'];
                         $value = $item[$id];
-
-                        if (in_array($type, $arrayAsValue)) {
-                            $value = unserialize($value);
-                        }
-
+                        if (in_array($type, $arrayAsValue)) $value = deserialize($value);
                         $objFieldTemplate = new FrontendTemplate($tplName);
                         $objFieldTemplate->setData(array(
                             'value' => $value,
                             'type' => $type,
                             'item' => $item
                         ));
-
                         $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
                     }
                 }
 
                 Cache::set($cacheID, $item);
                 return $this->getField($item, $field);
-
             }
-
         }
-
         return 'no valid arguments';
     }
 
@@ -315,9 +305,7 @@ class FModuleInsertTags extends Frontend
             $maps = array();
             $widgets = array();
             while ($moduleDB->next()) {
-
                 $moduleInputFields = $moduleDB->row();
-
                 // get map
                 if ($moduleInputFields['type'] == 'map_field') {
                     $maps[] = $this->findMapAndSet($moduleInputFields);
@@ -383,26 +371,19 @@ class FModuleInsertTags extends Frontend
 
                 // field
                 if (!empty($widgets)) {
-
                     $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
                     foreach ($widgets as $widget) {
-
                         $id = $widget['fieldID'];
                         $tplName = $widget['widgetTemplate'];
                         $type = $widget['widgetType'];
                         $value = $item[$id];
-
-                        if (in_array($type, $arrayAsValue)) {
-                            $value = unserialize($value);
-                        }
-
+                        if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
                         $objFieldTemplate = new FrontendTemplate($tplName);
                         $objFieldTemplate->setData(array(
                             'value' => $value,
                             'type' => $type,
                             'item' => $item
                         ));
-
                         $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
                     }
                 }
@@ -441,10 +422,14 @@ class FModuleInsertTags extends Frontend
         $wrapper = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($viewDB->pid)->row();
 
         // get href
-        $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
-        $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
-        $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-        $url = HelperModel::getLink($viewDB, $strUrl);
+        $url = '';
+        if($wrapper['addDetailPage'])
+        {
+            $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
+            $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
+            $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+            $url = HelperModel::getLink($viewDB, $strUrl);
+        }
 
         // cast item obj to array
         $item = $viewDB->row();
@@ -599,11 +584,11 @@ class FModuleInsertTags extends Frontend
                 $tpl = current($tplNameArr);
                 $tpl = DiverseFunction::parseTemplateName($tpl);
             }
-            $widget[$field['fieldID']] = array(
-                'fieldID' => $field['fieldID'],
-                'widgetType' => $field['widget_type'],
-                'widgetTemplate' => $field['widgetTemplate'] ? $field['widgetTemplate'] : $tpl
-            );
+
+            $widget['fieldID'] = $field['fieldID'];
+            $widget['widgetType'] = $field['widget_type'];
+            $widget['widgetTemplate'] = $field['widgetTemplate'] ? $field['widgetTemplate'] : $tpl;
+
         }
 
         return $widget;

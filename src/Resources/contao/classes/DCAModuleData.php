@@ -205,7 +205,6 @@ class DCAModuleData extends ViewContainer
     }
 
     /**
-     * @todo edit all
      * @param DataContainer $dc
      * @return array
      */
@@ -219,18 +218,16 @@ class DCAModuleData extends ViewContainer
 
         if (!$table) return $arrData;
 
-        $objData = $this->Database->prepare('SELECT * FROM '.$dc->table.' WHERE pid = (SELECT id FROM '.$table.' WHERE fallback = ? LIMIT 1)')->execute('1');
+        $objData = $this->Database->prepare('SELECT * FROM ' . $dc->table . ' WHERE pid = (SELECT id FROM ' . $table . ' WHERE fallback = ? LIMIT 1)')->execute('1');
 
-        while($objData->next())
-        {
-            $arrData[$objData->alias] = $objData->title;
+        while ($objData->next()) {
+            $arrData[$objData->id] = $objData->title;
         }
 
         return $arrData;
     }
 
     /**
-     * @todo edit all
      * @param DataContainer $dc
      * @return null
      */
@@ -242,13 +239,16 @@ class DCAModuleData extends ViewContainer
             $table = $do ? 'fm_' . $do : '';
             if (!$table) return null;
 
-            $objData = $this->Database->prepare('SELECT ' . $table . '.* FROM ' . $table . ' LEFT OUTER JOIN ' . $dc->table . ' ON ' . $dc->table . '.pid=' . $table . '.id WHERE ' . $dc->table . '.id=?')
+            $objData = $this->Database->prepare('SELECT ' . $table . '.* FROM ' . $table . ' LEFT OUTER JOIN ' . $dc->table . ' ON ' . $dc->table . '.pid = ' . $table . '.id WHERE ' . $dc->table . '.id = ?')
                 ->limit(1)
                 ->execute($dc->id);
 
             if ($objData->numRows && !$objData->fallback) {
                 $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
             }
+        }else if(\Input::get('act') == 'editAll')
+        {
+            $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
         }
     }
 

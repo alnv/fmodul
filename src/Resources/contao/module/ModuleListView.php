@@ -351,25 +351,19 @@ class ModuleListView extends Module
 
             //field
             if (!empty($fieldWidgets)) {
-
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
                 foreach ($fieldWidgets as $widget) {
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
                     $type = $widget['widgetType'];
                     $value = $item[$id];
-
-                    if (in_array($type, $arrayAsValue)) {
-                        $value = unserialize($value);
-                    }
-
+                    if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
                     $objFieldTemplate = new FrontendTemplate($tplName);
                     $objFieldTemplate->setData(array(
                         'value' => $value,
                         'type' => $type,
                         'item' => $item
                     ));
-
                     $item[$id] = $objFieldTemplate->parse();
                 }
             }
@@ -408,6 +402,7 @@ class ModuleListView extends Module
                 }
             }
 
+            // mapSettings
             if (!empty($mapSettings)) {
                 $item['mapSettings'] = $mapSettings;
             }

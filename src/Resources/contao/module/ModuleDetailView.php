@@ -253,26 +253,19 @@ class ModuleDetailView extends Module
         $itemDB['filter'] = $moduleArr;
 
         if (!empty($fieldWidgets)) {
-
             $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
-
             foreach ($fieldWidgets as $widget) {
                 $id = $widget['fieldID'];
                 $tplName = $widget['widgetTemplate'];
                 $type = $widget['widgetType'];
                 $value = $itemDB[$id];
-
-                if (in_array($type, $arrayAsValue)) {
-                    $value = unserialize($value);
-                }
-
+                if (in_array($type, $arrayAsValue)) $value = deserialize($value);
                 $objFieldTemplate = new FrontendTemplate($tplName);
                 $objFieldTemplate->setData(array(
                     'value' => $value,
                     'type' => $type,
                     'item' => $itemDB
                 ));
-
                 $itemDB[$id] = $objFieldTemplate->parse();
             }
         }

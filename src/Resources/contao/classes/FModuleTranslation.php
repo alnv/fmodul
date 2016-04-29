@@ -42,11 +42,14 @@ class FModuleTranslation extends Frontend
         if (!$this->strTable) return $arrGet;
         $table = $this->strTable;
         $tableData = $this->strTable . '_data';
+        // get current item
         $currentItemDB = $this->Database->prepare('SELECT '.$tableData.'.*, '.$table.'.fallback, '.$table.'.language FROM '.$tableData.' LEFT OUTER JOIN '.$table.' ON '.$tableData.'.pid = '.$table.'.id WHERE '.$tableData.'.alias = ? OR '.$tableData.'.id = ?')->limit(1)->execute($alias, (int)$alias);
         if ($currentItemDB->numRows)
         {
-            $fallback = !$currentItemDB->fallback ? $currentItemDB->mainLanguage : $currentItemDB->alias;
-            $translationDB = $this->Database->prepare('SELECT '.$tableData.'.alias, '.$tableData.'.id, '.$tableData.'.mainLanguage, '.$table.'.language FROM '.$tableData.' LEFT OUTER JOIN '.$table.' ON '.$tableData.'.pid = '.$table.'.id WHERE '.$table.'.language = ? AND ('.$tableData.'.alias = ? OR '.$tableData.'.mainLanguage = ?)')->execute($strLanguage, $fallback, $fallback);
+            // get all items with the same fallback item
+            $fallback = !$currentItemDB->fallback ? $currentItemDB->mainLanguage : $currentItemDB->id;
+            // select alias
+            $translationDB = $this->Database->prepare('SELECT '.$tableData.'.alias, '.$tableData.'.id, '.$tableData.'.mainLanguage, '.$table.'.language FROM '.$tableData.' LEFT OUTER JOIN '.$table.' ON '.$tableData.'.pid = '.$table.'.id WHERE '.$table.'.language = ? AND ('.$tableData.'.id = ? OR '.$tableData.'.mainLanguage = ?)')->execute($strLanguage, $fallback, $fallback);
             if ($translationDB->numRows) {
                 $arrGet['url']['items'] = $translationDB->alias ? $translationDB->alias : $translationDB->id;
             }

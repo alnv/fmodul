@@ -717,11 +717,15 @@ class ViewContainer extends DCAHelper
         // list
         if ($widgetType[0] == 'list' && $widgetType[1] == 'blank') {
             $field['inputType'] = 'listWizard';
+            $field['eval']['fmEditable'] = false;
+            $field['eval']['fmGroup'] = '';
         }
 
         // key - value list
         if ($widgetType[0] == 'list' && $widgetType[1] == 'keyValue') {
             $field['inputType'] = 'keyValueWizard';
+            $field['eval']['fmEditable'] = false;
+            $field['eval']['fmGroup'] = '';
         }
 
         //table
@@ -730,6 +734,8 @@ class ViewContainer extends DCAHelper
             $field['eval']['allowHtml'] = true;
             $field['eval']['doNotSaveEmpty'] = true;
             $field['eval']['style'] = 'width:142px;height:66px';
+            $field['eval']['fmEditable'] = false;
+            $field['eval']['fmGroup'] = '';
         }
 
         return $field;

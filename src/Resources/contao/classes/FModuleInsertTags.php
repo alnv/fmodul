@@ -444,7 +444,7 @@ class FModuleInsertTags extends Frontend
         $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
         $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
         $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-        $url = $this->getLink($viewDB, $strUrl);
+        $url = HelperModel::getLink($viewDB, $strUrl);
 
         // cast item obj to array
         $item = $viewDB->row();
@@ -653,50 +653,13 @@ class FModuleInsertTags extends Frontend
             if ($objParent === null) return false;
             $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
             $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-            $url = $this->getLink($dataDB, $strUrl);
+            $url = HelperModel::getLink($dataDB, $strUrl);
 
             return $url;
 
         }
 
         return false;
-    }
-
-    /**
-     * @param $objItem
-     * @param $strUrl
-     * @param string $strBase
-     * @return string
-     * @throws \Exception
-     */
-    private function getLink($objItem, $strUrl, $strBase = '')
-    {
-        // switch
-        switch ($objItem->source) {
-            // Link to an external page
-            case 'external':
-                return $objItem->url;
-                break;
-
-            // Link to an internal page
-            case 'internal':
-                if ($objItem->jumpTo) {
-                    $objPage = \PageModel::findWithDetails($objItem->jumpTo);
-                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
-                    return $domain . $this->generateFrontendUrl($objPage->row(), '', $objPage->language);
-                }
-                break;
-
-            // Link to an article
-            case 'article':
-                if (($objArticle = \ArticleModel::findByPk($objItem->articleId, array('eager' => true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null) {
-                    return $strBase . ampersand($this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id)));
-                }
-                break;
-        }
-
-        // Link to the default page
-        return $strBase . sprintf($strUrl, (($objItem->alias != '' && !\Config::get('disableAlias')) ? $objItem->alias : $objItem->id));
     }
 
     /**

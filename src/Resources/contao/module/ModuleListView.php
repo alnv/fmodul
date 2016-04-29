@@ -247,25 +247,21 @@ class ModuleListView extends Module
             if ($imagePath) {
                 $listDB->singleSRC = $imagePath;
             }
-
             if ($imgSize) {
                 $listDB->size = $imgSize;
             }
 
+            // create href
             $listDB->href = null;
-
             if ($addDetailPage == '1' && $listDB->source == 'default') {
                 // reset target
                 $listDB->target = '';
                 $listDB->href = $this->generateUrl($rootDB, $listDB->alias);
             }
-
             if ($listDB->source == 'external') {
                 $listDB->href = $listDB->url;
             }
-
             if ($listDB->source == 'internal') {
-
                 // reset target
                 $listDB->target = '';
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();

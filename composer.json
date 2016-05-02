@@ -3,14 +3,14 @@
   "description": "Mit dem F Modul kannst du eigene Backend Module erstellen. Erzeuge schnell und einfach Übersichtsseiten, Detailseiten, Filter Formularen und Taxonomies. Mache dein Backend aufgeräumter und benutzerfreundlicher. Neu: Google Maps integration.",
   "keywords": [
     "filter",
+    "custom",
     "catalog",
     "meta",
     "tags",
     "taxonomy",
     "contao",
-    "map",
-    "google",
-    "google-maps"
+    "google-maps",
+    "frontend-editing"
   ],
   "type": "contao-module",
   "homepage": "http://fmodul.alexandernaumov.de",

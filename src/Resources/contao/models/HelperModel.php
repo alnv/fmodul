@@ -11,6 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 use Contao\Database;
+use Contao\PageModel;
 
 /**
  * Class HelperModel
@@ -73,7 +74,8 @@ class HelperModel
                 // default
                 if($translationDB->source == 'default')
                 {
-                    $objParent = \PageModel::findWithDetails($translationDB->rootPage);
+                    $objParent = PageModel::findWithDetails($translationDB->rootPage);
+                    if(!static::pageIsEnable($objParent))continue;
                     $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
                     $strUrl = $domain . \Controller::generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
                     $url = static::getLink($translationDB, $strUrl);
@@ -86,7 +88,8 @@ class HelperModel
 
                 // internal
                 if ($translationDB->source == 'internal') {
-                    $objParent = \PageModel::findWithDetails($translationDB->jumpTo);
+                    $objParent = PageModel::findWithDetails($translationDB->jumpTo);
+                    if(!static::pageIsEnable($objParent))continue;
                     $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
                     $url = $domain . \Controller::generateFrontendUrl($objParent->row());
                 }
@@ -98,6 +101,24 @@ class HelperModel
         return $strHrefLang;
     }
 
+    /**
+     * @param $objPage
+     * @return bool
+     */
+    public static function pageIsEnable(PageModel $objPage)
+    {
+        $return = true;
+        $time = method_exists('Date', 'floorToMinute') ? \Date::floorToMinute() : time();
+        if ($objPage === null) {
+            $return = false;
+        }
+
+        if (!$objPage->published || ($objPage->start != '' && $objPage->start > $time) || ($objPage->stop != '' && $objPage->stop <= ($time + 60))) {
+            $return = false;
+        }
+
+        return $return;
+    }
 
     /**
      * @param $objItem
@@ -118,7 +139,7 @@ class HelperModel
             // Link to an internal page
             case 'internal':
                 if ($objItem->jumpTo) {
-                    $objPage = \PageModel::findWithDetails($objItem->jumpTo);
+                    $objPage = PageModel::findWithDetails($objItem->jumpTo);
                     $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
                     return $domain . \Controller::generateFrontendUrl($objPage->row(), '', $objPage->language);
                 }
@@ -241,21 +262,15 @@ class HelperModel
      */
     static public function outSideScope($start, $stop)
     {
-
         if ($start != '' || $stop != '') {
-
             $currentTime = (int)date('U');
-
             if ($currentTime < (int)$start) {
                 return false;
             }
-
             if ($currentTime > (int)$stop && (int)$stop != 0) {
                 return false;
             }
         }
-
         return true;
     }
-
 }

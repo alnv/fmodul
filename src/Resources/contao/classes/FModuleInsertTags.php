@@ -409,7 +409,6 @@ class FModuleInsertTags extends Frontend
     }
 
     /**
-     * @todo set redirects default, external, internal
      * @param $viewDB
      * @param $tablename
      * @return mixed
@@ -418,19 +417,6 @@ class FModuleInsertTags extends Frontend
     {
 
         global $objPage;
-
-        // get wrapper
-        $wrapper = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($viewDB->pid)->row();
-
-        // get href
-        $url = '';
-        if($wrapper['addDetailPage'])
-        {
-            $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
-            $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
-            $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-            $url = HelperModel::getLink($viewDB, $strUrl);
-        }
 
         // cast item obj to array
         $item = $viewDB->row();
@@ -443,6 +429,38 @@ class FModuleInsertTags extends Frontend
         // check scope
         if (!HelperModel::outSideScope($item['start'], $item['stop'])) {
             return false;
+        }
+
+        // parse href
+        $url = '';
+        if($item['source'] == 'default' || $item['source'] == 'internal')
+        {
+            // get site
+            $jumpTo = '';
+            if($item['source'] == 'internal')
+            {
+                $jumpTo = $item['jumpTo'];
+            }
+            if($item['source'] == 'default')
+            {
+                $arrJumpTo = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($viewDB->pid)->row();
+                $jumpTo = $arrJumpTo['addDetailPage'] ? $arrJumpTo['rootPage'] : '';
+            }
+
+            // get href
+            if($jumpTo)
+            {
+                $objParent = \PageModel::findWithDetails($jumpTo);
+                $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+                $url = HelperModel::getLink($viewDB, $strUrl);
+            }
+
+            $item['target'] = '';
+        }
+        if($item['source'] == 'external')
+        {
+            $url = $item['url'];
         }
 
         // parse cssID

@@ -199,3 +199,14 @@ $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
 // Wrapper
 $GLOBALS['TL_WRAPPERS']['start'][] = 'legend_start';
 $GLOBALS['TL_WRAPPERS']['stop'][] = 'legend_end';
+
+//
+if (TL_MODE == 'FE')
+{
+    $validSums = new FModule\FModule();
+    $license = Contao\Config::get('fmodule_license');
+    if (!isset($license) || !in_array(md5($license), $validSums->validSums, true)) {
+        $GLOBALS['TL_HEAD'][] = '<link title="F Module | Buy license" rel="license" href="http://fmodul.alexandernaumov.de" />';
+        $GLOBALS['TL_HEAD'][] = '<link title="F Module | Documentation" rel="help" href="http://fmodul.alexandernaumov.de/ressourcen.html" />';
+    }
+}

@@ -181,6 +181,18 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][1] = 'Add one o
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'][0] = 'Enclosures';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'][1] = 'Please choose the files you want to attach.';
 
+// language
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][0] = 'Language';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][1] = 'Please enter the page language according to the ISO-639-1 standard (e.g. "en" for English or "en-US" for American English).';
+
+// fallback
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][0] = 'Language fallback';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][1] = 'Show this page if there is none that matches the visitor\'s language.';
+
+// mainLanguage
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][0] = 'Fallback Item';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][1] = 'Please select an fallback item.';
+
 // allowComments
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['allowComments'] = array('Enable comments', 'Allow visitors to comment.');
 
@@ -204,6 +216,17 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'] = array('Requir
 
 // disableCaptcha
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'] = array('Disable the security question','Use this option only if you have limited comments to authenticated users.');
+
+// Details
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['teaserData'] = 'Teaser';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['dateDetails'] = 'Date and time';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['expertDetails'] = 'Expert settings';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imageDetails'] = 'Image settings';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'] = 'Enclosures';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Google Map';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'] = 'Author';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'] = 'Redirect target';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Other';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_admin'] = 'Admin';

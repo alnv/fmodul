@@ -25,6 +25,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Access protection';
 $GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Back end palettes';
 $GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Back end sorting';
 $GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Back end navigation';
+$GLOBALS['TL_LANG']['tl_fmodules']['mandatory_legend'] = 'Mandatory';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Module name';
@@ -58,6 +59,13 @@ $GLOBALS['TL_LANG']['tl_fmodules']['selectNavigation'][1] = 'Please select navig
 
 $GLOBALS['TL_LANG']['tl_fmodules']['orderBy'][0] = 'Order by';
 $GLOBALS['TL_LANG']['tl_fmodules']['orderBy'][1] = 'Select your order.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'][0] = 'Define own mandatory fields';
+$GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'][1] = 'Here you can overwrite mandatory fields.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][0] = 'Mandatory fields';
+$GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][1] = 'Select your mandatory fields.';
+
 
 $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Table name must start with "fm_".';
 

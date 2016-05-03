@@ -102,16 +102,16 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend:hide},evalCss,isMandatory;',
-        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend:hide},evalCss,isMandatory;',
-        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},evalCss,isMandatory;',
-        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings:hide},fullTextSearchFields,fullTextSearchOrderBy;',
-        'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
+        'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
+        'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},fmGroup,evalCss,isMandatory;',
+        'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchOrderBy,fullTextSearchFields;',
+        'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{expert_legend:hide},fmGroup,evalCss;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
-        'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend:hide},evalCss,isMandatory;',
+        'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{map_settings_legend},mapTemplate,mapZoom,mapType,mapScrollWheel,mapMarker,mapInfoBox,mapStyle;',
     ),
     'fields' => array
@@ -142,7 +142,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
             'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'map_field', 'wrapper_field', 'legend_start', 'legend_end'),
-            'eval' => array('submitOnChange' => true),
+            'eval' => array('submitOnChange' => true, 'mandatory' => true, 'chosen' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
         'fieldID' => array
@@ -195,10 +195,10 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'fieldAppearance' => array
         (
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'],
-            'inputType' => 'radio',
+            'inputType' => 'select',
             'exclude' => true,
             'options_callback' => array('tl_fmodules_filters', 'getAppearance'),
-            'eval' => array('mandatory' => true, 'tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
         'widget_type' => array
@@ -216,15 +216,30 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'evalCss' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'],
             'inputType' => 'text',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'rgxp' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'],
+            'inputType' => 'select',
+            'exclude' => true,
+            'options' => array('alias', 'alnum', 'alpha', 'date', 'datim', 'digit', 'email', 'emails', 'extnd', 'folderalias', 'friendly', 'language', 'locale', 'natural', 'phone', 'prcnt', 'url', 'time'),
+            'eval' => array('includeBlankOption' => true, 'blankOptionLabel' => '-', 'chosen' => true, 'tl_class' => 'w50'),
+            'sql' => "varchar(32) NOT NULL default ''"
+        ),
+        'fmGroup' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'],
+            'inputType' => 'text',
+            'exclude' => true,
+            'eval' => array('maxlength' => 64, 'tl_class' => 'w50'),
+            'sql' => "varchar(64) NOT NULL default ''"
         ),
         'widgetTemplate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'],
@@ -238,35 +253,35 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'addTime' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'negate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'autoPage' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'isMandatory' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isMandatory'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         // map
@@ -283,7 +298,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'default' => '10',
             'inputType' => 'select',
-            'options' => array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20),
+            'options' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20),
             'eval' => array('tl_class' => 'w50'),
             'sql' => "int(10) unsigned NOT NULL default '10'"
         ),
@@ -291,21 +306,21 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapScrollWheel'],
             'exclude' => true,
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'mapMarker' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'],
             'exclude' => true,
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'mapInfoBox' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'],
             'exclude' => true,
             'inputType' => 'checkbox',
-            'eval' => array('tl_class' => 'clr m12'),
+            'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'mapType' => array(
@@ -321,7 +336,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['mapStyle'],
             'exclude' => true,
             'inputType' => 'textarea',
-            'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte'=>'ace|html'),
+            'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte' => 'ace|html'),
             'sql' => "text NULL"
         ),
         // fullTextSearch Settings
@@ -330,7 +345,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
-            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true),
+            'eval' => array('multiple' => true, 'csv' => ',', 'chosen' => true, 'tl_class' => 'clr'),
             'sql' => "text NULL"
         ),
         'fullTextSearchOrderBy' => array(
@@ -338,7 +353,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'inputType' => 'select',
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
-            'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+            'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'clr'),
             'sql' => "varchar(255) NOT NULL default ''"
         )
     )
@@ -368,49 +383,39 @@ class tl_fmodules_filters extends Backend
     {
         $pid = $dca->activeRecord->pid;
         $options = array();
-        $notAllowedTypes = array('char', 'int', 'blob', 'index', 'binary');
 
-        // get labels
-        $labelsDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE pid = ?')->execute($pid);
-        $labels= array();
+        if (!$pid) return $options;
 
-        while($labelsDB->next())
-        {
-            $labels[$labelsDB->fieldID] = $labelsDB->title;
-        }
+        $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE id = ?')->execute($pid);
+        $tablename = '';
 
-        if($pid) {
-
-            $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE id = ?')->execute($pid);
-            $tablename = '';
-
-            while ($moduleDB->next())
-            {
-                if($moduleDB->tablename)
-                {
-                    $tablename = $moduleDB->tablename . '_data';
-                }
-            }
-
-            if($tablename)
-            {
-                $colsDB = $this->Database->listFields($tablename);
-                foreach($colsDB as $col)
-                {
-                    if(in_array($col['type'], $notAllowedTypes))
-                    {
-                        continue;
-                    }
-                    if($col['name'])
-                    {
-                        $label = $GLOBALS['TL_LANG']['tl_fmodules_language_pack'][$col['name']][0];
-                        $label = $label ? $label : $labels[$col['name']];
-                        if(!$label) $label = $col['name'];
-                        $options[$col['name']] = $label;
-                    }
-                }
+        while ($moduleDB->next()) {
+            if ($moduleDB->tablename) {
+                $tablename = $moduleDB->tablename;
             }
         }
+
+        if (!$tablename) {
+            return $options;
+        }
+
+        $tableData = $tablename . '_data';
+        $doNotSetByName = array('pid', 'id', 'tstamp');
+
+        // get editable fields
+        System::loadLanguageFile($tableData);
+        $this->loadDataContainer($tableData);
+        $fields = $GLOBALS['TL_DCA'][$tableData]['fields'] ? $GLOBALS['TL_DCA'][$tableData]['fields'] : array();
+        foreach ($fields as $name => $field) {
+
+            if(in_array($name, $doNotSetByName))
+            {
+                continue;
+            }
+
+            $options[$name] = $field['label'][0] ? $field['label'][0] . ' (' . $name . ')' : $name;
+        }
+
         return $options;
     }
 
@@ -768,12 +773,10 @@ class tl_fmodules_filters extends Backend
         $id = Input::get('id');
         $pid = null;
 
-        if($id)
-        {
+        if ($id) {
             $currentItemDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE id = ?')->execute($id);
 
-            if($currentItemDB->count())
-            {
+            if ($currentItemDB->count()) {
                 $pid = $currentItemDB->row()['pid'];
             }
         }
@@ -783,8 +786,7 @@ class tl_fmodules_filters extends Backend
 
         while ($filterDB->next()) {
 
-            if(!in_array($filterDB->type, array('date_field', 'search_field')))
-            {
+            if (!in_array($filterDB->type, array('date_field', 'search_field'))) {
                 continue;
             }
 
@@ -811,8 +813,7 @@ class tl_fmodules_filters extends Backend
             return null;
         }
 
-        if(in_array($dc->activeRecord->type, $doNotDeleteByType))
-        {
+        if (in_array($dc->activeRecord->type, $doNotDeleteByType)) {
             return null;
         }
 
@@ -820,12 +821,10 @@ class tl_fmodules_filters extends Backend
         $col = $dc->activeRecord->fieldID;
         $tablename = $this->Database->prepare("SELECT tablename FROM tl_fmodules WHERE id = ?")->execute($pid)->row()['tablename'];
         $dataTable = $tablename . '_data';
-        if($this->Database->fieldExists($col, $dataTable))
-        {
+        if ($this->Database->fieldExists($col, $dataTable)) {
             SqlData::deleteCol($dataTable, $col);
         }
-        if($this->Database->fieldExists($col, $tablename))
-        {
+        if ($this->Database->fieldExists($col, $tablename)) {
             SqlData::deleteCol($tablename, $col);
         }
     }

@@ -163,6 +163,7 @@ class FModule extends Frontend
 
         if ($objArticle !== null) {
             $arrUrls = array();
+            $strUrl = '';
             while ($objArticle->next()) {
                 $pid = $objArticle->pid;
                 $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $arrFeed['fmodule'] . ' WHERE id = ?')->execute($pid)->row();
@@ -185,7 +186,9 @@ class FModule extends Frontend
                 }
                 $objItem = new \FeedItem();
                 $objItem->title = $objArticle->title;
-                $objItem->link = $this->getLink($objArticle, $strUrl, $strLink);
+
+                $objItem->link = HelperModel::getLink($objArticle, $strUrl, $strLink);
+
                 $objItem->published = $objArticle->date ? $objArticle->date : $arrFeed['tstamp'];
                 $objItem->author = $authorName;
 
@@ -305,16 +308,16 @@ class FModule extends Frontend
         }
         $arrProcessed = array();
         $time = method_exists(Date, 'floorToMinute') ? \Date::floorToMinute() : time();
-        $fmodulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
+        $modulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
 
-        while ($fmodulesDB->next()) {
+        while ($modulesDB->next()) {
 
-            $tablename = $fmodulesDB->tablename;
-            $fmoduleDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '')->execute();
+            $tableName = $modulesDB->tablename;
+            $moduleDB = $this->Database->prepare('SELECT * FROM ' . $tableName . '')->execute();
 
-            while ($fmoduleDB->next()) {
+            while ($moduleDB->next()) {
 
-                $wrapper = $fmoduleDB->row();
+                $wrapper = $moduleDB->row();
 
                 if (!is_array($wrapper) || empty($wrapper) || $wrapper['addDetailPage'] != '1') {
                     continue;
@@ -346,11 +349,10 @@ class FModule extends Frontend
                 }
 
                 $strUrl = $arrProcessed[$wrapper['rootPage']];
-                $dataDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ?')->execute($wrapper['id']);
-
+                $dataDB = $this->Database->prepare('SELECT * FROM ' . $tableName . '_data WHERE pid = ?')->execute($wrapper['id']);
                 if ($dataDB->count()) {
                     while ($dataDB->next()) {
-                        $arrPages[] = $this->getLink($dataDB, $strUrl);
+                        $arrPages[] = HelperModel::getLink($dataDB, $strUrl);
                     }
                 }
             }
@@ -367,31 +369,8 @@ class FModule extends Frontend
      */
     protected function getLink($objItem, $strUrl, $strBase = '')
     {
-        switch ($objItem->source) {
-            // Link to an external page
-            case 'external':
-                return $objItem->url;
-                break;
-
-            // Link to an internal page
-            case 'internal':
-                if ($objItem->jumpTo) {
-                    $objPage = \PageModel::findWithDetails($objItem->jumpTo);
-                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
-                    return $domain . $this->generateFrontendUrl($objPage->row(), '', $objPage->language);
-                }
-                break;
-
-            // Link to an article
-            case 'article':
-                if (($objArticle = \ArticleModel::findByPk($objItem->articleId, array('eager' => true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null) {
-                    return $strBase . ampersand($this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id)));
-                }
-                break;
-        }
-
-        // Link to the default page
-        return $strBase . sprintf($strUrl, (($objItem->alias != '' && !\Config::get('disableAlias')) ? $objItem->alias : $objItem->id));
+        // backwards
+        return HelperModel::getLink($objItem, $strUrl, $strBase);
     }
 
     /**

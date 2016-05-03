@@ -176,6 +176,18 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addEnclosure'][1] = 'Hier kön
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'][0] = 'Anlagen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosure'][1] = 'Bitte wählen Sie die Dateien aus, die Sie hinzufügen möchten.';
 
+// language
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][0] = 'Sprache';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['language'][1] = 'Bitte geben Sie die Sprache der Seite gemäß des ISO-639-1 Standards ein (z.B. "de" für Deutsch oder "de-CH" für Schweizerdeutsch).';
+
+// fallback
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][0] = 'Sprachen-Fallback';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fallback'][1] = 'Diese Seite anzeigen, wenn es keine in der Sprache des Besuchers gibt.';
+
+// mainLanguage
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][0] = 'Fallback-Datensatz';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mainLanguage'][1] = 'Bitte wählen Sie einen Fallback-Datensatz aus.';
+
 // author
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['author'] = array('Redakteur','Hier können Sie einen Redakteur auswählen.');
 
@@ -202,6 +214,17 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'] = array('Login 
 
 // disableCaptcha
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'] = array('Sicherheitsfrage deaktivieren','Wählen Sie diese Option nur, wenn das Erstellen von Kommentaren auf authentifizierte Benutzer beschränkt ist.');
+
+// Details
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['teaserData'] = 'Teaser';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['dateDetails'] = 'Datum und Uhrzeit';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['expertDetails'] = 'Experten-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imageDetails'] = 'Bild-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['enclosureDetails'] = 'Anlagen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Karten-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Sonstiges';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'] = 'Redakteur';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'] = 'Weiterleitungsziel';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['default'] = 'Standard';

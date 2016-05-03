@@ -8,9 +8,11 @@ $GLOBALS['TL_LANG']['MOD']['fmodules'][1] = 'F Modules Extensions';
 
 // FE
 $GLOBALS['TL_LANG']['FMD']['fmodule']   = 'F Module';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][0] = 'List view';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][1] = 'F Module list view';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][0] = 'Detail view';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][1] = 'F Module detail view';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][0] = 'Filter form';
-$GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Module Filter form';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][0] = 'List View';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_list'][1] = 'F Module List View';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][0] = 'Detail View';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_detail'][1] = 'F Module Detail View';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][0] = 'Filter Form';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Module Filter Form';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_registration'][0] = 'Registration Form';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_registration'][1] = 'F Module Registration Form.';

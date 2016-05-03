@@ -27,6 +27,23 @@ class GeoCoding extends Backend
     protected $geoCordsCache = [];
 
     /**
+     * @var null
+     */
+    static private $instance = null;
+
+    /**
+     * @return DCACreator|null
+     */
+    static public function getInstance()
+    {
+        if(self::$instance == null)
+        {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+    /**
      * @param string $address
      * @param $lang
      * @return array

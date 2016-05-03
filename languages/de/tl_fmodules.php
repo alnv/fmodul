@@ -25,6 +25,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Backend Palette
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Zugriffsschutz';
 $GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Backend Sortierung';
 $GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Backend Navigation';
+$GLOBALS['TL_LANG']['tl_fmodules']['mandatory_legend'] = 'Pflichtfelder';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Modulname';
@@ -61,7 +62,13 @@ $GLOBALS['TL_LANG']['tl_fmodules']['protected'][0] = 'F Modul Schützen';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected'][1] = 'F Modul nur bestimmten Frontend-Gruppen anzeigen.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['groups'][0] = 'Erlaubte Mitgliedergruppen';
-$GLOBALS['TL_LANG']['tl_fmodules']['groups'][1] = 'Diese Mitgliedergruppen können die Module bearbeiten';
+$GLOBALS['TL_LANG']['tl_fmodules']['groups'][1] = 'Diese Mitgliedergruppen können die Module bearbeiten.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'][0] = 'Eigene Pflichtfelder verwenden';
+$GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'][1] = 'Sie können Pflichtfelder überschreiben und eigene definieren.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][0] = 'Pflichtfelder';
+$GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][1] = 'Bitte wählen Sie Ihre Pflichtfelder aus.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Der Tabellenname muss mit "fm_" beginnen.';
 

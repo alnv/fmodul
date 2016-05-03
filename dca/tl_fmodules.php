@@ -112,8 +112,11 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         )
     ),
     'palettes' => array(
-        '__selector__' => array('protected'),
-        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy'
+        '__selector__' => array('protected', 'addMandatoryHandler'),
+        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy;{mandatory_legend},addMandatoryHandler;'
+    ),
+    'subpalettes' => array(
+        'addMandatoryHandler' => 'mandatoryHandler'
     ),
     'fields' => array
     (
@@ -186,7 +189,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'options_callback' => array('tl_fmodules', 'getPalettes'),
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
             'eval' => array('multiple' => true),
-            'sql' => "varchar(255) NOT NULL default ''"
+            'sql' => "blob NULL"
         ),
         'selectNavigation' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['selectNavigation'],
@@ -203,6 +206,21 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'options_callback' => array('tl_fmodules', 'getPosition'),
             'eval' => array('tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'addMandatoryHandler' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('submitOnChange' => true),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'mandatoryHandler' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'options_callback' => array('tl_fmodules', 'getDataProperties'),
+            'eval' => array('multiple' => true),
+            'sql' => "blob NULL"
         )
     )
 );
@@ -224,6 +242,33 @@ class tl_fmodules extends Backend
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataProperties()
+    {
+        // set variables here
+        $return = array();
+
+        $dataContainer = \FModule\ViewContainer::getInstance();
+        $arrFields = $dataContainer->dcaDataFields();
+        $noNotSet = array('id', 'pid', 'tstamp', 'alias', 'author', 'source', 'url', 'jumpTo', 'target', 'protected', 'groups', 'guests', 'cssID', 'published');
+
+        if(is_array($arrFields))
+        {
+            foreach($arrFields as $name => $field)
+            {
+                if(in_array($name, $noNotSet))
+                {
+                    continue;
+                }
+                $return[$name] = $field['label'] ? $field['label'][0] : $name;
+            }
+        }
+
+        return $return;
     }
 
     /**

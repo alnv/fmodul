@@ -1,9 +1,9 @@
-<article <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_teaser<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
+<article <?php if($this->jsID): ?>id="<?= $this->jsID; ?>"<?php endif; ?> class="<?= $this->cssClass; ?>fm_inserttag block <?= $this->templateName; ?> <?= $this->tableName; ?>">
     <header class="header">
         <?php if ($this->href): ?>
-            <h3 class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></h3>
+            <<?= $this->hl ?> class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></<?= $this->hl ?>>
         <?php else: ?>
-            <h3 class="title" <?php if ($this->target): ?> target="_blank" <?php endif; ?> ><?= $this->title; ?></h3>
+            <<?= $this->hl ?> class="title" <?php if ($this->target): ?> target="_blank" <?php endif; ?> ><?= $this->title; ?></<?= $this->hl ?>>
         <?php endif; ?>
         <?php if ($this->info): ?>
             <p class="info"><?= $this->info; ?></p>
@@ -14,13 +14,13 @@
     </header>
     <?php if ($this->addImage): ?>
         <figure class="image_container" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
-                <?php if ($this->href): ?>
-                    <a href="<?= $this->href; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if ($this->target): ?> target="_blank" <?php endif; ?>>
+            <?php if ($this->href): ?>
+            <a href="<?= $this->href; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if ($this->target): ?> target="_blank" <?php endif; ?>>
                 <?php endif; ?>
-                    <?php $this->insert('picture_default', $this->picture); ?>
+                <?php $this->insert('picture_default', $this->picture); ?>
                 <?php if ($this->href): ?>
-                    </a>
-                <?php endif; ?>
+            </a>
+            <?php endif; ?>
             <?php if ($this->caption): ?>
                 <figcaption <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
             <?php endif; ?>
@@ -28,11 +28,6 @@
     <?php endif; ?>
     <?php if ($this->description): ?>
         <?= $this->description; ?>
-    <?php endif; ?>
-    <?php if (count($this->teaser) > 0): ?>
-        <?php foreach ($this->teaser as $teaserStr): ?>
-            <?= $teaserStr; ?>
-        <?php endforeach; ?>
     <?php endif; ?>
     <?php if ($this->enclosure): ?>
         <div class="enclosure">
@@ -45,3 +40,4 @@
         <p class="more"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->more; ?></a></p>
     <?php endif; ?>
 </article>
+

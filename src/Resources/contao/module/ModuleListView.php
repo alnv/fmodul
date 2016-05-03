@@ -134,29 +134,29 @@ class ModuleListView extends Module
                 continue;
             }
 
-            $modArr = $moduleDB->row();
+            $arrModule = $moduleDB->row();
             $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
-            $modArr['value'] = $getFilter['value'];
-            $modArr['operator'] = $getFilter['operator'];
-            $modArr['overwrite'] = null;
-            $modArr['active'] = null;
+            $arrModule['value'] = $getFilter['value'];
+            $arrModule['operator'] = $getFilter['operator'];
+            $arrModule['overwrite'] = null;
+            $arrModule['active'] = null;
 
             if ($moduleDB->fieldID == 'auto_page' || $moduleDB->autoPage) {
-                $modArr = $this->setValuesForAutoPageAttribute($modArr);
+                $arrModule = $this->setValuesForAutoPageAttribute($arrModule);
             }
 
-            $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
-            if ($val) $modArr['enable'] = true;
+            $val = QueryModel::isValue($arrModule['value'], $moduleDB->type);
+            if ($val) $arrModule['enable'] = true;
 
             // check if has an wrapper
-            if(( $modArr['type'] === 'search_field' && $modArr['isInteger'] ) || $modArr['type'] === 'date_field')
+            if(( $arrModule['type'] === 'search_field' && $arrModule['isInteger'] ) || $arrModule['type'] === 'date_field')
             {
-                $btw = Input::get($modArr['fieldID'] . '_btw') ? Input::get($modArr['fieldID'] . '_btw') : '';
-                $btwHasValue = QueryModel::isValue($btw, $modArr['type']);
+                $btw = Input::get($arrModule['fieldID'] . '_btw') ? Input::get($arrModule['fieldID'] . '_btw') : '';
+                $btwHasValue = QueryModel::isValue($btw, $arrModule['type']);
                 if($btwHasValue && !$val)
                 {
-                    $modArr['enable'] = true;
-                    $modArr['value'] = 0;
+                    $arrModule['enable'] = true;
+                    $arrModule['value'] = 0;
                 }
             }
 
@@ -164,13 +164,13 @@ class ModuleListView extends Module
             if ($moduleDB->type == 'map_field') {
 
                 // set map settings
-                $mapFields[] = HelperModel::setGoogleMap($modArr);
+                $mapFields[] = HelperModel::setGoogleMap($arrModule);
 
                 // set loadMapScript to true
                 $this->loadMapScript = true;
 
                 // load map libraries
-                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
+                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
             }
 
             // field
@@ -190,7 +190,7 @@ class ModuleListView extends Module
                 );
             }
 
-            $fieldsArr[$moduleDB->fieldID] = $modArr;
+            $fieldsArr[$moduleDB->fieldID] = $arrModule;
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
@@ -247,25 +247,21 @@ class ModuleListView extends Module
             if ($imagePath) {
                 $listDB->singleSRC = $imagePath;
             }
-
             if ($imgSize) {
                 $listDB->size = $imgSize;
             }
 
+            // create href
             $listDB->href = null;
-
             if ($addDetailPage == '1' && $listDB->source == 'default') {
                 // reset target
                 $listDB->target = '';
                 $listDB->href = $this->generateUrl($rootDB, $listDB->alias);
             }
-
             if ($listDB->source == 'external') {
                 $listDB->href = $listDB->url;
             }
-
             if ($listDB->source == 'internal') {
-
                 // reset target
                 $listDB->target = '';
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
@@ -289,8 +285,6 @@ class ModuleListView extends Module
         $paginationStr = $this->createPagination($total);
         $paginationStr = $paginationStr ? $paginationStr : '';
         $this->Template->pagination = $paginationStr;
-
-
         $strResults = '';
         $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
         $objTemplate = new FrontendTemplate($template);
@@ -308,16 +302,20 @@ class ModuleListView extends Module
                 $item['info'] = mb_convert_encoding($item['info'], 'UTF-8');
             }
 
-            //set css and id
+            // set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
             $item['itemCSS'] = $item['cssID'][1] ? ' ' . $item['cssID'][1] : '';
 
             // set date format
+            $date = date('Y-m-d', $item['date']);
+            $time = date('H:i', $item['time']);
+            $dateTime = $time ? $date . ' ' . $time : $date;
+            $item['dateTime'] = $dateTime;
             $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
             $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
 
-            //set more
+            // set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 
             // get list view ce
@@ -353,25 +351,19 @@ class ModuleListView extends Module
 
             //field
             if (!empty($fieldWidgets)) {
-
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
                 foreach ($fieldWidgets as $widget) {
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
                     $type = $widget['widgetType'];
                     $value = $item[$id];
-
-                    if (in_array($type, $arrayAsValue)) {
-                        $value = unserialize($value);
-                    }
-
+                    if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
                     $objFieldTemplate = new FrontendTemplate($tplName);
                     $objFieldTemplate->setData(array(
                         'value' => $value,
                         'type' => $type,
                         'item' => $item
                     ));
-
                     $item[$id] = $objFieldTemplate->parse();
                 }
             }
@@ -410,6 +402,7 @@ class ModuleListView extends Module
                 }
             }
 
+            // mapSettings
             if (!empty($mapSettings)) {
                 $item['mapSettings'] = $mapSettings;
             }
@@ -451,7 +444,7 @@ class ModuleListView extends Module
             $this->loadMapScript = true;
 
             // load map libraries
-            if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
+            if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
         }
 
         // set js files
@@ -585,9 +578,11 @@ class ModuleListView extends Module
 
         $taxonomies = array();
 
-        // nachdem 1.4.2 update ändern!
-        // die fieldID wird als key übergeben. daher kann man eine schleife sparen
-        // erstmal weglassen wegen der kompatibilität
+        /*
+         * nachdem 1.4.2 update ändern!
+         * die fieldID wird als key übergeben. daher kann man eine schleife sparen
+         * erstmal weglassen wegen der kompatibilität
+         */
         foreach ($taxonomyFromFE as $filterValue) {
             if ($filterValue['set']['ignore']) {
                 continue;
@@ -739,16 +734,11 @@ class ModuleListView extends Module
     private function generateSingeSrc($row)
     {
         if ($row->singleSRC != '') {
-
             $objModel = \FilesModel::findByUuid($row->singleSRC);
-
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
-
                 return $objModel->path;
-
             }
         }
-
         return null;
     }
 

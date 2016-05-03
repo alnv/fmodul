@@ -30,3 +30,6 @@ $GLOBALS['TL_LANG']['MSC']['f_gte'] = 'Größer gleich';
 $GLOBALS['TL_LANG']['MSC']['f_gt'] = 'Größer als';
 $GLOBALS['TL_LANG']['MSC']['f_lt'] = 'Kleiner als';
 $GLOBALS['TL_LANG']['MSC']['f_lte'] = 'Kleiner gleich';
+
+// errors
+$GLOBALS['TL_LANG']['ERR']['fallbackExist'] = 'Sie können nur einen Fallback pro Wrapper definieren.';

@@ -112,8 +112,8 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][0] = 'Widget type';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['widget_type'][1] = 'Please select your widget.';
 
 // evalCss
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][0] = 'Arranging fields';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'The Contao back end uses a simple two-column grid system to arrange input fields within their groups. You can apply the following CSS classes: w50 clr wizard long m12';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][0] = 'Back end CSS';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['evalCss'][1] = 'Please add your css classes. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">Open reference</a>';
 
 // from_field
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['from_field'][0] = 'From';
@@ -138,6 +138,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchFields'][1] = 'Please 
 // fullTextSearchOrderBy
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][0] = 'Sorting field';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fullTextSearchOrderBy'][1] = 'Please select your sorting field';
+
+// fmGroup
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][0] = 'Group label';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][1] = 'Please enter your group label.';
+
+// rgxp
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regular expression';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Please select Regular expression for this item. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">Open reference</a>';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';

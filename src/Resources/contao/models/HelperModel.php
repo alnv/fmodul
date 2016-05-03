@@ -10,9 +10,8 @@
  * @license   commercial
  * @copyright 2016 Alexander Naumov
  */
-
-use Contao\Environment;
-use Contao\StringUtil;
+use Contao\Database;
+use Contao\PageModel;
 
 /**
  * Class HelperModel
@@ -27,6 +26,135 @@ class HelperModel
     {
         if (BE_USER_LOGGED_IN) return true;
         return false;
+    }
+
+    /**
+     * @param $tablename
+     * @param $alias
+     * @param null $lang
+     * @param array $item
+     * @param array $wrapper
+     * @return string
+     */
+    public static function getHrefAttributes($tablename, $alias, $lang = null, $item = array(), $wrapper = array())
+    {
+        $tableWrapper = $tablename;
+        $tableData = $tableWrapper . '_data';
+        $Database = Database::getInstance();
+        $currentItemDB = array();
+        $strHrefLang = '';
+
+        if(empty($item) || empty($wrapper))
+        {
+            $currentItemDB = $Database->prepare('SELECT '.$tableData.'.*, '.$tableWrapper.'.fallback, '.$tableWrapper.'.language FROM '.$tableData.' LEFT OUTER JOIN '.$tableWrapper.' ON '.$tableData.'.pid = '.$tableWrapper.'.id WHERE '.$tableData.'.alias = ? OR '.$tableData.'.id = ?')->limit(1)->execute($alias, (int)$alias);
+            $currentItemDB = $currentItemDB->row();
+        }
+
+        if(!empty($item) && !empty($wrapper) && empty($currentItemDB))
+        {
+            $currentItemDB['id'] = $item['id'];
+            $currentItemDB['alias'] = $item['alias'];
+            $currentItemDB['mainLanguage'] = $item['mainLanguage'];
+            $currentItemDB['fallback'] = $wrapper['fallback'];
+            $currentItemDB['language'] = $wrapper['language'];
+        }
+
+        if(!empty($currentItemDB))
+        {
+            // get all items with the same fallback item
+            $fallback = !$currentItemDB['fallback'] ? $currentItemDB['mainLanguage'] : $currentItemDB['id'];
+
+            // select alias
+            $translationDB = $Database->prepare('SELECT '.$tableData.'.*, '.$tableData.'.mainLanguage, '.$tableWrapper.'.language, '.$tableWrapper.'.fallback, '.$tableWrapper.'.rootPage, '.$tableWrapper.'.addDetailPage FROM '.$tableData.' LEFT OUTER JOIN '.$tableWrapper.' ON '.$tableData.'.pid = '.$tableWrapper.'.id WHERE '.$tableData.'.id = ? OR '.$tableData.'.mainLanguage = ?')->execute($fallback, (int)$fallback);
+            while($translationDB->next())
+            {
+                $url = '/';
+                if(!$translationDB->addDetailPage) continue;
+
+                // default
+                if($translationDB->source == 'default')
+                {
+                    $objParent = PageModel::findWithDetails($translationDB->rootPage);
+                    if(!static::pageIsEnable($objParent))continue;
+                    $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                    $strUrl = $domain . \Controller::generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
+                    $url = static::getLink($translationDB, $strUrl);
+                }
+
+                // external
+                if ($translationDB->source == 'external') {
+                    $url = $translationDB->url;
+                }
+
+                // internal
+                if ($translationDB->source == 'internal') {
+                    $objParent = PageModel::findWithDetails($translationDB->jumpTo);
+                    if(!static::pageIsEnable($objParent))continue;
+                    $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                    $url = $domain . \Controller::generateFrontendUrl($objParent->row());
+                }
+
+                $strHrefLang .= '<link rel="alternate" hreflang="'.$translationDB->language.'" href="'.$url.'">';
+            }
+        }
+
+        return $strHrefLang;
+    }
+
+    /**
+     * @param $objPage
+     * @return bool
+     */
+    public static function pageIsEnable(PageModel $objPage)
+    {
+        $return = true;
+        $time = method_exists('Date', 'floorToMinute') ? \Date::floorToMinute() : time();
+        if ($objPage === null) {
+            $return = false;
+        }
+
+        if (!$objPage->published || ($objPage->start != '' && $objPage->start > $time) || ($objPage->stop != '' && $objPage->stop <= ($time + 60))) {
+            $return = false;
+        }
+
+        return $return;
+    }
+
+    /**
+     * @param $objItem
+     * @param $strUrl
+     * @param string $strBase
+     * @return string
+     * @throws \Exception
+     */
+    public static function getLink($objItem, $strUrl, $strBase = '')
+    {
+        // switch
+        switch ($objItem->source) {
+            // Link to an external page
+            case 'external':
+                return $objItem->url;
+                break;
+
+            // Link to an internal page
+            case 'internal':
+                if ($objItem->jumpTo) {
+                    $objPage = PageModel::findWithDetails($objItem->jumpTo);
+                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
+                    return $domain . \Controller::generateFrontendUrl($objPage->row(), '', $objPage->language);
+                }
+                break;
+
+            // Link to an article
+            case 'article':
+                if (($objArticle = \ArticleModel::findByPk($objItem->articleId, array('eager' => true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null) {
+                    return $strBase . ampersand(\Controller::generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id)));
+                }
+                break;
+        }
+
+        // Link to the default page
+        return $strBase . sprintf($strUrl, (($objItem->alias != '' && !\Config::get('disableAlias')) ? $objItem->alias : $objItem->id));
     }
 
     /**
@@ -134,21 +262,15 @@ class HelperModel
      */
     static public function outSideScope($start, $stop)
     {
-
         if ($start != '' || $stop != '') {
-
             $currentTime = (int)date('U');
-
             if ($currentTime < (int)$start) {
                 return false;
             }
-
             if ($currentTime > (int)$stop && (int)$stop != 0) {
                 return false;
             }
         }
-
         return true;
     }
-
 }

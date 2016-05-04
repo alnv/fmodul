@@ -36,15 +36,15 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['addTranslateUrl'] = array(
 $GLOBALS['TL_DCA']['tl_page']['fields']['translateUrl'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_page']['fields']['translateUrl'],
     'inputType' => 'select',
-    'options_callback' => array('tl_page_extend', 'getModules'),
+    'options_callback' => array('tl_page_fmodule', 'getModules'),
     'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
 /**
- * Class tl_page_extend
+ * Class tl_page_fmodule
  */
-class tl_page_extend extends tl_page
+class tl_page_fmodule extends tl_page
 {
     /**
      * @return array

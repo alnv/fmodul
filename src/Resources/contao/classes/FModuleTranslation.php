@@ -33,17 +33,24 @@ class FModuleTranslation extends Frontend
     public function translateUrlParameters($arrGet, $strLanguage)
     {
         global $objPage;
+
         if (!\Config::get('useAutoItem')) return $arrGet;
         $alias = \Input::get('auto_item');
+
         if (!$alias) return $arrGet;
+
         if (isset($objPage->addTranslateUrl) && $objPage->addTranslateUrl == '1') {
             $this->strTable = $objPage->translateUrl;
         }
+
         if (!$this->strTable) return $arrGet;
+
         $table = $this->strTable;
         $tableData = $this->strTable . '_data';
+
         // get current item
         $currentItemDB = $this->Database->prepare('SELECT '.$tableData.'.*, '.$table.'.fallback, '.$table.'.language FROM '.$tableData.' LEFT OUTER JOIN '.$table.' ON '.$tableData.'.pid = '.$table.'.id WHERE '.$tableData.'.alias = ? OR '.$tableData.'.id = ?')->limit(1)->execute($alias, (int)$alias);
+
         if ($currentItemDB->numRows)
         {
             // get all items with the same fallback item

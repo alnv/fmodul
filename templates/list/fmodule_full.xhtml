@@ -1,33 +1,30 @@
-<section <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_full<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
-    <div class="fmodule-detail-header header">
+<article <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_full<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
+
+    <header class="fmodule-detail-header header">
         <h2 class="title"><?= $this->title; ?></h2>
         <?php if ($this->info): ?>
             <p class="info"><?= $this->info; ?></p>
         <?php endif; ?>
         <?php if ($this->date): ?>
-            <?= $this->date; ?><?php if ($this->time): ?>
-                <time> - <?= $this->time; ?></time><?php endif; ?>
+            <p class="date"><?= $this->date; ?><?php if ($this->time): ?><time> - <?= $this->time; ?></time><?php endif; ?></p>
         <?php endif; ?>
-    </div>
+    </header>
+
     <?php if ($this->addImage): ?>
         <figure class="image_container" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
-
             <?php if ($this->href): ?>
             <a href="<?= $this->href ?>"<?php if ($this->linkTitle): ?> title="<?= $this->linkTitle ?>"<?php endif; ?><?= $this->attributes ?>>
                 <?php endif; ?>
-
                 <?php $this->insert('picture_default', $this->picture); ?>
-
                 <?php if ($this->href): ?>
             </a>
         <?php endif; ?>
-
             <?php if ($this->caption): ?>
                 <figcaption <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
             <?php endif; ?>
-
         </figure>
     <?php endif; ?>
+
     <?php if (count($this->detail) > 0): ?>
         <?php foreach ($this->detail as $i => $detailStr): ?>
             <div class="fmodule-detail-ce-wrapper<?= ($i < 1 ? ' first' : ''); ?><?= ($i == count($this->detail) - 1 ? ' last' : ''); ?><?= ($i % 2 ? ' even' : ' odd'); ?>">
@@ -35,6 +32,7 @@
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+
     <?php if ($this->enclosure): ?>
         <div class="enclosure">
             <?php foreach ($this->enclosure as $enclosure): ?>
@@ -42,4 +40,5 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-</section>
+
+</article>

@@ -33,54 +33,28 @@ class DCAHelper extends Backend
 	}
 
 	/**
-	 * @param $arrValues
-	 * @return array
-	 */
-	public static function replaceInsertTagsInArray($arrValues)
-	{
-		$values = array();
-		foreach($arrValues as $key => $arrValue)
-		{
-			if(is_array($arrValue))
-			{
-				foreach($arrValue as $strValue)
-				{
-					$values[$key][] = static::_replaceInsertTags($strValue);
-				}
-			}else{
-				$values[] = static::_replaceInsertTags($arrValue);
-			}
-
-		}
-		return $values;
-	}
-
-	/**
-	 * @param $strValue
-	 * @return string
-	 */
-	private static function _replaceInsertTags($strValue)
-	{
-		if(is_string($strValue))
-		{
-			return \Controller::replaceInsertTags($strValue);
-		}
-		return $strValue;
-	}
-
-	/**
 	 * @param $field
-	 * @param $moduleObj
+	 * @param $mixTable
+	 * @param string $wrapperID
 	 * @return array
 	 */
-	public function getOptions($field, $moduleObj)
+	public function getOptions($field, $mixTable, $wrapperID = '')
 	{
 		$options = array();
-
 		$hasOptions = array('multi_choice', 'simple_choice');
-		$table = $moduleObj['tablename'];
+		$table = '';
 
-		if(!$field['fieldID'])
+		if(is_array($mixTable))
+		{
+			$table = $mixTable['tablename'];
+		}
+
+		if(is_string($mixTable))
+		{
+			$table = $mixTable;
+		}
+
+		if(!$field['fieldID'] || !$table)
 		{
 			return $options;
 		}
@@ -102,8 +76,12 @@ class DCAHelper extends Backend
 			$id = Input::get('id');
 		}
 
-		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.'')->execute();
+		if($wrapperID)
+		{
+			$id = $wrapperID;
+		}
 
+		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.'')->execute();
 		$option = array();
 
 		while($optionsDB->next())
@@ -119,7 +97,6 @@ class DCAHelper extends Backend
 			}
 
 			$option = $optionsDB->row()[$field['fieldID']] ? deserialize($optionsDB->row()[$field['fieldID']]) : array();
-
 		}
 
 		if($field['dataFromTable'] == '1')
@@ -140,30 +117,22 @@ class DCAHelper extends Backend
 			}
 
 			$DataFromTableDB = $this->Database->prepare('SELECT '.$option['col'].', '.$option['title'].' FROM '.$option['table'].'')->execute();
-
 			while($DataFromTableDB->next())
 			{
 				$k = $DataFromTableDB->row()[$option['col']];
 				$v = $DataFromTableDB->row()[$option['title']];
 				$options[$k] = $v;
 			}
-
 			return $options;
 		}
 
 		foreach( $option as $value )
 		{
-
-			if(!$value['value'])
-			{
-				continue;
-			}
-
+			if(!$value['value']) continue;
 			$options[$value['value']] = $value['label'];
 		}
 
 		return $options;
-
 	}
 
 	/**

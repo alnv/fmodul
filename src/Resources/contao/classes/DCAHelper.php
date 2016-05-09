@@ -33,6 +33,42 @@ class DCAHelper extends Backend
 	}
 
 	/**
+	 * @param $arrValues
+	 * @return array
+	 */
+	public static function replaceInsertTagsInArray($arrValues)
+	{
+		$values = array();
+		foreach($arrValues as $key => $arrValue)
+		{
+			if(is_array($arrValue))
+			{
+				foreach($arrValue as $strValue)
+				{
+					$values[$key][] = static::_replaceInsertTags($strValue);
+				}
+			}else{
+				$values[] = static::_replaceInsertTags($arrValue);
+			}
+
+		}
+		return $values;
+	}
+
+	/**
+	 * @param $strValue
+	 * @return string
+	 */
+	private static function _replaceInsertTags($strValue)
+	{
+		if(is_string($strValue))
+		{
+			return \Controller::replaceInsertTags($strValue);
+		}
+		return $strValue;
+	}
+
+	/**
 	 * @param $field
 	 * @param $moduleObj
 	 * @return array

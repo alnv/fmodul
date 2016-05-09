@@ -67,7 +67,6 @@ class FModuleInsertTags extends Frontend
             $qPid = $arrSplit[2] ? ' AND pid = "' . $arrSplit[2] . '"' : '';
             $q = $arrSplit[3] ? Input::decodeEntities($arrSplit[3]) : '';
             $q = str_replace('[&]', '&', $q);
-
             if ($q) {
                 $filterArr = $this->getFilterFields($q);
                 $qResult = HelperModel::generateSQLQueryFromFilterArray($filterArr);
@@ -187,6 +186,7 @@ class FModuleInsertTags extends Frontend
                 if ($moduleInputFields['type'] == 'widget') {
                     $widgets[] = $this->findWidgetAndSet($moduleInputFields);
                 }
+
             }
             //
             while ($itemDB->next()) {
@@ -215,6 +215,19 @@ class FModuleInsertTags extends Frontend
                         $type = $widget['widgetType'];
                         $value = $item[$id];
                         if (in_array($type, $arrayAsValue)) $value = deserialize($value);
+
+                        // replace insertTags in array
+                        if(is_array($value))
+                        {
+                            $value = DCAHelper::replaceInsertTagsInArray($value);
+                        }
+
+                        // replace insertTags in string
+                        if(is_string($value))
+                        {
+                            $value = $this->replaceInsertTags($value);
+                        }
+
                         $objFieldTemplate = new FrontendTemplate($tplName);
                         $objFieldTemplate->setData(array(
                             'value' => $value,
@@ -400,6 +413,9 @@ class FModuleInsertTags extends Frontend
                 $language = $objPage->language ? $objPage->language : 'en';
                 $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
             }
+
+            // replace insertTags
+            $strTemplate = $this->replaceInsertTags($strTemplate);
 
             // return template
             return $strTemplate;
@@ -660,9 +676,7 @@ class FModuleInsertTags extends Frontend
             $url = HelperModel::getLink($dataDB, $strUrl);
 
             return $url;
-
         }
-
         return false;
     }
 
@@ -684,7 +698,7 @@ class FModuleInsertTags extends Frontend
         if (empty($qArr)) return array();
 
         $allFiltersDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters')->execute();
-        $filterArr = array();
+        $arrFilter = array();
 
         while ($allFiltersDB->next()) {
 
@@ -694,11 +708,11 @@ class FModuleInsertTags extends Frontend
                 continue;
             }
 
-            if ($qArr[$tname] || $allFiltersDB->type == 'toggle_field') {
-                $filterArr[$tname] = $allFiltersDB->row();
-                $filterArr[$tname]['value'] = $qArr[$tname];
-                $filterArr[$tname]['enable'] = true;
-                $filterArr[$tname]['operator'] = $qArr[$tname . '_int'] ? $qArr[$tname . '_int'] : '';
+            if ($qArr[$tname] && $allFiltersDB->type == 'search_field' && $allFiltersDB->isInteger) {
+                $arrFilter[$tname] = $allFiltersDB->row();
+                $arrFilter[$tname]['value'] = $qArr[$tname];
+                $arrFilter[$tname]['enable'] = true;
+                $arrFilter[$tname]['operator'] = $qArr[$tname . '_int'] ? $qArr[$tname . '_int'] : '';
             }
 
             if ($allFiltersDB->type == 'wrapper_field' && ($allFiltersDB->from_field == $allFiltersDB->to_field)) {
@@ -707,9 +721,9 @@ class FModuleInsertTags extends Frontend
             }
 
             if ($allFiltersDB->type == 'toggle_field' && !$qArr[$tname]) {
-                $filterArr[$tname]['value'] = 'skip';
+                $arrFilter[$tname]['value'] = 'skip';
             }
         }
-        return $filterArr;
+        return $arrFilter;
     }
 }

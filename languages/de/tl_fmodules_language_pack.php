@@ -225,6 +225,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Karten-Einstel
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Sonstiges';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'] = 'Redakteur';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'] = 'Weiterleitungsziel';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['captchaDetails'] = 'Sicherheitsabfrage';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['default'] = 'Standard';

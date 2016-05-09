@@ -227,6 +227,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['mapDetails'] = 'Google Map';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['authorDetails'] = 'Author';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sourceDetails'] = 'Redirect target';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['otherDetails'] = 'Other';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['captchaDetails'] = 'Captcha';
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_admin'] = 'Admin';

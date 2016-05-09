@@ -44,14 +44,12 @@ class HelperModel
         $currentItemDB = array();
         $strHrefLang = '';
 
-        if(empty($item) || empty($wrapper))
-        {
-            $currentItemDB = $Database->prepare('SELECT '.$tableData.'.*, '.$tableWrapper.'.fallback, '.$tableWrapper.'.language FROM '.$tableData.' LEFT OUTER JOIN '.$tableWrapper.' ON '.$tableData.'.pid = '.$tableWrapper.'.id WHERE '.$tableData.'.alias = ? OR '.$tableData.'.id = ?')->limit(1)->execute($alias, (int)$alias);
+        if (empty($item) || empty($wrapper)) {
+            $currentItemDB = $Database->prepare('SELECT ' . $tableData . '.*, ' . $tableWrapper . '.fallback, ' . $tableWrapper . '.language FROM ' . $tableData . ' LEFT OUTER JOIN ' . $tableWrapper . ' ON ' . $tableData . '.pid = ' . $tableWrapper . '.id WHERE ' . $tableData . '.alias = ? OR ' . $tableData . '.id = ?')->limit(1)->execute($alias, (int)$alias);
             $currentItemDB = $currentItemDB->row();
         }
 
-        if(!empty($item) && !empty($wrapper) && empty($currentItemDB))
-        {
+        if (!empty($item) && !empty($wrapper) && empty($currentItemDB)) {
             $currentItemDB['id'] = $item['id'];
             $currentItemDB['alias'] = $item['alias'];
             $currentItemDB['mainLanguage'] = $item['mainLanguage'];
@@ -59,23 +57,20 @@ class HelperModel
             $currentItemDB['language'] = $wrapper['language'];
         }
 
-        if(!empty($currentItemDB))
-        {
+        if (!empty($currentItemDB)) {
             // get all items with the same fallback item
             $fallback = !$currentItemDB['fallback'] ? $currentItemDB['mainLanguage'] : $currentItemDB['id'];
 
             // select alias
-            $translationDB = $Database->prepare('SELECT '.$tableData.'.*, '.$tableData.'.mainLanguage, '.$tableWrapper.'.language, '.$tableWrapper.'.fallback, '.$tableWrapper.'.rootPage, '.$tableWrapper.'.addDetailPage FROM '.$tableData.' LEFT OUTER JOIN '.$tableWrapper.' ON '.$tableData.'.pid = '.$tableWrapper.'.id WHERE '.$tableData.'.id = ? OR '.$tableData.'.mainLanguage = ?')->execute($fallback, (int)$fallback);
-            while($translationDB->next())
-            {
+            $translationDB = $Database->prepare('SELECT ' . $tableData . '.*, ' . $tableData . '.mainLanguage, ' . $tableWrapper . '.language, ' . $tableWrapper . '.fallback, ' . $tableWrapper . '.rootPage, ' . $tableWrapper . '.addDetailPage FROM ' . $tableData . ' LEFT OUTER JOIN ' . $tableWrapper . ' ON ' . $tableData . '.pid = ' . $tableWrapper . '.id WHERE ' . $tableData . '.id = ? OR ' . $tableData . '.mainLanguage = ?')->execute($fallback, (int)$fallback);
+            while ($translationDB->next()) {
                 $url = '/';
-                if(!$translationDB->addDetailPage) continue;
+                if (!$translationDB->addDetailPage) continue;
 
                 // default
-                if($translationDB->source == 'default')
-                {
+                if ($translationDB->source == 'default') {
                     $objParent = PageModel::findWithDetails($translationDB->rootPage);
-                    if(!static::pageIsEnable($objParent))continue;
+                    if (!static::pageIsEnable($objParent)) continue;
                     $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
                     $strUrl = $domain . \Controller::generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
                     $url = static::getLink($translationDB, $strUrl);
@@ -89,12 +84,12 @@ class HelperModel
                 // internal
                 if ($translationDB->source == 'internal') {
                     $objParent = PageModel::findWithDetails($translationDB->jumpTo);
-                    if(!static::pageIsEnable($objParent))continue;
+                    if (!static::pageIsEnable($objParent)) continue;
                     $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
                     $url = $domain . \Controller::generateFrontendUrl($objParent->row());
                 }
 
-                $strHrefLang .= '<link rel="alternate" hreflang="'.$translationDB->language.'" href="'.$url.'">';
+                $strHrefLang .= '<link rel="alternate" hreflang="' . $translationDB->language . '" href="' . $url . '">';
             }
         }
 
@@ -195,7 +190,7 @@ class HelperModel
         if (BE_USER_LOGGED_IN) return false;
         if (FE_USER_LOGGED_IN && $item['guests'] == '1') return true;
         if (FE_USER_LOGGED_IN && $item['protected'] == '1') {
-            $dataGroup= deserialize( $item['groups'] );
+            $dataGroup = deserialize($item['groups']);
             if (!is_array($dataGroup) || empty($dataGroup) || count(array_intersect($dataGroup, $allowedGroups)) < 1) {
                 return true;
             }
@@ -204,16 +199,17 @@ class HelperModel
     }
 
     /**
-     * @param $filterArr
+     * @param $arrFilter
      * @return array
      */
-    public static function generateSQLQueryFromFilterArray($filterArr)
+    public static function generateSQLQueryFromFilterArray($arrFilter)
     {
         $qStr = '';
         $qTextSearch = '';
         $isFulltextSearch = false;
         $searchSettings = array();
-        foreach ($filterArr as $field) {
+
+        foreach ($arrFilter as $field) {
 
             if ($field['enable']) {
                 switch ($field['type']) {

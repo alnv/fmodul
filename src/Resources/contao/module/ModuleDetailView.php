@@ -92,47 +92,57 @@ class ModuleDetailView extends Module
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $fieldWidgets = array();
-        $moduleArr = array();
+        $arrModules = array();
         $mapFields = array();
+        $arrCleanOptions = array();
 
         //
         while ($moduleDB->next()) {
-            if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
+
+            $arrModule = $moduleDB->row();
+
+            if (in_array($arrModule['fieldID'], $doNotSetByID) || in_array($arrModule['type'], $doNotSetByType)) {
                 continue;
             }
 
-            $modArr = $moduleDB->row();
-
             // map
-            if ($moduleDB->type == 'map_field') {
+            if ($arrModule['type'] == 'map_field') {
 
-                $mapFields[] = HelperModel::setGoogleMap($modArr);
+                $mapFields[] = HelperModel::setGoogleMap($arrModule);
 
                 // set loadMapScript to true
                 $this->loadMapScript = true;
 
                 // load map libraries
-                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $modArr['mapInfoBox'] ? true : false;
+                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
             }
 
-            if ($moduleDB->type == 'widget') {
+            if ($arrModule['type'] == 'widget') {
 
-                $tplName = $moduleDB->widgetTemplate;
+                $tplName = $arrModule['widgetTemplate'];
                 $tpl = '';
                 if (!$tplName) {
-                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
+                    $tplNameType = explode('.', $arrModule['widget_type'])[0];
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                     $tpl = $this->parseTemplateName($tpl);
                 }
 
-                $fieldWidgets[$moduleDB->fieldID] = array(
-                    'fieldID' => $moduleDB->fieldID,
-                    'widgetType' => $moduleDB->widget_type,
-                    'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
+                $fieldWidgets[$arrModule['fieldID']] = array(
+                    'fieldID' => $arrModule['fieldID'],
+                    'widgetType' => $arrModule['widget_type'],
+                    'widgetTemplate' => $arrModule['widgetTemplate'] ? $arrModule['widgetTemplate'] : $tpl
                 );
             }
-            $moduleArr[$moduleDB->fieldID] = $modArr;
+
+            // has options
+            if($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice')
+            {
+                $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
+            }
+
+            $arrModules[$arrModule['fieldID']] = $arrModule;
         }
 
         $strResult = '';
@@ -250,7 +260,7 @@ class ModuleDetailView extends Module
         $itemDB['author'] = $authorDB;
         $itemDB['date'] = $itemDB['date'] ? date($objPage->dateFormat, $itemDB['date']) : '';
         $itemDB['time'] = $itemDB['time'] ? date($objPage->timeFormat, $itemDB['time']) : '';
-        $itemDB['filter'] = $moduleArr;
+        $itemDB['filter'] = $arrModules;
 
         if (!empty($fieldWidgets)) {
             $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
@@ -293,6 +303,30 @@ class ModuleDetailView extends Module
                 $itemDB['mapSettings'] = $map;
                 $objMapTemplate->setData($itemDB);
                 $itemDB[$map['fieldID']] = $objMapTemplate->parse();
+            }
+        }
+
+        // set clean options
+        if(!empty($arrCleanOptions))
+        {
+            $itemDB['cleanOptions'] = $arrCleanOptions;
+
+            // overwrite clean options
+            foreach($arrCleanOptions as $fieldID => $options)
+            {
+                if($itemDB[$fieldID] && is_string($itemDB[$fieldID]))
+                {
+                    $arrValues = explode(',', $itemDB[$fieldID]);
+                    $arrTemp = array();
+                    if(is_array($arrValues))
+                    {
+                        foreach($arrValues as $val)
+                        {
+                            $arrTemp[$val] = $options[$val];
+                        }
+                    }
+                    $itemDB[$fieldID] = $arrTemp;
+                }
             }
         }
 

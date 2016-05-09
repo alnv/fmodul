@@ -110,13 +110,15 @@ class ModuleListView extends Module
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
         $doNotSetByType = array('legend_end', 'legend_start', 'wrapper_field');
         $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-        $fieldsArr = array();
+        $arrFields = array();
         $fieldWidgets = array();
         $this->tablename = $tablename;
         $mapFields = array();
+        $arrCleanOptions = array();
 
         // map view settings
         $mapSettings = array();
+
         if ($this->fm_addMap) {
             $mapSettings['mapZoom'] = $this->fm_mapZoom;
             $mapSettings['mapMarker'] = $this->fm_mapMarker;
@@ -130,22 +132,23 @@ class ModuleListView extends Module
 
         while ($moduleDB->next()) {
 
-            if (in_array($moduleDB->fieldID, $doNotSetByID) || in_array($moduleDB->type, $doNotSetByType)) {
+            $arrModule = $moduleDB->row();
+
+            if (in_array($arrModule['fieldID'], $doNotSetByID) || in_array($arrModule['type'], $doNotSetByType)) {
                 continue;
             }
 
-            $arrModule = $moduleDB->row();
-            $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
+            $getFilter = $this->getFilter($arrModule['fieldID'], $arrModule['type']);
             $arrModule['value'] = $getFilter['value'];
             $arrModule['operator'] = $getFilter['operator'];
             $arrModule['overwrite'] = null;
             $arrModule['active'] = null;
 
-            if ($moduleDB->fieldID == 'auto_page' || $moduleDB->autoPage) {
+            if ($arrModule['fieldID'] == 'auto_page' || $arrModule['autoPage']) {
                 $arrModule = $this->setValuesForAutoPageAttribute($arrModule);
             }
 
-            $val = QueryModel::isValue($arrModule['value'], $moduleDB->type);
+            $val = QueryModel::isValue($arrModule['value'], $arrModule['type']);
             if ($val) $arrModule['enable'] = true;
 
             // check if has an wrapper
@@ -161,7 +164,7 @@ class ModuleListView extends Module
             }
 
             // map
-            if ($moduleDB->type == 'map_field') {
+            if ($arrModule['type'] == 'map_field') {
 
                 // set map settings
                 $mapFields[] = HelperModel::setGoogleMap($arrModule);
@@ -174,30 +177,37 @@ class ModuleListView extends Module
             }
 
             // field
-            if ($moduleDB->type == 'widget') {
-                $tplName = $moduleDB->widgetTemplate;
+            if ($arrModule['type'] == 'widget') {
+                $tplName = $arrModule['widgetTemplate'];
                 $tpl = '';
                 if (!$tplName) {
-                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
+                    $tplNameType = explode('.', $arrModule['widget_type'])[0];
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                     $tpl = $this->parseTemplateName($tpl);
                 }
-                $fieldWidgets[$moduleDB->fieldID] = array(
-                    'fieldID' => $moduleDB->fieldID,
-                    'widgetType' => $moduleDB->widget_type,
-                    'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
+                $fieldWidgets[$arrModule['fieldID']] = array(
+                    'fieldID' => $arrModule['fieldID'],
+                    'widgetType' => $arrModule['widget_type'],
+                    'widgetTemplate' => $arrModule['widgetTemplate'] ? $arrModule['widgetTemplate'] : $tpl
                 );
             }
 
-            $fieldsArr[$moduleDB->fieldID] = $arrModule;
+            // has options
+            if($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice')
+            {
+                $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
+            }
+
+            $arrFields[$arrModule['fieldID']] = $arrModule;
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
-            $fieldsArr = $this->setFilterValues($taxonomyFromFE, $taxonomyFromPage, $fieldsArr);
+            $arrFields = $this->setFilterValues($taxonomyFromFE, $taxonomyFromPage, $arrFields);
         }
 
-        $qResult = HelperModel::generateSQLQueryFromFilterArray($fieldsArr);
+        $qResult = HelperModel::generateSQLQueryFromFilterArray($arrFields);
         $qStr = $qResult['qStr'];
         $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch'] : '';
 
@@ -409,6 +419,30 @@ class ModuleListView extends Module
 
             // set fe view id
             $item['feViewID'] = $this->feViewID;
+
+            // set clean options
+            if(!empty($arrCleanOptions))
+            {
+                $item['cleanOptions'] = $arrCleanOptions;
+
+                // overwrite clean options
+                foreach($arrCleanOptions as $fieldID => $options)
+                {
+                    if($item[$fieldID] && is_string($item[$fieldID]))
+                    {
+                        $arrValues = explode(',', $item[$fieldID]);
+                        $arrTemp = array();
+                        if(is_array($arrValues))
+                        {
+                            foreach($arrValues as $val)
+                            {
+                                $arrTemp[$val] = $options[$val];
+                            }
+                        }
+                        $item[$fieldID] = $arrTemp;
+                    }
+                }
+            }
 
             //set data
             $objTemplate->setData($item);

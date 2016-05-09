@@ -63,21 +63,23 @@ class FModuleInsertTags extends Frontend
         // Count Items
         if (($arrSplit[0] == 'fm_count' || $arrSplit[0] == 'fmCount') && $arrSplit[1]) {
 
-            $tablename = $arrSplit[1] . '_data';
+            $tablename = $arrSplit[1];
+            $tableData = $tablename . '_data';
             $qPid = $arrSplit[2] ? ' AND pid = "' . $arrSplit[2] . '"' : '';
             $q = $arrSplit[3] ? Input::decodeEntities($arrSplit[3]) : '';
             $q = str_replace('[&]', '&', $q);
+
             if ($q) {
-                $filterArr = $this->getFilterFields($q);
-                $qResult = HelperModel::generateSQLQueryFromFilterArray($filterArr);
+                $arrFilter = $this->getFilterFields($q, $tablename);
+                $qResult = HelperModel::generateSQLQueryFromFilterArray($arrFilter);
                 $q = $qResult['qStr'];
             }
 
-            if ($this->Database->tableExists($tablename)) {
-                return $this->Database->prepare('SELECT id FROM ' . $tablename . ' WHERE published = "1"' . $qPid . $q . '')->query()->count();
+            if ($this->Database->tableExists($tableData)) {
+                return $this->Database->prepare('SELECT id FROM ' . $tableData . ' WHERE published = "1"' . $qPid . $q . '')->query()->count();
             }
 
-            return 0;
+            return '0';
         }
         return false;
     }
@@ -169,11 +171,18 @@ class FModuleInsertTags extends Frontend
 
             // q
             $itemDB = $this->Database->prepare('SELECT * FROM ' . $tableData . ' WHERE id = ? OR alias = ?' . $qProtectedStr . ' LIMIT 1')->execute((int)$id, $id);
+            if (!$itemDB->count()) {
+                return 'no item found';
+            }
+
+            $item = $this->parseItem($itemDB, $tablename);
 
             // find and set map
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
             $maps = array();
             $widgets = array();
+
+            // while
             while ($moduleDB->next()) {
 
                 $moduleInputFields = $moduleDB->row();
@@ -187,60 +196,78 @@ class FModuleInsertTags extends Frontend
                     $widgets[] = $this->findWidgetAndSet($moduleInputFields);
                 }
 
-            }
-            //
-            while ($itemDB->next()) {
-
-                //
-                $item = $this->parseItem($itemDB, $tablename);
-
-                if (!$item) return '';
-
-                // parse map
-                if (!empty($maps)) {
-                    foreach ($maps as $map) {
-                        $objMapTemplate = new FrontendTemplate($map['template']);
-                        $item['mapSettings'] = $map;
-                        $objMapTemplate->setData($item);
-                        $item[$map['fieldID']] = $objMapTemplate->parse();
-                    }
+                // has options
+                if ($moduleInputFields['type'] == 'simple_choice' || $moduleInputFields['type'] == 'multi_choice') {
+                    $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                    $arrCleanOptions[$moduleInputFields['fieldID']] = $dcaHelper->getOptions($moduleInputFields, $tablename, $item['pid']);
                 }
 
-                // field
-                if (!empty($widgets)) {
-                    $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
-                    foreach ($widgets as $widget) {
-                        $id = $widget['fieldID'];
-                        $tplName = $widget['widgetTemplate'];
-                        $type = $widget['widgetType'];
-                        $value = $item[$id];
-                        if (in_array($type, $arrayAsValue)) $value = deserialize($value);
+            }
 
-                        // replace insertTags in array
-                        if(is_array($value))
-                        {
-                            $value = DCAHelper::replaceInsertTagsInArray($value);
+            // parse map
+            if (!empty($maps)) {
+                foreach ($maps as $map) {
+                    $objMapTemplate = new FrontendTemplate($map['template']);
+                    $item['mapSettings'] = $map;
+                    $objMapTemplate->setData($item);
+                    $item[$map['fieldID']] = $objMapTemplate->parse();
+                }
+            }
+
+            // field
+            if (!empty($widgets)) {
+
+                $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+
+                foreach ($widgets as $widget) {
+
+                    $id = $widget['fieldID'];
+                    $tplName = $widget['widgetTemplate'];
+                    $type = $widget['widgetType'];
+                    $value = $item[$id];
+
+                    if (in_array($type, $arrayAsValue)) $value = deserialize($value);
+
+                    // replace insertTags in array
+                    if (is_array($value)) {
+                        $value = HelperModel::replaceInsertTagsInArray($value);
+                    }
+
+                    // replace insertTags in string
+                    if (is_string($value)) {
+                        $value = $this->replaceInsertTags($value);
+                    }
+
+                    $objFieldTemplate = new FrontendTemplate($tplName);
+                    $objFieldTemplate->setData(array(
+                        'value' => $value,
+                        'type' => $type,
+                        'item' => $item
+                    ));
+                    $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
+                }
+            }
+
+            // set clean options
+            if (!empty($arrCleanOptions)) {
+                // overwrite clean options
+                foreach ($arrCleanOptions as $fieldID => $options) {
+                    if ($item[$fieldID] && is_string($item[$fieldID])) {
+                        $arrValues = explode(',', $item[$fieldID]);
+                        $tempValue = array();
+                        if (is_array($arrValues)) {
+                            foreach ($arrValues as $val) {
+                                $tempValue[] = $options[$val];
+                            }
                         }
-
-                        // replace insertTags in string
-                        if(is_string($value))
-                        {
-                            $value = $this->replaceInsertTags($value);
-                        }
-
-                        $objFieldTemplate = new FrontendTemplate($tplName);
-                        $objFieldTemplate->setData(array(
-                            'value' => $value,
-                            'type' => $type,
-                            'item' => $item
-                        ));
-                        $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
+                        $item[$fieldID . 'ShowLabels'] = implode(', ', $tempValue);
                     }
                 }
-
-                Cache::set($cacheID, $item);
-                return $this->getField($item, $field);
             }
+
+            Cache::set($cacheID, $item);
+            return $this->getField($item, $field);
+
         }
         return 'no valid arguments';
     }
@@ -317,16 +344,7 @@ class FModuleInsertTags extends Frontend
             $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
             $maps = array();
             $widgets = array();
-            while ($moduleDB->next()) {
-                $moduleInputFields = $moduleDB->row();
-                // get map
-                if ($moduleInputFields['type'] == 'map_field') {
-                    $maps[] = $this->findMapAndSet($moduleInputFields);
-                }
-                if ($moduleInputFields['type'] == 'widget') {
-                    $widgets[] = $this->findWidgetAndSet($moduleInputFields);
-                }
-            }
+            $arrCleanOptions = array();
 
             // search for item
             $viewDB = $this->Database->prepare($sqlQuery)->execute();
@@ -336,77 +354,108 @@ class FModuleInsertTags extends Frontend
                 return 'no item found';
             }
 
+            $item = $this->parseItem($viewDB, $tablename);
+
+            while ($moduleDB->next()) {
+
+                $moduleInputFields = $moduleDB->row();
+                // get map
+                if ($moduleInputFields['type'] == 'map_field') {
+                    $maps[] = $this->findMapAndSet($moduleInputFields);
+                }
+
+                if ($moduleInputFields['type'] == 'widget') {
+                    $widgets[] = $this->findWidgetAndSet($moduleInputFields);
+                }
+
+                // has options
+                if ($moduleInputFields['type'] == 'simple_choice' || $moduleInputFields['type'] == 'multi_choice') {
+                    $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                    $arrCleanOptions[$moduleInputFields['fieldID']] = $dcaHelper->getOptions($moduleInputFields, $tablename, $item['pid']);
+                }
+            }
+
             // prepare for rendering
             $strTemplate = '';
             $objTemplate = new FrontendTemplate($template);
 
-            // render
-            while ($viewDB->next()) {
+            // parse css & id
+            $cssClass = $item['cssID'][1] ? $item['cssID'][1] . ' ' : '';
+            $item['cssClass'] = $cssClass . $className;
+            $item['jsID'] = $jsID ? $jsID : $item['cssID'][0];
+            $item['templateName'] = $template;
+            $item['tableName'] = $tablename;
 
-                // parse item
-                $item = $this->parseItem($viewDB, $tablename);
+            // parse headline
+            $item['hl'] = $headline;
 
-                if (!$item) return '';
-
-                // parse css & id
-                $cssClass = $item['cssID'][1] ? $item['cssID'][1] . ' ' : '';
-                $item['cssClass'] = $cssClass . $className;
-                $item['jsID'] = $jsID ? $jsID : $item['cssID'][0];
-                $item['templateName'] = $template;
-                $item['tableName'] = $tablename;
-
-                // parse headline
-                $item['hl'] = $headline;
-
-                // parse image
-                if ($item['addImage']) {
-                    $item['fullsize'] = ''; // disable full size
-                    $objTemplate->addImageToTemplate($objTemplate, $item);
-                    $item['picture'] = $objTemplate->picture;
-                }
-
-                // parse enclosure
-                $objTemplate->enclosure = array();
-                if ($item['addEnclosure']) {
-                    $objTemplate->addEnclosuresToTemplate($objTemplate, $item);
-                }
-                $item['enclosure'] = $objTemplate->enclosure;
-
-                // parse map
-                if (!empty($maps)) {
-                    foreach ($maps as $map) {
-                        $objMapTemplate = new FrontendTemplate($map['template']);
-                        $item['mapSettings'] = $map;
-                        $objMapTemplate->setData($item);
-                        $item[$map['fieldID']] = $objMapTemplate->parse();
-                    }
-                }
-
-                // field
-                if (!empty($widgets)) {
-                    $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
-                    foreach ($widgets as $widget) {
-                        $id = $widget['fieldID'];
-                        $tplName = $widget['widgetTemplate'];
-                        $type = $widget['widgetType'];
-                        $value = $item[$id];
-                        if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
-                        $objFieldTemplate = new FrontendTemplate($tplName);
-                        $objFieldTemplate->setData(array(
-                            'value' => $value,
-                            'type' => $type,
-                            'item' => $item
-                        ));
-                        $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
-                    }
-                }
-
-                // set data to template
-                $objTemplate->setData($item);
-
-                // parse template
-                $strTemplate .= $objTemplate->parse();
+            // parse image
+            if ($item['addImage']) {
+                $item['fullsize'] = ''; // disable full size
+                $objTemplate->addImageToTemplate($objTemplate, $item);
+                $item['picture'] = $objTemplate->picture;
             }
+
+            // parse enclosure
+            $objTemplate->enclosure = array();
+            if ($item['addEnclosure']) {
+                $objTemplate->addEnclosuresToTemplate($objTemplate, $item);
+            }
+            $item['enclosure'] = $objTemplate->enclosure;
+
+            // parse map
+            if (!empty($maps)) {
+                foreach ($maps as $map) {
+                    $objMapTemplate = new FrontendTemplate($map['template']);
+                    $item['mapSettings'] = $map;
+                    $objMapTemplate->setData($item);
+                    $item[$map['fieldID']] = $objMapTemplate->parse();
+                }
+            }
+
+            // field
+            if (!empty($widgets)) {
+                $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+                foreach ($widgets as $widget) {
+                    $id = $widget['fieldID'];
+                    $tplName = $widget['widgetTemplate'];
+                    $type = $widget['widgetType'];
+                    $value = $item[$id];
+                    if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
+                    $objFieldTemplate = new FrontendTemplate($tplName);
+                    $objFieldTemplate->setData(array(
+                        'value' => $value,
+                        'type' => $type,
+                        'item' => $item
+                    ));
+                    $item[$id . 'AsTemplate'] = $objFieldTemplate->parse();
+                }
+            }
+
+            // set clean options
+            if (!empty($arrCleanOptions)) {
+                $item['cleanOptions'] = $arrCleanOptions;
+
+                // overwrite clean options
+                foreach ($arrCleanOptions as $fieldID => $options) {
+                    if ($item[$fieldID] && is_string($item[$fieldID])) {
+                        $arrValues = explode(',', $item[$fieldID]);
+                        $arrTemp = array();
+                        if (is_array($arrValues)) {
+                            foreach ($arrValues as $val) {
+                                $arrTemp[$val] = $options[$val];
+                            }
+                        }
+                        $item[$fieldID] = $arrTemp;
+                    }
+                }
+            }
+
+            // set data to template
+            $objTemplate->setData($item);
+
+            // parse template
+            $strTemplate .= $objTemplate->parse();
 
             // set js files
             if ($this->loadMapScript) {
@@ -449,23 +498,19 @@ class FModuleInsertTags extends Frontend
 
         // parse href
         $url = '';
-        if($item['source'] == 'default' || $item['source'] == 'internal')
-        {
+        if ($item['source'] == 'default' || $item['source'] == 'internal') {
             // get site
             $jumpTo = '';
-            if($item['source'] == 'internal')
-            {
+            if ($item['source'] == 'internal') {
                 $jumpTo = $item['jumpTo'];
             }
-            if($item['source'] == 'default')
-            {
+            if ($item['source'] == 'default') {
                 $arrJumpTo = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($viewDB->pid)->row();
                 $jumpTo = $arrJumpTo['addDetailPage'] ? $arrJumpTo['rootPage'] : '';
             }
 
             // get href
-            if($jumpTo)
-            {
+            if ($jumpTo) {
                 $objParent = \PageModel::findWithDetails($jumpTo);
                 $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
                 $strUrl = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
@@ -474,8 +519,7 @@ class FModuleInsertTags extends Frontend
 
             $item['target'] = '';
         }
-        if($item['source'] == 'external')
-        {
+        if ($item['source'] == 'external') {
             $url = $item['url'];
         }
 
@@ -682,9 +726,10 @@ class FModuleInsertTags extends Frontend
 
     /**
      * @param $q
+     * @param $tablename
      * @return array
      */
-    private function getFilterFields($q)
+    private function getFilterFields($q, $tablename)
     {
         $notSupportedTypes = array('legend_start', 'legend_end', 'fulltext_search', 'widget');
         $notSupportedID = array('orderBy', 'sorting_fields', 'sorting_fields', 'pagination');
@@ -697,7 +742,7 @@ class FModuleInsertTags extends Frontend
 
         if (empty($qArr)) return array();
 
-        $allFiltersDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters')->execute();
+        $allFiltersDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
         $arrFilter = array();
 
         while ($allFiltersDB->next()) {
@@ -708,7 +753,7 @@ class FModuleInsertTags extends Frontend
                 continue;
             }
 
-            if ($qArr[$tname] && $allFiltersDB->type == 'search_field' && $allFiltersDB->isInteger) {
+            if ($qArr[$tname] || $allFiltersDB->type == 'toggle_field') {
                 $arrFilter[$tname] = $allFiltersDB->row();
                 $arrFilter[$tname]['value'] = $qArr[$tname];
                 $arrFilter[$tname]['enable'] = true;
@@ -721,7 +766,7 @@ class FModuleInsertTags extends Frontend
             }
 
             if ($allFiltersDB->type == 'toggle_field' && !$qArr[$tname]) {
-                $arrFilter[$tname]['value'] = 'skip';
+                $arrFilter[$tname]['value'] = '';
             }
         }
         return $arrFilter;

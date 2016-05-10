@@ -116,7 +116,7 @@ class DCAHelper extends Backend
 				return $options;
 			}
 
-			$DataFromTableDB = $this->Database->prepare('SELECT '.$option['col'].', '.$option['title'].' FROM '.$option['table'].'')->execute();
+			$DataFromTableDB = $this->Database->prepare('SELECT '.$option['col'].', '.$option['title'].' FROM '.$option['table'].' WHERE pid = ?')->execute($id);
 			while($DataFromTableDB->next())
 			{
 				$k = $DataFromTableDB->row()[$option['col']];

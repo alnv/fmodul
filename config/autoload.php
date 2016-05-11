@@ -27,6 +27,7 @@ ClassLoader::addClasses(array
     'FModule\FModule' => $pathToFiles . 'src/Resources/contao/classes/FModule.php',
     'FModule\FModuleAjaxApi' => $pathToFiles . 'src/Resources/contao/classes/FModuleAjaxApi.php',
     'FModule\FModuleTranslation' => $pathToFiles . 'src/Resources/contao/classes/FModuleTranslation.php',
+    'FModule\CleanUrls' => $pathToFiles . 'src/Resources/contao/classes/CleanUrls.php',
 
     // widgets
     'FModule\OptionWizardExtended' => $pathToFiles . 'src/Resources/contao/widgets/OptionWizardExtended.php',
@@ -104,4 +105,7 @@ TemplateLoader::addFiles(array
 
     // insertTags
     'fm_view' => $pathToTemplates . '/inserttags',
+
+    // taxonomies
+    'mod_taxonomies' => $pathToTemplates . '/taxonomies',
 ));

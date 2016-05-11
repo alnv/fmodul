@@ -21,12 +21,18 @@ if ((version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GL
 // Back End Modules
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     'icon' => $GLOBALS['FM_AUTO_PATH'] . 'icon.png',
+    'name' => 'F Module',
     'tables' => array(
         'tl_fmodules',
         'tl_fmodules_filters',
         'tl_fmodules_feed',
         'tl_fmodules_license'
     )
+);
+$GLOBALS['BE_MOD']['system']['taxonomy'] = array(
+    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'icon.png',
+    'name' => 'Taxonomy',
+    'tables' => array('tl_taxonomies')
 );
 
 // Front End Modules
@@ -35,7 +41,8 @@ array_insert($GLOBALS['FE_MOD'], 5, array(
         'fmodule_fe_list' => 'ModuleListView',
         'fmodule_fe_detail' => 'ModuleDetailView',
         'fmodule_fe_formfilter' => 'ModuleFormFilter',
-        'fmodule_fe_registration' => 'ModuleFModuleRegistration'
+        'fmodule_fe_registration' => 'ModuleFModuleRegistration',
+        'fmodule_fe_taxonomy' => 'ModuleFModuleTaxonomy'
     )
 ));
 
@@ -206,7 +213,7 @@ if (TL_MODE == 'FE')
     $validSums = new FModule\FModule();
     $license = Contao\Config::get('fmodule_license');
     if (!isset($license) || !in_array(md5($license), $validSums->validSums, true)) {
-        $GLOBALS['TL_HEAD'][] = '<link title="F Module | Buy license" rel="license" href="http://fmodul.alexandernaumov.de" />';
+        $GLOBALS['TL_HEAD'][] = '<link title="F Module | Buy license" rel="license" href="http://fmodul.alexandernaumov.de/kaufen.html" />';
         $GLOBALS['TL_HEAD'][] = '<link title="F Module | Documentation" rel="help" href="http://fmodul.alexandernaumov.de/ressourcen.html" />';
     }
 }

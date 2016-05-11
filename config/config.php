@@ -69,6 +69,7 @@ $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax')
 $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
 $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('FModuleTranslation', 'translateUrlParameters');
+$GLOBALS['TL_HOOKS']['getPageIdFromUrl'][] = array('CleanUrls', 'getPageIdFromUrlStr');
 
 // InsertTags
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModuleInsertTags', 'setHooks');

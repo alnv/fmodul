@@ -42,6 +42,7 @@ ClassLoader::addClasses(array
     'FModule\ModuleListView' => $pathToFiles . 'src/Resources/contao/module/ModuleListView.php',
     'FModule\ModuleFModuleRegistration' => $pathToFiles . 'src/Resources/contao/module/ModuleFModuleRegistration.php',
     'FModule\ModuleFormFilter' => $pathToFiles . 'src/Resources/contao/module/ModuleFormFilter.php',
+    'FModule\ModuleFModuleTaxonomy' => $pathToFiles . 'src/Resources/contao/module/ModuleFModuleTaxonomy.php',
 
     // models
     'FModule\ContentModelExtend' => $pathToFiles . 'src/Resources/contao/model/ContentModelExtend.php',

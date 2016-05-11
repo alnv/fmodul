@@ -644,7 +644,6 @@ class DCAModuleData extends ViewContainer
         return $arr;
     }
 
-
     /**
      * @param $varValue
      * @param $dc
@@ -656,6 +655,7 @@ class DCAModuleData extends ViewContainer
         $autoAlias = false;
 
         // create alias if no dca defined
+        // registration module
         if ($dc === null) {
             $strValue = $varValue ? $varValue : '';
             return $strValue;
@@ -848,7 +848,6 @@ class DCAModuleData extends ViewContainer
 
         $this->import('Automator');
         $this->Automator->generateSitemap();
-
         $this->Session->set('fmodules_feed_updater', null);
     }
 

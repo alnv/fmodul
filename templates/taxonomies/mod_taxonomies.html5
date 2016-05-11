@@ -1,0 +1,20 @@
+<?php $this->extend('block_searchable'); ?>
+<?php $this->block('content'); ?>
+
+<?php if(count($this->taxonomies)): ?>
+    <ul>
+    <?php foreach($this->taxonomies as $taxonomy): ?>
+        <li><a href="<?= $taxonomy['href'] ?>"><?= $taxonomy['name'] ?></a></li>
+    <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+<?php if(count($this->tags)): ?>
+    <ul>
+        <?php foreach($this->tags as $tags): ?>
+            <li><a href="<?= $tags['href'] ?>"><?= $tags['name'] ?></a></li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

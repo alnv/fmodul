@@ -3,8 +3,12 @@
 // BE
 $GLOBALS['TL_LANG']['MOD']['fmodule'][0] = 'F Module';
 $GLOBALS['TL_LANG']['MOD']['fmodule'][1] = 'F Module administration';
+
 $GLOBALS['TL_LANG']['MOD']['fmodules'][0] = 'Extensions';
 $GLOBALS['TL_LANG']['MOD']['fmodules'][1] = 'F Modules Extensions';
+
+$GLOBALS['TL_LANG']['MOD']['taxonomy'][0] = 'Taxonomy';
+$GLOBALS['TL_LANG']['MOD']['taxonomy'][1] = 'F Module Taxonomy Extension.';
 
 // FE
 $GLOBALS['TL_LANG']['FMD']['fmodule']   = 'F Module';

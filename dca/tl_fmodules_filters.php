@@ -99,11 +99,12 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             )
         )
     ),
+
     'palettes' => array(
-        '__selector__' => array('type'),
+        '__selector__' => array('type', 'reactToTaxonomy'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
-        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,dataFromTable,negate,autoPage,fieldAppearance;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,dataFromTaxonomy,negate,autoPage;{taxonomy_legend},reactToTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
+        'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,negate,autoPage;{taxonomy_legend},reactToTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},fmGroup,evalCss,isMandatory;',
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchOrderBy,fullTextSearchFields;',
@@ -114,6 +115,11 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'map_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{map_settings_legend},mapTemplate,mapZoom,mapType,mapScrollWheel,mapMarker,mapInfoBox,mapStyle;',
     ),
+
+    'subpalettes' => array(
+        'reactToTaxonomy' => 'reactToField'
+    ),
+
     'fields' => array
     (
         'id' => array
@@ -198,7 +204,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'select',
             'exclude' => true,
             'options_callback' => array('tl_fmodules_filters', 'getAppearance'),
-            'eval' => array('tl_class' => 'clr'),
+            'eval' => array('tl_class' => 'w50'),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
         'widget_type' => array
@@ -216,7 +222,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'w50 m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'evalCss' => array(
@@ -253,28 +259,28 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'w50 m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'addTime' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['addTime'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'w50 m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'negate' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['negate'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'w50 m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'autoPage' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'],
             'inputType' => 'checkbox',
             'exclude' => true,
-            'eval' => array('tl_class' => 'w50 m12'),
+            'eval' => array('tl_class' => 'clr'),
             'sql' => "char(1) NOT NULL default ''"
         ),
         'isMandatory' => array(
@@ -283,6 +289,29 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'exclude' => true,
             'eval' => array('tl_class' => 'w50 m12'),
             'sql' => "char(1) NOT NULL default ''"
+        ),
+        // taxonomy
+        'dataFromTaxonomy' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'],
+            'inputType' => 'checkbox',
+            'exclude' => true,
+            'eval' => array('tl_class' => 'clr'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'reactToTaxonomy' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'],
+            'inputType' => 'checkbox',
+            'exclude' => true,
+            'eval' => array('submitOnChange' => true, 'tl_class' => 'clr'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'reactToField' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'],
+            'inputType' => 'select',
+            'exclude' => true,
+            'options_callback' => array('tl_fmodules_filters', 'getTaxonomyFields'),
+            'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'mandatory' => true, 'tl_class' => 'clr'),
+            'sql' => "varchar(255) NOT NULL default ''"
         ),
         // map
         'mapTemplate' => array(
@@ -376,12 +405,40 @@ class tl_fmodules_filters extends Backend
     }
 
     /**
-     * @param $dca
+     * @param \DataContainer $dc
      * @return array
      */
-    public function getDataCols($dca)
+    public function getTaxonomyFields(\DataContainer $dc)
     {
-        $pid = $dca->activeRecord->pid;
+        $pid = $dc->activeRecord->pid;
+        $id = $dc->id;
+        $options = array();
+
+        if (!$pid) return $options;
+
+        $fieldsDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE pid = ? AND dataFromTaxonomy = "1" AND id != ?')->execute($pid, $id);
+
+        if(!$fieldsDB->count())
+        {
+           return $options;
+        }
+
+        while($fieldsDB->next())
+        {
+            if(!$fieldsDB->fieldID) continue;
+            $options[$fieldsDB->fieldID] = $fieldsDB->title;
+        }
+
+        return $options;
+    }
+
+    /**
+     * @param $dc
+     * @return array
+     */
+    public function getDataCols(\DataContainer $dc)
+    {
+        $pid = $dc->activeRecord->pid;
         $options = array();
 
         if (!$pid) return $options;
@@ -420,12 +477,12 @@ class tl_fmodules_filters extends Backend
     }
 
     /**
-     * @param $dca
+     * @param $dc
      * @return array
      */
-    public function getWidgetTemplates($dca)
+    public function getWidgetTemplates(\DataContainer $dc)
     {
-        $type = $dca->activeRecord->widget_type;
+        $type = $dc->activeRecord->widget_type;
 
         if ($type) {
             $tplName = explode('.', $type)[0];
@@ -586,7 +643,7 @@ class tl_fmodules_filters extends Backend
      * @param DataContainer $dc
      * @return array
      */
-    public function getAppearance(DataContainer $dc)
+    public function getAppearance(\DataContainer $dc)
     {
 
         $type = $dc->activeRecord->type;
@@ -611,7 +668,7 @@ class tl_fmodules_filters extends Backend
      * @return mixed
      * @throws Exception
      */
-    public function create_cols($values, DataContainer $dc)
+    public function create_cols($values, \DataContainer $dc)
     {
 
         $pid = $dc->activeRecord->pid;
@@ -804,7 +861,7 @@ class tl_fmodules_filters extends Backend
      * @param DataContainer $dc
      * @return null
      */
-    public function delete_cols(DataContainer $dc)
+    public function delete_cols(\DataContainer $dc)
     {
 
         $doNotDeleteByType = array('fulltext_search', 'wrapper_field', 'legend_start', 'legend_end', 'map_field');

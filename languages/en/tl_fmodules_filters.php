@@ -147,6 +147,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][1] = 'Please enter your gr
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regular expression';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Please select Regular expression for this item. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">Open reference</a>';
 
+// dataFromTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Load data from taxonomy tree';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Here you can load data from taxonomy tree.';
+
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Load relevant data (taxonomy)';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = ''; // @todo
+
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Multiple select';

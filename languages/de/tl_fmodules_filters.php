@@ -61,7 +61,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Bitte wähle
 
 // dataFromTable
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][0] = 'Filterkriterien aus einer Tabelle laden.';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'Hier können Sie die Filterkriterien aus einer Tabelle laden.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'Die Filterkriterien werden aus einer Tabelle geladen.';
 
 // mapTemplate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template auswählen';
@@ -142,6 +142,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][1] = 'Bitte geben Sie eine
 // rgxp
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regulärer Ausdruck';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Bitte wählen Sie einen Regulären Ausdruck aus. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">In der Dokumentation nachlesen</a>';
+
+// dataFromTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Filterkriterien aus dem Taxonomiebaum laden';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Die Filterkriterien werden aus dem Taxonomiebaum geladen.';
+
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Nur relevante Kriterien laden (Taxonomie)';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Sobald ein Taxonomiebaum ausgewählt wird, werden alle entsprechenden Unterpunkte geladen.';
 
 // validate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits.';

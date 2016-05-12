@@ -59,7 +59,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy_page'] = array(
     'exclude' => true,
     'inputType' => 'pageTree',
     'foreignKey' => 'tl_page.title',
-    'eval' => array('mandatory' => true, 'fieldType' => 'radio'),
+    'eval' => array('fieldType' => 'radio'),
     'sql' => "int(10) unsigned NOT NULL default '0'",
     'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
 );

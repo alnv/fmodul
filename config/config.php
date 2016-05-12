@@ -74,7 +74,6 @@ $GLOBALS['TL_HOOKS']['getPageIdFromUrl'][] = array('CleanUrls', 'getPageIdFromUr
 // InsertTags
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModuleInsertTags', 'setHooks');
 
-
 // Ajax
 $GLOBALS['TL_MOOTOOLS'][] =
     "<script>

@@ -1,20 +1,26 @@
 <?php $this->extend('block_searchable'); ?>
 <?php $this->block('content'); ?>
 
-<?php if(count($this->taxonomies)): ?>
-    <ul>
-    <?php foreach($this->taxonomies as $taxonomy): ?>
-        <li><a href="<?= $taxonomy['href'] ?>"><?= $taxonomy['name'] ?></a></li>
-    <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
+<section class="ce_taxonomy">
 
-<?php if(count($this->tags)): ?>
-    <ul>
-        <?php foreach($this->tags as $tags): ?>
-            <li><a href="<?= $tags['href'] ?>"><?= $tags['name'] ?></a></li>
+    <?php if($this->rootTaxonomy): ?>
+        <p class="title"><a href="<?= $this->rootTaxonomy['href']; ?>"><?= $this->rootTaxonomy['name']; ?></a></p>
+    <?php endif; ?>
+
+    <?php if($this->taxonomies && isset($this->taxonomies['species'])): ?>
+        <ul>
+        <?php foreach($this->taxonomies['species'] as $specie): ?>
+            <li class="<?= $specie['css'] ?>"><a href="<?= $specie['href'] ?>"><?= $specie['name'] ?></a></li>
         <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
+        </ul>
+    <?php endif; ?>
 
+    <?php if($this->taxonomies && isset($this->taxonomies['tags'])): ?>
+        <ul>
+            <?php foreach($this->taxonomies['tags'] as $tags): ?>
+                <li class="<?= $tags['css'] ?>"><a href="<?= $tags['href'] ?>"><?= $tags['name'] ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+</section>
 <?php $this->endblock(); ?>

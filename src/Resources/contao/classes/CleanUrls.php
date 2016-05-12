@@ -23,22 +23,79 @@ class CleanUrls extends \Frontend
      */
     public function getPageIdFromUrlStr($arrFragments)
     {
-        /*
+
         if(count($arrFragments) > 0)
         {
-            $incFragments = count($arrFragments) - 1;
-            $setAutoItems = array('auto_taxonomy', 'auto_tag'); // allowed auto_items
-            $incAutoItems = 0;
-
-            while($incFragments > -1 && $incAutoItems < count($setAutoItems))
+            $setTaxonomy = false;
+            $setAutoItems = $this->setParameter($arrFragments);
+            $arrCustomizedFragments = array();
+            if($setAutoItems['taxonomy'])
             {
-                \Input::setGet($setAutoItems[$incAutoItems], $arrFragments[$incFragments]);
-                $incFragments -= 1;
-                $incAutoItems += 1;
+                $rootTaxonomy = $this->Database->prepare('SELECT id FROM tl_taxonomies WHERE alias = ? AND published = "1"')->limit(1)->execute($setAutoItems['taxonomy']);
+                if($rootTaxonomy->numRows)
+                {
+                    $setTaxonomy = true;
+                }
             }
 
+            if($setTaxonomy)
+            {
+                $arrCustomizedFragments[] = $arrFragments[0];
+                foreach($setAutoItems as $param => $value)
+                {
+                    if($param === 'auto_item')
+                    {
+                        $arrCustomizedFragments[] = $param;
+                        $arrCustomizedFragments[] = $value;
+                        continue;
+                    }
+
+                    \Input::setGet($param, $value);
+                }
+
+                // overwrite fragments
+                $arrFragments = $arrCustomizedFragments;
+            }
         }
-        */
+
         return array_unique($arrFragments);
+    }
+
+    /**
+     * @param $arrFragments
+     * @return array
+     */
+    private function setParameter($arrFragments)
+    {
+        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'species' => '', 'tag' => '');
+        $intUrlPart = 1;
+
+        foreach($setAutoItems as $param => $value)
+        {
+            if(isset($arrFragments[$intUrlPart]) && $arrFragments[$intUrlPart] && $this->isAutoItem($arrFragments[$intUrlPart]))
+            {
+                $intUrlPart++;
+            }
+            if(isset($arrFragments[$intUrlPart]) && $arrFragments[$intUrlPart])
+            {
+                $setAutoItems[$param] = $arrFragments[$intUrlPart];
+            }
+            $intUrlPart++;
+        }
+        return $setAutoItems;
+    }
+
+    /**
+     * @param $strFragment
+     * @return bool
+     */
+    private function isAutoItem($strFragment)
+    {
+        $return = false;
+        if($strFragment === 'auto_item')
+        {
+            $return = true;
+        }
+        return $return;
     }
 }

@@ -23,6 +23,26 @@ class ModuleFModuleTaxonomy extends \Module
     protected $strTemplate = 'mod_taxonomies';
 
     /**
+     * @var string
+     */
+    protected $strAutoItem = '';
+
+    /**
+     * @var string
+     */
+    protected $strTaxonomy= '';
+
+    /**
+     * @var string
+     */
+    protected $strSpecie = '';
+
+    /**
+     * @var string
+     */
+    protected $strTag= '';
+
+    /**
      * @return string
      */
     public function generate()
@@ -46,68 +66,164 @@ class ModuleFModuleTaxonomy extends \Module
         global $objPage;
 
         $taxonomyID = $this->fm_taxonomy ? $this->fm_taxonomy : '';
-        $rootTaxonomyDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( id = ? OR pid = ? ) AND published = "1"')->execute($taxonomyID, $taxonomyID);
+        $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( id = ? OR pid = ? ) AND published = "1"')->execute($taxonomyID, $taxonomyID);
+        $isListView = false;
         $redirectID = $this->fm_taxonomy_page ? $this->fm_taxonomy_page : $objPage->id;
+        $objPageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ? ORDER BY sorting')->execute($redirectID);
 
-        if(!$rootTaxonomyDB->count())
+        $taxonomies = array(
+            'taxonomy' => array(),
+            'species' => array(),
+            'tags' => array()
+        );
+
+        // set param values
+        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'species' => '', 'tag' => '');
+        foreach($setAutoItems as $param => $value)
         {
-            // no taxonomies found
+            $setAutoItems[$param] = \Input::get($param);
         }
-
-        // source page
-        $objPage = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ? ORDER BY sorting')->execute($redirectID);
-
-        // parse template
-        $arrTaxonomies = array();
-        $arrParent = null;
-        while($rootTaxonomyDB->next())
+        while($rootTaxonomiesDB->next())
         {
-            $item = $rootTaxonomyDB->row();
-
-            if($item['pid'] == '0')
+            if($setAutoItems['auto_item'] === $rootTaxonomiesDB->alias)
             {
-                $arrParent = $item;
+                $isListView = true;
+            }
+
+            if($rootTaxonomiesDB->pid == '0')
+            {
+                $taxonomies['taxonomy'][] = $rootTaxonomiesDB->row();
                 continue;
             }
 
-            // set into taxonomies
-            $arrTaxonomies[] = $item;
-            unset($item);
+            $taxonomies['species'][] = $rootTaxonomiesDB->row();
         }
 
-        $parentAlias = $arrParent['alias'] ? $arrParent['alias'] : 'taxonomy';
+        // set params variables
+        $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
+        $this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
+        $this->strSpecie = $isListView ? \Input::get('taxonomy') : \Input::get('species');
+        $this->strTag = $isListView ? \Input::get('species') : \Input::get('tag');
 
-        for($i = 0; $i < count($arrTaxonomies); $i++)
+        //
+        $rootSpeciesDB = null;
+        if($this->strSpecie)
         {
-            $arrTaxonomies[$i]['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $parentAlias . '/' . $arrTaxonomies[$i]['alias']);
+            $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1"')->execute($this->strSpecie);
         }
 
-        // get tags
-        $parentTagAlias = \Input::get($parentAlias);
-        $arrTags = array();
-        if($parentTagAlias)
+        if($rootSpeciesDB)
         {
-            $rootTagDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( alias = ? OR id = ? ) AND published = "1"')->limit(1)->execute($parentTagAlias, (int)$parentTagAlias);
-            if($rootTagDB->count())
+            while($rootSpeciesDB->next())
             {
-                $arrRootTag = $rootTagDB->row();
-                $tagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? AND published = "1"')->execute($arrRootTag['id']);
-                if($tagsDB->count())
-                {
-                    while($tagsDB->next())
-                    {
-                        $item = $tagsDB->row();
-                        $item['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $parentAlias . '/' . $arrRootTag['alias'] . '/tag/' . $item['alias']);
-                        $arrTags[] = $item;
-                        unset($item);
-                    }
-                }
+                $taxonomies['tags'][] = $rootSpeciesDB->row();
             }
-
-            \Input::get('tag'); //
         }
 
-        $this->Template->taxonomies = $arrTaxonomies;
-        $this->Template->tags = $arrTags;
+        $arrPage  = $objPageDB->row();
+
+        // parse taxonomies
+        foreach($taxonomies as $param => $taxonomy)
+        {
+            for($i = 0; $i < count($taxonomy); $i++)
+            {
+                $taxonomy[$i]['css'] = $param;
+                $taxonomies[$param][$i] = $this->parseTaxonomiesArrays($param, $taxonomy[$i], $arrPage);
+            }
+        }
+
+        $this->Template->rootTaxonomy = $taxonomies['taxonomy'][0];
+        $this->Template->taxonomies = $taxonomies;
+
+    }
+
+    /**
+     * @param $type
+     * @param $arrItem
+     * @param array $arrPage
+     * @return mixed
+     */
+    private function parseTaxonomiesArrays($type, $arrItem, $arrPage = array())
+    {
+        if($type == 'taxonomy')
+        {
+            return $this->parseTaxonomy($arrItem, $arrPage);
+        }
+
+        if($type == 'species')
+        {
+            return $this->parseSpecies($arrItem, $arrPage);
+        }
+
+        if($type == 'tags')
+        {
+            return $this->parseTags($arrItem, $arrPage);
+        }
+
+        return $arrItem;
+    }
+
+    /**
+     * @param $arrItem
+     * @param $arrPage
+     * @return mixed
+     */
+    private function parseTaxonomy($arrItem, $arrPage)
+    {
+        // no taxonomy found
+        if(!$this->strTaxonomy)
+        {
+            $this->strTaxonomy = $arrItem['alias'];
+        }
+
+        // css
+        if($this->strTaxonomy === $arrItem['alias'])
+        {
+            $arrItem['css'] .= ' active';
+        }
+
+        // href
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $arrItem['alias']);
+
+
+        return $arrItem;
+    }
+
+    /**
+     * @param $arrItem
+     * @param $arrPage
+     * @return mixed
+     */
+    private function parseSpecies($arrItem, $arrPage)
+    {
+        // css
+        if($this->strSpecie === $arrItem['alias'])
+        {
+            $arrItem['css'] .= ' active';
+        }
+
+        // href
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strTaxonomy . '/' . $arrItem['alias']);
+
+        return $arrItem;
+    }
+
+    /**
+     * @param $arrItem
+     * @param $arrPage
+     * @return mixed
+     */
+    private function parseTags($arrItem, $arrPage)
+    {
+        // css
+        if($this->strTag === $arrItem['alias'])
+        {
+            $arrItem['css'] .= ' active';
+        }
+
+        // href
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strTaxonomy . '/' . $this->strSpecie . '/' . $arrItem['alias'] );
+
+        return $arrItem;
     }
 }

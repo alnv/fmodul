@@ -26,9 +26,20 @@ class CleanUrls extends \Frontend
 
         if(count($arrFragments) > 0)
         {
+
             $setTaxonomy = false;
-            $setAutoItems = $this->setParameter($arrFragments);
+            $arrFolderUrlFragments = array();
+            $arrTempFragments = $arrFragments;
+
+            if(\Config::get('folderUrl') && isset($arrFragments[0]) && !in_array('auto_item', $arrFragments))
+            {
+                $arrFolderUrlFragments = explode('/', $arrFragments[0]);
+            }
+
+            $arrTempFragments = count($arrFolderUrlFragments) > 1 ? $arrFolderUrlFragments : $arrTempFragments;
+            $setAutoItems = $this->setParameter($arrTempFragments);
             $arrCustomizedFragments = array();
+
             if($setAutoItems['taxonomy'])
             {
                 $rootTaxonomy = $this->Database->prepare('SELECT id FROM tl_taxonomies WHERE alias = ? AND published = "1"')->limit(1)->execute($setAutoItems['taxonomy']);
@@ -67,7 +78,7 @@ class CleanUrls extends \Frontend
      */
     private function setParameter($arrFragments)
     {
-        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'species' => '', 'tag' => '');
+        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'specie' => '', 'tags' => array());
         $intUrlPart = 1;
 
         foreach($setAutoItems as $param => $value)
@@ -76,12 +87,14 @@ class CleanUrls extends \Frontend
             {
                 $intUrlPart++;
             }
+
             if(isset($arrFragments[$intUrlPart]) && $arrFragments[$intUrlPart])
             {
                 $setAutoItems[$param] = $arrFragments[$intUrlPart];
             }
             $intUrlPart++;
         }
+
         return $setAutoItems;
     }
 
@@ -92,10 +105,7 @@ class CleanUrls extends \Frontend
     private function isAutoItem($strFragment)
     {
         $return = false;
-        if($strFragment === 'auto_item')
-        {
-            $return = true;
-        }
+        if($strFragment === 'auto_item') $return = true;
         return $return;
     }
 }

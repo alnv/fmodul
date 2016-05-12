@@ -76,14 +76,14 @@ class DiverseFunction
                     var FModuleLoadLibraries = function()
                     {
                         var mapInfoBox = document.createElement("script");
-                        mapInfoBox.src = "http' . (Environment::get('ssl') ? 's' : '') . '://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/src/infobox_packed.js";
+                        mapInfoBox.src = "'.$GLOBALS['FM_AUTO_PATH'].'InfoBox.js";
                         mapInfoBox.onload = FModuleLoadMaps;
                         document.body.appendChild(mapInfoBox);
                     };
                     var FModuleLoadMaps = function()
                     {
                         try{
-                            if(undefined != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
+                            if(undefined !== FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
                         } catch(err)
                         {
                             console.warn("No Google Map found!");

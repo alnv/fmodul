@@ -126,6 +126,16 @@ class DCAHelper extends Backend
 			return $options;
 		}
 
+		if($field['dataFromTaxonomy'] == '1')
+		{
+			//
+		}
+
+		if($field['reactToTaxonomy'] == '1')
+		{
+			//
+		}
+
 		foreach( $option as $value )
 		{
 			if(!$value['value']) continue;

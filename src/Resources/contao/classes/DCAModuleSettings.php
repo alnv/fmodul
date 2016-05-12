@@ -302,27 +302,40 @@ class DCAModuleSettings extends ViewContainer
      */
     public function setPalettes($moduleDB)
     {
-        $fields = $moduleDB['fields'];
-        $fieldStr = '{data_legend},';
+        $arrFields = $moduleDB['fields'];
+        $strPalette = '{data_legend},';
         $arr = array();
-        foreach ($fields as $field) {
+        foreach ($arrFields as $field) {
+
             if (!$field['fieldID']) {
                 continue;
             }
-            if ($field['type'] !== 'simple_choice' || $field['type'] !== 'multi_choice') {
-                if ($field['dataFromTable'] == '1') {
+
+            if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
+            {
+                if($field['dataFromTable'] == '1')
+                {
                     $arr[] = 'select_table_' . $field['fieldID'];
                     $arr[] = 'select_col_' . $field['fieldID'];
                     $arr[] = 'select_title_' . $field['fieldID'];
-                } else {
+                } else if($field['dataFromTaxonomy'] == '1')
+                {
+                    $arr[] = 'select_taxonomy_' . $field['fieldID'];
+                } else if($field['reactToTaxonomy'] == '1')
+                {
+                    continue;
+                }
+                else
+                {
                     $arr[] = $field['fieldID'];
                 }
             }
         }
-        $fieldStr = $fieldStr . implode(',', $arr) . ';';
+        $strPalette = count($arr) > 0 ? $strPalette . implode(',', $arr) . ';' : '';
+
         return array(
             '__selector__' => array('addDetailPage', 'allowComments'),
-            'default' => '{general_legend},title,info,language,fallback;{root_legend},addDetailPage;' . $fieldStr . '{comments_legend:hide},allowComments;'
+            'default' => '{general_legend},title,info,language,fallback;{root_legend},addDetailPage;' . $strPalette . '{comments_legend:hide},allowComments;'
         );
     }
 
@@ -374,7 +387,16 @@ class DCAModuleSettings extends ViewContainer
                     $arr[$fieldPrefixes[$i] . $field['fieldID']] = $this->getOptionFromTableField($fieldPrefixes[$i], $field);
                 }
             }
-        } else {
+        }else if($field['dataFromTaxonomy'] == '1')
+        {
+            // @todo
+        }
+        else if($field['reactToTaxonomy'] == '1')
+        {
+            // let empty
+        }
+        else
+        {
             $arr[$field['fieldID']] = $this->getOptionField($field);
         }
         return $arr;

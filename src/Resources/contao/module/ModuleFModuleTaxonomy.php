@@ -40,7 +40,7 @@ class ModuleFModuleTaxonomy extends \Module
     /**
      * @var string
      */
-    protected $strTag= '';
+    protected $strTag = array();
 
     /**
      * @return string
@@ -64,25 +64,20 @@ class ModuleFModuleTaxonomy extends \Module
     {
 
         global $objPage;
-
         $taxonomyID = $this->fm_taxonomy ? $this->fm_taxonomy : '';
         $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( id = ? OR pid = ? ) AND published = "1"')->execute($taxonomyID, $taxonomyID);
         $isListView = false;
         $redirectID = $this->fm_taxonomy_page ? $this->fm_taxonomy_page : $objPage->id;
         $objPageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ? ORDER BY sorting')->execute($redirectID);
-
-        $taxonomies = array(
-            'taxonomy' => array(),
-            'species' => array(),
-            'tags' => array()
-        );
+        $taxonomies = array('taxonomy' => array(), 'species' => array(), 'tags' => array());
 
         // set param values
-        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'species' => '', 'tag' => '');
+        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'specie' => '', 'tags' => array());
         foreach($setAutoItems as $param => $value)
         {
             $setAutoItems[$param] = \Input::get($param);
         }
+
         while($rootTaxonomiesDB->next())
         {
             if($setAutoItems['auto_item'] === $rootTaxonomiesDB->alias)
@@ -102,8 +97,11 @@ class ModuleFModuleTaxonomy extends \Module
         // set params variables
         $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
         $this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
-        $this->strSpecie = $isListView ? \Input::get('taxonomy') : \Input::get('species');
-        $this->strTag = $isListView ? \Input::get('species') : \Input::get('tag');
+        $this->strSpecie = $isListView ? \Input::get('taxonomy') : \Input::get('specie');
+        $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
+
+        // allow multiple values
+        $this->strTag = explode(',', $this->strTag);
 
         //
         $rootSpeciesDB = null;
@@ -185,7 +183,6 @@ class ModuleFModuleTaxonomy extends \Module
         // href
         $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $arrItem['alias']);
 
-
         return $arrItem;
     }
 
@@ -216,7 +213,7 @@ class ModuleFModuleTaxonomy extends \Module
     private function parseTags($arrItem, $arrPage)
     {
         // css
-        if($this->strTag === $arrItem['alias'])
+        if(is_array($this->strTag) && in_array($arrItem['alias'], $this->strTag))
         {
             $arrItem['css'] .= ' active';
         }

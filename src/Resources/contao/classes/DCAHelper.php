@@ -154,7 +154,6 @@ class DCAHelper extends Backend
 
 		$src = $state ? 'files/fmodule/assets/'.$fieldID.'.' : 'files/fmodule/assets/'.$fieldID.'_.';
 		$temp = $state ? 'files/fmodule/assets/'.$fieldID.'_.' : 'files/fmodule/assets/'.$fieldID.'.';
-
 		$allowedFormat = array('gif', 'png', 'svg');
 
 		foreach($allowedFormat as $format)
@@ -174,7 +173,6 @@ class DCAHelper extends Backend
 
 		$icon = $state ? 'featured.gif': 'featured_.gif';
 		$nIcon = $state ? 'featured_.gif': 'featured.gif';
-
 		$temp = 'system/themes/' . Backend::getTheme() . '/images/'.$nIcon ;
 		$src = 'system/themes/' . Backend::getTheme() . '/images/'.$icon ;
 

@@ -121,19 +121,19 @@ class DCAModuleData extends ViewContainer
             return;
         }
 
-        if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields)) {
+        if (!is_array($this->User->{$allowedFields}) || empty($this->User->{$allowedFields})) {
             $root = array(0);
         } else {
-            $root = $this->User->$allowedFields;
+            $root = $this->User->{$allowedFields};
         }
 
+        // id
         $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
         switch (Input::get('act')) {
             case 'paste':
                 // Allow
                 break;
-
             case 'create':
                 if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root)) {
                     $this->log('Not enough permissions to create F Module items in ' . $modname . ' Wrapper ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
@@ -143,10 +143,20 @@ class DCAModuleData extends ViewContainer
 
             case 'cut':
             case 'copy':
-                if (!in_array(Input::get('pid'), $root)) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
+                $objArchive = $this->Database->prepare("SELECT pid FROM " . $dc->table . " WHERE id=?")
+                ->limit(1)
+                ->execute($id);
+
+                if ($objArchive->numRows < 1) {
+                    $this->log('Invalid F Module item ID "' . $id . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
+
+                if (!in_array($objArchive->pid, $root)) {
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . $objArchive->pid . '"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+                break;
 
             case 'edit':
             case 'show':
@@ -246,8 +256,7 @@ class DCAModuleData extends ViewContainer
             if ($objData->numRows && !$objData->fallback) {
                 $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
             }
-        }else if(\Input::get('act') == 'editAll')
-        {
+        } else if (\Input::get('act') == 'editAll') {
             $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
         }
     }

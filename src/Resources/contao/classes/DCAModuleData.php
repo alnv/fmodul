@@ -143,8 +143,18 @@ class DCAModuleData extends ViewContainer
 
             case 'cut':
             case 'copy':
-                if (!in_array(Input::get('pid'), $root)) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
+                $objArchive = $this->Database->prepare("SELECT pid FROM " . $dc->table . " WHERE id=?")
+                    ->limit(1)
+                    ->execute($id);
+
+                if ($objArchive->numRows < 1) {
+                    $this->log('Invalid F Module item ID "' . $id . '"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                }
+
+
+                if (!in_array($objArchive->pid, $root)) {
+                    $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . $objArchive->pid . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 

@@ -157,6 +157,7 @@ class DCAModuleData extends ViewContainer
                     $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . $objArchive->pid . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
+                break;
 
             case 'edit':
             case 'show':

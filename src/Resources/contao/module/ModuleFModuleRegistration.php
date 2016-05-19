@@ -86,7 +86,7 @@ class ModuleFModuleRegistration extends Module
         $moduleDCA = DCACreator::getInstance();
         $arrModule = $moduleDCA->getModuleByTableName($this->strTableName);
         $dcaData = DCAModuleData::getInstance();
-        $this->dcaFields = $dcaData->setFields($arrModule);
+        $this->dcaFields = $dcaData->setFields($arrModule, $this->strPid);
 
         // set tpl
         if ($this->fm_sign_template != '') {

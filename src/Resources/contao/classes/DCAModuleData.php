@@ -585,9 +585,10 @@ class DCAModuleData extends ViewContainer
 
     /**
      * @param $moduleObj
+     * @param $wrapperID
      * @return array
      */
-    public function setFields($moduleObj)
+    public function setFields($moduleObj, $wrapperID = '')
     {
 
         $fields = $moduleObj['fields'];
@@ -631,11 +632,11 @@ class DCAModuleData extends ViewContainer
                         $arr[$field['fieldID']] = $this->getWidgetField($field);
                         break;
                     case 'simple_choice':
-                        $options = $this->getOptions($field, $moduleObj);
+                        $options = $this->getOptions($field, $moduleObj, $wrapperID);
                         $arr[$field['fieldID']] = $this->getSimpleChoiceField($field, $options);
                         break;
                     case 'multi_choice':
-                        $options = $this->getOptions($field, $moduleObj);
+                        $options = $this->getOptions($field, $moduleObj, $wrapperID);
                         $arr[$field['fieldID']] = $this->getMultiChoiceField($field, $options);
                         break;
                     case 'search_field':

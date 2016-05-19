@@ -69,33 +69,24 @@ class DCAHelper extends Backend
 			return $this->getCountries();
 		}
 
-		$id = $this->pid ? $this->pid : Input::get('id');
+		$id = Input::get('id');
+		if( Input::get('act') && Input::get('act') == 'editAll' ) $id = Input::get('id');
+		if($wrapperID) $id = $wrapperID;
 
-		if( Input::get('act') && Input::get('act') == 'editAll' )
-		{
-			$id = Input::get('id');
+		// create where query
+		$subQuery = '';
+		if ($id) {
+			$subQuery = ' WHERE id = (SELECT pid FROM ' . $table . '_data WHERE id = ' . $id . ')';
+		}
+		if ($wrapperID) {
+			$subQuery = ' WHERE id = ' . $wrapperID . '';
 		}
 
-		if($wrapperID)
-		{
-			$id = $wrapperID;
-		}
-
-		$optionsDB = $this->Database->prepare('SELECT * FROM '.$table.'')->execute();
+		$optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery . '')->execute();
 		$option = array();
 
 		while($optionsDB->next())
 		{
-			if(!$id)
-			{
-				continue;
-			}
-
-			if($optionsDB->id != $id)
-			{
-				continue;
-			}
-
 			$option = $optionsDB->row()[$field['fieldID']] ? deserialize($optionsDB->row()[$field['fieldID']]) : array();
 		}
 

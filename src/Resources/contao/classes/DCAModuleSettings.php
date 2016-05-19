@@ -305,6 +305,7 @@ class DCAModuleSettings extends ViewContainer
         $arrFields = $moduleDB['fields'];
         $strPalette = '{data_legend},';
         $arr = array();
+
         foreach ($arrFields as $field) {
 
             if (!$field['fieldID']) {
@@ -331,8 +332,8 @@ class DCAModuleSettings extends ViewContainer
                 }
             }
         }
-        $strPalette = count($arr) > 0 ? $strPalette . implode(',', $arr) . ';' : '';
 
+        $strPalette = count($arr) > 0 ? $strPalette . implode(',', $arr) . ';' : '';
         return array(
             '__selector__' => array('addDetailPage', 'allowComments'),
             'default' => '{general_legend},title,info,language,fallback;{root_legend},addDetailPage;' . $strPalette . '{comments_legend:hide},allowComments;'
@@ -359,11 +360,10 @@ class DCAModuleSettings extends ViewContainer
         $arr = $this->dcaSettingField();
         if (is_array($fields)) {
             foreach ($fields as $field) {
-
                 // do not set
                 if (!$field['fieldID']) continue;
                 if ($field['fieldID'] == 'address_country') continue;
-
+                if ($field['reactToTaxonomy'] == '1') continue;
                 if ($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice') {
                     $arr = $this->setOptionsFields($field, $arr);
                 }
@@ -389,17 +389,31 @@ class DCAModuleSettings extends ViewContainer
             }
         }else if($field['dataFromTaxonomy'] == '1')
         {
-            // @todo
-        }
-        else if($field['reactToTaxonomy'] == '1')
-        {
-            // let empty
+            $arr['select_taxonomy_' . $field['fieldID']] = $this->getTaxonomySelectField($field);
         }
         else
         {
             $arr[$field['fieldID']] = $this->getOptionField($field);
         }
         return $arr;
+    }
+
+    /**
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public function getParentTaxonomies(\DataContainer $dc)
+    {
+        $arrTaxonomies = array();
+        $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = "0"')->execute();
+        while($taxonomiesDB->next())
+        {
+            if($taxonomiesDB->alias)
+            {
+                $arrTaxonomies[$taxonomiesDB->id] = $taxonomiesDB->name ? $taxonomiesDB->name : $taxonomiesDB->alias;
+            }
+        }
+        return $arrTaxonomies;
     }
 
     /**

@@ -214,6 +214,50 @@ class DCAModuleData extends ViewContainer
         }
     }
 
+
+    /**
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public function getTaxonomiesTags(\DataContainer $dc)
+    {
+        $options = array();
+        $field = $dc->field;
+        $pid = $dc->activeRecord->pid ? $dc->activeRecord->pid : \Input::get('pid');
+        $table = $dc->table ? mb_substr($dc->table, 0, strlen($dc->table) - 5) : '';
+
+        if(!$this->Database->tableExists($table)) return $options;
+        if(!$field && !$table && !$pid) return $options;
+
+        $filterDB = $this->Database->prepare('SELECT tl_fmodules_filters.fieldID, tl_fmodules.tablename, tl_fmodules.id, tl_fmodules_filters.pid, tl_fmodules_filters.reactToField, tl_fmodules_filters.reactToTaxonomy FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tl_fmodules_filters.fieldID = ? AND tl_fmodules.tablename = ?')->limit(1)->execute($field, $table);
+        if(!$filterDB->count()) return $options;
+        $arrFilter = $filterDB->row();
+
+        if($arrFilter['reactToField'] && $arrFilter['reactToTaxonomy'] == '1')
+        {
+            $reactToField = $arrFilter['reactToField'];
+            $alias = $dc->activeRecord->{$reactToField};
+            $arrWrapper = $this->Database->prepare('SELECT * FROM '.$table.' WHERE id = ?')->limit(1)->execute($pid)->row();
+            $taxonomyPid = '';
+            if(isset($arrWrapper['select_taxonomy_' . $reactToField ]) && $arrWrapper['select_taxonomy_' . $reactToField ])
+            {
+                $taxonomyPid = $arrWrapper['select_taxonomy_' . $reactToField ];
+            }
+            if(!$taxonomyPid)
+            {
+                return $options;
+            }
+            $taxonomiesTagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($alias, $taxonomyPid);
+            while($taxonomiesTagsDB->next())
+            {
+                $options[$taxonomiesTagsDB->alias] = $taxonomiesTagsDB->name ? $taxonomiesTagsDB->name : $taxonomiesTagsDB->alias;
+            }
+        }
+
+        return $options;
+    }
+
+
     /**
      * @param DataContainer $dc
      * @return array
@@ -583,9 +627,10 @@ class DCAModuleData extends ViewContainer
 
     /**
      * @param $moduleObj
+     * @param string $wrapperID
      * @return array
      */
-    public function setFields($moduleObj)
+    public function setFields($moduleObj, $wrapperID = '')
     {
 
         $fields = $moduleObj['fields'];
@@ -629,11 +674,11 @@ class DCAModuleData extends ViewContainer
                         $arr[$field['fieldID']] = $this->getWidgetField($field);
                         break;
                     case 'simple_choice':
-                        $options = $this->getOptions($field, $moduleObj);
+                        $options = $this->getOptions($field, $moduleObj, $wrapperID);
                         $arr[$field['fieldID']] = $this->getSimpleChoiceField($field, $options);
                         break;
                     case 'multi_choice':
-                        $options = $this->getOptions($field, $moduleObj);
+                        $options = $this->getOptions($field, $moduleObj, $wrapperID);
                         $arr[$field['fieldID']] = $this->getMultiChoiceField($field, $options);
                         break;
                     case 'search_field':
@@ -791,7 +836,6 @@ class DCAModuleData extends ViewContainer
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-
         if (strlen(Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
@@ -804,7 +848,6 @@ class DCAModuleData extends ViewContainer
         }
 
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
-
     }
 
     /**
@@ -842,47 +885,32 @@ class DCAModuleData extends ViewContainer
      */
     public function generateFeed()
     {
-
         $session = $this->Session->get('fmodules_feed_updater');
-
-        if (!is_array($session) || empty($session)) {
-            return;
-        }
-
+        if (!is_array($session) || empty($session)) return;
         $this->import('FModule');
-
         foreach ($session as $table) {
             $this->FModule->generateFeedsByArchive($table);
         }
-
         $this->import('Automator');
         $this->Automator->generateSitemap();
         $this->Session->set('fmodules_feed_updater', null);
     }
 
     /**
-     * @param $dc
+     * @param \DataContainer $dc
      */
-    public function scheduleUpdate($dc)
+    public function scheduleUpdate(\DataContainer $dc)
     {
         $table = Input::get('table');
 
         // Return if there is no ID
-        if (!$table) {
-            return;
-        }
-
-        if (substr($table, -5) != '_data') {
-            return;
-        }
-
+        if (!$table) return;
+        if (substr($table, -5) != '_data') return;
         $table = substr($table, 0, (strlen($table) - 5));
 
         // Store the ID in the session
         $session = $this->Session->get('fmodules_feed_updater');
         $session[] = $table;
         $this->Session->set('fmodules_feed_updater', array_unique($session));
-
     }
-
 }

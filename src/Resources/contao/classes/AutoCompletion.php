@@ -165,13 +165,10 @@ class AutoCompletion extends Frontend
             
                 $itemStr = preg_replace('/[^a-z_\-0-9]/i', ' ', $items);
                 $itemStr = trim($itemStr);
-
                 $splitResults = explode(' ', $itemStr);
 
                 foreach ($splitResults as $splitResult) {
-            
                     $autoCompletionArr[] = $splitResult;
-            
                 }
 
             }

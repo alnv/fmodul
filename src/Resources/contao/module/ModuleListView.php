@@ -63,6 +63,26 @@ class ModuleListView extends Module
     protected $feViewID = null;
 
     /**
+     * @var string
+     */
+    protected $strAutoItem = '';
+
+    /**
+     * @var string
+     */
+    protected $strTaxonomy= '';
+
+    /**
+     * @var string
+     */
+    protected $strSpecie = '';
+
+    /**
+     * @var string
+     */
+    protected $strTag = array();
+
+    /**
      *
      */
     public function generate()
@@ -130,6 +150,22 @@ class ModuleListView extends Module
             $mapSettings['lng'] = $this->fm_center_lng ? $this->fm_center_lng : '0';
         }
 
+        // taxonomies
+        $isListView = false;
+        if(\Input::get('auto_item'))
+        {
+            $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = "0" AND (alias = ? OR id = ?) AND published = "1"')->limit(1)->execute(\Input::get('auto_item'), (int)\Input::get('auto_item'));
+            if($rootTaxonomiesDB->count())
+            {
+                $isListView = true;
+            }
+        }
+        // set params variables
+        $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
+        $this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
+        $this->strSpecie = $isListView ? \Input::get('taxonomy') : \Input::get('specie');
+        $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
+
         while ($moduleDB->next()) {
 
             $arrModule = $moduleDB->row();
@@ -144,9 +180,23 @@ class ModuleListView extends Module
             $arrModule['overwrite'] = null;
             $arrModule['active'] = null;
 
+            // set auto_page values
             if ($arrModule['fieldID'] == 'auto_page' || $arrModule['autoPage']) {
                 $arrModule = $this->setValuesForAutoPageAttribute($arrModule);
             }
+
+            // taxonomies >>
+            // @todo allow to disable taxonomy global
+            // set specie value
+            if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie) {
+                $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
+            }
+
+            // set tags value
+            if ($arrModule['reactToTaxonomy'] == '1' && $this->strTag) {
+                $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
+            }
+            // << end taxonomies
 
             $val = QueryModel::isValue($arrModule['value'], $arrModule['type']);
             if ($val) $arrModule['enable'] = true;
@@ -278,7 +328,7 @@ class ModuleListView extends Module
                 $listDB->href = $this->generateFrontendUrl($jumpToDB);
             }
 
-            // check for textsearch
+            // check for text search
             if ($qTextSearch) {
                 if (!$textSearchResults[$listDB->id]) {
                     continue;
@@ -499,18 +549,47 @@ class ModuleListView extends Module
         global $objPage;
         $alias = $objPage->alias;
         if ($return['type'] == 'multi_choice') {
-
             $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
             $alias = Environment::get('requestUri');
             $alias = explode('/', $alias);
             $alias = array_filter($alias);
             $alias = array_values($alias);
-
             if ($language && $alias[0] && $language == $alias[0]) {
                 array_shift($alias);
             }
         }
         $return['value'] = $alias;
+        return $return;
+    }
+
+    /**
+     * @param $return
+     * @return mixed
+     */
+    protected function setValuesForTaxonomySpecieAttribute($return)
+    {
+        if($this->strSpecie && is_string($this->strSpecie))
+        {
+            $return['value'] = $this->strSpecie;
+        }
+        return $return;
+    }
+
+    /**
+     * @param $return
+     * @return mixed
+     */
+    protected function setValuesForTaxonomyTagsAttribute($return)
+    {
+        // allow multiple values
+        if(is_string($this->strTag))
+        {
+            $this->strTag = explode(',', $this->strTag);
+        }
+        if($this->strTag && is_array($this->strTag))
+        {
+            $return['value'] = $this->strTag;
+        }
         return $return;
     }
 
@@ -783,6 +862,20 @@ class ModuleListView extends Module
      */
     private function generateUrl($objTarget, $alias)
     {
-        return $this->generateFrontendUrl($objTarget, '/' . $alias);
+        $strTaxonomyUrl = '';
+        if($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
+        if($this->strTaxonomy)
+        {
+            $strTaxonomyUrl .= '/' . $this->strTaxonomy;
+        }
+        if($this->strSpecie)
+        {
+            $strTaxonomyUrl .= '/' . $this->strSpecie;
+        }
+        if($this->strTag)
+        {
+            $strTaxonomyUrl .= '/' . $this->strTag;
+        }
+        return $this->generateFrontendUrl($objTarget,  '/' . $alias . $strTaxonomyUrl );
     }
 }

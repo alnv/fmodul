@@ -101,7 +101,10 @@ class ModuleFModuleTaxonomy extends \Module
         $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
 
         // allow multiple values
-        $this->strTag = explode(',', $this->strTag);
+        if(is_string($this->strTag))
+        {
+            $this->strTag = explode(',', $this->strTag);
+        }
 
         //
         $rootSpeciesDB = null;

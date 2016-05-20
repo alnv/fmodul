@@ -36,6 +36,11 @@ class ModeSettings extends Widget
     private $modeViewObject = array();
 
     /**
+     * @var string
+     */
+    private $arrWrapper = null;
+
+    /**
      *
      */
     public function validate()
@@ -64,15 +69,15 @@ class ModeSettings extends Widget
 
         $this->import('Database');
 
-        $fmoduleDB = null;
+        $moduleDB = null;
         if ($this->strTable == 'tl_module') {
-            $fmoduleDB = $this->Database->prepare("SELECT f_select_module, f_select_wrapper FROM tl_module WHERE id = ?")->execute($this->currentRecord)->row();
+            $moduleDB = $this->Database->prepare("SELECT f_select_module, f_select_wrapper FROM tl_module WHERE id = ?")->execute($this->currentRecord)->row();
         }
 
-        $modulename = $fmoduleDB ? $fmoduleDB['f_select_module'] : '';
-        $wrapperID = $fmoduleDB ? $fmoduleDB['f_select_wrapper'] : '';
+        $modulename = $moduleDB ? $moduleDB['f_select_module'] : '';
+        $wrapperID = $moduleDB ? $moduleDB['f_select_wrapper'] : '';
 
-        if ($this->strTable == 'tl_module' && ($modulename == '' || $wrapperID == '')) {
+        if ($this->strTable == 'tl_module' && (!$modulename || !$wrapperID)) {
             return '<p>Please select Backend Modul</p>';
         }
 
@@ -81,11 +86,11 @@ class ModeSettings extends Widget
         }
 
         $modeSettingsDB = null;
-        $optionsDB = null;
+
         //
         if ($this->strTable == 'tl_module') {
             $modeSettingsDB = $this->Database->prepare('SELECT tl_fmodules.tablename, tl_fmodules.id AS fmoduleID, tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY sorting')->execute($modulename);
-            $optionsDB = $this->Database->prepare('SELECT * FROM ' . $modulename . ' WHERE id = ?')->execute($wrapperID)->row();
+            $this->arrWrapper = $this->Database->prepare('SELECT * FROM ' . $modulename . ' WHERE id = ?')->execute($wrapperID)->row();
         }
 
         //
@@ -94,10 +99,12 @@ class ModeSettings extends Widget
         }
 
         //
-        if ($optionsDB == null && $this->strTable == 'tl_page') {
+        if ($this->arrWrapper == null && $this->strTable == 'tl_page') {
+
             $options = array();
 
             while ($modeSettingsDB->next()) {
+
                 if (in_array($modeSettingsDB->fieldID, $doNotSetByID)) {
                     continue;
                 }
@@ -109,7 +116,7 @@ class ModeSettings extends Widget
                 $options[$modeSettingsDB->fieldID] = $this->Database->prepare('SELECT ' . $modeSettingsDB->fieldID . ' FROM ' . $modeSettingsDB->tablename . '')->execute()->row()[$modeSettingsDB->fieldID];
             }
 
-            $optionsDB = $options;
+            $this->arrWrapper = $options;
             $modeSettingsDB->reset();
         }
 
@@ -127,22 +134,31 @@ class ModeSettings extends Widget
 
         $input = array();
 
-        foreach($savedValues as $fid => $savedValue)
-        {
+        foreach ($savedValues as $fid => $savedValue) {
             $input[$fid] = $savedValue;
         }
 
         while ($modeSettingsDB->next()) {
 
-            if ( in_array($modeSettingsDB->fieldID, $doNotSetByID) ) {
+            if($modeSettingsDB->dataFromTaxonomy == '1' && $this->strTable == 'tl_page')
+            {
                 continue;
             }
 
-            if ( in_array($modeSettingsDB->type, $doNotSetByType) ) {
+            if($modeSettingsDB->reactToTaxonomy == '1' && $this->strTable == 'tl_page')
+            {
                 continue;
             }
 
-            $options = $optionsDB[$modeSettingsDB->fieldID];
+            if (in_array($modeSettingsDB->fieldID, $doNotSetByID)) {
+                continue;
+            }
+
+            if (in_array($modeSettingsDB->type, $doNotSetByType)) {
+                continue;
+            }
+
+            $options = $this->arrWrapper[$modeSettingsDB->fieldID];
 
             $viewObject = array(
                 "active" => ($input[$modeSettingsDB->fieldID]['active'] ? '1' : '0'),
@@ -155,12 +171,14 @@ class ModeSettings extends Widget
                 "fieldAppearance" => $modeSettingsDB->fieldAppearance,
                 "isInteger" => $modeSettingsDB->isInteger,
                 "addTime" => $modeSettingsDB->addTime,
+                "dataFromTaxonomy" => $modeSettingsDB->dataFromTaxonomy,
+                "reactToTaxonomy" => $modeSettingsDB->reactToTaxonomy,
+                "reactToField" => $modeSettingsDB->reactToField,
                 "options" => (!deserialize($options) ? array() : deserialize($options)),
                 "set" => ($input[$modeSettingsDB->fieldID]['set'] ? $input[$modeSettingsDB->fieldID]['set'] : $defaultSet)
             );
 
-            if($viewObject['fieldID'] == 'address_country')
-            {
+            if ($viewObject['fieldID'] == 'address_country') {
                 $countries = $this->getCountries();
                 $viewObject['options'] = DiverseFunction::conformOptionsArray($countries);
             }
@@ -232,29 +250,29 @@ class ModeSettings extends Widget
      * @param $viewObject
      * @return string
      */
-	private function setToggleFieldSettings($index, $viewObject)
-	{
-		
-		$desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
-		$selected = $viewObject['set']['filterValue'];
-		
-		$label1 = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
-		$label2 = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
-		$template = 
-			'<div>
+    private function setToggleFieldSettings($index, $viewObject)
+    {
+
+        $desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
+        $selected = $viewObject['set']['filterValue'];
+
+        $label1 = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+        $label2 = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+        $template =
+            '<div>
 				<div>
-					<input type="hidden" value="'.$viewObject['fieldID'].'" name="' . $this->strName . '[' . $index . '][fieldID]">
-					<h4><label>'.$GLOBALS['TL_LANG']['MSC']['fm_highlight'].'</label></h4>
+					<input type="hidden" value="' . $viewObject['fieldID'] . '" name="' . $this->strName . '[' . $index . '][fieldID]">
+					<h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_highlight'] . '</label></h4>
 					<select class="tl_select" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
-					   <option value="1" ' . ($selected ? 'selected' : '') . '>'.$label1.'</option>
-                        <option value="" ' . (!$selected ? 'selected' : '') . '>'.$label2.'</option>
+					   <option value="1" ' . ($selected ? 'selected' : '') . '>' . $label1 . '</option>
+                        <option value="" ' . (!$selected ? 'selected' : '') . '>' . $label2 . '</option>
                     </select>
                     <p class="tl_help tl_tip" title="">' . $desc . '</p>
 				</div>
 				<div>
 				    <div class="mode_checkbox">
-                        <h4><input type="checkbox" id="ctrl_' . $index . '[' . $viewObject['fieldID'] . '][ignore]" value="1" name="' . $this->strName . '[' . $index . '][set][ignore]" ' . ($viewObject['set']['ignore'] == '1' ? 'checked="checked"' : '') . '><label for="ctrl_' . $index . '[' . $viewObject['fieldID'] . '][ignore]">'.$GLOBALS['TL_LANG']['MSC']['fm_field_ignore'].'</label></h4>
-                        <p class="tl_help tl_tip" title="">'.$GLOBALS['TL_LANG']['MSC']['fm_field_ignore_desc'].'</p>
+                        <h4><input type="checkbox" id="ctrl_' . $index . '[' . $viewObject['fieldID'] . '][ignore]" value="1" name="' . $this->strName . '[' . $index . '][set][ignore]" ' . ($viewObject['set']['ignore'] == '1' ? 'checked="checked"' : '') . '><label for="ctrl_' . $index . '[' . $viewObject['fieldID'] . '][ignore]">' . $GLOBALS['TL_LANG']['MSC']['fm_field_ignore'] . '</label></h4>
+                        <p class="tl_help tl_tip" title="">' . $GLOBALS['TL_LANG']['MSC']['fm_field_ignore_desc'] . '</p>
                     </div>
                     <div class="mode_checkbox">
                         <h4><input type="checkbox" id="ctrl_' . $index . '[' . $viewObject['fieldID'] . '][overwrite]" value="1" name="' . $this->strName . '[' . $index . '][set][overwrite]" ' . ($viewObject['set']['overwrite'] == '1' ? 'checked="checked"' : '') . '><label for="ctrl_' . $index . '[' . $viewObject['fieldID'] . '][overwrite]">' . $GLOBALS['TL_LANG']['MSC']['fm_overwrite'] . '</label></h4>
@@ -262,9 +280,9 @@ class ModeSettings extends Widget
                     </div>
                 </div>
 			</div>';
-		
-		return $template;
-	}
+
+        return $template;
+    }
 
     /**
      * @param $index
@@ -275,6 +293,12 @@ class ModeSettings extends Widget
     {
 
         $optionsTpl = '';
+        $strSubmitAttr = '';
+        if ($viewObject['dataFromTaxonomy'] == '1' && $this->arrWrapper) {
+            $taxonomyID = $this->arrWrapper['select_taxonomy_' . $viewObject['fieldID']];
+            $viewObject['options'] = $this->getDataFromTaxonomy($taxonomyID);
+            $strSubmitAttr = 'onchange="Backend.autoSubmit(' . $this->strTable . ')"';
+        }
 
         if ($viewObject['dataFromTable'] == '1') {
             $viewObject['options'] = $this->getDataFromTable($viewObject);
@@ -290,9 +314,9 @@ class ModeSettings extends Widget
         $template =
             '<div>
                 <div>
-                    <input name="' . $this->strName . '[' . $index . '][fieldID]" value="' . $viewObject['fieldID'] . '"type="hidden">
+                    <input name="' . $this->strName . '[' . $index . '][fieldID]" value="' . $viewObject['fieldID'] . '" type="hidden">
                     <h4><label>' . $GLOBALS['TL_LANG']['MSC']['fm_select'] . '</label></h4>
-                    <select class="tl_select tl_chosen" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]">
+                    <select class="tl_select tl_chosen" value="' . $viewObject['set']['filterValue'] . '" name="' . $this->strName . '[' . $index . '][set][filterValue]" ' . $strSubmitAttr . ' >
                         ' . $optionsTpl . '
                     </select>
                     <p class="tl_help tl_tip" title="">' . $desc . '</p>
@@ -316,6 +340,10 @@ class ModeSettings extends Widget
     {
 
         $optionsTpl = '';
+
+        if ($viewObject['reactToTaxonomy'] == '1' && $this->arrWrapper) {
+            $viewObject['options'] = $this->getDataFromTaxonomyTags($viewObject['reactToField'], $this->arrWrapper);
+        }
 
         if ($viewObject['dataFromTable'] == '1') {
             $viewObject['options'] = $this->getDataFromTable($viewObject);
@@ -368,7 +396,6 @@ class ModeSettings extends Widget
         }
 
         $selectOperationTpl = '<select class="tl_select" name="' . $this->strName . '[' . $index . '][set][selected_operator]">' . $optionsTpl . '</select>';
-
         $desc = $viewObject['description'] ? $viewObject['description'] . ' (' . $GLOBALS['TL_LANG']['MSC']['fm_date_description'] . ')' : $GLOBALS['TL_LANG']['MSC']['fm_date_description'];
 
         $template =
@@ -388,9 +415,6 @@ class ModeSettings extends Widget
                      <script>
 
                         window.addEvent("domready", function(){
-
-
-
                             new Picker.Date( $("ctrl_' . $viewObject['fieldID'] . '_' . $index . '") ,{
 
                                 draggable: false,
@@ -402,7 +426,6 @@ class ModeSettings extends Widget
                                 titleFormat: "%d. %B %Y ' . ($viewObject['addTime'] ? '%H:%M' : '') . '",
                                 ' . ($viewObject['addTime'] ? 'timePicker: true,' : '') . '
                             });
-
                         });
 
                      </script>
@@ -435,7 +458,6 @@ class ModeSettings extends Widget
         }
 
         $selectOperationTpl = '<select class="tl_select" name="' . $this->strName . '[' . $index . '][set][selected_operator]" ' . ($viewObject['isInteger'] == '1' ? '' : 'disabled') . ' >' . $optionsTpl . '</select>';
-
         $desc = $viewObject['description'] ? $viewObject['description'] : $GLOBALS['TL_LANG']['MSC']['fm_criterion'];
 
         $template =
@@ -473,10 +495,10 @@ class ModeSettings extends Widget
      */
     private function getDataFromTable($viewObject)
     {
-        $o = array();
+        $arrOptions = array();
 
         if (!isset($viewObject['options']['table']) || !$this->Database->tableExists($viewObject['options']['table'])) {
-            return $o;
+            return $arrOptions;
         }
 
         $dataFromTableDB = $this->Database->prepare('SELECT ' . $viewObject['options']['col'] . ', ' . $viewObject['options']['title'] . ' FROM ' . $viewObject['options']['table'] . '')->execute();
@@ -486,17 +508,79 @@ class ModeSettings extends Widget
             $v = $dataFromTableDB->row()[$viewObject['options']['title']];
             $k = $dataFromTableDB->row()[$viewObject['options']['col']];
 
-            $o[] = array(
+            $arrOptions[] = array(
                 'label' => $v,
                 'value' => $k,
             );
         }
 
-        return $o;
+        return $arrOptions;
     }
 
-    /*
-     *
+    /**
+     * @param $taxonomyID
+     * @return array
+     */
+    private function getDataFromTaxonomy($taxonomyID)
+    {
+        $arrOptions = array();
+        if (!$taxonomyID) {
+            return $arrOptions;
+        }
+        $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? AND published = "1"')->execute($taxonomyID);
+        while ($taxonomiesDB->next()) {
+            if (!$taxonomiesDB->alias) {
+                continue;
+            }
+            $arrOptions[] = array(
+                'label' => $taxonomiesDB->name ? $taxonomiesDB->name : $taxonomiesDB->alias,
+                'value' => $taxonomiesDB->alias,
+            );
+        }
+        return $arrOptions;
+    }
+
+    /**
+     * @param $field
+     * @param $fieldsDB
+     * @param bool $blnValuesOnly
+     * @return array
+     */
+    private function getDataFromTaxonomyTags($field, $fieldsDB, $blnValuesOnly = false)
+    {
+        $arrOptions = array();
+        $arrValues = array();
+        $specieAlias = '';
+
+        if (is_array($this->varValue)) {
+            $specieAlias = isset($this->varValue[$field]['set']['filterValue']) ? $this->varValue[$field]['set']['filterValue'] : '';
+        }
+
+        if (!$field || !$specieAlias) {
+            return $arrOptions;
+        }
+
+        $specieID = isset($fieldsDB['select_taxonomy_' . $field]) ? $fieldsDB['select_taxonomy_' . $field] : '';
+        if (!$specieID) {
+            return $arrOptions;
+        }
+
+        $tagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($specieAlias, $specieID);
+        while ($tagsDB->next()) {
+            if (!$tagsDB->alias) {
+                continue;
+            }
+            $arrValues[] = $tagsDB->alias;
+            $arrOptions[] = array(
+                'label' => $tagsDB->name ? $tagsDB->name : $tagsDB->alias,
+                'value' => $tagsDB->alias,
+            );
+        }
+        return $blnValuesOnly ? $arrValues : $arrOptions;
+    }
+
+    /**
+     * @return array
      */
     private function getOperator()
     {

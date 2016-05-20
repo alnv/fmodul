@@ -141,6 +141,9 @@ class DCAHelper extends Backend
 
     /**
      * @param $state
+     * @param $label
+     * @param $fieldID
+     * @param bool $noHTML
      * @return string
      */
     public function getToggleIcon($state, $label, $fieldID, $noHTML = false)

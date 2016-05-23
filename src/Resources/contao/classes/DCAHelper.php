@@ -107,7 +107,12 @@ class DCAHelper extends Backend
 				return $options;
 			}
 
-			$DataFromTableDB = $this->Database->prepare('SELECT '.$option['col'].', '.$option['title'].' FROM '.$option['table'].' WHERE pid = ?')->execute($id);
+			// hot fix
+			$strPidQuery = '';
+			if ($field['fieldID'] == 'auto_item' && $id) $strPidQuery .= ' WHERE pid = ' . $id . '';
+			//
+
+			$DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strPidQuery . '')->execute();
 			while($DataFromTableDB->next())
 			{
 				$k = $DataFromTableDB->row()[$option['col']];

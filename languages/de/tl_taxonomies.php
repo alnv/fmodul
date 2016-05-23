@@ -19,4 +19,4 @@ $GLOBALS['TL_LANG']['tl_taxonomies']['general_legend'] = 'Allgemeine-Einstellung
 $GLOBALS['TL_LANG']['tl_taxonomies']['name'] = array('Bezeichnung', 'Bitte geben Sie die Bezeichnung an.');
 $GLOBALS['TL_LANG']['tl_taxonomies']['alias'] = array('Taxonomie Alias', 'Bitte geben Sie den Alias an.');
 $GLOBALS['TL_LANG']['tl_taxonomies']['description'] = array('Beschreibung', 'Bitte geben Sie eine kurze Beschreibung an.');
-$GLOBALS['TL_LANG']['tl_taxonomies']['published'] = array('Taxonomie veröffentlichen', 'Die Taxonomie sichtbar machen.');
+$GLOBALS['TL_LANG']['tl_taxonomies']['published'] = array('Taxonomie veröffentlichen', 'Diese Taxonomie sichtbar machen.');

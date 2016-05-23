@@ -10,6 +10,8 @@ $GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Store file';
 $GLOBALS['TL_LANG']['tl_module']['fm_notification_legend'] = 'E-Mail Notification';
 $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Confirmation';
 $GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Default values-Settings';
+$GLOBALS['TL_LANG']['tl_module']['taxonomy_url_legend'] = 'Taxonomy URL-Settings';
+$GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomy-Settings';
 
 //fields
 
@@ -240,6 +242,22 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_EntityAuthor'][1] = 'Please selec
 // fm_defaultValues
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_defaultValues'][0] = 'Default values';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_defaultValues'][1] = 'Here you can define your default values.';
+
+// fm_use_specieUrl
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_specieUrl'][0] = 'Use specie';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_specieUrl'][1] = 'Here you can add the specie parameter to url.';
+
+// fm_use_tagsUrl
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_tagsUrl'][0] = 'Use tags';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_tagsUrl'][1] = 'Here you can add the tags parameter to url.';
+
+// fm_taxonomy
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'][0] = 'Taxonomy-Tree';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'][1] = 'Please select your taxonomy tree.';
+
+// fm_taxonomy_page
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][0] = 'Redirect page';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][1] = 'Please select your redirect page.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';

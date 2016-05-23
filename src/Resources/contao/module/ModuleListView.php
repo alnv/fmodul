@@ -324,7 +324,9 @@ class ModuleListView extends Module
                 // reset target
                 $listDB->target = '';
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
-                $listDB->href = $this->generateFrontendUrl($jumpToDB);
+                $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
+                if($strTaxonomyUrl) $strTaxonomyUrl = '/' . $strTaxonomyUrl;
+                $listDB->href = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
             }
 
             // check for text search
@@ -861,20 +863,29 @@ class ModuleListView extends Module
      */
     private function generateUrl($objTarget, $alias)
     {
+        $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
+        return $this->generateFrontendUrl($objTarget,  '/' . $alias . $strTaxonomyUrl );
+    }
+
+    /**
+     * @return string
+     */
+    private function generateTaxonomyUrl()
+    {
         $strTaxonomyUrl = '';
         if($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
-        if($this->strTaxonomy)
+        if($this->strTaxonomy && $this->fm_use_specieUrl)
         {
             $strTaxonomyUrl .= '/' . $this->strTaxonomy;
         }
-        if($this->strSpecie)
+        if($this->strSpecie && $this->fm_use_specieUrl)
         {
             $strTaxonomyUrl .= '/' . $this->strSpecie;
         }
-        if($this->strTag)
+        if($this->strTag && $this->fm_use_specieUrl && $this->fm_use_tagsUrl)
         {
             $strTaxonomyUrl .= '/' . $this->strTag;
         }
-        return $this->generateFrontendUrl($objTarget,  '/' . $alias . $strTaxonomyUrl );
+        return $strTaxonomyUrl;
     }
 }

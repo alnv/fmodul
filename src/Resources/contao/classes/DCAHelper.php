@@ -108,11 +108,10 @@ class DCAHelper extends Backend
 			}
 
 			// hot fix
-			$strPidQuery = '';
-			if ($field['fieldID'] == 'auto_item' && $id) $strPidQuery .= ' WHERE pid = ' . $id . '';
+			//$strPidQuery = '';
+			//if ($field['fieldID'] == 'auto_item' && $id) $strPidQuery .= ' WHERE pid = ' . $id . '';
 			//
-
-			$DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strPidQuery . '')->execute();
+			$DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . '')->execute();
 			while($DataFromTableDB->next())
 			{
 				$k = $DataFromTableDB->row()[$option['col']];

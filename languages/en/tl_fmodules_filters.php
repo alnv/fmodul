@@ -155,6 +155,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Here you ca
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Load relevant data (taxonomy)';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = ''; // @todo
 
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Load relevant data (taxonomy)';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = ''; // @todo
+
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Multiple select';

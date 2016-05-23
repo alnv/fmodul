@@ -32,6 +32,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Feld-Einstellung
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Karten-Einstellunegn';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Suche-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['taxonomy_legend'] = 'Taxonomy-Settings';
 
 //fields
 
@@ -144,12 +145,16 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regulärer Ausdruck';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Bitte wählen Sie einen Regulären Ausdruck aus. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">In der Dokumentation nachlesen</a>';
 
 // dataFromTaxonomy
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Filterkriterien aus dem Taxonomiebaum laden';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Die Filterkriterien werden aus dem Taxonomiebaum geladen.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Filterkriterien aus einem Taxonomie-Baum laden';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Hier können Sie die Filterkriterien aus einem Taxonomie-Baum laden.';
 
 // reactToTaxonomy
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Nur relevante Kriterien laden (Taxonomie)';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Sobald ein Taxonomiebaum ausgewählt wird, werden alle entsprechenden Unterpunkte geladen.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Als Taxonomie-Gattung verwenden';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Dieses Eingabefeld wird als Gattung verwendet.';
+
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Gattungs-Eingabefeld auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Bitte wählen Sie ein Gattungs-Eingabefeld aus.';
 
 // validate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits.';

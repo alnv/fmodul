@@ -16,7 +16,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('tl_modul
 $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_module_fmodule', 'saveGeoCoding');
 
 // module palette
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend:hide},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{defaultValues_legend:hide},fm_defaultValues;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
@@ -582,6 +582,28 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_defaultValues'] = array
     'sql' => "blob NULL"
 );
 
+// taxonomy url
+
+// fm_use_specieUrl
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_specieUrl'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_specieUrl'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50 m12'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+// fm_use_tagsUrl
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_tagsUrl'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_tagsUrl'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50 m12'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
 
@@ -620,14 +642,14 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return array
      */
-    public function getEmailFields(\Contao\DataContainer $dca)
+    public function getEmailFields(\DataContainer $dc)
     {
         // set variables here
         $return = array();
-        $modulename = $dca->activeRecord->f_select_module;
+        $modulename = $dc->activeRecord->f_select_module;
         $tableData = $modulename . '_data';
 
         // return empty array
@@ -647,17 +669,17 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return array
      */
-    public function getEditableFModuleProperties(\Contao\DataContainer $dca)
+    public function getEditableFModuleProperties(\DataContainer $dc)
     {
         // set variables here
         $return = array();
-        $modulename = $dca->activeRecord->f_select_module;
+        $modulename = $dc->activeRecord->f_select_module;
         $tableData = $modulename . '_data';
         $doNotSetByName = array('tstamp', 'pid', 'id');
-        if($dca->field && $dca->field == 'fm_defaultValues')
+        if($dc->field && $dc->field == 'fm_defaultValues')
         {
             $doNotSetByName[] = 'markerSRC';
             $doNotSetByName[] = 'singleSRC';
@@ -682,10 +704,10 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return array
      */
-    public function getModuleCols(\Contao\DataContainer $dca)
+    public function getModuleCols(\DataContainer $dc)
     {
         // get cols from cache
         if (!empty($this->moduleColsCache)) return $this->moduleColsCache;
@@ -697,9 +719,8 @@ class tl_module_fmodule extends tl_module
         $table = '';
 
         // search for table
-        if ($dca->activeRecord->f_list_field) {
-
-            $feID = $dca->activeRecord->f_list_field;
+        if ($dc->activeRecord->f_list_field) {
+            $feID = $dc->activeRecord->f_list_field;
             $listFeModuleDB = $this->Database->prepare('SELECT f_select_module FROM tl_module WHERE id = ?')->execute($feID);
             while ($listFeModuleDB->next()) {
                 $table = $listFeModuleDB->f_select_module;
@@ -731,16 +752,16 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param \DataContainer $dc
      * @return null
      */
-    public function saveGeoCoding(\Contao\DataContainer $dca)
+    public function saveGeoCoding(\DataContainer $dc)
     {
-        if (!$dca->activeRecord) {
+        if (!$dc->activeRecord) {
             return null;
         }
 
-        $geo_address = $dca->activeRecord->fm_center_address ? $dca->activeRecord->fm_center_address : '';
+        $geo_address = $dc->activeRecord->fm_center_address ? $dc->activeRecord->fm_center_address : '';
         $address_country = 'en'; // not needed here
 
         //
@@ -753,8 +774,8 @@ class tl_module_fmodule extends tl_module
         }
 
         if (!empty($cords)) {
-            $tableName = $dca->table ? $dca->table : Input::get('table');
-            $id = $dca->id ? $dca->id : Input::get('id');
+            $tableName = $dc->table ? $dc->table : Input::get('table');
+            $id = $dc->id ? $dc->id : Input::get('id');
             $lat = $cords['lat'] ? $cords['lat'] : '';
             $lng = $cords['lng'] ? $cords['lng'] : '';
             if (!$tableName || !$id) {
@@ -765,13 +786,13 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return array
      */
-    public function getListModules(\Contao\DataContainer $dca)
+    public function getListModules(\DataContainer $dc)
     {
         $type = 'fmodule_fe_list';
-        $listID = $dca->activeRecord->f_list_field;
+        $listID = $dc->activeRecord->f_list_field;
         $tl_moduleDB = $this->Database->prepare('SELECT name, id, f_select_module FROM tl_module WHERE type = ?')->execute($type);
         $options = array();
         $filters = array();
@@ -847,19 +868,19 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return array
      */
-    public function getListTemplates(\Contao\DataContainer $dca)
+    public function getListTemplates(\DataContainer $dc)
     {
         return $this->getTemplateGroup('fmodule_');
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return array
      */
-    public function getMapTemplates(\Contao\DataContainer $dca)
+    public function getMapTemplates(\DataContainer $dc)
     {
         return $this->getTemplateGroup('fm_map_location');
     }
@@ -886,12 +907,12 @@ class tl_module_fmodule extends tl_module
     }
 
     /**
-     * @param \Contao\DataContainer $dca
+     * @param DataContainer $dc
      * @return null
      */
-    public function setFEModule(\Contao\DataContainer $dca)
+    public function setFEModule(\DataContainer $dc)
     {
-        $id = $dca->id;
+        $id = $dc->id;
         $moduleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ? LIMIT 1')->execute($id);
         $modulename = '';
         $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'toggle_field', 'map_field');

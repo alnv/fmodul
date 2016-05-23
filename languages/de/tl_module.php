@@ -10,6 +10,8 @@ $GLOBALS['TL_LANG']['tl_module']['store_legend'] = 'Datei speichern';
 $GLOBALS['TL_LANG']['tl_module']['fm_notification_legend'] = 'E-Mail Benachrichtigung';
 $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Bestätigung';
 $GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Standardwert-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['taxonomy_url_legend'] = 'Taxonomie URL-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomie-Einstellungen';
 
 // fields
 
@@ -240,6 +242,22 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_EntityAuthor'][1] = 'Bitte wähle
 // fm_defaultValues
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_defaultValues'][0] = 'Standardwerte';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_defaultValues'][1] = 'Hier können Sie Ihre Standardwerte festlegen.';
+
+// fm_use_specieUrl
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_specieUrl'][0] = 'Gattung verwenden';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_specieUrl'][1] = 'Hier können Sie den Gattung-Parameter verwenden. Der Parameter wird dem href Attribut hinzugefügt.';
+
+// fm_use_tagsUrl
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_tagsUrl'][0] = 'Tags verwenden';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_tagsUrl'][1] = 'Hier können Sie die Tags-Parameter verwenden. Der Parameter wird dem href Attribut hinzugefügt.';
+
+// fm_taxonomy
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'][0] = 'Taxonomie-Baum auswählen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'][1] = 'Bitte wählen Sie ein Taxonomie-Baum aus.';
+
+// fm_taxonomy_page
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][0] = 'Weiterleitungsseite auswählen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][1] = 'Bitte wählen Sie eine Weiterleitungsseite aus.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';

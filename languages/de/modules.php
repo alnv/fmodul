@@ -20,3 +20,5 @@ $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][0] = 'Filter Formular';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_formfilter'][1] = 'F Modul Filter Formular auswählen.';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_registration'][0] = 'Registration Formular';
 $GLOBALS['TL_LANG']['FMD']['fmodule_fe_registration'][1] = 'F Modul Registrations Formular auswählen.';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_taxonomy'][0] = 'Taxonomie';
+$GLOBALS['TL_LANG']['FMD']['fmodule_fe_taxonomy'][1] = 'F Modul Taxonomie Erweiterung auswählen.';

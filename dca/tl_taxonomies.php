@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_taxonomies'] = array(
         'sorting' => array
         (
             'mode' => 5,
-            //'icon' => 'edit.gif',
+            'icon' => $GLOBALS['FM_AUTO_PATH'] . 'tag.png',
             'paste_button_callback' => array('tl_taxonomies_fmodule', 'pasteTaxonomy'),
             'panelLayout' => 'filter,search'
         ),
@@ -311,7 +311,7 @@ class tl_taxonomies_fmodule extends \Backend
      */
     public function addTaxonomyIcon($row, $label, \DataContainer $dc = null, $imageAttribute = '', $blnReturnImage = false, $blnProtected = false)
     {
-        $image = 'edit.gif';
+        $image = $GLOBALS['FM_AUTO_PATH'] . 'tag-edit.png';
         $imageAttribute = trim($imageAttribute . ' data-icon="edit.gif" data-icon-disabled="header.gif" ');
 
         // Mark root pages

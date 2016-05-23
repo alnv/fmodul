@@ -30,7 +30,7 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     )
 );
 $GLOBALS['BE_MOD']['system']['taxonomy'] = array(
-    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'icon.png',
+    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'tag.png',
     'name' => 'Taxonomy',
     'tables' => array('tl_taxonomies')
 );

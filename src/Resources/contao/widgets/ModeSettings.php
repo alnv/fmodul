@@ -585,13 +585,11 @@ class ModeSettings extends Widget
     private function getOperator()
     {
         return array(
-
             'eq' => $GLOBALS['TL_LANG']['MSC']['f_eq'],
             'lt' => $GLOBALS['TL_LANG']['MSC']['f_lt'],
             'lte' => $GLOBALS['TL_LANG']['MSC']['f_lte'],
             'gt' => $GLOBALS['TL_LANG']['MSC']['f_gt'],
             'gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']
-
         );
     }
 

@@ -24,7 +24,7 @@ class CleanUrls extends \Frontend
     public function getPageIdFromUrlStr($arrFragments)
     {
 
-        if(count($arrFragments) > 0)
+        if(count($arrFragments) > 0 && !\Config::get('taxonomyDisable'))
         {
 
             $setTaxonomy = false;

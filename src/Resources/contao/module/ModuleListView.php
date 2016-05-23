@@ -186,14 +186,13 @@ class ModuleListView extends Module
             }
 
             // taxonomies >>
-            // @todo allow to disable taxonomy global
             // set specie value
-            if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie) {
+            if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie && !\Config::get('taxonomyDisable')) {
                 $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
             }
 
             // set tags value
-            if ($arrModule['reactToTaxonomy'] == '1' && $this->strTag) {
+            if ($arrModule['reactToTaxonomy'] == '1' && $this->strTag && !\Config::get('taxonomyDisable')) {
                 $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
             }
             // << end taxonomies

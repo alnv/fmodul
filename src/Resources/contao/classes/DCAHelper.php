@@ -82,7 +82,7 @@ class DCAHelper extends Backend
 			$subQuery = ' WHERE id = ' . $wrapperID . '';
 		}
 
-		$optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery . '')->execute();
+		$optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery)->execute();
 		$option = array();
 
 		while($optionsDB->next())

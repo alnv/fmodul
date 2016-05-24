@@ -640,7 +640,7 @@ class tl_fmodules_filters extends Backend
     }
 
     /**
-     * @param DataContainer $dc
+     * @param \DataContainer $dc
      * @return array
      */
     public function getAppearance(\DataContainer $dc)
@@ -664,7 +664,7 @@ class tl_fmodules_filters extends Backend
 
     /**
      * @param $values
-     * @param DataContainer $dc
+     * @param \DataContainer $dc
      * @return mixed
      * @throws Exception
      */
@@ -858,7 +858,7 @@ class tl_fmodules_filters extends Backend
     }
 
     /**
-     * @param DataContainer $dc
+     * @param \DataContainer $dc
      * @return null
      */
     public function delete_cols(\DataContainer $dc)

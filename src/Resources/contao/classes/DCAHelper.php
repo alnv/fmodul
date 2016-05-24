@@ -78,7 +78,7 @@ class DCAHelper extends Backend
             $subQuery = ' WHERE id = ' . $wrapperID . '';
         }
 
-        $optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery . '')->execute();
+        $optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery )->execute();
         $option = array();
 
         while ($optionsDB->next()) {
@@ -117,12 +117,7 @@ class DCAHelper extends Backend
                 return $options;
             }
 
-            // hot fix
-            $strPidQuery = '';
-            if ($field['fieldID'] == 'auto_item' && $id) $strPidQuery .= ' WHERE pid = ' . $id . '';
-            //
-
-            $DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strPidQuery . '')->execute(); // @todo where q mit pid hinzufügen
+            $DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'])->execute(); // @todo where q mit pid hinzufügen
             while ($DataFromTableDB->next()) {
                 $k = $DataFromTableDB->row()[$option['col']];
                 $v = $DataFromTableDB->row()[$option['title']];
@@ -130,10 +125,13 @@ class DCAHelper extends Backend
             }
             return $options;
         }
-
-        foreach ($option as $value) {
-            if (!$value['value']) continue;
-            $options[$value['value']] = $value['label'];
+        
+        if(is_array($option))
+        {
+            foreach ($option as $value) {
+                if (!$value['value']) continue;
+                $options[$value['value']] = $value['label'];
+            }
         }
 
         return $options;

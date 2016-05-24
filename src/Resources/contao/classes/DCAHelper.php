@@ -66,7 +66,7 @@ class DCAHelper extends Backend
 
         // set data id or wrapper id
         $id = Input::get('id');
-        if (Input::get('act') && Input::get('act') == 'editAll') $id = Input::get('id');
+        if (Input::get('act') && Input::get('act') == 'editAll') $wrapperID = Input::get('id');
         if ($wrapperID) $id = $wrapperID;
 
         // create where query

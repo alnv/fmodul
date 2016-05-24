@@ -150,6 +150,9 @@ class ModuleListView extends Module
             $mapSettings['lng'] = $this->fm_center_lng ? $this->fm_center_lng : '0';
         }
 
+        // get wrapper
+        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+
         // taxonomies
         $isListView = false;
         if(\Input::get('auto_item'))
@@ -187,12 +190,16 @@ class ModuleListView extends Module
 
             // taxonomies >>
             // set specie value
+            // @todo
             if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie && !\Config::get('taxonomyDisable')) {
+                $arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
             }
 
             // set tags value
+            // @todo
             if ($arrModule['reactToTaxonomy'] == '1' && $this->strTag && !\Config::get('taxonomyDisable')) {
+                //$arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
             }
             // << end taxonomies
@@ -245,7 +252,7 @@ class ModuleListView extends Module
             // has options
             if($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice')
             {
-                $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                $dcaHelper = new DCAHelper();
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
 
@@ -267,7 +274,6 @@ class ModuleListView extends Module
         }
 
         // get list view
-        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
         $qOrderByStr = $this->getOrderBy();
@@ -285,7 +291,6 @@ class ModuleListView extends Module
         // Override the default image size
         if ($this->imgSize != '') {
             $size = deserialize($this->imgSize);
-
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $imgSize = $this->imgSize;
             }

@@ -23,6 +23,68 @@ class QueryModel
 {
 
     /**
+     * @var string
+     * @todo
+     */
+    static public $strTaxonomyQuery = '';
+
+    /**
+     * @var array
+     * @todo
+     */
+    static public $arrTaxonomiesFields = array();
+
+    /**
+     * @param $query
+     * @return string
+     * @todo
+     */
+    static public function setupTaxonomyFieldQueryArray($query)
+    {
+        if($query['dataFromTaxonomy'] == '1')
+        {
+            static::$arrTaxonomiesFields['arrSpecie'][] = $query;
+        }
+    }
+
+    /**
+     * @todo lösung finden wenn es mehrere Taxonomies gibt
+     */
+    static public function taxonomyFieldQueryBuilder()
+    {
+        foreach (static::$arrTaxonomiesFields as $type => $arrTaxonomies)
+        {
+            // single
+            if($type == 'arrSpecie' && count($arrTaxonomies) == 1)
+            {
+                $strBind = $arrTaxonomies[0]['negate'] ? '!=' : '=';
+                static::$strTaxonomyQuery .= ' AND ' . $arrTaxonomies[0]['fieldID'] . ' ' . $strBind . ' "' . $arrTaxonomies[0]['value'] . '"';
+            }
+
+            // multiple
+            if($type == 'arrSpecie' && count($arrTaxonomies) > 1)
+            {
+                $strQuery = ' AND (';
+
+                foreach ($arrTaxonomies as $intIndex => $arrTaxonomy)
+                {
+                    $strBind = $arrTaxonomy['negate'] ? '!=' : '=';
+                    $strOperator = '';
+                    if($intIndex > 0)
+                    {
+                        $strOperator = 'OR';
+                    }
+                    $strQuery .= ' '.$strOperator.' ' . $arrTaxonomy['fieldID'] . ' ' . $strBind . ' "' . $arrTaxonomy['value'] . '"';
+                }
+
+                $strQuery .= ')';
+
+                static::$strTaxonomyQuery .= $strQuery;
+            }
+        }
+    }
+
+    /**
      * @param $query
      * @return string
      */

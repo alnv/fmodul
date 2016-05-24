@@ -32,6 +32,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Expert-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Map-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Search-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['taxonomy_legend'] = 'Taxonomy-Settings';
 
 //fields
 
@@ -56,7 +57,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][1] = 'Please select your template.';
 
 // fieldAppearance
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Input-Style';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Input-Type';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Please choose your preferred input field appearance.';
 
 // autoPage
@@ -152,12 +153,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Load data f
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Here you can load data from taxonomy tree.';
 
 // reactToTaxonomy
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Load relevant data (taxonomy)';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = ''; // @todo
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Use Taxonomy Tags';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Here you can use taxonomy tags.';
 
-// reactToTaxonomy
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Load relevant data (taxonomy)';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = ''; // @todo
+// reactToField
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Source';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Please select Source for your taxonomy tags.'; // @todo
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';

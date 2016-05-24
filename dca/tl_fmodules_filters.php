@@ -103,7 +103,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     'palettes' => array(
         '__selector__' => array('type', 'reactToTaxonomy'),
         'default' => '{type_legend},type;',
-        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,dataFromTaxonomy,negate,autoPage;{taxonomy_legend},reactToTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
+        'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,negate,autoPage;{taxonomy_legend},dataFromTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,negate,autoPage;{taxonomy_legend},reactToTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},fmGroup,evalCss,isMandatory;',
@@ -204,7 +204,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'select',
             'exclude' => true,
             'options_callback' => array('tl_fmodules_filters', 'getAppearance'),
-            'eval' => array('tl_class' => 'w50'),
+            'eval' => array('tl_class' => 'w50', 'chosen' => true),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
         'widget_type' => array

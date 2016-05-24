@@ -225,14 +225,10 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
     )
 );
 
-use Contao\Config;
-use Contao\Backend;
-use Contao\Automator;
-
 /**
  * Class tl_fmodules
  */
-class tl_fmodules extends Backend
+class tl_fmodules extends \Backend
 {
 
     /**
@@ -439,8 +435,8 @@ class tl_fmodules extends Backend
 
     /**
      * @param $varValue
-     * @param DataContainer $dc
-     * @return string
+     * @return mixed
+     * @throws Exception
      */
     public function generateTableName($varValue)
     {
@@ -453,11 +449,9 @@ class tl_fmodules extends Backend
     }
 
     /**
-     * @param $varValue
      * @param DataContainer $dc
-     * @return mixed
      */
-    public function createGroupCols(DataContainer $dc)
+    public function createGroupCols(\DataContainer $dc)
     {
 
         $tablename = $dc->activeRecord->tablename;
@@ -470,8 +464,8 @@ class tl_fmodules extends Backend
             $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $name . 'p blob NULL;')->execute();
         }
 
-        if (!Config::get('bypassCache')) {
-            $automator = new Automator();
+        if (!\Config::get('bypassCache')) {
+            $automator = new \Automator();
             $automator->purgeInternalCache();
         }
 
@@ -480,9 +474,9 @@ class tl_fmodules extends Backend
     /**
      * @param $varValue
      * @param DataContainer $dc
-     * @return mixed
+     * @return string
      */
-    public function saveSortingType($varValue, DataContainer $dc)
+    public function saveSortingType($varValue, \DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
 
@@ -510,7 +504,7 @@ class tl_fmodules extends Backend
      * @param DataContainer $dc
      * @return array
      */
-    public function getSortingOptions(DataContainer $dc)
+    public function getSortingOptions(\DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
         $db = $this->Database->prepare('SELECT fieldID, title, type FROM tl_fmodules_filters WHERE pid = ?')->execute($id);
@@ -538,7 +532,7 @@ class tl_fmodules extends Backend
      * @param DataContainer $dc
      * @return null
      */
-    public function deleteTable(DataContainer $dc)
+    public function deleteTable(\DataContainer $dc)
     {
         $tablename = $dc->activeRecord->tablename;
         if (!$tablename) return null;
@@ -557,8 +551,8 @@ class tl_fmodules extends Backend
             $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
         }
 
-        if (!Config::get('bypassCache')) {
-            $automator = new Automator();
+        if (!\Config::get('bypassCache')) {
+            $automator = new \Automator();
             $automator->purgeInternalCache();
         }
     }
@@ -568,7 +562,7 @@ class tl_fmodules extends Backend
      * @param DataContainer $dc
      * @return mixed
      */
-    public function updateTable($varValue, DataContainer $dc)
+    public function updateTable($varValue, \DataContainer $dc)
     {
         if (!$dc->activeRecord->tablename) {
             return $varValue;
@@ -586,8 +580,8 @@ class tl_fmodules extends Backend
 
         }
 
-        if (!Config::get('bypassCache')) {
-            $automator = new \Contao\Automator();
+        if (!\Config::get('bypassCache')) {
+            $automator = new \Automator();
             $automator->purgeInternalCache();
         }
         return $varValue;

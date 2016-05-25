@@ -157,7 +157,7 @@ class ModuleListView extends Module
         $isListView = false;
         if(\Input::get('auto_item'))
         {
-            $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = "0" AND (alias = ? OR id = ?) AND published = "1"')->limit(1)->execute(\Input::get('auto_item'), (int)\Input::get('auto_item'));
+            $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND (alias = ? OR id = ?)')->limit(1)->execute(\Input::get('auto_item'), (int)\Input::get('auto_item'));
             if($rootTaxonomiesDB->count())
             {
                 $isListView = true;
@@ -165,8 +165,7 @@ class ModuleListView extends Module
         }
         // set params variables
         $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
-        $this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
-        $this->strSpecie = $isListView ? \Input::get('taxonomy') : \Input::get('specie');
+        $this->strSpecie = $isListView ? \Input::get('auto_item') : \Input::get('specie');
         $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
 
         while ($moduleDB->next()) {
@@ -192,7 +191,7 @@ class ModuleListView extends Module
             // set specie value
             // @todo
             if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie && !\Config::get('taxonomyDisable')) {
-                $arrModule['type'] = 'taxonomy_field'; // dyn type
+                //$arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
             }
 
@@ -330,7 +329,7 @@ class ModuleListView extends Module
                 $listDB->target = '';
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
                 $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
-                if($strTaxonomyUrl) $strTaxonomyUrl = '/' . $strTaxonomyUrl;
+                //if($strTaxonomyUrl) $strTaxonomyUrl = '/' . $strTaxonomyUrl;
                 $listDB->href = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
             }
 
@@ -879,10 +878,14 @@ class ModuleListView extends Module
     {
         $strTaxonomyUrl = '';
         if($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
+
+        /*
         if($this->strTaxonomy && $this->fm_use_specieUrl)
         {
             $strTaxonomyUrl .= '/' . $this->strTaxonomy;
         }
+        */
+
         if($this->strSpecie && $this->fm_use_specieUrl)
         {
             $strTaxonomyUrl .= '/' . $this->strSpecie;

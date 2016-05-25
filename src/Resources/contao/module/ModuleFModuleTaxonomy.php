@@ -30,7 +30,7 @@ class ModuleFModuleTaxonomy extends \Module
     /**
      * @var string
      */
-    protected $strTaxonomy= '';
+    // protected $strTaxonomy= '';
 
     /**
      * @var string
@@ -69,10 +69,10 @@ class ModuleFModuleTaxonomy extends \Module
         $isListView = false;
         $redirectID = $this->fm_taxonomy_page ? $this->fm_taxonomy_page : $objPage->id;
         $objPageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ? ORDER BY sorting')->execute($redirectID);
-        $taxonomies = array('taxonomy' => array(), 'species' => array(), 'tags' => array());
+        $taxonomies = array('species' => array(), 'tags' => array());
 
         // set param values
-        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'specie' => '', 'tags' => array());
+        $setAutoItems = array('auto_item'=> '', 'specie' => '', 'tags' => array());
         foreach($setAutoItems as $param => $value)
         {
             $setAutoItems[$param] = \Input::get($param);
@@ -87,7 +87,7 @@ class ModuleFModuleTaxonomy extends \Module
 
             if($rootTaxonomiesDB->pid == '0')
             {
-                $taxonomies['taxonomy'][] = $rootTaxonomiesDB->row();
+                //$taxonomies['taxonomy'][] = $rootTaxonomiesDB->row();
                 continue;
             }
 
@@ -96,8 +96,8 @@ class ModuleFModuleTaxonomy extends \Module
 
         // set params variables
         $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
-        $this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
-        $this->strSpecie = $isListView ? \Input::get('taxonomy') : \Input::get('specie');
+        //$this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
+        $this->strSpecie = $isListView ? \Input::get('auto_item') : \Input::get('specie');
         $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
 
         // allow multiple values
@@ -148,7 +148,7 @@ class ModuleFModuleTaxonomy extends \Module
     {
         if($type == 'taxonomy')
         {
-            return $this->parseTaxonomy($arrItem, $arrPage);
+            //return $this->parseTaxonomy($arrItem, $arrPage);
         }
 
         if($type == 'species')
@@ -169,6 +169,7 @@ class ModuleFModuleTaxonomy extends \Module
      * @param $arrPage
      * @return mixed
      */
+    /*
     private function parseTaxonomy($arrItem, $arrPage)
     {
         // no taxonomy found
@@ -188,6 +189,7 @@ class ModuleFModuleTaxonomy extends \Module
 
         return $arrItem;
     }
+    */
 
     /**
      * @param $arrItem
@@ -203,7 +205,7 @@ class ModuleFModuleTaxonomy extends \Module
         }
 
         // href
-        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strTaxonomy . '/' . $arrItem['alias']);
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $arrItem['alias']);
 
         return $arrItem;
     }
@@ -222,7 +224,7 @@ class ModuleFModuleTaxonomy extends \Module
         }
 
         // href
-        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strTaxonomy . '/' . $this->strSpecie . '/' . $arrItem['alias'] );
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strSpecie . '/' . $arrItem['alias'] );
 
         return $arrItem;
     }

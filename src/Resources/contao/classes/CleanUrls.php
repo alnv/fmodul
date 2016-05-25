@@ -23,26 +23,22 @@ class CleanUrls extends \Frontend
      */
     public function getPageIdFromUrlStr($arrFragments)
     {
-
         if(count($arrFragments) > 0 && !\Config::get('taxonomyDisable'))
         {
-
             $setTaxonomy = false;
             $arrFolderUrlFragments = array();
             $arrTempFragments = $arrFragments;
 
-            if(\Config::get('folderUrl') && isset($arrFragments[0]) && !in_array('auto_item', $arrFragments))
-            {
+            if(\Config::get('folderUrl') && isset($arrFragments[0]) && !in_array('auto_item', $arrFragments)) {
                 $arrFolderUrlFragments = explode('/', $arrFragments[0]);
             }
 
             $arrTempFragments = count($arrFolderUrlFragments) > 1 ? $arrFolderUrlFragments : $arrTempFragments;
             $setAutoItems = $this->setParameter($arrTempFragments);
             $arrCustomizedFragments = array();
-
-            if($setAutoItems['taxonomy'])
+            if($setAutoItems['specie'] || $setAutoItems['auto_item'])
             {
-                $rootTaxonomy = $this->Database->prepare('SELECT id FROM tl_taxonomies WHERE alias = ? AND published = "1"')->limit(1)->execute($setAutoItems['taxonomy']);
+                $rootTaxonomy = $this->Database->prepare('SELECT id FROM tl_taxonomies WHERE (alias = ? OR alias = ?) AND published = "1"')->limit(1)->execute($setAutoItems['specie'],$setAutoItems['auto_item']);
                 if($rootTaxonomy->numRows)
                 {
                     $setTaxonomy = true;
@@ -60,7 +56,6 @@ class CleanUrls extends \Frontend
                         $arrCustomizedFragments[] = $value;
                         continue;
                     }
-
                     \Input::setGet($param, $value);
                 }
 
@@ -78,7 +73,7 @@ class CleanUrls extends \Frontend
      */
     private function setParameter($arrFragments)
     {
-        $setAutoItems = array('auto_item'=> '', 'taxonomy' => '', 'specie' => '', 'tags' => array());
+        $setAutoItems = array('auto_item'=> '', 'specie' => '', 'tags' => array());
         $intUrlPart = 1;
 
         foreach($setAutoItems as $param => $value)

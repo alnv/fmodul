@@ -30,11 +30,6 @@ class ModuleFModuleTaxonomy extends \Module
     /**
      * @var string
      */
-    // protected $strTaxonomy= '';
-
-    /**
-     * @var string
-     */
     protected $strSpecie = '';
 
     /**
@@ -78,16 +73,17 @@ class ModuleFModuleTaxonomy extends \Module
             $setAutoItems[$param] = \Input::get($param);
         }
 
+        // check if is list or detail page
+        $taxonomyDB =  $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND ( alias = ? OR id = ? )')->execute($setAutoItems['auto_item'], (int)$setAutoItems['auto_item']);
+        if($taxonomyDB->count())
+        {
+            $isListView = true;
+        }
         while($rootTaxonomiesDB->next())
         {
-            if($setAutoItems['auto_item'] === $rootTaxonomiesDB->alias)
-            {
-                $isListView = true;
-            }
-
             if($rootTaxonomiesDB->pid == '0')
             {
-                //$taxonomies['taxonomy'][] = $rootTaxonomiesDB->row();
+                $taxonomies['taxonomy'][] = $rootTaxonomiesDB->row();
                 continue;
             }
 
@@ -96,7 +92,6 @@ class ModuleFModuleTaxonomy extends \Module
 
         // set params variables
         $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
-        //$this->strTaxonomy = $isListView ? \Input::get('auto_item') : \Input::get('taxonomy');
         $this->strSpecie = $isListView ? \Input::get('auto_item') : \Input::get('specie');
         $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
 
@@ -107,12 +102,27 @@ class ModuleFModuleTaxonomy extends \Module
         }
 
         //
+        // $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1"')->execute($this->strSpecie);
+        /*
+        $rootSpeciesDB = null;
+        $currentTaxonomyDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( alias = ? OR id = ? ) AND published = "1"')->limit(1)->execute($this->strSpecie, (int)$this->strSpecie);
+
+        $currentTaxonomyID = '';
+        $currentTaxonomyPID = '';
+        if($currentTaxonomyDB->count())
+        {
+            $arrCurrentTaxonomy = $currentTaxonomyDB->row();
+            $currentTaxonomyID = $arrCurrentTaxonomy['id'];
+            $currentTaxonomyPID = $arrCurrentTaxonomy['pid'];
+        }
+        */
         $rootSpeciesDB = null;
         if($this->strSpecie)
         {
+
             $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1"')->execute($this->strSpecie);
         }
-
+        
         if($rootSpeciesDB)
         {
             while($rootSpeciesDB->next())
@@ -146,10 +156,6 @@ class ModuleFModuleTaxonomy extends \Module
      */
     private function parseTaxonomiesArrays($type, $arrItem, $arrPage = array())
     {
-        if($type == 'taxonomy')
-        {
-            //return $this->parseTaxonomy($arrItem, $arrPage);
-        }
 
         if($type == 'species')
         {
@@ -163,33 +169,6 @@ class ModuleFModuleTaxonomy extends \Module
 
         return $arrItem;
     }
-
-    /**
-     * @param $arrItem
-     * @param $arrPage
-     * @return mixed
-     */
-    /*
-    private function parseTaxonomy($arrItem, $arrPage)
-    {
-        // no taxonomy found
-        if(!$this->strTaxonomy)
-        {
-            $this->strTaxonomy = $arrItem['alias'];
-        }
-
-        // css
-        if($this->strTaxonomy === $arrItem['alias'])
-        {
-            $arrItem['css'] .= ' active';
-        }
-
-        // href
-        $arrItem['href'] = $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $arrItem['alias']);
-
-        return $arrItem;
-    }
-    */
 
     /**
      * @param $arrItem

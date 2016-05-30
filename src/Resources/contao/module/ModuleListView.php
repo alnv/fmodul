@@ -157,8 +157,9 @@ class ModuleListView extends Module
         $isListView = false;
         if(\Input::get('auto_item'))
         {
-            $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND (alias = ? OR id = ?)')->limit(1)->execute(\Input::get('auto_item'), (int)\Input::get('auto_item'));
-            if($rootTaxonomiesDB->count())
+            //$taxonomyItemDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND (alias = ? OR id = ?)')->limit(1)->execute(\Input::get('auto_item'), (int)\Input::get('auto_item'));
+            $taxonomyItemDB = $this->Database->prepare('SELECT * FROM '.$tablename.'_data WHERE published = "1" AND pid = ? AND (alias = ? OR id = ?)')->limit(1)->execute($wrapperID, \Input::get('auto_item'), (int)\Input::get('auto_item'));
+            if(!$taxonomyItemDB->count())
             {
                 $isListView = true;
             }
@@ -191,14 +192,14 @@ class ModuleListView extends Module
             // set specie value
             // @todo
             if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie && !\Config::get('taxonomyDisable')) {
-                //$arrModule['type'] = 'taxonomy_field'; // dyn type
+                $arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
             }
 
             // set tags value
             // @todo
             if ($arrModule['reactToTaxonomy'] == '1' && $this->strTag && !\Config::get('taxonomyDisable')) {
-                //$arrModule['type'] = 'taxonomy_field'; // dyn type
+                $arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
             }
             // << end taxonomies
@@ -329,7 +330,6 @@ class ModuleListView extends Module
                 $listDB->target = '';
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
                 $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
-                //if($strTaxonomyUrl) $strTaxonomyUrl = '/' . $strTaxonomyUrl;
                 $listDB->href = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
             }
 
@@ -696,11 +696,6 @@ class ModuleListView extends Module
 
         $taxonomies = array();
 
-        /*
-         * nachdem 1.4.2 update ändern!
-         * die fieldID wird als key übergeben. daher kann man eine schleife sparen
-         * erstmal weglassen wegen der kompatibilität
-         */
         foreach ($taxonomyFromFE as $filterValue) {
             if ($filterValue['set']['ignore']) {
                 continue;
@@ -878,13 +873,6 @@ class ModuleListView extends Module
     {
         $strTaxonomyUrl = '';
         if($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
-
-        /*
-        if($this->strTaxonomy && $this->fm_use_specieUrl)
-        {
-            $strTaxonomyUrl .= '/' . $this->strTaxonomy;
-        }
-        */
 
         if($this->strSpecie && $this->fm_use_specieUrl)
         {

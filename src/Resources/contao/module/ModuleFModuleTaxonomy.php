@@ -74,8 +74,10 @@ class ModuleFModuleTaxonomy extends \Module
         }
 
         // check if is list or detail page
-        $taxonomyDB =  $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND ( alias = ? OR id = ? )')->execute($setAutoItems['auto_item'], (int)$setAutoItems['auto_item']);
-        if($taxonomyDB->count())
+        $taxonomyDB =  $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND ( alias = ? OR id = ? )')->limit(1)->execute($setAutoItems['auto_item'], (int)$setAutoItems['auto_item']);
+        $arrTaxonomy = $taxonomyDB->row();
+        $currentTaxonomyPID = $arrTaxonomy['pid'];
+        if(!empty($arrTaxonomy))
         {
             $isListView = true;
         }
@@ -101,25 +103,9 @@ class ModuleFModuleTaxonomy extends \Module
             $this->strTag = explode(',', $this->strTag);
         }
 
-        //
-        // $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1"')->execute($this->strSpecie);
-        /*
         $rootSpeciesDB = null;
-        $currentTaxonomyDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( alias = ? OR id = ? ) AND published = "1"')->limit(1)->execute($this->strSpecie, (int)$this->strSpecie);
-
-        $currentTaxonomyID = '';
-        $currentTaxonomyPID = '';
-        if($currentTaxonomyDB->count())
+        if($this->strSpecie && $currentTaxonomyPID == $taxonomyID)
         {
-            $arrCurrentTaxonomy = $currentTaxonomyDB->row();
-            $currentTaxonomyID = $arrCurrentTaxonomy['id'];
-            $currentTaxonomyPID = $arrCurrentTaxonomy['pid'];
-        }
-        */
-        $rootSpeciesDB = null;
-        if($this->strSpecie)
-        {
-
             $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1"')->execute($this->strSpecie);
         }
         

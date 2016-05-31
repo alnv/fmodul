@@ -70,7 +70,7 @@ class ModuleListView extends Module
     /**
      * @var string
      */
-    protected $strTaxonomy= '';
+    protected $strTaxonomy = '';
 
     /**
      * @var string
@@ -154,20 +154,17 @@ class ModuleListView extends Module
         $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
 
         // taxonomies
-        $isListView = false;
-        if(\Input::get('auto_item'))
-        {
-            //$taxonomyItemDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE published = "1" AND (alias = ? OR id = ?)')->limit(1)->execute(\Input::get('auto_item'), (int)\Input::get('auto_item'));
-            $taxonomyItemDB = $this->Database->prepare('SELECT * FROM '.$tablename.'_data WHERE published = "1" AND pid = ? AND (alias = ? OR id = ?)')->limit(1)->execute($wrapperID, \Input::get('auto_item'), (int)\Input::get('auto_item'));
-            if(!$taxonomyItemDB->count())
-            {
-                $isListView = true;
+        $blnDetailView = false;
+        if (\Input::get('auto_item')) {
+            $taxonomyItemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE published = "1" AND pid = ? AND (alias = ? OR id = ?)')->limit(1)->execute($wrapperID, \Input::get('auto_item'), (int)\Input::get('auto_item'));
+            if ($taxonomyItemDB->count()) {
+                $blnDetailView = true;
             }
         }
         // set params variables
-        $this->strAutoItem = $isListView ? '' : \Input::get('auto_item');
-        $this->strSpecie = $isListView ? \Input::get('auto_item') : \Input::get('specie');
-        $this->strTag = $isListView ? \Input::get('specie') : \Input::get('tags');
+        $this->strAutoItem = !$blnDetailView ? '' : \Input::get('auto_item');
+        $this->strSpecie = !$blnDetailView ? \Input::get('auto_item') : \Input::get('specie');
+        $this->strTag = !$blnDetailView ? \Input::get('specie') : \Input::get('tags');
 
         while ($moduleDB->next()) {
 
@@ -190,15 +187,12 @@ class ModuleListView extends Module
 
             // taxonomies >>
             // set specie value
-            // @todo
-            if ($arrModule['dataFromTaxonomy'] == '1' && $this->strSpecie && !\Config::get('taxonomyDisable')) {
+            if ($arrModule['dataFromTaxonomy'] == '1' && !\Config::get('taxonomyDisable')) {
                 $arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
             }
-
             // set tags value
-            // @todo
-            if ($arrModule['reactToTaxonomy'] == '1' && $this->strTag && !\Config::get('taxonomyDisable')) {
+            if ($arrModule['reactToTaxonomy'] == '1' && !\Config::get('taxonomyDisable')) {
                 $arrModule['type'] = 'taxonomy_field'; // dyn type
                 $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
             }
@@ -208,12 +202,10 @@ class ModuleListView extends Module
             if ($val) $arrModule['enable'] = true;
 
             // check if has an wrapper
-            if(( $arrModule['type'] === 'search_field' && $arrModule['isInteger'] ) || $arrModule['type'] === 'date_field')
-            {
+            if (($arrModule['type'] === 'search_field' && $arrModule['isInteger']) || $arrModule['type'] === 'date_field') {
                 $btw = Input::get($arrModule['fieldID'] . '_btw') ? Input::get($arrModule['fieldID'] . '_btw') : '';
                 $btwHasValue = QueryModel::isValue($btw, $arrModule['type']);
-                if($btwHasValue && !$val)
-                {
+                if ($btwHasValue && !$val) {
                     $arrModule['enable'] = true;
                     $arrModule['value'] = 0;
                 }
@@ -250,8 +242,7 @@ class ModuleListView extends Module
             }
 
             // has options
-            if($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice')
-            {
+            if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
                 $dcaHelper = new DCAHelper();
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
@@ -476,21 +467,16 @@ class ModuleListView extends Module
             $item['feViewID'] = $this->feViewID;
 
             // set clean options
-            if(!empty($arrCleanOptions))
-            {
+            if (!empty($arrCleanOptions)) {
                 $item['cleanOptions'] = $arrCleanOptions;
 
                 // overwrite clean options
-                foreach($arrCleanOptions as $fieldID => $options)
-                {
-                    if($item[$fieldID] && is_string($item[$fieldID]))
-                    {
+                foreach ($arrCleanOptions as $fieldID => $options) {
+                    if ($item[$fieldID] && is_string($item[$fieldID])) {
                         $arrValues = explode(',', $item[$fieldID]);
                         $arrTemp = array();
-                        if(is_array($arrValues))
-                        {
-                            foreach($arrValues as $val)
-                            {
+                        if (is_array($arrValues)) {
+                            foreach ($arrValues as $val) {
                                 $arrTemp[$val] = $options[$val];
                             }
                         }
@@ -573,8 +559,11 @@ class ModuleListView extends Module
      */
     protected function setValuesForTaxonomySpecieAttribute($return)
     {
-        if($this->strSpecie && is_string($this->strSpecie))
+        if(\Input::get($return['fieldID']))
         {
+            $this->strSpecie = \Input::get($return['fieldID']);
+        }
+        if ($this->strSpecie && is_string($this->strSpecie)) {
             $return['value'] = $this->strSpecie;
         }
         return $return;
@@ -587,12 +576,14 @@ class ModuleListView extends Module
     protected function setValuesForTaxonomyTagsAttribute($return)
     {
         // allow multiple values
-        if(is_string($this->strTag))
+        if(\Input::get($return['fieldID']))
         {
+            $this->strTag = \Input::get($return['fieldID']);
+        }
+        if (is_string($this->strTag)) {
             $this->strTag = explode(',', $this->strTag);
         }
-        if($this->strTag && is_array($this->strTag))
-        {
+        if ($this->strTag && is_array($this->strTag)) {
             $return['value'] = $this->strTag;
         }
         return $return;
@@ -863,7 +854,7 @@ class ModuleListView extends Module
     private function generateUrl($objTarget, $alias)
     {
         $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
-        return $this->generateFrontendUrl($objTarget,  '/' . $alias . $strTaxonomyUrl );
+        return $this->generateFrontendUrl($objTarget, '/' . $alias . $strTaxonomyUrl);
     }
 
     /**
@@ -872,14 +863,12 @@ class ModuleListView extends Module
     private function generateTaxonomyUrl()
     {
         $strTaxonomyUrl = '';
-        if($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
+        if ($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
 
-        if($this->strSpecie && $this->fm_use_specieUrl)
-        {
+        if ($this->strSpecie && $this->fm_use_specieUrl) {
             $strTaxonomyUrl .= '/' . $this->strSpecie;
         }
-        if($this->strTag && $this->fm_use_specieUrl && $this->fm_use_tagsUrl)
-        {
+        if ($this->strTag && $this->fm_use_specieUrl && $this->fm_use_tagsUrl) {
             $strTaxonomyUrl .= '/' . $this->strTag;
         }
         return $strTaxonomyUrl;

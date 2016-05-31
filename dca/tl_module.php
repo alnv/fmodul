@@ -20,7 +20,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend}
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend:hide},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{defaultValues_legend:hide},fm_defaultValues;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_taxonomy'] = '{title_legend},name,headline,type;{taxonomy_legend},fm_taxonomy;{fm_redirect_legend:hide},fm_taxonomy_page;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_taxonomy'] = '{title_legend},name,headline,type;{taxonomy_legend},fm_taxonomy,f_select_module,f_select_wrapper;{fm_redirect_legend:hide},fm_taxonomy_page;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 // selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
@@ -49,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy'] = array(
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getTaxonomies'),
-    'eval' => array('tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+    'eval' => array('tl_class' => 'w50', 'mandatory' => true, 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
@@ -71,7 +71,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
     'exclude' => true,
     'inputType' => 'select',
     'options_callback' => array('tl_module_fmodule', 'getModules'),
-    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
@@ -80,7 +80,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
     'inputType' => 'select',
     'exclude' => true,
     'options' => array(),
-    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_orderby'] = array
@@ -899,9 +899,9 @@ class tl_module_fmodule extends tl_module
     public function getModules()
     {
         $return = array();
-        $fmodulesDB = $this->Database->prepare('SELECT tablename, name FROM tl_fmodules')->execute();
-        while ($fmodulesDB->next()) {
-            $return[$fmodulesDB->tablename] = $fmodulesDB->name;
+        $modulesDB = $this->Database->prepare('SELECT tablename, name FROM tl_fmodules')->execute();
+        while ($modulesDB->next()) {
+            $return[$modulesDB->tablename] = $modulesDB->name;
         }
         return $return;
     }
@@ -934,6 +934,12 @@ class tl_module_fmodule extends tl_module
             $wrapper[$modulesDB->id] = $modulesDB->title . ' (' . $modulesDB->info . ')';
         }
         $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper']['options'] = $wrapper;
+
+        if($type == 'fmodule_fe_taxonomy')
+        {
+            $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module']['eval']['mandatory'] = false;
+            $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper']['eval']['mandatory'] = false;
+        }
 
         // break up
         if ($type != 'fmodule_fe_list') {

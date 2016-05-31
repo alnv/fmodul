@@ -666,6 +666,7 @@ class DCAModuleData extends ViewContainer
     public function generateAlias($varValue, $dc)
     {
         $autoAlias = false;
+        $table = Input::get('table');
 
         // create alias if no dca defined
         if ($dc === null) {
@@ -679,10 +680,7 @@ class DCAModuleData extends ViewContainer
             $varValue = StringUtil::generateAlias($dc->activeRecord->title);
         }
 
-        $table = Input::get('table');
-        $pid = $dc->activeRecord->pid;
-
-        $objAlias = $this->Database->prepare("SELECT id FROM " . $table . " WHERE alias = ? AND pid = ?")->execute($varValue, $pid);
+        $objAlias = $this->Database->prepare("SELECT id FROM " . $table . " WHERE alias = ?")->execute($varValue);
 
         // Check whether the alias exists
         if ($objAlias->numRows > 1 && !$autoAlias) {

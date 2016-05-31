@@ -67,7 +67,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'doNotCopy' => true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
+                'eval' => array('rgxp' => 'alias', 'unique'=>true, 'maxlength' => 128, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
             ),

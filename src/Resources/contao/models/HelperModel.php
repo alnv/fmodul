@@ -228,7 +228,6 @@ class HelperModel
                     case 'toggle_field':
                         $qStr .= QueryModel::toggleFieldQuery($field);
                         break;
-                    // @todo
                     case 'taxonomy_field':
                         QueryModel::setupTaxonomyFieldQueryArray($field);
                         break;
@@ -248,7 +247,6 @@ class HelperModel
         }
 
         // taxonomy query builder
-        // @todo
         if( count(QueryModel::$arrTaxonomiesFields) > 0 ) {
             QueryModel::taxonomyFieldQueryBuilder();
             $qStr = QueryModel::$strTaxonomyQuery;

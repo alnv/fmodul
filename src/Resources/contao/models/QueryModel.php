@@ -24,20 +24,17 @@ class QueryModel
 
     /**
      * @var string
-     * @todo
      */
     static public $strTaxonomyQuery = '';
 
     /**
      * @var array
-     * @todo
      */
     static public $arrTaxonomiesFields = array();
 
     /**
      * @param $query
      * @return string
-     * @todo
      */
     static public function setupTaxonomyFieldQueryArray($query)
     {
@@ -53,7 +50,7 @@ class QueryModel
     }
 
     /**
-     * @todo lösung finden wenn es mehrere Taxonomies gibt
+     *
      */
     static public function taxonomyFieldQueryBuilder()
     {

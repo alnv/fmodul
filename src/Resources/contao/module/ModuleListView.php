@@ -152,12 +152,10 @@ class ModuleListView extends Module
             if ($val) $arrModule['enable'] = true;
 
             // check if has an wrapper
-            if(( $arrModule['type'] === 'search_field' && $arrModule['isInteger'] ) || $arrModule['type'] === 'date_field')
-            {
+            if (($arrModule['type'] === 'search_field' && $arrModule['isInteger']) || $arrModule['type'] === 'date_field') {
                 $btw = Input::get($arrModule['fieldID'] . '_btw') ? Input::get($arrModule['fieldID'] . '_btw') : '';
                 $btwHasValue = QueryModel::isValue($btw, $arrModule['type']);
-                if($btwHasValue && !$val)
-                {
+                if ($btwHasValue && !$val) {
                     $arrModule['enable'] = true;
                     $arrModule['value'] = 0;
                 }
@@ -194,8 +192,7 @@ class ModuleListView extends Module
             }
 
             // has options
-            if($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice')
-            {
+            if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
                 $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
@@ -421,25 +418,23 @@ class ModuleListView extends Module
             $item['feViewID'] = $this->feViewID;
 
             // set clean options
-            if(!empty($arrCleanOptions))
-            {
+            if (!empty($arrCleanOptions)) {
                 $item['cleanOptions'] = $arrCleanOptions;
 
                 // overwrite clean options
-                foreach($arrCleanOptions as $fieldID => $options)
-                {
-                    if($item[$fieldID] && is_string($item[$fieldID]))
-                    {
+                foreach ($arrCleanOptions as $fieldID => $options) {
+                    if ($item[$fieldID] && is_string($item[$fieldID])) {
                         $arrValues = explode(',', $item[$fieldID]);
-                        $arrTemp = array();
-                        if(is_array($arrValues))
-                        {
-                            foreach($arrValues as $val)
-                            {
-                                $arrTemp[$val] = $options[$val];
+                        $arrValuesAsString = array();
+                        $arrValuesAsArray = array();
+                        if (is_array($arrValues)) {
+                            foreach ($arrValues as $val) {
+                                $arrValuesAsArray[$val] = $options[$val];
+                                $arrValuesAsString[] = $options[$val];
                             }
                         }
-                        $item[$fieldID] = $arrTemp;
+                        $item[$fieldID . 'AsArray'] = $arrValuesAsArray;
+                        $item[$fieldID] = implode(', ', $arrValuesAsString);
                     }
                 }
             }

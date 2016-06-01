@@ -52,15 +52,15 @@ class DCAHelper extends Backend
             $table = $arrTable;
         }
 
+        if (!$field['fieldID'] || !$table) {
+            return $options;
+        }
+
         //
         $strDo = Input::get('do');
         $moduleName = substr($table, 3, strlen($table));
         if(TL_MODE == 'BE' && $strDo != $moduleName && $strDo)
         {
-            return $options;
-        }
-        
-        if (!$field['fieldID'] || !$table) {
             return $options;
         }
 

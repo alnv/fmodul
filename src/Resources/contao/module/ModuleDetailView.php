@@ -304,7 +304,6 @@ class ModuleDetailView extends Module
         }
 
         // set clean options
-        // set clean options
         if (!empty($arrCleanOptions)) {
             $itemDB['cleanOptions'] = $arrCleanOptions;
 

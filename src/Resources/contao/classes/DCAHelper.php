@@ -34,24 +34,32 @@ class DCAHelper extends Backend
 
     /**
      * @param $field
-     * @param $mixTable
+     * @param $arrTable
      * @param string $wrapperID
      * @return array
      */
-    public function getOptions($field, $mixTable, $wrapperID = '')
+    public function getOptions($field, $arrTable, $wrapperID = '')
     {
         $options = array();
         $hasOptions = array('multi_choice', 'simple_choice');
         $table = '';
 
-        if (is_array($mixTable)) {
-            $table = $mixTable['tablename'];
+        if (is_array($arrTable)) {
+            $table = $arrTable['tablename'];
         }
 
-        if (is_string($mixTable)) {
-            $table = $mixTable;
+        if (is_string($arrTable)) {
+            $table = $arrTable;
         }
 
+        //
+        $strDo = Input::get('do');
+        $moduleName = substr($table, 3, strlen($table));
+        if(TL_MODE == 'BE' && $strDo != $moduleName && $strDo)
+        {
+            return $options;
+        }
+        
         if (!$field['fieldID'] || !$table) {
             return $options;
         }

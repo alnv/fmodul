@@ -114,7 +114,7 @@ class ModuleDetailView extends Module
                 $this->loadMapScript = true;
 
                 // load map libraries
-                if(!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
+                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
             }
 
             if ($arrModule['type'] == 'widget') {
@@ -136,8 +136,7 @@ class ModuleDetailView extends Module
             }
 
             // has options
-            if($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice')
-            {
+            if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
                 $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
@@ -231,8 +230,7 @@ class ModuleDetailView extends Module
         }
 
         // seo
-        if($this->fm_overwrite_seoSettings)
-        {
+        if ($this->fm_overwrite_seoSettings) {
             $descriptionColName = $this->fm_seoDescription ? $this->fm_seoDescription : 'description';
             $pageTitleColName = $this->fm_seoPageTitle ? $this->fm_seoPageTitle : 'title';
             $seoDescription = strip_tags($itemDB[$descriptionColName]);
@@ -240,8 +238,7 @@ class ModuleDetailView extends Module
             $objPage->pageTitle = $itemDB[$pageTitleColName];
 
             // set hreflang
-            if($this->fm_seoHrefLang)
-            {
+            if ($this->fm_seoHrefLang) {
                 $strHrefLangAttributes = HelperModel::getHrefAttributes($tablename, $alias, null, $itemDB, $wrapperDB);
                 $GLOBALS['TL_HEAD'][] = $strHrefLangAttributes;
             }
@@ -307,25 +304,22 @@ class ModuleDetailView extends Module
         }
 
         // set clean options
-        if(!empty($arrCleanOptions))
-        {
+        if (!empty($arrCleanOptions)) {
             $itemDB['cleanOptions'] = $arrCleanOptions;
-
             // overwrite clean options
-            foreach($arrCleanOptions as $fieldID => $options)
-            {
-                if($itemDB[$fieldID] && is_string($itemDB[$fieldID]))
-                {
+            foreach ($arrCleanOptions as $fieldID => $options) {
+                if ($itemDB[$fieldID] && is_string($itemDB[$fieldID])) {
                     $arrValues = explode(',', $itemDB[$fieldID]);
-                    $arrTemp = array();
-                    if(is_array($arrValues))
-                    {
-                        foreach($arrValues as $val)
-                        {
-                            $arrTemp[$val] = $options[$val];
+                    $arrValuesAsString = array();
+                    $arrValuesAsArray = array();
+                    if (is_array($arrValues)) {
+                        foreach ($arrValues as $val) {
+                            $arrValuesAsArray[$val] = $options[$val];
+                            $arrValuesAsString[] = $options[$val];
                         }
                     }
-                    $itemDB[$fieldID] = $arrTemp;
+                    $itemDB[$fieldID . 'AsArray'] = $arrValuesAsArray;
+                    $itemDB[$fieldID] = implode(', ', $arrValuesAsString);
                 }
             }
         }

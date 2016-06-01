@@ -469,18 +469,20 @@ class ModuleListView extends Module
             // set clean options
             if (!empty($arrCleanOptions)) {
                 $item['cleanOptions'] = $arrCleanOptions;
-
                 // overwrite clean options
                 foreach ($arrCleanOptions as $fieldID => $options) {
                     if ($item[$fieldID] && is_string($item[$fieldID])) {
                         $arrValues = explode(',', $item[$fieldID]);
-                        $arrTemp = array();
+                        $arrValuesAsString = array();
+                        $arrValuesAsArray = array();
                         if (is_array($arrValues)) {
                             foreach ($arrValues as $val) {
-                                $arrTemp[$val] = $options[$val];
+                                $arrValuesAsArray[$val] = $options[$val];
+                                $arrValuesAsString[] = $options[$val];
                             }
                         }
-                        $item[$fieldID] = $arrTemp;
+                        $item[$fieldID . 'AsArray'] = $arrValuesAsArray;
+                        $item[$fieldID] = implode(', ', $arrValuesAsString);
                     }
                 }
             }

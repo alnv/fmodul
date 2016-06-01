@@ -72,13 +72,13 @@ class DCAHelper extends Backend
         // create where query
         $subQuery = '';
         if ($id) {
-            $subQuery = ' WHERE id = (SELECT pid FROM ' . $table . '_data WHERE id = ' . $id . ')';
+            $subQuery = ' WHERE id = (SELECT pid FROM ' . $table . '_data WHERE id = "' . $id . '")';
         }
         if ($wrapperID) {
-            $subQuery = ' WHERE id = ' . $wrapperID . '';
+            $subQuery = ' WHERE id = "' . $wrapperID . '""';
         }
 
-        $optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery )->execute();
+        $optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery)->execute();
         $option = array();
 
         while ($optionsDB->next()) {
@@ -125,9 +125,8 @@ class DCAHelper extends Backend
             }
             return $options;
         }
-        
-        if(is_array($option))
-        {
+
+        if (is_array($option)) {
             foreach ($option as $value) {
                 if (!$value['value']) continue;
                 $options[$value['value']] = $value['label'];

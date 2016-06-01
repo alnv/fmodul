@@ -75,7 +75,7 @@ class DCAHelper extends Backend
             $subQuery = ' WHERE id = (SELECT pid FROM ' . $table . '_data WHERE id = "' . $id . '")';
         }
         if ($wrapperID) {
-            $subQuery = ' WHERE id = "' . $wrapperID . '""';
+            $subQuery = ' WHERE id = "' . $wrapperID . '"';
         }
 
         $optionsDB = $this->Database->prepare('SELECT * FROM ' . $table . $subQuery)->execute();

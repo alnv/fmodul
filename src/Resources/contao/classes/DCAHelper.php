@@ -58,7 +58,7 @@ class DCAHelper extends Backend
 
         $strDo = Input::get('do');
         $moduleName = substr($table, 3, strlen($table));
-        if(TL_MODE == 'BE' && $strDo != $moduleName && $strDo)
+        if(TL_MODE == 'BE' && $strDo && $strDo != $moduleName)
         {
             return $options;
         }

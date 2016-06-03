@@ -364,7 +364,6 @@ class tl_fmodules extends \Backend
                 }
                 break;
         }
-
     }
 
     /**

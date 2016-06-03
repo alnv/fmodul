@@ -188,6 +188,9 @@ $GLOBALS['TL_MOOTOOLS'][] =
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
 
+$GLOBALS['TL_PERMISSIONS'][] = 'taxonomies';
+$GLOBALS['TL_PERMISSIONS'][] = 'taxonomiesp';
+
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeed';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 

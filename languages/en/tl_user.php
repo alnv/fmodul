@@ -10,6 +10,13 @@ $GLOBALS['TL_LANG']['tl_user']['fmodules'][1] = 'Here you can grant access to on
 $GLOBALS['TL_LANG']['tl_user']['fmodulesp'][0] = 'F Modul permissions';
 $GLOBALS['TL_LANG']['tl_user']['fmodulesp'][1] = 'Here you can define the F Module permissions.';
 
+// taxonomies
+$GLOBALS['TL_LANG']['tl_user']['taxonomies'][0] = 'Allowed Taxonomies';
+$GLOBALS['TL_LANG']['tl_user']['taxonomies'][1] = 'Here you can grant access to one or more Taxonomies.';
+
+$GLOBALS['TL_LANG']['tl_user']['taxonomiesp'][0] = 'Taxonomies permissions';
+$GLOBALS['TL_LANG']['tl_user']['taxonomiesp'][1] = 'Here you can define the Taxonomies permissions.';
+
 //filters
 $GLOBALS['TL_LANG']['tl_user']['fmodulesfilters'][0] = 'Allowed Filters';
 $GLOBALS['TL_LANG']['tl_user']['fmodulesfilters'][1] = 'Here you can grant access to one or more Filters.';

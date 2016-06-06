@@ -45,6 +45,7 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['taxonomies'] = array
     'sql' => "blob NULL"
 );
 
+// taxonomies
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['taxonomiesp'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_user_group']['taxonomiesp'],

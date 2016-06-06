@@ -181,11 +181,105 @@ class tl_taxonomies_fmodule extends \Backend
 
     /**
      * Check permissions to edit table tl_taxonomies
+     * @return null
      */
     public function checkPermission()
     {
 
-         if ($this->User->isAdmin) {
+        if ($this->User->isAdmin) {
+            return null;
+        }
+
+        $root = array(0);
+        if (is_array($this->User->taxonomies) || !empty($this->User->taxonomies)) {
+            $root = $this->User->taxonomies;
+        }
+
+        $GLOBALS['TL_DCA']['tl_taxonomies']['list']['sorting']['root'] = $root;
+
+        if (!$this->User->hasAccess('create', 'taxonomiesp')) {
+            $GLOBALS['TL_DCA']['tl_taxonomies']['config']['closed'] = true;
+        }
+
+        if (Input::get('act') && Input::get('act') != 'paste') {
+
+            switch (Input::get('act')) {
+                case 'create':
+                case 'select':
+                    // Allow
+                    break;
+                case 'edit':
+                    if (!in_array(Input::get('id'), $root)) {
+                        $arrNew = $this->Session->get('new_records');
+                        if (is_array($arrNew['tl_taxonomies']) && in_array(Input::get('id'), $arrNew['tl_taxonomies'])) {
+                            // Add permissions on user level
+                            if ($this->User->inherit == 'custom' || !$this->User->groups[0]) {
+                                $objUser = $this->Database->prepare("SELECT taxonomies, taxonomiesp FROM tl_user WHERE id=?")
+                                    ->limit(1)
+                                    ->execute($this->User->id);
+
+                                $arrTaxonomiesp = deserialize($objUser->taxonomiesp);
+
+                                if (is_array($arrTaxonomiesp) && in_array('create', $arrTaxonomiesp)) {
+                                    $arrTaxonomies = deserialize($objUser->taxonomies);
+                                    $arrTaxonomies[] = Input::get('id');
+
+                                    $this->Database->prepare("UPDATE tl_user SET taxonomies=? WHERE id=?")
+                                        ->execute(serialize($arrTaxonomies), $this->User->id);
+                                }
+                            } // Add permissions on group level
+                            elseif ($this->User->groups[0] > 0) {
+                                $objGroup = $this->Database->prepare("SELECT taxonomies, taxonomiesp FROM tl_user_group WHERE id=?")
+                                    ->limit(1)
+                                    ->execute($this->User->groups[0]);
+
+                                $arrTaxonomiesp = deserialize($objGroup->taxonomiesp);
+
+                                if (is_array($arrTaxonomiesp) && in_array('create', $arrTaxonomiesp)) {
+                                    $arrTaxonomies = deserialize($objGroup->taxonomies);
+                                    $arrTaxonomies[] = Input::get('id');
+
+                                    $this->Database->prepare("UPDATE tl_user_group SET taxonomies=? WHERE id=?")
+                                        ->execute(serialize($arrTaxonomies), $this->User->groups[0]);
+                                }
+                            }
+
+                            // Add new element to the user object
+                            $root[] = Input::get('id');
+                            $this->User->taxonomies = $root;
+                        }
+                    }
+                    break;
+                case 'copy':
+                case 'delete':
+                case 'show':
+                    if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'taxonomiesp'))) {
+                        $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy  ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+                        $this->redirect('contao/main.php?act=error');
+                    }
+                    break;
+                case 'editAll':
+                case 'deleteAll':
+                case 'overrideAll':
+                    $session = $this->Session->getData();
+                    if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'taxonomiesp')) {
+                        $session['CURRENT']['IDS'] = array();
+                    } else {
+                        $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
+                    }
+                    $this->Session->setData($session);
+                    break;
+                default:
+                    if (strlen(Input::get('act'))) {
+                        $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy ', __METHOD__, TL_ERROR);
+                        $this->redirect('contao/main.php?act=error');
+                    }
+                    break;
+            }
+        }
+
+        /*
+        if ($this->User->isAdmin) {
             return;
         }
 
@@ -201,81 +295,85 @@ class tl_taxonomies_fmodule extends \Backend
             $GLOBALS['TL_DCA']['tl_taxonomies']['config']['closed'] = true;
         }
 
-        switch (Input::get('act')) {
-            case 'create':
-            case 'select':
-                // Allow
-                break;
-            case 'edit':
-                if (!in_array(Input::get('id'), $root)) {
 
-                    $arrNew = $this->Session->get('new_records');
+        if (Input::get('act') && Input::get('act') != 'paste') {
+            switch (Input::get('act')) {
+                case 'create':
+                case 'select':
+                    // Allow
+                    break;
+                case 'edit':
+                    if (!in_array(Input::get('id'), $root)) {
 
-                    if (is_array($arrNew['tl_taxonomies']) && in_array(Input::get('id'), $arrNew['tl_taxonomies'])) {
-                        // Add permissions on user level
-                        if ($this->User->inherit == 'custom' || !$this->User->groups[0]) {
-                            $objUser = $this->Database->prepare("SELECT taxonomies, taxonomiesp FROM tl_user WHERE id=?")
-                                ->limit(1)
-                                ->execute($this->User->id);
+                        $arrNew = $this->Session->get('new_records');
 
-                            $arrTaxonomiesp = deserialize($objUser->taxonomiesp);
+                        if (is_array($arrNew['tl_taxonomies']) && in_array(Input::get('id'), $arrNew['tl_taxonomies'])) {
+                            // Add permissions on user level
+                            if ($this->User->inherit == 'custom' || !$this->User->groups[0]) {
+                                $objUser = $this->Database->prepare("SELECT taxonomies, taxonomiesp FROM tl_user WHERE id=?")
+                                    ->limit(1)
+                                    ->execute($this->User->id);
 
-                            if (is_array($arrTaxonomiesp) && in_array('create', $arrTaxonomiesp)) {
-                                $arrTaxonomies = deserialize($objUser->taxonomies);
-                                $arrTaxonomies[] = Input::get('id');
+                                $arrTaxonomiesp = deserialize($objUser->taxonomiesp);
 
-                                $this->Database->prepare("UPDATE tl_user SET taxonomies=? WHERE id=?")
-                                    ->execute(serialize($arrTaxonomies), $this->User->id);
+                                if (is_array($arrTaxonomiesp) && in_array('create', $arrTaxonomiesp)) {
+                                    $arrTaxonomies = deserialize($objUser->taxonomies);
+                                    $arrTaxonomies[] = Input::get('id');
+
+                                    $this->Database->prepare("UPDATE tl_user SET taxonomies=? WHERE id=?")
+                                        ->execute(serialize($arrTaxonomies), $this->User->id);
+                                }
+                            } // Add permissions on group level
+                            elseif ($this->User->groups[0] > 0) {
+                                $objGroup = $this->Database->prepare("SELECT taxonomies, taxonomiesp FROM tl_user_group WHERE id=?")
+                                    ->limit(1)
+                                    ->execute($this->User->groups[0]);
+
+                                $arrTaxonomiesp = deserialize($objGroup->taxonomiesp);
+
+                                if (is_array($arrTaxonomiesp) && in_array('create', $arrTaxonomiesp)) {
+                                    $arrTaxonomies = deserialize($objGroup->taxonomies);
+                                    $arrTaxonomies[] = Input::get('id');
+
+                                    $this->Database->prepare("UPDATE tl_user_group SET taxonomies=? WHERE id=?")
+                                        ->execute(serialize($arrTaxonomies), $this->User->groups[0]);
+                                }
                             }
-                        } // Add permissions on group level
-                        elseif ($this->User->groups[0] > 0) {
-                            $objGroup = $this->Database->prepare("SELECT taxonomies, taxonomiesp FROM tl_user_group WHERE id=?")
-                                ->limit(1)
-                                ->execute($this->User->groups[0]);
 
-                            $arrTaxonomiesp = deserialize($objGroup->taxonomiesp);
-
-                            if (is_array($arrTaxonomiesp) && in_array('create', $arrTaxonomiesp)) {
-                                $arrTaxonomies = deserialize($objGroup->taxonomies);
-                                $arrTaxonomies[] = Input::get('id');
-
-                                $this->Database->prepare("UPDATE tl_user_group SET taxonomies=? WHERE id=?")
-                                    ->execute(serialize($arrTaxonomies), $this->User->groups[0]);
-                            }
+                            // Add new element to the user object
+                            $root[] = Input::get('id');
+                            $this->User->taxonomies = $root;
                         }
-
-                        // Add new element to the user object
-                        $root[] = Input::get('id');
-                        $this->User->taxonomies = $root;
                     }
-                }
-            case 'copy':
-            case 'delete':
-            case 'show':
-                if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'taxonomiesp'))) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy  ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
-                    $this->redirect('contao/main.php?act=error');
-                }
-                break;
-            case 'editAll':
-            case 'deleteAll':
-            case 'overrideAll':
-                $session = $this->Session->getData();
-                if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'taxonomiesp')) {
-                    $session['CURRENT']['IDS'] = array();
-                } else {
-                    $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
-                }
-                $this->Session->setData($session);
-                break;
+                case 'copy':
+                case 'delete':
+                case 'show':
+                    if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'taxonomiesp'))) {
+                        $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy  ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+                        $this->redirect('contao/main.php?act=error');
+                    }
+                    break;
+                case 'editAll':
+                case 'deleteAll':
+                case 'overrideAll':
+                    $session = $this->Session->getData();
+                    if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'taxonomiesp')) {
+                        $session['CURRENT']['IDS'] = array();
+                    } else {
+                        $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
+                    }
+                    $this->Session->setData($session);
+                    break;
 
-            default:
-                if (strlen(Input::get('act'))) {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy ', __METHOD__, TL_ERROR);
-                    $this->redirect('contao/main.php?act=error');
-                }
-                break;
+                default:
+                    if (strlen(Input::get('act'))) {
+                        $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy ', __METHOD__, TL_ERROR);
+                        $this->redirect('contao/main.php?act=error');
+                    }
+                    break;
+            }
         }
+        */
 
     }
 
@@ -289,8 +387,7 @@ class tl_taxonomies_fmodule extends \Backend
     {
 
         // Generate an alias if there is none
-        if ($varValue == '')
-        {
+        if ($varValue == '') {
             $varValue = StringUtil::generateAlias($dc->activeRecord->name);
         }
 
@@ -298,8 +395,7 @@ class tl_taxonomies_fmodule extends \Backend
             ->execute($dc->id, $varValue, $dc->activeRecord->pid);
 
         // Check whether the Taxonomy alias exists
-        if ($objAlias->numRows > 1)
-        {
+        if ($objAlias->numRows > 1) {
             $varValue .= '-' . $dc->id;
         }
 
@@ -341,6 +437,7 @@ class tl_taxonomies_fmodule extends \Backend
         }
 
         // Check permissions if the user is not an administrator
+        /*
         if (!$this->User->isAdmin) {
             // Disable "paste into" button if there is no permission 2 (move) or 1 (create) for the current page
             if (!$disablePI) {
@@ -365,6 +462,7 @@ class tl_taxonomies_fmodule extends \Backend
                 $disablePA = true;
             }
         }
+        */
 
         $return = '';
 
@@ -521,12 +619,11 @@ class tl_taxonomies_fmodule extends \Backend
      */
     public function copyWithSubTaxonomies($row, $href, $label, $title, $icon, $attributes, $table)
     {
-        if ($GLOBALS['TL_DCA'][$table]['config']['closed'])
-        {
+        if ($GLOBALS['TL_DCA'][$table]['config']['closed']) {
             return '';
         }
 
-        return '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+        return '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
     }
 
     /**
@@ -540,6 +637,6 @@ class tl_taxonomies_fmodule extends \Backend
      */
     public function cutTaxonomy($row, $href, $label, $title, $icon, $attributes)
     {
-        return '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+        return '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
     }
 }

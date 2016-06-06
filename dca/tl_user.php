@@ -36,6 +36,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['fmodulesp'] = array
     'sql' => "blob NULL"
 );
 
+// taxonomies
 $GLOBALS['TL_DCA']['tl_user']['fields']['taxonomies'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_user']['taxonomies'],

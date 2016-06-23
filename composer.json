@@ -1,6 +1,6 @@
 {
   "name": "fmodule/fmodule",
-  "description": "Mit dem F Modul kannst du eigene Backend Module erstellen. Erzeuge schnell und einfach Übersichtsseiten, Detailseiten, Filter Formularen und Taxonomies. Mache dein Backend aufgeräumter und benutzerfreundlicher. Neu: Google Maps integration.",
+  "description": "Mit dem F Modul kannst du eigene Backend Module erstellen. Erzeuge schnell und einfach Übersichtsseiten, Detailseiten, Filter Formularen und Taxonomies. Mache dein Backend aufgeräumter und benutzerfreundlicher. Neu: Taxonomies.",
   "keywords": [
     "filter",
     "custom",

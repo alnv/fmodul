@@ -161,6 +161,7 @@ class ModuleListView extends Module
                 $blnDetailView = true;
             }
         }
+        
         // set params variables
         $this->strAutoItem = !$blnDetailView ? '' : \Input::get('auto_item');
         $this->strSpecie = !$blnDetailView ? \Input::get('auto_item') : \Input::get('specie');
@@ -287,57 +288,65 @@ class ModuleListView extends Module
             }
         }
 
-        $itemsArr = array();
+        $arrItems = array();
         while ($listDB->next()) {
 
-            if (HelperModel::sortOutProtected($listDB->row(), $this->User->groups)) {
+            $arrItem = $listDB->row();
+
+            if (HelperModel::sortOutProtected($arrItem, $this->User->groups)) {
                 continue;
             }
 
-            if (!HelperModel::outSideScope($listDB->start, $listDB->stop)) {
+            if (!HelperModel::outSideScope($arrItem['start'], $arrItem['stop'])) {
                 continue;
             }
 
             $imagePath = $this->generateSingeSrc($listDB);
+
             if ($imagePath) {
-                $listDB->singleSRC = $imagePath;
+                $arrItem['singleSRC'] = $imagePath;
             }
+
             if ($imgSize) {
-                $listDB->size = $imgSize;
+                $arrItem['size'] = $imgSize;
             }
 
             // create href
-            $listDB->href = null;
+            $arrItem['href'] = null;
+
             if ($addDetailPage == '1' && $listDB->source == 'default') {
                 // reset target
-                $listDB->target = '';
-                $listDB->href = $this->generateUrl($rootDB, $listDB->alias);
+                $arrItem['target'] = '';
+                $arrItem['href'] = $this->generateUrl($rootDB, $arrItem['alias']); // $listDB->alias
             }
-            if ($listDB->source == 'external') {
-                $listDB->href = $listDB->url;
+
+            if ($arrItem['source'] == 'external') {
+                $arrItem['href'] = $arrItem['url'];
             }
-            if ($listDB->source == 'internal') {
+
+            if ($arrItem['source'] == 'internal') {
                 // reset target
-                $listDB->target = '';
+                $arrItem['target'] = '';
+
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
                 $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
-                $listDB->href = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
+                $arrItem['href'] = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
             }
 
             // check for text search
             if ($qTextSearch) {
-                if (!$textSearchResults[$listDB->id]) {
+                if (!$textSearchResults[$arrItem['id']]) {
                     continue;
                 }
             }
 
             //
-            $itemsArr[] = $listDB->row();
+            $arrItems[] = $arrItem;
 
         }
 
         //pagination
-        $total = count($itemsArr);
+        $total = count($arrItems);
         $paginationStr = $this->createPagination($total);
         $paginationStr = $paginationStr ? $paginationStr : '';
         $this->Template->pagination = $paginationStr;
@@ -347,7 +356,7 @@ class ModuleListView extends Module
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
-            $item = $itemsArr[$i];
+            $item = $arrItems[$i];
 
             // parse value if map is enabled
             if ($this->fm_addMap) {

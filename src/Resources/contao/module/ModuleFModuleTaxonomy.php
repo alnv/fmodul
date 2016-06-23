@@ -171,8 +171,10 @@ class ModuleFModuleTaxonomy extends \Module
             $arrItem['css'] .= ' active';
         }
 
+        $strAlias = $this->strAutoItem ? $this->strAutoItem . '/' : '';
+        
         // href
-        $arrItem['href'] = $this->generateFrontendUrl($arrPage, '/' . $arrItem['alias']); // $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $arrItem['alias']);
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, '/' . $strAlias . $arrItem['alias']); // $this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $arrItem['alias']);
 
         return $arrItem;
     }
@@ -189,8 +191,10 @@ class ModuleFModuleTaxonomy extends \Module
             $arrItem['css'] .= ' active';
         }
 
+        $strAlias = $this->strAutoItem ? $this->strAutoItem . '/' : '';
+
         // href
-        $arrItem['href'] = $this->generateFrontendUrl($arrPage, '/' . $this->strSpecie . '/' . $arrItem['alias']); //$this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strSpecie . '/' . $arrItem['alias']);
+        $arrItem['href'] = $this->generateFrontendUrl($arrPage, '/' . $strAlias . $this->strSpecie . '/' . $arrItem['alias']); //$this->generateFrontendUrl($arrPage, ($this->strAutoItem ? '/' . $this->strAutoItem . '' : '') . '/' . $this->strSpecie . '/' . $arrItem['alias']);
 
         return $arrItem;
     }

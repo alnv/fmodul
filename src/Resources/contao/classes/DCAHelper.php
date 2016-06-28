@@ -111,6 +111,7 @@ class DCAHelper extends Backend
         }
 
         if ($field['dataFromTable'] == '1') {
+
             if (!$option['table']) {
                 return $options;
             }
@@ -124,18 +125,8 @@ class DCAHelper extends Backend
             }
 
             // create order by query
-            $strOrderByQuery = '';
-            if ($field['pid']) {
-                $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE id = ?')->limit(1)->execute($field['pid']);
-                $arrModule = $moduleDB->row();
-                $arrSortingField = explode('.', $arrModule['sorting']);
-                $strSortingField = is_array($arrSortingField) ? $arrSortingField[0] : 'id';
-                $strOrderBy = $arrModule['orderBy'] ? strtoupper($arrModule['orderBy']) : 'DESC';
-
-                // generate query
-                $strOrderByQuery .= ' ORDER BY ' . $strSortingField . ' ' . $strOrderBy;
-            }
-
+            // only for f modules tables
+            $strOrderByQuery = $this->generateOrderByQuery($option['table']);
             $dataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strOrderByQuery)->execute(); // @todo where q mit pid hinzufügen
 
             while ($dataFromTableDB->next()) {
@@ -143,6 +134,7 @@ class DCAHelper extends Backend
                 $v = $dataFromTableDB->row()[$option['title']];
                 $options[$k] = $v;
             }
+
             return $options;
         }
 
@@ -154,6 +146,42 @@ class DCAHelper extends Backend
         }
 
         return $options;
+    }
+
+    /**
+     * @param $strTable
+     * @return string
+     */
+    private function generateOrderByQuery($strTable)
+    {
+        $strOrderByQuery = '';
+        $strTablePrefix = substr($strTable, 0, 2);
+
+        if ($strTablePrefix == 'fm') {
+            $strTableSuffix = substr($strTable, -4);
+            $strTableName = $strTable;
+            if($strTableSuffix == 'data') {
+                $intStartPos = count($strTable) - 1;
+                $strTableName = substr($strTable, $intStartPos, -5);
+            }
+
+            $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE tablename = ?')->limit(1)->execute($strTableName);
+
+            // no table found return empty str
+            if(!$moduleDB->count()) {
+                return $strOrderByQuery;
+            }
+
+            $arrModule = $moduleDB->row();
+            $arrSortingField = explode('.', $arrModule['sorting']);
+            $strSortingField = is_array($arrSortingField) ? $arrSortingField[0] : 'id';
+            $strOrderBy = $arrModule['orderBy'] ? strtoupper($arrModule['orderBy']) : 'DESC';
+
+            // generate query
+            $strOrderByQuery .= ' ORDER BY ' . $strSortingField . ' ' . $strOrderBy;
+        }
+
+        return $strOrderByQuery;
     }
 
     /**

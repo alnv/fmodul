@@ -457,7 +457,6 @@ class tl_taxonomies_fmodule extends \Backend
             $this->redirect('contao/main.php?act=error');
         }
 
-
         $objVersions = new Versions('tl_taxonomies', $intId);
         $objVersions->initialize();
 

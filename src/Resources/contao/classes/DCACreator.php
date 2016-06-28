@@ -140,6 +140,7 @@ class DCACreator
 
             while ($fieldsDB->next()) {
                 $field = [];
+                $field['pid'] = $fieldsDB->row()['pid'];
                 $field['type'] = $fieldsDB->row()['type'];
                 $field['fieldID'] = $fieldsDB->row()['fieldID'];
                 $field['title'] = $fieldsDB->row()['title'];

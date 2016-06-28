@@ -58,8 +58,7 @@ class DCAHelper extends Backend
 
         $strDo = Input::get('do');
         $moduleName = substr($table, 3, strlen($table));
-        if(TL_MODE == 'BE' && $strDo && $strDo != $moduleName)
-        {
+        if (TL_MODE == 'BE' && $strDo && $strDo != $moduleName) {
             return $options;
         }
 
@@ -124,10 +123,24 @@ class DCAHelper extends Backend
                 return $options;
             }
 
-            $DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'])->execute(); // @todo where q mit pid hinzufügen
-            while ($DataFromTableDB->next()) {
-                $k = $DataFromTableDB->row()[$option['col']];
-                $v = $DataFromTableDB->row()[$option['title']];
+            // create order by query
+            $strOrderByQuery = '';
+            if ($field['pid']) {
+                $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE id = ?')->limit(1)->execute($field['pid']);
+                $arrModule = $moduleDB->row();
+                $arrSortingField = explode('.', $arrModule['sorting']);
+                $strSortingField = is_array($arrSortingField) ? $arrSortingField[0] : 'id';
+                $strOrderBy = $arrModule['orderBy'] ? strtoupper($arrModule['orderBy']) : 'DESC';
+
+                // generate query
+                $strOrderByQuery .= ' ORDER BY ' . $strSortingField . ' ' . $strOrderBy;
+            }
+
+            $dataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strOrderByQuery)->execute(); // @todo where q mit pid hinzufügen
+
+            while ($dataFromTableDB->next()) {
+                $k = $dataFromTableDB->row()[$option['col']];
+                $v = $dataFromTableDB->row()[$option['title']];
                 $options[$k] = $v;
             }
             return $options;

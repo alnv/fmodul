@@ -56,11 +56,9 @@ class DCAHelper extends Backend
             return $options;
         }
 
-        //
         $strDo = Input::get('do');
         $moduleName = substr($table, 3, strlen($table));
-        if(TL_MODE == 'BE' && $strDo != $moduleName && $strDo)
-        {
+        if (TL_MODE == 'BE' && $strDo && $strDo != $moduleName) {
             return $options;
         }
 
@@ -72,6 +70,7 @@ class DCAHelper extends Backend
             return $this->getCountries();
         }
 
+        // set data id or wrapper id
         $id = Input::get('id');
         if (Input::get('act') && Input::get('act') == 'editAll') $wrapperID = Input::get('id');
         if ($wrapperID) $id = $wrapperID;
@@ -89,10 +88,30 @@ class DCAHelper extends Backend
         $option = array();
 
         while ($optionsDB->next()) {
-            $option = $optionsDB->row()[$field['fieldID']] ? deserialize($optionsDB->row()[$field['fieldID']]) : array();
+            $arrOption = $optionsDB->row();
+            $option = $optionsDB->row()[$field['fieldID']] ? deserialize($arrOption[$field['fieldID']]) : array();
+            if (empty($option) && $field['dataFromTaxonomy'] == '1') $option = isset($arrOption['select_taxonomy_' . $field['fieldID']]) ? $arrOption['select_taxonomy_' . $field['fieldID']] : '';
+        }
+
+        // species
+        if ($field['dataFromTaxonomy'] == '1' && $option) {
+            $speciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ?')->execute($option);
+            if (!$speciesDB->count()) {
+                return $options;
+            }
+            while ($speciesDB->next()) {
+                $options[$speciesDB->alias] = $speciesDB->name ? $speciesDB->name : $speciesDB->alias;
+            }
+            return $options;
+        }
+
+        // tags
+        if ($field['reactToTaxonomy'] == '1') {
+            return $options;
         }
 
         if ($field['dataFromTable'] == '1') {
+
             if (!$option['table']) {
                 return $options;
             }
@@ -105,37 +124,80 @@ class DCAHelper extends Backend
                 return $options;
             }
 
-            $DataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . '')->execute();
-            while ($DataFromTableDB->next()) {
-                $k = $DataFromTableDB->row()[$option['col']];
-                $v = $DataFromTableDB->row()[$option['title']];
+            // create order by query
+            // only for f modules tables
+            $strOrderByQuery = $this->generateOrderByQuery($option['table']);
+            $dataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strOrderByQuery)->execute(); // @todo where q mit pid hinzufügen
+
+            while ($dataFromTableDB->next()) {
+                $k = $dataFromTableDB->row()[$option['col']];
+                $v = $dataFromTableDB->row()[$option['title']];
                 $options[$k] = $v;
             }
+
             return $options;
         }
 
-        foreach ($option as $value) {
-            if (!$value['value']) continue;
-            $options[$value['value']] = $value['label'];
+        if (is_array($option)) {
+            foreach ($option as $value) {
+                if (!$value['value']) continue;
+                $options[$value['value']] = $value['label'];
+            }
         }
 
         return $options;
     }
 
     /**
+     * @param $strTable
+     * @return string
+     */
+    private function generateOrderByQuery($strTable)
+    {
+        $strOrderByQuery = '';
+        $strTablePrefix = substr($strTable, 0, 2);
+
+        if ($strTablePrefix == 'fm') {
+            $strTableSuffix = substr($strTable, -4);
+            $strTableName = $strTable;
+            if($strTableSuffix == 'data') {
+                $intStartPos = count($strTable) - 1;
+                $strTableName = substr($strTable, $intStartPos, -5);
+            }
+
+            $moduleDB = $this->Database->prepare('SELECT * FROM tl_fmodules WHERE tablename = ?')->limit(1)->execute($strTableName);
+
+            // no table found return empty str
+            if(!$moduleDB->count()) {
+                return $strOrderByQuery;
+            }
+
+            $arrModule = $moduleDB->row();
+            $arrSortingField = explode('.', $arrModule['sorting']);
+            $strSortingField = is_array($arrSortingField) ? $arrSortingField[0] : 'id';
+            $strOrderBy = $arrModule['orderBy'] ? strtoupper($arrModule['orderBy']) : 'DESC';
+
+            // generate query
+            $strOrderByQuery .= ' ORDER BY ' . $strSortingField . ' ' . $strOrderBy;
+        }
+
+        return $strOrderByQuery;
+    }
+
+    /**
      * @param $state
+     * @param $label
+     * @param $fieldID
+     * @param bool $noHTML
      * @return string
      */
     public function getToggleIcon($state, $label, $fieldID, $noHTML = false)
     {
-
         $src = $state ? 'files/fmodule/assets/' . $fieldID . '.' : 'files/fmodule/assets/' . $fieldID . '_.';
         $temp = $state ? 'files/fmodule/assets/' . $fieldID . '_.' : 'files/fmodule/assets/' . $fieldID . '.';
-
         $allowedFormat = array('gif', 'png', 'svg');
 
         foreach ($allowedFormat as $format) {
-
             if (is_file(TL_ROOT . '/' . $src . $format) && !$noHTML) {
                 return Image::getHtml($src . $format, $label, 'data-src="' . $temp . $format . '" data-state="' . ($state ? 1 : 0) . '"');
             }
@@ -143,19 +205,14 @@ class DCAHelper extends Backend
             if (is_file(TL_ROOT . '/' . $src . $format) && $noHTML) {
                 return $src . $format;
             }
-
         }
 
         $icon = $state ? 'featured.gif' : 'featured_.gif';
         $nIcon = $state ? 'featured_.gif' : 'featured.gif';
-
         $temp = 'system/themes/' . Backend::getTheme() . '/images/' . $nIcon;
         $src = 'system/themes/' . Backend::getTheme() . '/images/' . $icon;
 
-        if ($noHTML) {
-            return $src;
-        }
-
+        if ($noHTML) return $src;
         return Image::getHtml($src, $label, 'data-src="' . $temp . '" data-state="' . ($state ? 1 : 0) . '"');
     }
 

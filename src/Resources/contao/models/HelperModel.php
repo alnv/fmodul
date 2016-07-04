@@ -228,6 +228,9 @@ class HelperModel
                     case 'toggle_field':
                         $qStr .= QueryModel::toggleFieldQuery($field);
                         break;
+                    case 'taxonomy_field':
+                        QueryModel::setupTaxonomyFieldQueryArray($field);
+                        break;
                     case 'fulltext_search':
                         $isValue = QueryModel::isValue($field['value']);
                         if ($isValue) {
@@ -241,6 +244,12 @@ class HelperModel
                         break;
                 }
             }
+        }
+
+        // taxonomy query builder
+        if( count(QueryModel::$arrTaxonomiesFields) > 0 ) {
+            QueryModel::taxonomyFieldQueryBuilder();
+            $qStr = QueryModel::$strTaxonomyQuery;
         }
 
         return array(

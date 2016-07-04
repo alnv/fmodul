@@ -225,14 +225,10 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
     )
 );
 
-use Contao\Config;
-use Contao\Backend;
-use Contao\Automator;
-
 /**
  * Class tl_fmodules
  */
-class tl_fmodules extends Backend
+class tl_fmodules extends \Backend
 {
 
     /**
@@ -368,7 +364,6 @@ class tl_fmodules extends Backend
                 }
                 break;
         }
-
     }
 
     /**
@@ -376,12 +371,10 @@ class tl_fmodules extends Backend
      */
     public function getNavigation()
     {
-
-        $allModules = $GLOBALS['BE_MOD'] ? $GLOBALS['BE_MOD'] : array();
+        $arrModules = $GLOBALS['BE_MOD'] ? $GLOBALS['BE_MOD'] : array();
         $modules = array();
-
-        if (is_array($allModules)) {
-            foreach ($allModules as $name => $module) {
+        if (is_array($arrModules)) {
+            foreach ($arrModules as $name => $module) {
                 $label = '';
 
                 if ($GLOBALS['TL_LANG']['MOD'][$name] && is_array($GLOBALS['TL_LANG']['MOD'][$name])) {
@@ -395,7 +388,6 @@ class tl_fmodules extends Backend
                 $modules[$name] = $label ? $label : $name;
             }
         }
-
         return $modules;
     }
 
@@ -439,8 +431,8 @@ class tl_fmodules extends Backend
 
     /**
      * @param $varValue
-     * @param DataContainer $dc
-     * @return string
+     * @return mixed
+     * @throws Exception
      */
     public function generateTableName($varValue)
     {
@@ -453,36 +445,32 @@ class tl_fmodules extends Backend
     }
 
     /**
-     * @param $varValue
      * @param DataContainer $dc
-     * @return mixed
      */
-    public function createGroupCols(DataContainer $dc)
+    public function createGroupCols(\DataContainer $dc)
     {
+        $tableName = $dc->activeRecord->tablename;
+        $moduleName = substr($tableName, 3, strlen($tableName));
 
-        $tablename = $dc->activeRecord->tablename;
-        $name = substr($tablename, 3, strlen($tablename));
-
-        if ((!$this->Database->tableExists($name)) && (!$this->Database->fieldExists($name, 'tl_user') && !$this->Database->fieldExists($name, 'tl_user_group'))) {
-            $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . ' blob NULL;')->execute();
-            $this->Database->prepare('ALTER TABLE tl_user ADD ' . $name . 'p blob NULL;')->execute();
-            $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $name . ' blob NULL;')->execute();
-            $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $name . 'p blob NULL;')->execute();
+        if ((!$this->Database->tableExists($moduleName)) && (!$this->Database->fieldExists($moduleName, 'tl_user') && !$this->Database->fieldExists($moduleName, 'tl_user_group'))) {
+            $this->Database->prepare('ALTER TABLE tl_user ADD ' . $moduleName . ' blob NULL;')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user ADD ' . $moduleName . 'p blob NULL;')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $moduleName . ' blob NULL;')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $moduleName . 'p blob NULL;')->execute();
         }
 
-        if (!Config::get('bypassCache')) {
-            $automator = new Automator();
-            $automator->purgeInternalCache();
+        if (!\Config::get('bypassCache')) {
+            $a = new \Automator();
+            $a->purgeInternalCache();
         }
-
     }
 
     /**
      * @param $varValue
      * @param DataContainer $dc
-     * @return mixed
+     * @return string
      */
-    public function saveSortingType($varValue, DataContainer $dc)
+    public function saveSortingType($varValue, \DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
 
@@ -510,7 +498,7 @@ class tl_fmodules extends Backend
      * @param DataContainer $dc
      * @return array
      */
-    public function getSortingOptions(DataContainer $dc)
+    public function getSortingOptions(\DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
         $db = $this->Database->prepare('SELECT fieldID, title, type FROM tl_fmodules_filters WHERE pid = ?')->execute($id);
@@ -538,28 +526,30 @@ class tl_fmodules extends Backend
      * @param DataContainer $dc
      * @return null
      */
-    public function deleteTable(DataContainer $dc)
+    public function deleteTable(\DataContainer $dc)
     {
-        $tablename = $dc->activeRecord->tablename;
-        if (!$tablename) return null;
-        $tablename_child = $tablename . '_data';
-        $this->Database->prepare("DROP TABLE " . $tablename)->execute();
-        $this->Database->prepare("DROP TABLE " . $tablename_child)->execute();
-        $this->Database->prepare("DELETE FROM tl_content WHERE ptable = ?")->execute($tablename_child);
+        $tName = $dc->activeRecord->tablename;
 
-        $modname = substr($tablename, 3, strlen($tablename));
-        if ($this->Database->fieldExists($modname, 'tl_user')) {
-            $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $modname . '')->execute();
-            $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $modname . 'p ')->execute();
+        if (!$tName) return null;
+        $dataTable = $tName . '_data';
+        $this->Database->prepare("DROP TABLE " . $tName)->execute();
+        $this->Database->prepare("DROP TABLE " . $dataTable)->execute();
+        $this->Database->prepare("DELETE FROM tl_content WHERE ptable = ?")->execute($dataTable);
+
+        $moduleName = substr($tName, 3, strlen($tName));
+
+        if ($this->Database->fieldExists($moduleName, 'tl_user')) {
+            $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $moduleName . '')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user DROP COLUMN ' . $moduleName . 'p ')->execute();
         }
-        if ($this->Database->fieldExists($modname, 'tl_user_group')) {
-            $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . '')->execute();
-            $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $modname . 'p ')->execute();
+        if ($this->Database->fieldExists($moduleName, 'tl_user_group')) {
+            $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $moduleName . '')->execute();
+            $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $moduleName . 'p ')->execute();
         }
 
-        if (!Config::get('bypassCache')) {
-            $automator = new Automator();
-            $automator->purgeInternalCache();
+        if (!\Config::get('bypassCache')) {
+            $a = new \Automator();
+            $a->purgeInternalCache();
         }
     }
 
@@ -568,27 +558,26 @@ class tl_fmodules extends Backend
      * @param DataContainer $dc
      * @return mixed
      */
-    public function updateTable($varValue, DataContainer $dc)
+    public function updateTable($varValue, \DataContainer $dc)
     {
         if (!$dc->activeRecord->tablename) {
             return $varValue;
         }
-        $oldTableName = $dc->activeRecord->tablename;
-        $newTableName = $varValue;
-        $oldChildTableName = $oldTableName . '_data';
-        $newChildTableName = $newTableName . '_data';
 
-        if (!$this->Database->tableExists($varValue) && $oldTableName != $newTableName) {
+        $preTableName = $dc->activeRecord->tablename;
+        $strTableName = $varValue;
+        $preDataTableName = $preTableName . '_data';
+        $strDataTableName = $strTableName . '_data';
 
-            $this->Database->prepare("RENAME TABLE " . $oldTableName . " TO " . $newTableName . "")->execute();
-            $this->Database->prepare("RENAME TABLE " . $oldChildTableName . " TO " . $newChildTableName . "")->execute();
-            $this->Database->prepare("UPDATE tl_content SET ptable = ? WHERE ptable = ?")->execute($newChildTableName, $oldChildTableName);
-
+        if (!$this->Database->tableExists($varValue) && $preTableName != $strTableName) {
+            $this->Database->prepare("RENAME TABLE " . $preTableName . " TO " . $strTableName . "")->execute();
+            $this->Database->prepare("RENAME TABLE " . $preDataTableName . " TO " . $strDataTableName . "")->execute();
+            $this->Database->prepare("UPDATE tl_content SET ptable = ? WHERE ptable = ?")->execute($strDataTableName, $preDataTableName);
         }
 
-        if (!Config::get('bypassCache')) {
-            $automator = new \Contao\Automator();
-            $automator->purgeInternalCache();
+        if (!\Config::get('bypassCache')) {
+            $a = new \Automator();
+            $a->purgeInternalCache();
         }
         return $varValue;
     }

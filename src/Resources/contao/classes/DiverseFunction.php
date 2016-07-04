@@ -83,7 +83,7 @@ class DiverseFunction
                     var FModuleLoadMaps = function()
                     {
                         try{
-                            if(undefined != FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
+                            if(undefined !== FModuleGoogleMap){for(var i = 0; i < FModuleGoogleMap.length; i++){FModuleGoogleMap[i]();}}
                         } catch(err)
                         {
                             console.warn("No Google Map found!");

@@ -32,6 +32,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Expert-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Map-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Search-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['taxonomy_legend'] = 'Taxonomy-Settings';
 
 //fields
 
@@ -56,7 +57,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['widgetTemplate'][1] = 'Please select your template.';
 
 // fieldAppearance
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Input-Style';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Input-Type';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Please choose your preferred input field appearance.';
 
 // autoPage
@@ -146,6 +147,18 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][1] = 'Please enter your gr
 // rgxp
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regular expression';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Please select Regular expression for this item. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">Open reference</a>';
+
+// dataFromTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Load data from taxonomy tree';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Here you can load data from taxonomy tree.';
+
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Use Taxonomy Tags';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Here you can use taxonomy tags.';
+
+// reactToField
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Source';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Please select Source for your taxonomy tags.'; // @todo
 
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';

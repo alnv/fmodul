@@ -121,19 +121,19 @@ class DCAModuleData extends ViewContainer
             return;
         }
 
-        if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields)) {
+        if (!is_array($this->User->{$allowedFields}) || empty($this->User->{$allowedFields})) {
             $root = array(0);
         } else {
-            $root = $this->User->$allowedFields;
+            $root = $this->User->{$allowedFields};
         }
 
+        // id
         $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
         switch (Input::get('act')) {
             case 'paste':
                 // Allow
                 break;
-
             case 'create':
                 if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root)) {
                     $this->log('Not enough permissions to create F Module items in ' . $modname . ' Wrapper ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
@@ -144,14 +144,13 @@ class DCAModuleData extends ViewContainer
             case 'cut':
             case 'copy':
                 $objArchive = $this->Database->prepare("SELECT pid FROM " . $dc->table . " WHERE id=?")
-                    ->limit(1)
-                    ->execute($id);
+                ->limit(1)
+                ->execute($id);
 
                 if ($objArchive->numRows < 1) {
                     $this->log('Invalid F Module item ID "' . $id . '"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
-
 
                 if (!in_array($objArchive->pid, $root)) {
                     $this->log('Not enough permissions to ' . Input::get('act') . ' F Module item ID "' . $id . '" to ' . $modname . ' Wrapper ID "' . $objArchive->pid . '"', __METHOD__, TL_ERROR);
@@ -215,6 +214,50 @@ class DCAModuleData extends ViewContainer
         }
     }
 
+
+    /**
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public function getTaxonomiesTags(\DataContainer $dc)
+    {
+        $options = array();
+        $field = $dc->field;
+        $pid = $dc->activeRecord->pid ? $dc->activeRecord->pid : \Input::get('pid');
+        $table = $dc->table ? mb_substr($dc->table, 0, strlen($dc->table) - 5) : '';
+
+        if(!$this->Database->tableExists($table)) return $options;
+        if(!$field && !$table && !$pid) return $options;
+
+        $filterDB = $this->Database->prepare('SELECT tl_fmodules_filters.fieldID, tl_fmodules.tablename, tl_fmodules.id, tl_fmodules_filters.pid, tl_fmodules_filters.reactToField, tl_fmodules_filters.reactToTaxonomy FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tl_fmodules_filters.fieldID = ? AND tl_fmodules.tablename = ?')->limit(1)->execute($field, $table);
+        if(!$filterDB->count()) return $options;
+        $arrFilter = $filterDB->row();
+
+        if($arrFilter['reactToField'] && $arrFilter['reactToTaxonomy'] == '1')
+        {
+            $reactToField = $arrFilter['reactToField'];
+            $alias = $dc->activeRecord->{$reactToField};
+            $arrWrapper = $this->Database->prepare('SELECT * FROM '.$table.' WHERE id = ?')->limit(1)->execute($pid)->row();
+            $taxonomyPid = '';
+            if(isset($arrWrapper['select_taxonomy_' . $reactToField ]) && $arrWrapper['select_taxonomy_' . $reactToField ])
+            {
+                $taxonomyPid = $arrWrapper['select_taxonomy_' . $reactToField ];
+            }
+            if(!$taxonomyPid)
+            {
+                return $options;
+            }
+            $taxonomiesTagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($alias, $taxonomyPid);
+            while($taxonomiesTagsDB->next())
+            {
+                $options[$taxonomiesTagsDB->alias] = $taxonomiesTagsDB->name ? $taxonomiesTagsDB->name : $taxonomiesTagsDB->alias;
+            }
+        }
+
+        return $options;
+    }
+
+
     /**
      * @param DataContainer $dc
      * @return array
@@ -257,8 +300,7 @@ class DCAModuleData extends ViewContainer
             if ($objData->numRows && !$objData->fallback) {
                 $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
             }
-        }else if(\Input::get('act') == 'editAll')
-        {
+        } else if (\Input::get('act') == 'editAll') {
             $GLOBALS['TL_DCA'][$dc->table]['palettes']['default'] = str_replace('alias,', 'alias,mainLanguage,', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
         }
     }
@@ -585,7 +627,7 @@ class DCAModuleData extends ViewContainer
 
     /**
      * @param $moduleObj
-     * @param $wrapperID
+     * @param string $wrapperID
      * @return array
      */
     public function setFields($moduleObj, $wrapperID = '')
@@ -656,7 +698,6 @@ class DCAModuleData extends ViewContainer
         return $arr;
     }
 
-
     /**
      * @param $varValue
      * @param $dc
@@ -669,6 +710,7 @@ class DCAModuleData extends ViewContainer
         $table = Input::get('table');
 
         // create alias if no dca defined
+        // registration module
         if ($dc === null) {
             $strValue = $varValue ? $varValue : '';
             return $strValue;
@@ -792,7 +834,6 @@ class DCAModuleData extends ViewContainer
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-
         if (strlen(Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
@@ -805,7 +846,6 @@ class DCAModuleData extends ViewContainer
         }
 
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
-
     }
 
     /**
@@ -843,48 +883,32 @@ class DCAModuleData extends ViewContainer
      */
     public function generateFeed()
     {
-
         $session = $this->Session->get('fmodules_feed_updater');
-
-        if (!is_array($session) || empty($session)) {
-            return;
-        }
-
+        if (!is_array($session) || empty($session)) return;
         $this->import('FModule');
-
         foreach ($session as $table) {
             $this->FModule->generateFeedsByArchive($table);
         }
-
         $this->import('Automator');
         $this->Automator->generateSitemap();
-
         $this->Session->set('fmodules_feed_updater', null);
     }
 
     /**
-     * @param $dc
+     * @param \DataContainer $dc
      */
-    public function scheduleUpdate($dc)
+    public function scheduleUpdate(\DataContainer $dc)
     {
         $table = Input::get('table');
 
         // Return if there is no ID
-        if (!$table) {
-            return;
-        }
-
-        if (substr($table, -5) != '_data') {
-            return;
-        }
-
+        if (!$table) return;
+        if (substr($table, -5) != '_data') return;
         $table = substr($table, 0, (strlen($table) - 5));
 
         // Store the ID in the session
         $session = $this->Session->get('fmodules_feed_updater');
         $session[] = $table;
         $this->Session->set('fmodules_feed_updater', array_unique($session));
-
     }
-
 }

@@ -3,6 +3,10 @@
 
 <?= $this->result; ?>
 
+<!-- indexer::stop -->
+<p class="back"><a href="<?= $this->referer ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>
+<!-- indexer::continue -->
+
 <?php if ($this->allowComments): ?>
     <div class="ce_comments block">
         <p class="add-comment"><?= $this->addComment; ?></p>

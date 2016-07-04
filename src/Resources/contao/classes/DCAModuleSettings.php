@@ -95,10 +95,10 @@ class DCAModuleSettings extends ViewContainer
             return;
         }
 
-        if (!is_array($this->User->$allowedFields) || empty($this->User->$allowedFields)) {
+        if (!is_array($this->User->{$allowedFields}) || empty($this->User->{$allowedFields})) {
             $root = array(0);
         } else {
-            $root = $this->User->$allowedFields;
+            $root = $this->User->{$allowedFields};
         }
 
         $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $root;
@@ -123,10 +123,10 @@ class DCAModuleSettings extends ViewContainer
                                 ->limit(1)
                                 ->execute($this->User->id);
 
-                            $arrFModulep = deserialize($objUser->$permission);
+                            $arrFModulep = deserialize($objUser->{$permission});
 
                             if (is_array($arrFModulep) && in_array('create', $arrFModulep)) {
-                                $arrFModules = deserialize($objUser->$allowedFields);
+                                $arrFModules = deserialize($objUser->{$allowedFields});
                                 $arrFModules[] = Input::get('id');
 
                                 $this->Database->prepare("UPDATE tl_user SET " . $allowedFields . "=? WHERE id=?")
@@ -138,10 +138,10 @@ class DCAModuleSettings extends ViewContainer
                                 ->limit(1)
                                 ->execute($this->User->groups[0]);
 
-                            $arrFModulep = deserialize($objGroup->$permission);
+                            $arrFModulep = deserialize($objGroup->{$permission});
 
                             if (is_array($arrFModulep) && in_array('create', $arrFModulep)) {
-                                $arrFModules = deserialize($objGroup->$allowedFields);
+                                $arrFModules = deserialize($objGroup->{$allowedFields});
                                 $arrFModules[] = Input::get('id');
 
                                 $this->Database->prepare("UPDATE tl_user_group SET " . $allowedFields . "=? WHERE id=?")
@@ -151,7 +151,7 @@ class DCAModuleSettings extends ViewContainer
 
                         // Add new element to the user object
                         $root[] = Input::get('id');
-                        $this->User->$allowedFields = $root;
+                        $this->User->{$allowedFields} = $root;
                     }
                 }
             case 'copy':
@@ -302,27 +302,41 @@ class DCAModuleSettings extends ViewContainer
      */
     public function setPalettes($moduleDB)
     {
-        $fields = $moduleDB['fields'];
-        $fieldStr = '{data_legend},';
+        $arrFields = $moduleDB['fields'];
+        $strPalette = '{data_legend},';
         $arr = array();
-        foreach ($fields as $field) {
+
+        foreach ($arrFields as $field) {
+
             if (!$field['fieldID']) {
                 continue;
             }
-            if ($field['type'] !== 'simple_choice' || $field['type'] !== 'multi_choice') {
-                if ($field['dataFromTable'] == '1') {
+
+            if($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice')
+            {
+                if($field['dataFromTable'] == '1')
+                {
                     $arr[] = 'select_table_' . $field['fieldID'];
                     $arr[] = 'select_col_' . $field['fieldID'];
                     $arr[] = 'select_title_' . $field['fieldID'];
-                } else {
+                } else if($field['dataFromTaxonomy'] == '1')
+                {
+                    $arr[] = 'select_taxonomy_' . $field['fieldID'];
+                } else if($field['reactToTaxonomy'] == '1')
+                {
+                    continue;
+                }
+                else
+                {
                     $arr[] = $field['fieldID'];
                 }
             }
         }
-        $fieldStr = $fieldStr . implode(',', $arr) . ';';
+
+        $strPalette = count($arr) > 0 ? $strPalette . implode(',', $arr) . ';' : '';
         return array(
             '__selector__' => array('addDetailPage', 'allowComments'),
-            'default' => '{general_legend},title,info,language,fallback;{root_legend},addDetailPage;' . $fieldStr . '{comments_legend:hide},allowComments;'
+            'default' => '{general_legend},title,info,language,fallback;{root_legend},addDetailPage;' . $strPalette . '{comments_legend:hide},allowComments;'
         );
     }
 
@@ -346,11 +360,10 @@ class DCAModuleSettings extends ViewContainer
         $arr = $this->dcaSettingField();
         if (is_array($fields)) {
             foreach ($fields as $field) {
-
                 // do not set
                 if (!$field['fieldID']) continue;
                 if ($field['fieldID'] == 'address_country') continue;
-
+                if ($field['reactToTaxonomy'] == '1') continue;
                 if ($field['type'] == 'simple_choice' || $field['type'] == 'multi_choice') {
                     $arr = $this->setOptionsFields($field, $arr);
                 }
@@ -374,10 +387,33 @@ class DCAModuleSettings extends ViewContainer
                     $arr[$fieldPrefixes[$i] . $field['fieldID']] = $this->getOptionFromTableField($fieldPrefixes[$i], $field);
                 }
             }
-        } else {
+        }else if($field['dataFromTaxonomy'] == '1')
+        {
+            $arr['select_taxonomy_' . $field['fieldID']] = $this->getTaxonomySelectField($field);
+        }
+        else
+        {
             $arr[$field['fieldID']] = $this->getOptionField($field);
         }
         return $arr;
+    }
+
+    /**
+     * @param \DataContainer $dc
+     * @return array
+     */
+    public function getParentTaxonomies(\DataContainer $dc)
+    {
+        $arrTaxonomies = array();
+        $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = "0"')->execute();
+        while($taxonomiesDB->next())
+        {
+            if($taxonomiesDB->alias)
+            {
+                $arrTaxonomies[$taxonomiesDB->id] = $taxonomiesDB->name ? $taxonomiesDB->name : $taxonomiesDB->alias;
+            }
+        }
+        return $arrTaxonomies;
     }
 
     /**

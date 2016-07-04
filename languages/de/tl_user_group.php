@@ -9,6 +9,12 @@ $GLOBALS['TL_LANG']['tl_user_group']['fmodules'][1] = 'Hier können Sie den Zugr
 $GLOBALS['TL_LANG']['tl_user_group']['fmodulesp'][0] = 'F Modul Rechte';
 $GLOBALS['TL_LANG']['tl_user_group']['fmodulesp'][1] = 'Hier können Sie die F Modul Rechte festlegen.';
 
+$GLOBALS['TL_LANG']['tl_user_group']['taxonomies'][0] = 'Erlaubte Taxonomies';
+$GLOBALS['TL_LANG']['tl_user_group']['taxonomies'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere Taxonomies erlauben.';
+
+$GLOBALS['TL_LANG']['tl_user_group']['taxonomiesp'][0] = 'Taxonomies Rechte';
+$GLOBALS['TL_LANG']['tl_user_group']['taxonomiesp'][1] = 'Hier können Sie die Taxonomies Rechte festlegen.';
+
 $GLOBALS['TL_LANG']['tl_user_group']['fmodulesfilters'][0] = 'Erlaubte Filter';
 $GLOBALS['TL_LANG']['tl_user_group']['fmodulesfilters'][1] = 'Hier können Sie den Zugriff auf ein oder mehrere Filter erlauben.';
 

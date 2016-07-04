@@ -140,6 +140,7 @@ class DCACreator
 
             while ($fieldsDB->next()) {
                 $field = [];
+                $field['pid'] = $fieldsDB->row()['pid'];
                 $field['type'] = $fieldsDB->row()['type'];
                 $field['fieldID'] = $fieldsDB->row()['fieldID'];
                 $field['title'] = $fieldsDB->row()['title'];
@@ -163,6 +164,9 @@ class DCACreator
                 $field['mapMarker'] = $fieldsDB->row()['mapMarker'];
                 $field['rgxp'] = $fieldsDB->row()['rgxp'];
                 $field['fmGroup'] = $fieldsDB->row()['fmGroup'];
+                $field['dataFromTaxonomy'] = $fieldsDB->row()['dataFromTaxonomy'];
+                $field['reactToTaxonomy'] = $fieldsDB->row()['reactToTaxonomy'];
+                $field['reactToField'] = $fieldsDB->row()['reactToField'];
                 $fields[] = $field;
             }
 

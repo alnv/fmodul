@@ -23,13 +23,173 @@ class QueryModel
 {
 
     /**
+     * @var string
+     */
+    static public $strTaxonomyQuery = '';
+
+    /**
+     * @var array
+     */
+    static public $arrTaxonomiesFields = array();
+
+    /**
      * @param $query
      * @return string
      */
-    static public function simpleChoiceQuery($query)
+    static public function setupTaxonomyFieldQueryArray($query)
     {
-        $bind = $query['negate'] ? '!=' : '=';
-        return ' AND ' . $query['fieldID'] . ' ' . $bind . ' "' . $query['value'] . '"';
+        if($query['dataFromTaxonomy'] == '1')
+        {
+            static::$arrTaxonomiesFields['arrSpecie'][] = $query;
+        }
+
+        if($query['reactToTaxonomy'] == '1')
+        {
+            static::$arrTaxonomiesFields['arrTags'][] = $query;
+        }
+    }
+
+    /**
+     *
+     */
+    static public function taxonomyFieldQueryBuilder()
+    {
+        foreach (static::$arrTaxonomiesFields as $type => $arrTaxonomies)
+        {
+
+            // specie single
+            if($type == 'arrSpecie' && count($arrTaxonomies) == 1)
+            {
+                foreach ($arrTaxonomies as $intIndex => $arrTaxonomy)
+                {
+                    $strQuery = static::simpleChoiceQuery($arrTaxonomy);
+                    if($strQuery)
+                    {
+                        static::$strTaxonomyQuery .= $strQuery;
+                    }
+                }
+            }
+
+            // species multiple
+            if($type == 'arrSpecie' && count($arrTaxonomies) > 1)
+            {
+                $strQuery = ' AND (';
+
+                foreach ($arrTaxonomies as $intIndex => $arrTaxonomy)
+                {
+                    $strBind = $arrTaxonomy['negate'] ? '!=' : '=';
+                    $strOperator = '';
+                    if($intIndex > 0)
+                    {
+                        $strOperator = 'OR';
+                    }
+                    $strQuery .= ' '.$strOperator.' ' . $arrTaxonomy['fieldID'] . ' ' . $strBind . ' "' . $arrTaxonomy['value'] . '"';
+                }
+
+                $strQuery .= ')';
+
+                static::$strTaxonomyQuery .= $strQuery;
+            }
+
+            // tags multiple
+            if($type == 'arrTags' && count($arrTaxonomies) > 1)
+            {
+                $strQuery = ' AND (';
+                $strOperator = '';
+                foreach ($arrTaxonomies as $intIndex => $arrTaxonomy)
+                {
+                    $arrSubQueries = array();
+
+                    if($intIndex > 0)
+                    {
+                        $strOperator = ' OR';
+                    }
+
+                    //
+                    $arrValues = $arrTaxonomy['value'];
+                    $strLike = $arrTaxonomy['negate'] ? 'NOT LIKE' : 'LIKE';
+                    $strBind = '';
+                    if(!is_array($arrValues))
+                    {
+                        $arrValues = explode(',', $arrValues);
+                    }
+
+                    if($strOperator)
+                    {
+                        $arrSubQueries[] = $strOperator;
+                    }
+
+                    foreach ($arrValues as $intNum => $value) {
+
+                        if ($intNum > 0) {
+                            $strBind = 'OR';
+                        }
+
+                        $arrSubQueries[] = $strBind.' '.$arrTaxonomy['fieldID'] . ' ' . $strLike . ' "%' . $value . '%"';
+                    }
+                    $strQuery .= implode('', $arrSubQueries);
+                }
+
+                $strQuery .= ')';
+                static::$strTaxonomyQuery .= $strQuery;
+            }
+
+            // tags single
+            if($type == 'arrTags' && count($arrTaxonomies) == 1)
+            {
+                foreach ($arrTaxonomies as $intIndex => $arrTaxonomy)
+                {
+                    $strQuery = static::multiChoiceQuery($arrTaxonomy);
+                    if($strQuery)
+                    {
+                        static::$strTaxonomyQuery .= $strQuery;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $arrQuery
+     * @return string
+     */
+    static public function multiChoiceQuery($arrQuery)
+    {
+        $strLike = $arrQuery['negate'] ? 'NOT LIKE' : 'LIKE';
+        $arrValues = $arrQuery['value'];
+        $strBind = ' AND (';
+        $arrSql = array();
+
+        if (!is_array($arrValues)) {
+            $arrValues = explode(',', $arrValues);
+        }
+
+        if (count($arrValues) == 1) {
+            $strBind = 'AND';
+        }
+
+        foreach ($arrValues as $intIndex => $value) {
+
+            if ($intIndex > 0) {
+                $strBind = 'OR';
+            }
+
+            $arrSql[] = ' ' . $strBind . ' ' . $arrQuery['fieldID'] . ' ' . $strLike . ' "%' . $value . '%"';
+        }
+
+        $arrSql[] = (count($arrValues) <= 1 ? '' : ' )');
+
+        return implode('', $arrSql);
+    }
+
+    /**
+     * @param $arrQuery
+     * @return string
+     */
+    static public function simpleChoiceQuery($arrQuery)
+    {
+        $strBind = $arrQuery['negate'] ? '!=' : '=';
+        return ' AND ' . $arrQuery['fieldID'] . ' ' . $strBind . ' "' . $arrQuery['value'] . '"';
     }
 
     /**
@@ -55,44 +215,6 @@ class QueryModel
         }
 
         return false;
-
-    }
-
-    /**
-     * @param $query
-     * @return string
-     */
-    static public function multiChoiceQuery($query)
-    {
-
-        $like = $query['negate'] ? 'NOT LIKE' : 'LIKE';
-        $values = $query['value'];
-        $bind = ' AND (';
-        $sql = [];
-
-        if (is_string($values)) {
-            $values = explode(',', $values);
-        }
-
-        if (is_array($values)) {
-
-            if (count($values) == 1) {
-                $bind = 'AND';
-            }
-
-            foreach ($values as $n => $value) {
-                if ($n > 0) {
-                    $bind = 'OR';
-                }
-
-                $sql[] = ' ' . $bind . ' ' . $query['fieldID'] . ' ' . $like . ' "%' . $value . '%"';
-
-            }
-
-            $sql[] = (count($values) <= 1 ? '' : ' )');
-        }
-
-        return implode('', $sql);
 
     }
 

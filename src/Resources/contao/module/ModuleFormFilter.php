@@ -118,7 +118,16 @@ class ModuleFormFilter extends \Contao\Module
 
             // get options from wrapper
             if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
+
                 $wrapperOptions = deserialize($fieldsDB[$fieldID]);
+
+                if ($field['dataFromTaxonomy'] == '1') {
+                    $wrapperOptions = $this->getDataFromTaxonomy($fieldsDB['select_taxonomy_' . $fieldID]);
+                }
+
+                if ($field['reactToTaxonomy'] == '1') {
+                    $wrapperOptions = $this->getDataFromTaxonomyTags($field['reactToField'], $fieldsDB);
+                }
 
                 if ($wrapperOptions['table'] && !in_array($fieldID, $activeOption)) {
                     $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);
@@ -137,11 +146,29 @@ class ModuleFormFilter extends \Contao\Module
 
             // get options
             if ($fieldID && in_array($fieldID, $activeOption)) {
+
                 $results = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, $objPage->dateFormat, $objPage->timeFormat);
+
+                // taxonomy tags
+                if ($field['reactToTaxonomy'] == '1') {
+                    $tempResults = array();
+                    $arrValues = $this->getDataFromTaxonomyTags($field['reactToField'], $fieldsDB, true);
+                    foreach($results as $result)
+                    {
+                        if(!in_array($result['value'], $arrValues))
+                        {
+                            continue;
+                        }
+                        $tempResults[] = $result;
+                    }
+                    $results = $tempResults;
+                    unset($tempResults);
+                }
+
                 $fields[$i]['options'] = is_array($results) ? $results : array();
             }
 
-            // set tablename
+            // set table name
             $fields[$i]['tablename'] = !strpos($listModuleTable, '_data') ? $listModuleTable . '_data' : $listModuleTable;
 
             // date field
@@ -275,7 +302,6 @@ class ModuleFormFilter extends \Contao\Module
             $widgetTemplate = new FrontendTemplate($widget['tpl']);
             $widgetTemplate->setData($widget['data']);
             $strWidget .= $widgetTemplate->parse();
-
         }
 
         $strResult = '';
@@ -335,38 +361,98 @@ class ModuleFormFilter extends \Contao\Module
     }
 
     /**
-     * @param $opt
+     * @param $arrTableData
      * @return array
      */
-    private function getDataFromTable($opt)
+    private function getDataFromTable($arrTableData)
     {
-        $o = array();
-        $opt = deserialize($opt);
+        $arrOptions = array();
+        $arrTableData = deserialize($arrTableData);
 
-        if (!$this->Database->tableExists($opt['table'])) {
-            return $o;
+        if (!$this->Database->tableExists($arrTableData['table'])) {
+            return $arrOptions;
         }
 
-        if ($opt['col'] == '' || $opt['title'] == '') {
-            $o[] = array(
-                'label' => '-',
-                'value' => '',
-            );
-            return $o;
+        if (!$arrTableData['col'] || !$arrTableData['title']) {
+            $arrOptions[] = array('label' => '-', 'value' => '');
+            return $arrOptions;
         }
 
-        $dataFromTableDB = $this->Database->prepare('SELECT ' . $opt['col'] . ', ' . $opt['title'] . ' FROM ' . $opt['table'] . '')->execute();
+        $dataFromTableDB = $this->Database->prepare('SELECT ' . $arrTableData['col'] . ', ' . $arrTableData['title'] . ' FROM ' . $arrTableData['table'] . '')->execute();
 
         while ($dataFromTableDB->next()) {
 
-            $o[] = array(
-                'label' => $dataFromTableDB->$opt['title'],
-                'value' => $dataFromTableDB->$opt['col'],
+            $arrOptions[] = array(
+                'label' => $dataFromTableDB->{$arrTableData['title']},
+                'value' => $dataFromTableDB->{$arrTableData['col']},
             );
 
         }
 
-        return $o;
+        return $arrOptions;
+    }
+
+    /**
+     * @param $taxonomyID
+     * @return array
+     */
+    private function getDataFromTaxonomy($taxonomyID)
+    {
+        $arrOptions = array();
+        if(!$taxonomyID)
+        {
+            return $arrOptions;
+        }
+        $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? AND published = "1"')->execute($taxonomyID);
+        while($taxonomiesDB->next()) {
+            if(!$taxonomiesDB->alias)
+            {
+                continue;
+            }
+            $arrOptions[] = array(
+                'label' => $taxonomiesDB->name ? $taxonomiesDB->name : $taxonomiesDB->alias,
+                'value' => $taxonomiesDB->alias,
+            );
+        }
+        return $arrOptions;
+    }
+
+    /**
+     * @param $field
+     * @param $fieldsDB
+     * @param bool $blnValuesOnly
+     * @return array
+     */
+    private function getDataFromTaxonomyTags($field, $fieldsDB, $blnValuesOnly = false)
+    {
+        $arrOptions = array();
+        $arrValues = array();
+        $specieAlias = \Input::get($field);
+
+        if(!$field || !$specieAlias)
+        {
+            return $arrOptions;
+        }
+
+        $specieID = isset($fieldsDB['select_taxonomy_' . $field]) ? $fieldsDB['select_taxonomy_' . $field] : '';
+        if(!$specieID)
+        {
+            return $arrOptions;
+        }
+
+        $tagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($specieAlias, $specieID);
+        while($tagsDB->next()) {
+            if(!$tagsDB->alias)
+            {
+                continue;
+            }
+            $arrValues[] = $tagsDB->alias;
+            $arrOptions[] = array(
+                'label' => $tagsDB->name ? $tagsDB->name : $tagsDB->alias,
+                'value' => $tagsDB->alias,
+            );
+        }
+        return $blnValuesOnly ? $arrValues : $arrOptions;
     }
 
     /**

@@ -63,6 +63,26 @@ class ModuleListView extends Module
     protected $feViewID = null;
 
     /**
+     * @var string
+     */
+    protected $strAutoItem = '';
+
+    /**
+     * @var string
+     */
+    protected $strTaxonomy = '';
+
+    /**
+     * @var string
+     */
+    protected $strSpecie = '';
+
+    /**
+     * @var string
+     */
+    protected $strTag = array();
+
+    /**
      *
      */
     public function generate()
@@ -130,6 +150,23 @@ class ModuleListView extends Module
             $mapSettings['lng'] = $this->fm_center_lng ? $this->fm_center_lng : '0';
         }
 
+        // get wrapper
+        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+
+        // taxonomies
+        $blnDetailView = false;
+        if (\Input::get('auto_item')) {
+            $taxonomyItemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE published = "1" AND pid = ? AND (alias = ? OR id = ?)')->limit(1)->execute($wrapperID, \Input::get('auto_item'), (int)\Input::get('auto_item'));
+            if ($taxonomyItemDB->count()) {
+                $blnDetailView = true;
+            }
+        }
+        
+        // set params variables
+        $this->strAutoItem = !$blnDetailView ? '' : \Input::get('auto_item');
+        $this->strSpecie = !$blnDetailView ? \Input::get('auto_item') : \Input::get('specie');
+        $this->strTag = !$blnDetailView ? \Input::get('specie') : \Input::get('tags');
+
         while ($moduleDB->next()) {
 
             $arrModule = $moduleDB->row();
@@ -144,9 +181,23 @@ class ModuleListView extends Module
             $arrModule['overwrite'] = null;
             $arrModule['active'] = null;
 
+            // set auto_page values
             if ($arrModule['fieldID'] == 'auto_page' || $arrModule['autoPage']) {
                 $arrModule = $this->setValuesForAutoPageAttribute($arrModule);
             }
+
+            // taxonomies >>
+            // set specie value
+            if ($arrModule['dataFromTaxonomy'] == '1' && !\Config::get('taxonomyDisable')) {
+                $arrModule['type'] = 'taxonomy_field'; // dyn type
+                $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
+            }
+            // set tags value
+            if ($arrModule['reactToTaxonomy'] == '1' && !\Config::get('taxonomyDisable')) {
+                $arrModule['type'] = 'taxonomy_field'; // dyn type
+                $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
+            }
+            // << end taxonomies
 
             $val = QueryModel::isValue($arrModule['value'], $arrModule['type']);
             if ($val) $arrModule['enable'] = true;
@@ -193,7 +244,7 @@ class ModuleListView extends Module
 
             // has options
             if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
-                $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                $dcaHelper = new DCAHelper();
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
 
@@ -215,7 +266,6 @@ class ModuleListView extends Module
         }
 
         // get list view
-        $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
         $qOrderByStr = $this->getOrderBy();
@@ -233,62 +283,70 @@ class ModuleListView extends Module
         // Override the default image size
         if ($this->imgSize != '') {
             $size = deserialize($this->imgSize);
-
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $imgSize = $this->imgSize;
             }
         }
 
-        $itemsArr = array();
+        $arrItems = array();
         while ($listDB->next()) {
 
-            if (HelperModel::sortOutProtected($listDB->row(), $this->User->groups)) {
+            $arrItem = $listDB->row();
+
+            if (HelperModel::sortOutProtected($arrItem, $this->User->groups)) {
                 continue;
             }
 
-            if (!HelperModel::outSideScope($listDB->start, $listDB->stop)) {
+            if (!HelperModel::outSideScope($arrItem['start'], $arrItem['stop'])) {
                 continue;
             }
 
             $imagePath = $this->generateSingeSrc($listDB);
+
             if ($imagePath) {
-                $listDB->singleSRC = $imagePath;
+                $arrItem['singleSRC'] = $imagePath;
             }
+
             if ($imgSize) {
-                $listDB->size = $imgSize;
+                $arrItem['size'] = $imgSize;
             }
 
             // create href
-            $listDB->href = null;
+            $arrItem['href'] = null;
+
             if ($addDetailPage == '1' && $listDB->source == 'default') {
                 // reset target
-                $listDB->target = '';
-                $listDB->href = $this->generateUrl($rootDB, $listDB->alias);
-            }
-            if ($listDB->source == 'external') {
-                $listDB->href = $listDB->url;
-            }
-            if ($listDB->source == 'internal') {
-                // reset target
-                $listDB->target = '';
-                $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
-                $listDB->href = $this->generateFrontendUrl($jumpToDB);
+                $arrItem['target'] = '';
+                $arrItem['href'] = $this->generateUrl($rootDB, $arrItem['alias']); // $listDB->alias
             }
 
-            // check for textsearch
+            if ($arrItem['source'] == 'external') {
+                $arrItem['href'] = $arrItem['url'];
+            }
+
+            if ($arrItem['source'] == 'internal') {
+                // reset target
+                $arrItem['target'] = '';
+
+                $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
+                $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
+                $arrItem['href'] = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
+            }
+
+            // check for text search
             if ($qTextSearch) {
-                if (!$textSearchResults[$listDB->id]) {
+                if (!$textSearchResults[$arrItem['id']]) {
                     continue;
                 }
             }
 
             //
-            $itemsArr[] = $listDB->row();
+            $arrItems[] = $arrItem;
 
         }
 
         //pagination
-        $total = count($itemsArr);
+        $total = count($arrItems);
         $paginationStr = $this->createPagination($total);
         $paginationStr = $paginationStr ? $paginationStr : '';
         $this->Template->pagination = $paginationStr;
@@ -298,7 +356,7 @@ class ModuleListView extends Module
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
-            $item = $itemsArr[$i];
+            $item = $arrItems[$i];
 
             // parse value if map is enabled
             if ($this->fm_addMap) {
@@ -420,7 +478,6 @@ class ModuleListView extends Module
             // set clean options
             if (!empty($arrCleanOptions)) {
                 $item['cleanOptions'] = $arrCleanOptions;
-
                 // overwrite clean options
                 foreach ($arrCleanOptions as $fieldID => $options) {
                     if ($item[$fieldID] && is_string($item[$fieldID])) {
@@ -494,18 +551,52 @@ class ModuleListView extends Module
         global $objPage;
         $alias = $objPage->alias;
         if ($return['type'] == 'multi_choice') {
-
             $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
             $alias = Environment::get('requestUri');
             $alias = explode('/', $alias);
             $alias = array_filter($alias);
             $alias = array_values($alias);
-
             if ($language && $alias[0] && $language == $alias[0]) {
                 array_shift($alias);
             }
         }
         $return['value'] = $alias;
+        return $return;
+    }
+
+    /**
+     * @param $return
+     * @return mixed
+     */
+    protected function setValuesForTaxonomySpecieAttribute($return)
+    {
+        if(\Input::get($return['fieldID']))
+        {
+            $this->strSpecie = \Input::get($return['fieldID']);
+        }
+        if ($this->strSpecie && is_string($this->strSpecie)) {
+            $return['value'] = $this->strSpecie;
+        }
+        return $return;
+    }
+
+    /**
+     * @param $return
+     * @return mixed
+     */
+    protected function setValuesForTaxonomyTagsAttribute($return)
+    {
+        // allow multiple values
+        if(\Input::get($return['fieldID']))
+        {
+            $this->strTag = \Input::get($return['fieldID']);
+        }
+        if (is_string($this->strTag)) {
+            $this->strTag = explode(',', $this->strTag);
+        }
+        if ($this->strTag && is_array($this->strTag)) {
+            $return['value'] = $this->strTag;
+        }
         return $return;
     }
 
@@ -607,11 +698,6 @@ class ModuleListView extends Module
 
         $taxonomies = array();
 
-        /*
-         * nachdem 1.4.2 update ändern!
-         * die fieldID wird als key übergeben. daher kann man eine schleife sparen
-         * erstmal weglassen wegen der kompatibilität
-         */
         foreach ($taxonomyFromFE as $filterValue) {
             if ($filterValue['set']['ignore']) {
                 continue;
@@ -778,6 +864,24 @@ class ModuleListView extends Module
      */
     private function generateUrl($objTarget, $alias)
     {
-        return $this->generateFrontendUrl($objTarget, '/' . $alias);
+        $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
+        return $this->generateFrontendUrl($objTarget, '/' . $alias . $strTaxonomyUrl);
+    }
+
+    /**
+     * @return string
+     */
+    private function generateTaxonomyUrl()
+    {
+        $strTaxonomyUrl = '';
+        if ($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
+
+        if ($this->strSpecie && $this->fm_use_specieUrl) {
+            $strTaxonomyUrl .= '/' . $this->strSpecie;
+        }
+        if ($this->strTag && $this->fm_use_specieUrl && $this->fm_use_tagsUrl) {
+            $strTaxonomyUrl .= '/' . $this->strTag;
+        }
+        return $strTaxonomyUrl;
     }
 }

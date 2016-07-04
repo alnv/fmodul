@@ -32,6 +32,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['setting_legend'] = 'Feld-Einstellung
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Karten-Einstellunegn';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Suche-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['taxonomy_legend'] = 'Taxonomie-Einstellungen';
 
 //fields
 
@@ -56,12 +57,12 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][0] = 'Beschreibung';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['description'][1] = 'Bitte geben Sie die beschreibung an.';
 
 // fieldAppearance
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Input';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Bitte wählen Sie den Input aus.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][0] = 'Input-Typ';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldAppearance'][1] = 'Bitte wählen Sie den Input-Typ aus.';
 
 // dataFromTable
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][0] = 'Filterkriterien aus einer Tabelle laden.';
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'Hier können Sie die Filterkriterien aus einer Tabelle laden.';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTable'][1] = 'Die Filterkriterien werden aus einer Tabelle geladen.';
 
 // mapTemplate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapTemplate'][0] = 'Template auswählen';
@@ -116,7 +117,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][0] = 'Bis';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['to_field'][1] = 'Bitte wählen Sie ein Eingabefeld aus.';
 
 // autoPage
-$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][0] = 'Auto Page Attribute Aktivieren';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][0] = 'Auto Page Attribut Aktivieren';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoPage'][1] = 'Bitte die dazugehörenden Dokumentation durchlesen: http://fmodul.alexandernaumov.de/dokumentation/auto_page-attribute.html';
 
 // negate
@@ -142,6 +143,18 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fmGroup'][1] = 'Bitte geben Sie eine
 // rgxp
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][0] = 'Regulärer Ausdruck';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['rgxp'][1] = 'Bitte wählen Sie einen Regulären Ausdruck aus. <a style="color: #77ac45;" href="https://docs.contao.org/books/api/dca/reference.html#evaluation" target="_blank">In der Dokumentation nachlesen</a>';
+
+// dataFromTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][0] = 'Filterkriterien aus einem Taxonomie-Baum laden';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['dataFromTaxonomy'][1] = 'Hier können Sie die Filterkriterien aus einem Taxonomie-Baum laden.';
+
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][0] = 'Taxonomie-Tags verwenden';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Hier können Sie Tags aus einem Taxonomie-Baum laden.';
+
+// reactToTaxonomy
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Quelle auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Bitte wählen Sie ein Gattungs-Eingabefeld aus.';
 
 // validate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits.';

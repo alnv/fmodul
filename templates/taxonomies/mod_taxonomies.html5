@@ -1,0 +1,58 @@
+<?php $this->extend('block_searchable'); ?>
+<?php $this->block('content'); ?>
+
+<section class="ce_taxonomy">
+
+    <?php if($this->rootTaxonomy): ?>
+        <p class="title"><?= $this->rootTaxonomy['name']; ?></p>
+    <?php endif; ?>
+
+    <!-- species -->
+    <?php if($this->taxonomies && isset($this->taxonomies['species'])): ?>
+
+        <ul>
+
+            <?php foreach($this->taxonomies['species'] as $specie): ?>
+
+                <?php if(strpos($specie['css'], 'active')): ?>
+
+                    <li class="<?= $specie['css'] ?>"><strong><?= $specie['name'] ?></strong>
+
+                         <!-- tags -->
+                         <?php if($this->taxonomies && isset($this->taxonomies['tags'])): ?>
+
+                                <ul>
+                                    <?php foreach($this->taxonomies['tags'] as $tags): ?>
+
+                                        <?php if(strpos($tags['css'], 'active')): ?>
+
+                                            <li class="<?= $tags['css'] ?>"><strong><?= $tags['name'] ?></strong></li>
+
+                                        <?php else: ?>
+
+                                            <li class="<?= $tags['css'] ?>"><a href="<?= $tags['href'] ?>"><?= $tags['name'] ?></a></li>
+
+                                        <?php endif; ?>
+
+                                    <?php endforeach; ?>
+                                </ul>
+
+                         <?php endif; ?>
+
+                    </li>
+
+                <?php else: ?>
+
+                    <li class="<?= $specie['css'] ?>"><a href="<?= $specie['href'] ?>"><?= $specie['name'] ?></a></li>
+
+                <?php endif; ?>
+
+            <?php endforeach; ?>
+
+        </ul>
+
+    <?php endif; ?>
+
+</section>
+
+<?php $this->endblock(); ?>

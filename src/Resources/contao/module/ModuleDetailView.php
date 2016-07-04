@@ -306,7 +306,6 @@ class ModuleDetailView extends Module
         // set clean options
         if (!empty($arrCleanOptions)) {
             $itemDB['cleanOptions'] = $arrCleanOptions;
-
             // overwrite clean options
             foreach ($arrCleanOptions as $fieldID => $options) {
                 if ($itemDB[$fieldID] && is_string($itemDB[$fieldID])) {
@@ -347,6 +346,10 @@ class ModuleDetailView extends Module
         }
 
         $strResult .= $objTemplate->parse();
+
+
+        $this->Template->referer = 'javascript:history.go(-1)';
+        $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
         $this->Template->result = $strResult;
 
         //allow comments

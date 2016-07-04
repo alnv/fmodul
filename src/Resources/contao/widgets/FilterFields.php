@@ -136,6 +136,9 @@ class FilterFields extends Widget
 						<input type="hidden" value="' . $value['from_field'] . '" name="' . $this->strName . '[' . $key . '][from_field]">
 						<input type="hidden" value="' . $value['to_field'] . '" name="' . $this->strName . '[' . $key . '][to_field]">
 						<input type="hidden" value="' . $value['description'] . '" name="' . $this->strName . '[' . $key . '][description]">
+						<input type="hidden" value="' . $value['dataFromTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][dataFromTaxonomy]">
+						<input type="hidden" value="' . $value['reactToTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][reactToTaxonomy]">
+						<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">
 					</td>
 					<td> <select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_appearance]" id="ctrl_' . $this->strId . '[' . $key . '][appearance]" class="tl_select" style="width: 150px;">' . $selectOptionsTemplate . '</select> </td>
 					<td> <select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_templates]" id="ctrl_' . $this->strId . '[' . $key . '][template]" class="tl_select" style="width: 200px;">' . $widgetsOptionsTemplate . '</select> </td>

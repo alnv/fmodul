@@ -67,7 +67,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'unique'=>true, 'maxlength' => 128, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'teaser'),
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'unique'=>true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
             ),
@@ -841,8 +841,8 @@ class ViewContainer extends DCAHelper
             'mandatory' => $this->setMandatory($fieldData['isMandatory']),
             'tl_class' => $this->setTLClass($fieldData),
             'includeBlankOption' => true,
-            'chosen' => true,
             'blankOptionLabel' => '-',
+            'chosen' => true,
             'fmEditable' => true,
             'fmGroup' => $this->getFMGroup($fieldData)
         );
@@ -853,12 +853,20 @@ class ViewContainer extends DCAHelper
             $field['eval']['rgxp'] = $rgxp;
         }
 
-        $field['sql'] = 'text NULL';
+        // dataFromTaxonomy
+        if($fieldData['dataFromTaxonomy'] == '1')
+        {
+            $field['eval']['submitOnChange'] = true;
+        }
 
         // radio
         if ($fieldData['fieldAppearance'] == 'radio') {
             $field['inputType'] = 'radio';
         }
+
+        // sql
+        $field['sql'] = 'text NULL';
+
         return $field;
     }
 
@@ -883,13 +891,19 @@ class ViewContainer extends DCAHelper
             'fmEditable' => true,
             'fmGroup' => $this->getFMGroup($fieldData)
         );
-        $field['sql'] = 'text NULL';
 
         // set regular expression
         $rgxp = $this->setRgxp($fieldData);
         if ($rgxp) {
             $field['eval']['rgxp'] = $rgxp;
+        }
 
+        // reactToTaxonomy
+        if($fieldData['reactToTaxonomy'] == '1' && $fieldData['reactToField'])
+        {
+            unset($field['options']);
+            $field['filter'] = false;
+            $field['options_callback'] = array('DCAModuleData', 'getTaxonomiesTags');
         }
 
         // set tags
@@ -897,6 +911,9 @@ class ViewContainer extends DCAHelper
             $field['inputType'] = 'select';
             $field['eval']['chosen'] = true;
         }
+
+        // sql
+        $field['sql'] = 'text NULL';
 
         return $field;
     }
@@ -918,6 +935,23 @@ class ViewContainer extends DCAHelper
     }
 
     /**
+     * @param $fieldData
+     * @return array
+     */
+    public function getTaxonomySelectField($fieldData)
+    {
+        $field = array();
+        $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
+        $field['exclude'] = true;
+        $field['fmodule_filter'] = true; // @todo rausfinden wieso es da ist :)
+        $field['eval'] = array('tl_class' => 'clr', 'chosen' => true);
+        $field['inputType'] = 'select';
+        $field['options_callback'] = array('DCAModuleSettings', 'getParentTaxonomies');
+        $field['sql'] = 'text NULL';
+        return $field;
+    }
+
+    /**
      * @param $type
      * @param $fieldData
      * @return array
@@ -928,7 +962,7 @@ class ViewContainer extends DCAHelper
         $field['exclude'] = true;
         $field['fmodule_filter'] = true;
         $field['inputType'] = 'select';
-        $field['eval'] = array('tl_class' => 'clr', 'submitOnChange' => true, 'chosen' => true,);
+        $field['eval'] = array('tl_class' => 'clr', 'submitOnChange' => true, 'chosen' => true);
         $field['sql'] = 'text NULL';
 
         if ($type == 'select_table_') {

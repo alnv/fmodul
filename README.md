@@ -1,4 +1,4 @@
-F Modul v1.8.0-beta.1
+F Modul v1.8.0
 ======================
 
 Mit dieser Erweiterung ist es möglich eigene Contao Module zu erstellen. Damit kannst du dein Content besser strukturieren und damit deine Content Pflege optimieren.

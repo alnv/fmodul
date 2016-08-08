@@ -67,7 +67,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alias'],
                 'inputType' => 'text',
                 'exclude' => true,
-                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'unique'=>true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
+                'eval' => array('rgxp' => 'alias', 'maxlength' => 128, 'tl_class' => 'w50', 'unique' => true, 'fmEditable' => true, 'fmGroup' => 'teaser'),
                 'save_callback' => array(array('DCAModuleData', 'generateAlias')),
                 'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
             ),
@@ -324,8 +324,82 @@ class ViewContainer extends DCAHelper
                 'options_callback' => array('DCAModuleData', 'getFallbackData'),
                 'eval' => array('includeBlankOption' => true, 'chosen' => true, 'blankOptionLabel' => '-', 'tl_class' => 'w50'),
                 'sql' => "varchar(255) NOT NULL default ''"
-            )
-
+            ),
+            // gallery
+            'addGallery' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addGallery'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('submitOnChange' => true),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'orderSRC' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['orderSRC'],
+                'sql' => "blob NULL"
+            ),
+            'multiSRC' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['multiSRC'],
+                'exclude' => true,
+                'inputType' => 'fileTree',
+                'eval' => array('multiple' => true, 'fieldType' => 'checkbox', 'orderField' => 'orderSRC', 'files' => true, 'mandatory' => true),
+                'sql' => "blob NULL",
+                'load_callback' => array(array('DCAModuleData', 'setMultiSrcFlags'))
+            ),
+            'sortBy' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sortBy'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => array('custom', 'name_asc', 'name_desc', 'date_asc', 'date_desc', 'random'),
+                'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'],
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "varchar(32) NOT NULL default ''"
+            ),
+            'metaIgnore' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['metaIgnore'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+                'eval' => array('tl_class' => 'w50 m12'),
+                'sql' => "char(1) NOT NULL default ''"
+            ),
+            'perRow' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perRow'],
+                'default' => 4,
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "smallint(5) unsigned NOT NULL default '0'"
+            ),
+            'perPageGallery' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perPageGallery'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+                'sql' => "smallint(5) unsigned NOT NULL default '0'"
+            ),
+            'numberOfItems' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['numberOfItems'],
+                'exclude' => true,
+                'inputType' => 'text',
+                'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+                'sql' => "smallint(5) unsigned NOT NULL default '0'"
+            ),
+            'galleryTpl' => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['galleryTpl'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options_callback' => array('DCAModuleData', 'getGalleryTemplates'),
+                'eval' => array('tl_class' => 'w50'),
+                'sql' => "varchar(64) NOT NULL default ''"
+            ),
         );
 
         // add pid
@@ -557,13 +631,43 @@ class ViewContainer extends DCAHelper
      * @param array $fields
      * @return array
      */
+    public function imageSettingsPalette($fields = array())
+    {
+        $palette = array(
+            'fields' => array('alt', 'size', 'fullsize', 'caption'),
+            'palette' => '{image_settings_legend},alt,size,caption,fullsize;',
+            '__selector__' => '',
+            'subPalettes' => '',
+        );
+        return $palette;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
     public function imagePalette($fields = array())
     {
         $palette = array(
-            'fields' => array('addImage', 'singleSRC', 'alt', 'size', 'fullsize', 'caption'),
+            'fields' => array('addImage', 'singleSRC'),
             'palette' => '{image_legend},addImage;',
             '__selector__' => 'addImage',
-            'subPalettes' => 'singleSRC,alt,size,caption,fullsize',
+            'subPalettes' => 'singleSRC',
+        );
+        return $palette;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function galleryPalette($fields = array())
+    {
+        $palette = array(
+            'fields' => array('addGallery', 'multiSRC', 'sortBy', 'metaIgnore', 'perRow', 'perPageGallery', 'numberOfItems', 'galleryTpl'),
+            'palette' => '{gallery_legend},addGallery;',
+            '__selector__' => 'addGallery',
+            'subPalettes' => 'multiSRC, sortBy, metaIgnore, perRow, perPageGallery, numberOfItems, galleryTpl',
         );
         return $palette;
     }
@@ -854,8 +958,7 @@ class ViewContainer extends DCAHelper
         }
 
         // dataFromTaxonomy
-        if($fieldData['dataFromTaxonomy'] == '1')
-        {
+        if ($fieldData['dataFromTaxonomy'] == '1') {
             $field['eval']['submitOnChange'] = true;
         }
 
@@ -899,8 +1002,7 @@ class ViewContainer extends DCAHelper
         }
 
         // reactToTaxonomy
-        if($fieldData['reactToTaxonomy'] == '1' && $fieldData['reactToField'])
-        {
+        if ($fieldData['reactToTaxonomy'] == '1' && $fieldData['reactToField']) {
             unset($field['options']);
             $field['filter'] = false;
             $field['options_callback'] = array('DCAModuleData', 'getTaxonomiesTags');

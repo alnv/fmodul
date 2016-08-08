@@ -18,6 +18,8 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['source_legend'] =
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_legend'] = 'Geo coordinates';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_address_legend'] = 'Address';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['address_legend'] = 'Address';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_settings_legend'] = 'Image-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['gallery_legend'] = 'Gallery';
 
 // operations
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array( array('Add channel', 'Add new channel'), array('Add %s', 'Add new element'));
@@ -217,6 +219,33 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'] = array('Requir
 // disableCaptcha
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'] = array('Disable the security question','Use this option only if you have limited comments to authenticated users.');
 
+// addGallery
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addGallery'] = array('Add Gallery','Here you can add a Gallery to the item.');
+
+// orderSRC
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['orderSRC'] = array('Sort order', 'The sort order of the items');
+
+// multiSRC
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['multiSRC'] = array('Source files','Please select one or more files or folders from the files directory. If you select a folder, its files will be included automatically.');
+
+// sortBy
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sortBy'] = array('Order by', 'Please choose the sort order.');
+
+// metaIgnore
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['metaIgnore'] = array('Ignore files without meta data', 'Do not show files without meta data matching the page language.');
+
+// perRow
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perRow'] = array('Thumbnails per row', 'The number of image thumbnails per row.');
+
+// perRow
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perPageGallery'] = array('Items per page', 'The number of items per page. Set to 0 to disable pagination.');
+
+// perRow
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['numberOfItems'] = array('Total number of images', 'Here you can limit the total number of images. Set to 0 to show all.');
+
+// galleryTpl
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['galleryTpl'] = array('Gallery template', 'Here you can select the gallery template.');
+
 // Details
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['teaserData'] = 'Teaser';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['dateDetails'] = 'Date and time';
@@ -236,3 +265,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_both'] = 'Both';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['default'] = 'Use default';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['internal'] = 'Page';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['external'] = 'External URL';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['custom'] = 'Custom order';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['name_asc'] = 'File name (ascending)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['name_desc'] = 'File name (descending)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date_asc'] = 'Date (ascending)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date_desc'] = 'Date (descending)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['random'] = 'Random order';

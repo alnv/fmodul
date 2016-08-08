@@ -911,4 +911,28 @@ class DCAModuleData extends ViewContainer
         $session[] = $table;
         $this->Session->set('fmodules_feed_updater', array_unique($session));
     }
+
+    /**
+     * @param $varValue
+     * @param \DataContainer $dc
+     * @return mixed
+     */
+    public function setMultiSrcFlags($varValue, \DataContainer $dc)
+    {
+        if ($dc->activeRecord) {
+            $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
+            $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = \Config::get('validImageTypes');
+        }
+        return $varValue;
+    }
+    
+    /**
+     * Return all gallery templates as array
+     *
+     * @return array
+     */
+    public function getGalleryTemplates()
+    {
+        return $this->getTemplateGroup('gallery_');
+    }
 }

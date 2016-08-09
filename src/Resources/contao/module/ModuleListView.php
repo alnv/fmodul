@@ -301,6 +301,7 @@ class ModuleListView extends Module
                 continue;
             }
 
+            // image
             $imagePath = $this->generateSingeSrc($listDB);
 
             if ($imagePath) {
@@ -309,6 +310,22 @@ class ModuleListView extends Module
 
             if ($imgSize) {
                 $arrItem['size'] = $imgSize;
+            }
+
+            if($arrItem['addGallery'] && $arrItem['multiSRC']) {
+                $objGallery = new GalleryGenerator();
+                $objGallery->id = $arrItem['id'];
+                $objGallery->sortBy = $arrItem['sortBy'];
+                $objGallery->orderSRC = $arrItem['orderSRC'];
+                $objGallery->metaIgnore = $arrItem['metaIgnore'];
+                $objGallery->numberOfItems = $arrItem['numberOfItems'];
+                $objGallery->perPage = $arrItem['perPageGallery'];
+                $objGallery->perRow = $arrItem['perRow'];
+                $objGallery->size = $arrItem['size'];
+                $objGallery->fullsize = $arrItem['fullsize'];
+                $objGallery->galleryTpl = $arrItem['galleryTpl'];
+                $objGallery->getAllImages($arrItem['multiSRC']);
+                $arrItem['gallery'] = $objGallery->renderGallery();
             }
 
             // create href

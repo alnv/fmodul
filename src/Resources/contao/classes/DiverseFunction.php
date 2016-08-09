@@ -62,7 +62,7 @@ class DiverseFunction
         $startPoint = $GLOBALS['loadGoogleMapLibraries'] ? 'FModuleLoadLibraries' : 'FModuleLoadMaps';
         $apiKey = '';
         if (Config::get('googleApiKey')) {
-            $apiKey = '&amp;key=' . Config::get('googleApiKey') . '';
+            $apiKey = '&key=' . Config::get('googleApiKey');
         }
         $mapJSLoadTemplate =
             '<script async defer>

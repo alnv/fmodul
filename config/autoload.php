@@ -28,6 +28,7 @@ ClassLoader::addClasses(array
     'FModule\FModuleAjaxApi' => $pathToFiles . 'src/Resources/contao/classes/FModuleAjaxApi.php',
     'FModule\FModuleTranslation' => $pathToFiles . 'src/Resources/contao/classes/FModuleTranslation.php',
     'FModule\CleanUrls' => $pathToFiles . 'src/Resources/contao/classes/CleanUrls.php',
+    'FModule\GalleryGenerator' => $pathToFiles . 'src/Resources/contao/classes/GalleryGenerator.php',
 
     // widgets
     'FModule\OptionWizardExtended' => $pathToFiles . 'src/Resources/contao/widgets/OptionWizardExtended.php',

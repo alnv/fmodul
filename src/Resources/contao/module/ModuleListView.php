@@ -83,6 +83,11 @@ class ModuleListView extends Module
     protected $strTag = array();
 
     /**
+     * @var string
+     */
+    protected $strOrderBy = '';
+    
+    /**
      *
      */
     public function generate()
@@ -120,9 +125,10 @@ class ModuleListView extends Module
     {
 
         global $objPage;
-
+        
         $f_display_mode = deserialize($this->f_display_mode);
         $page_taxonomy = deserialize($objPage->page_taxonomy);
+        $this->strOrderBy = $this->f_orderby ? mb_strtoupper($this->f_orderby, 'UTF-8') : '';
         $taxonomyFromFE = is_array($f_display_mode) ? $f_display_mode : array();
         $taxonomyFromPage = is_array($page_taxonomy) ? $page_taxonomy : array();
         $tablename = $this->f_select_module;
@@ -362,11 +368,17 @@ class ModuleListView extends Module
 
         }
 
+        // set random
+        if($this->strOrderBy == 'RAND') {
+             shuffle($arrItems);
+        }
+
         //pagination
+        $strPagination = '';
         $total = count($arrItems);
-        $paginationStr = $this->createPagination($total);
-        $paginationStr = $paginationStr ? $paginationStr : '';
-        $this->Template->pagination = $paginationStr;
+        $strPagination = $this->createPagination($total);
+        $this->Template->pagination = $strPagination;
+
         $strResults = '';
         $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
         $objTemplate = new FrontendTemplate($template);
@@ -622,14 +634,17 @@ class ModuleListView extends Module
      */
     public function getOrderBy()
     {
-
-        $orderByFromListView = mb_strtoupper($this->f_orderby, 'UTF-8');
-        $orderBy = Input::get('orderBy') ? Input::get('orderBy') : $orderByFromListView;
+        $orderByFromListView = $this->strOrderBy;
+        $orderBy = \Input::get('orderBy') ? mb_strtoupper(\Input::get('orderBy'), 'UTF-8') : $orderByFromListView;
         $isValue = QueryModel::isValue($orderBy);
-        $allowedOrderByItems = array('asc', 'desc', 'rand', 'ACS', 'DESC', 'RAND');
+        $allowedOrderByItems = array('asc', 'desc', 'ACS', 'DESC');
 
+        // return empty if random
+        if ($orderBy == 'RAND') {
+            return '';
+        }
+        
         if ($isValue && is_array($orderBy)) {
-
             $orderBy = $orderBy[0];
         }
 
@@ -640,15 +655,9 @@ class ModuleListView extends Module
         if (!$orderBy) {
             $orderBy = 'DESC';
         }
-
+        $this->strOrderBy = $orderBy;
         $sorting = $this->getSortingField();
-        $qOrderByStr = ' ORDER BY ' . $sorting . ' ' . $orderBy;
-
-        if ($orderBy == 'RAND') {
-            $qOrderByStr = ' ORDER BY RAND()';
-        }
-
-        return $qOrderByStr;
+        return ' ORDER BY ' . $sorting . ' ' . $orderBy;
     }
 
     /**
@@ -817,7 +826,7 @@ class ModuleListView extends Module
     {
         global $objPage;
         $this->listViewLimit = $total;
-        $getPagination = Input::get('pagination');
+        $getPagination = \Input::get('pagination');
 
         if ($getPagination) {
 
@@ -840,8 +849,8 @@ class ModuleListView extends Module
             $total = min($this->f_limit_page, $total);
             $this->listViewLimit = $total;
         }
-
-        if ($this->f_perPage > 0) {
+        
+        if ($this->f_perPage > 0 && $this->strOrderBy != 'RAND') {
             $id = 'page_e' . $this->id;
             $page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
 
@@ -856,7 +865,7 @@ class ModuleListView extends Module
             return $objPagination->generate("\n  ");
         }
 
-        return null;
+        return '';
     }
 
     /**

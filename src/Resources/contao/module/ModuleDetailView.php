@@ -137,7 +137,7 @@ class ModuleDetailView extends Module
 
             // has options
             if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
-                $dcaHelper = new DCAHelper(); // später durch statische methode austauschen!
+                $dcaHelper = new DCAHelper();
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
 
@@ -275,6 +275,23 @@ class ModuleDetailView extends Module
                 ));
                 $itemDB[$id] = $objFieldTemplate->parse();
             }
+        }
+
+        // add gallery
+        if($itemDB['addGallery'] && $itemDB['multiSRC']) {
+            $objGallery = new GalleryGenerator();
+            $objGallery->id = $itemDB['id'];
+            $objGallery->sortBy = $itemDB['sortBy'];
+            $objGallery->orderSRC = $itemDB['orderSRC'];
+            $objGallery->metaIgnore = $itemDB['metaIgnore'];
+            $objGallery->numberOfItems = $itemDB['numberOfItems'];
+            $objGallery->perPage = $itemDB['perPageGallery'];
+            $objGallery->perRow = $itemDB['perRow'];
+            $objGallery->size = $itemDB['size'];
+            $objGallery->fullsize = $itemDB['fullsize'];
+            $objGallery->galleryTpl = $itemDB['galleryTpl'];
+            $objGallery->getAllImages($itemDB['multiSRC']);
+            $itemDB['gallery'] = $objGallery->renderGallery();
         }
 
         // create marker path

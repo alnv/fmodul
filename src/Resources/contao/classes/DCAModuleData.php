@@ -727,7 +727,6 @@ class DCAModuleData extends ViewContainer
         // Check whether the alias exists
         if ($objAlias->numRows > 1 && !$autoAlias) {
             throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-
         }
 
         // Add ID to alias

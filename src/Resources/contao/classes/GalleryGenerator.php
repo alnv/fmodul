@@ -60,12 +60,23 @@ class GalleryGenerator extends \Frontend{
     /**
      * @var
      */
+    protected $multiSRC;
+
+    /**
+     * @var
+     */
     protected $objFiles;
+
+    /**
+     * @var array
+     */
+    protected $arrData = array();
 
     /**
      * @param $multiSRC
      */
     public function getAllImages($multiSRC) {
+        $this->multiSRC = $multiSRC;
         $arrMultiSRC = $multiSRC ? deserialize($multiSRC) : array();
         if(!$this->objFiles && is_array($arrMultiSRC)) {
             $this->objFiles = \FilesModel::findMultipleByUuids($arrMultiSRC);
@@ -79,7 +90,6 @@ class GalleryGenerator extends \Frontend{
 
         $strGalleryTemplate = new \FrontendTemplate('ce_gallery');
         $strGalleryTemplate->class = 'ce_gallery';
-
         $objFiles = $this->objFiles;
         $images = array();
         $auxDate = array();
@@ -370,12 +380,35 @@ class GalleryGenerator extends \Frontend{
             $strTemplate = $this->galleryTpl;
         }
 
+        $this->setDataContainer();
+
         $objTemplate = new \FrontendTemplate($strTemplate);
-        $objTemplate->setData($images);
+        $objTemplate->setData($this->arrData);
         $objTemplate->body = $body;
         $strGalleryTemplate->images = $objTemplate->parse();
         $strGalleryTemplate->parse();
         return $strGalleryTemplate->parse();
+    }
+
+    /**
+     * set arrData
+     */
+    private function setDataContainer(){
+        // add arrData
+        $this->arrData = array(
+            'id' => $this->id,
+            'perRow' => $this->perRow,
+            'perPage' => $this->perPage,
+            'numberOfItems' => $this->numberOfItems,
+            'sortBy' => $this->sortBy,
+            'metaIgnore' => $this->metaIgnore,
+            'galleryTpl' => $this->galleryTpl,
+            'multiSRC' => $this->multiSRC,
+            'orderSRC' => $this->orderSRC,
+            'classes' => array('first', 'last'),
+            'typePrefix' => 'ce_',
+            'hl' => 'h1'
+        );
     }
 
 }

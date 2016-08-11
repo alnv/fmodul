@@ -83,8 +83,10 @@ $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Datum';
-$GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Bild';
+$GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Bild-Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Anlagen';
 $GLOBALS['TL_LANG']['tl_fmodules']['geoAddressPalette'] = 'Adressfeld';
 $GLOBALS['TL_LANG']['tl_fmodules']['geoPalette'] = 'Geo-Koordinaten';
 $GLOBALS['TL_LANG']['tl_fmodules']['markerPalette'] = 'Marker (Icon)';
+$GLOBALS['TL_LANG']['tl_fmodules']['imageSettingsPalette'] = 'Bild-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules']['galleryPalette'] = 'Galerie-Auswahl';

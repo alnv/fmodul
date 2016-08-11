@@ -25,6 +25,10 @@
         </figure>
     <?php endif; ?>
 
+    <?php if ($this->addGallery): ?>
+        <?= $this->gallery; ?>
+    <?php endif; ?>
+
     <?php if (count($this->detail) > 0): ?>
         <?php foreach ($this->detail as $i => $detailStr): ?>
             <div class="fmodule-detail-ce-wrapper<?= ($i < 1 ? ' first' : ''); ?><?= ($i == count($this->detail) - 1 ? ' last' : ''); ?><?= ($i % 2 ? ' even' : ' odd'); ?>">

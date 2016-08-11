@@ -85,3 +85,5 @@ $GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Enclosure';
 $GLOBALS['TL_LANG']['tl_fmodules']['geoAddressPalette'] = 'Address field';
 $GLOBALS['TL_LANG']['tl_fmodules']['geoPalette'] = 'Geo-coordinates';
 $GLOBALS['TL_LANG']['tl_fmodules']['markerPalette'] = 'Marker (Icon)';
+$GLOBALS['TL_LANG']['tl_fmodules']['imageSettingsPalette'] = 'Image-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules']['galleryPalette'] = 'Gallery';

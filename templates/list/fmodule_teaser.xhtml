@@ -1,4 +1,5 @@
 <article <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_teaser<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
+
         <header class="header">
                 <?php if ($this->href): ?>
                         <h3 class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></h3>
@@ -12,6 +13,7 @@
                         <p class="date"><time datetime="<?= $this->dateTime ?>"><?= $this->date ?><?php if ($this->time): ?>, <?= $this->time ?><?php endif; ?></time></p>
                 <?php endif; ?>
         </header>
+
         <?php if ($this->addImage): ?>
                 <figure class="image_container" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
                         <?php if ($this->href): ?>
@@ -26,14 +28,21 @@
                         <?php endif; ?>
                 </figure>
         <?php endif; ?>
+
+      <?php if ($this->addGallery): ?>
+         <?= $this->gallery; ?>
+      <?php endif; ?>
+
         <?php if ($this->description): ?>
                 <?= $this->description; ?>
         <?php endif; ?>
+
         <?php if (count($this->teaser) > 0): ?>
                 <?php foreach ($this->teaser as $teaserStr): ?>
                         <?= $teaserStr; ?>
                 <?php endforeach; ?>
         <?php endif; ?>
+
         <?php if ($this->enclosure): ?>
                 <div class="enclosure">
                         <?php foreach ($this->enclosure as $enclosure): ?>
@@ -41,7 +50,9 @@
                         <?php endforeach; ?>
                 </div>
         <?php endif; ?>
+
         <?php if ($this->href): ?>
                 <p class="more"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->more; ?></a></p>
         <?php endif; ?>
+
 </article>

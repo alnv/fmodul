@@ -13,11 +13,13 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['comments_legend']
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['date_legend'] = 'Datum und Uhrzeit';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['marker_legend'] = 'Icon-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['source_legend'] = 'Weiterleitungsziel';
-$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_legend'] = 'Bild-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_legend'] = 'Bild-Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['enclosure_legend'] = 'Anlagen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_legend'] = 'Geo-Koordinaten';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_address_legend'] = 'Adresse';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['address_legend'] = 'Adresse';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_settings_legend'] = 'Bild-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['gallery_legend'] = 'Galerie-Auswahl';
 
 // operations
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array( array('Einen Wrapper erstellen', 'Neues Wrapper Element erstellen'), array('%s erstellen', 'Neues Element erstellen.'));
@@ -215,6 +217,33 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['requireLogin'] = array('Login 
 // disableCaptcha
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['disableCaptcha'] = array('Sicherheitsfrage deaktivieren','Wählen Sie diese Option nur, wenn das Erstellen von Kommentaren auf authentifizierte Benutzer beschränkt ist.');
 
+// addGallery
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addGallery'] = array('Eine Galerie hinzufügen','Hier können Sie eine Galerie hinzufügen.');
+
+// orderSRC
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['orderSRC'] = array('Sortierreihenfolge','Die Sortierreihenfolge der Elemente.');
+
+// multiSRC
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['multiSRC'] = array('Quelldateien','Bitte wählen Sie eine oder mehr Dateien oder Ordner aus der Dateiübersicht. Wenn Sie einen Ordner auswählen, werden die darin enthaltenen Dateien automatisch eingefügt.');
+
+// sortBy
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['sortBy'] = array('Sortieren nach', 'Bitte wählen Sie die Sortierreihenfolge aus.');
+
+// metaIgnore
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['metaIgnore'] = array('Dateien ohne Metadaten ignorieren', 'Dateien ohne zur Seitensprache passenden Metadaten nicht anzeigen.');
+
+// perRow
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perRow'] = array('Vorschaubilder pro Reihe', 'Die Anzahl an Vorschaubildern pro Reihe.');
+
+// perRow
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['perPageGallery'] = array('Elemente pro Seite', 'Die Anzahl an Elementen pro Seite. Geben Sie 0 ein, um den automatischen Seitenumbruch zu deaktivieren.');
+
+// perRow
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['numberOfItems'] = array('Gesamtzahl der Bilder', 'Hier können Sie die Gesamtzahl der Bilder begrenzen. Geben Sie 0 ein, um alle anzuzeigen.');
+
+// galleryTpl
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['galleryTpl'] = array('Galerietemplate', 'Hier können Sie das Galerietemplate auswählen.');
+
 // Details
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['teaserData'] = 'Teaser';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['dateDetails'] = 'Datum und Uhrzeit';
@@ -234,3 +263,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['external'] = 'Externe URL';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_admin'] = 'Admin';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_author'] = 'Autor';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['notify_both'] = 'Beide';
+
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['custom'] = 'Individuelle Reihenfolge';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['name_asc'] = 'Dateiname (aufsteigend)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['name_desc'] = 'Dateiname (absteigend)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date_asc'] = 'Datum (aufsteigend)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['date_desc'] = 'Datum (absteigend)';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['random'] = 'Zufällige Reihenfolge';

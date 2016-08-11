@@ -42,8 +42,7 @@ class DCACreator
      */
     static public function getInstance()
     {
-        if(self::$instance == null)
-        {
+        if (self::$instance == null) {
             self::$instance = new self;
         }
         return self::$instance;
@@ -127,15 +126,14 @@ class DCACreator
             $module['addMandatoryHandler'] = $modulesDB->row()['addMandatoryHandler'];
             $module['mandatoryHandler'] = $modulesDB->row()['mandatoryHandler'];
             $id = $modulesDB->row()['id'];
-			
-			// backwards compatible
-			$orderBy = 'sorting';
-			if( !$db->fieldExists('sorting','tl_fmodules_filters') )
-			{
-				$orderBy = 'id';
-			}
-			
-            $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ? ORDER BY ".$orderBy."")->execute($id);
+
+            // backwards compatible
+            $orderBy = 'sorting';
+            if (!$db->fieldExists('sorting', 'tl_fmodules_filters')) {
+                $orderBy = 'id';
+            }
+
+            $fieldsDB = $db->prepare("SELECT * FROM tl_fmodules_filters WHERE pid = ? ORDER BY " . $orderBy . "")->execute($id);
             $fields = [];
 
             while ($fieldsDB->next()) {
@@ -183,10 +181,8 @@ class DCACreator
     public function getModuleByTableName($modulename)
     {
         $modules = $this->createModules();
-        foreach($modules as $module)
-        {
-            if($modulename == $module['tablename'])
-            {
+        foreach ($modules as $module) {
+            if ($modulename == $module['tablename']) {
                 return $module;
             }
         }
@@ -236,6 +232,7 @@ class DCACreator
         $GLOBALS['TL_DCA'][$childname] = array(
             'config' => $dcaData->setConfig($module['detailPage']),
             'list' => $dcaData->setList($module),
+            'select' => array('buttons_callback' => array(array('DCACreator', 'addAliasButton'))), // generate alias
             'palettes' => array('__selector__' => $palette['__selector__'], 'default' => $palette['default']),
             'subpalettes' => $palette['subPalettes'],
             'fields' => $dcaData->setFields($module)
@@ -248,6 +245,64 @@ class DCACreator
         $dcaData->createTable();
     }
 
+    /**
+     * @param $arrButtons
+     * @return string
+     */
+    public function addAliasButton($arrButtons)
+    {
+
+        if (Input::post('FORM_SUBMIT') == 'tl_select' && isset($_POST['alias'])) {
+
+            // init objects
+            $objSession = \Session::getInstance();
+            $objDataBase = \Database::getInstance();
+
+            $session = $objSession->getData();
+            $ids = $session['CURRENT']['IDS'];
+            $strTable = \Input::get('table');
+
+            if (!$strTable || !$objDataBase->tableExists($strTable)) {
+                return $arrButtons;
+            }
+
+            foreach ($ids as $id) {
+
+                $objData = $objDataBase->prepare('SELECT id, alias, title FROM ' . $strTable . ' WHERE id=?')->limit(1)->execute($id);
+
+                if (!$objData->count()) {
+                    continue;
+                }
+
+                $arrData = $objData->row();
+                $strAlias = \StringUtil::generateAlias($arrData['title']);
+
+                if ($strAlias == $arrData['alias']) {
+                    continue;
+                }
+
+                $objAlias = $objDataBase->prepare('SELECT id FROM ' . $strTable . ' WHERE alias = ?')->execute($strAlias);
+                if ($objAlias->numRows > 1) {
+                    $strAlias .= '-' . $arrData['id'];
+                }
+
+                // Initialize the version manager
+                $objVersions = new \Versions($strTable, $id);
+                $objVersions->initialize();
+
+                $objDataBase->prepare('UPDATE '.$strTable.' SET alias=? WHERE id=?')->execute($strAlias, $id);
+
+                $objVersions->create();
+
+            }
+
+            \Controller::redirect(\Controller::getReferer());
+
+        }
+
+        $arrButtons['alias'] = '<input type="submit" name="alias" id="alias" class="tl_submit" accesskey="a" value="' . specialchars($GLOBALS['TL_LANG']['MSC']['aliasSelected']) . '"> ';
+        return $arrButtons;
+    }
 
     /**
      * @param $tablename
@@ -284,10 +339,9 @@ class DCACreator
             $file->mkdir('files/fmodule/assets');
         }
 
-        foreach($allowedFormat as $format)
-        {
-            if (file_exists($path.'.'.$format)) {
-                return (version_compare(VERSION, '4.0', '>=') ? '../files/fmodule/assets/' : 'files/fmodule/assets/') . $tablename . '_icon'.'.'.$format;
+        foreach ($allowedFormat as $format) {
+            if (file_exists($path . '.' . $format)) {
+                return (version_compare(VERSION, '4.0', '>=') ? '../files/fmodule/assets/' : 'files/fmodule/assets/') . $tablename . '_icon' . '.' . $format;
             }
         }
 

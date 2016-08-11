@@ -160,6 +160,7 @@ class DCAHelper extends Backend
         if ($strTablePrefix == 'fm') {
             $strTableSuffix = substr($strTable, -4);
             $strTableName = $strTable;
+            
             if($strTableSuffix == 'data') {
                 $intStartPos = count($strTable) - 1;
                 $strTableName = substr($strTable, $intStartPos, -5);

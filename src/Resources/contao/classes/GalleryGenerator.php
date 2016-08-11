@@ -83,6 +83,9 @@ class GalleryGenerator extends \Frontend{
         }
     }
 
+    /**
+     * @return string
+     */
     public function renderGallery() {
 
         /** @var \PageModel $objPage */

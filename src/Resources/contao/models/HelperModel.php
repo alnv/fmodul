@@ -209,6 +209,7 @@ class HelperModel
         $isFulltextSearch = false;
         $searchSettings = array();
         QueryModel::$arrTaxonomiesFields = array(); // fix issue https://github.com/alnv/fmodul/issues/4#issuecomment-239238372
+        QueryModel::$strTaxonomyQuery = ''; // fix issue https://github.com/alnv/fmodul/issues/4#issuecomment-239238372
 
         foreach ($arrFilter as $field) {
 

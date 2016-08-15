@@ -1,19 +1,15 @@
 <?php namespace FModule;
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @package   F Modul
- * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   commercial
- * @copyright 2016 Alexander Naumov
- */
-
-use Contao\Environment;
-use Contao\Input;
-use Contao\FrontendTemplate;
+    /**
+     * Contao Open Source CMS
+     *
+     * Copyright (c) 2005-2016 Leo Feyer
+     *
+     * @package   F Modul
+     * @author    Alexander Naumov http://www.alexandernaumov.de
+     * @license   commercial
+     * @copyright 2016 Alexander Naumov
+     */
 
 /**
  * Class ModuleFormFilter
@@ -49,114 +45,199 @@ class ModuleFormFilter extends \Contao\Module
     {
 
         global $objPage;
-        $format = $objPage->dateFormat;
-        $pageTaxonomy = $objPage->page_taxonomy ? deserialize($objPage->page_taxonomy) : array();
-        $fields = deserialize($this->f_form_fields);
-        $listID = $this->f_list_field;
-        $formTemplate = $this->f_form_template;
-        $listModuleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ?')->execute($listID)->row();
-        $listModuleTable = $listModuleDB['f_select_module'];
-        $listModuleID = $listModuleDB['f_select_wrapper'];
-        $modeSettings = deserialize($listModuleDB['f_display_mode']);
-        $modeSettings = is_array($modeSettings) ? array_values($modeSettings) : array();
-        $activeOption = $this->f_active_options ? deserialize($this->f_active_options) : array();
 
-        if (!is_array($pageTaxonomy)) {
-            $pageTaxonomy = array();
+        $strFormTemplate = $this->f_form_template;
+        $strDateFormat = $objPage->dateFormat;
+        $arrPageTaxonomy = $this->getPageTaxonomy($objPage->page_taxonomy);
+        $arrFEFields = $this->f_form_fields ? deserialize($this->f_form_fields) : array();
+        $arrFields = array();
+        $arrWidgets = array();
+        $strWidget = '';
+        $arrActiveOptions = $this->f_active_options ? deserialize($this->f_active_options) : array();
+        $objAutoComplete = new AutoCompletion();
+
+
+        // model information
+        $strListViewID = $this->f_list_field;
+        $objModule = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ?')->execute($strListViewID)->row();
+        $strModuleTableName = $objModule['f_select_module'];
+        $strWrapperID = $objModule['f_select_wrapper'];
+
+        $arrModeSettings = deserialize($objModule['f_display_mode']);
+        $arrModeSettings = is_array($arrModeSettings) ? array_values($arrModeSettings) : array();
+
+        // set fields from db
+        if (is_array($arrFEFields)) {
+
+            $arrIDs = array();
+
+            foreach ($arrFEFields as $strID => $arrFEField) {
+                $arrIDs[] = $strID;
+            }
+
+            $strPlaceholder = implode(',', array_fill(0, count($arrIDs), '?'));
+            $objFields = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE id IN (' . $strPlaceholder . ')')->execute($arrIDs);
+            if ($objFields->count()) {
+                while ($objFields->next()) {
+                    $arrField = $objFields->row();
+                    $arrFields[$arrField['id']] = $arrField;
+                }
+            }
+
+            // merge field from fe and fields from db
+            $_arrFields = array();
+            foreach ($arrFEFields as $strID => $arrFEField) {
+
+                $_arrFields[$arrFEField['fieldID']] = $arrFEField;
+
+                foreach ($arrFields[$strID] as $strKey => $strValue) {
+
+                    $_arrFields[$arrFEField['fieldID']][$strKey] = $strValue;
+                }
+            }
+
+            // replace fields array
+            $arrFields = $_arrFields;
         }
 
-        if (!$listModuleTable && !$listModuleID) {
-            return;
-        }
 
-        $fieldsDB = $this->Database->prepare('SELECT * FROM ' . $listModuleTable . ' WHERE id = ?')->execute($listModuleID)->row();
-
-        if (!is_array($fields)) {
-            return;
-        }
-
-        $arrWidget = array();
-        $autoComplete = new AutoCompletion();
-
-        // generate action
-        $formAction = Environment::get('request');
-
-        // override action
+        // generate action attribute
+        $strAction = \Environment::get('request');
         if ($this->fm_redirect_source) {
             $type = $this->fm_redirect_source;
-
             if ($type == 'siteID') {
                 $id = $this->fm_redirect_jumpTo;
                 if ($id) {
                     $pageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($id)->row();
                 }
                 if (!empty($pageDB)) {
-                    $formAction = $this->generateFrontendUrl($pageDB);
+                    $strAction = $this->generateFrontendUrl($pageDB);
                 }
             }
 
             if ($type == 'siteURL') {
                 $url = $this->fm_redirect_url;
                 if ($url) {
-                    $formAction = $this->replaceInsertTags($url);
+                    $strAction = $this->replaceInsertTags($url);
                 }
             }
         }
 
-        foreach ($fields as $i => $field) {
+        // get field values
+        $arrActiveFields = array();
+        foreach ($arrFields as $strFieldID => $arrField) {
 
-            // get field id
-            $fieldID = $field['fieldID'];
+            $strValue = \Input::get($strFieldID) ? \Input::get($strFieldID) : '';
+            $arrFields[$strFieldID]['value'] = $strValue;
+            $arrFields[$strFieldID]['enable'] = false;
+            $blnIsValue = QueryModel::isValue($strValue);
 
             // set labels
-            $label = $this->setLabels($field);
-            $fields[$i]['title'] = $label[0];
-            $fields[$i]['description'] = $label[1];
+            $arrLabel = $this->setLabels($arrField);
+            $arrFields[$strFieldID]['title'] = $arrLabel[0];
+            $arrFields[$strFieldID]['description'] = $arrLabel[1];
 
-            // get filter value
-            $inputValue = Input::get($fieldID) ? Input::get($fieldID) : '';
+            // set enable
+            if ($blnIsValue) {
+                $arrFields[$strFieldID]['enable'] = true;
+            }
 
-            // get options from wrapper
-            if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
+            $arrActiveFields[] = $strFieldID;
 
-                $wrapperOptions = deserialize($fieldsDB[$fieldID]);
+        }
 
-                if ($field['dataFromTaxonomy'] == '1') {
-                    $wrapperOptions = $this->getDataFromTaxonomy($fieldsDB['select_taxonomy_' . $fieldID]);
+        $arrFilteredOptions = array();
+        // -> if
+
+        // get only active options
+        $arrQueryData = HelperModel::generateSQLQueryFromFilterArray($arrFields);
+        $strQuery = $arrQueryData['qStr'];
+        $qTextSearch = $arrQueryData['isFulltextSearch'] ? $arrQueryData['$qTextSearch'] : '';
+
+        //get text search results
+        $textSearchResults = array();
+        if ($qTextSearch) {
+            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $strModuleTableName, $strWrapperID, $arrQueryData['searchSettings']);
+        }
+
+        // get only published items
+        $qProtectedStr = ' AND published = "1"';
+
+        // get all items
+        $objList = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . '_data WHERE pid = ' . $strWrapperID . $qProtectedStr . $strQuery)->query();
+
+        // filtered options
+        $_arrFilteredOptions = array();
+
+        while ($objList->next()) {
+            $arrListItem = $objList->row();
+
+            if ($qTextSearch) {
+                if (!$textSearchResults[$arrListItem['id']]) {
+                    continue;
+                }
+            }
+
+            foreach ($arrActiveFields as $strActiveField) {
+                $arrFilteredOptions[$strActiveField] = array();
+                $arrValues = explode(',', $arrListItem[$strActiveField]);
+                $_arrFilteredOptions[$strActiveField][] = array_values($arrValues);
+            }
+
+        }
+
+        // pluck values
+        foreach ($_arrFilteredOptions as $strFieldID => $arrFilteredOption) {
+            $arrFilteredOption = call_user_func_array('array_merge', $arrFilteredOption);
+            $arrFilteredOption = array_unique($arrFilteredOption);
+            $arrFilteredOptions[$strFieldID] = $arrFilteredOption;
+        }
+
+        // if end <-
+
+        // set options
+        $objWrapper = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . ' WHERE id = ?')->execute($strWrapperID)->row();
+
+        foreach ($arrFields as $strFieldID => $arrField) {
+
+            if ($arrField['type'] == 'multi_choice' || $arrField['type'] == 'simple_choice') {
+
+                $arrWrapperOptions = deserialize($objWrapper[$strFieldID]);
+
+                if ($arrField['dataFromTaxonomy'] == '1') {
+                    $arrWrapperOptions = $this->getDataFromTaxonomy($objWrapper['select_taxonomy_' . $strFieldID]);
                 }
 
-                if ($field['reactToTaxonomy'] == '1') {
-                    $wrapperOptions = $this->getDataFromTaxonomyTags($field['reactToField'], $fieldsDB);
+                if ($arrField['reactToTaxonomy'] == '1') {
+                    $arrWrapperOptions = $this->getDataFromTaxonomyTags($arrField['reactToField'], $objWrapper);
                 }
 
-                if ($wrapperOptions['table'] && !in_array($fieldID, $activeOption)) {
-                    $fields[$i]['options'] = $this->getDataFromTable($fieldsDB[$fieldID]);
+                if ($arrWrapperOptions['table'] && !in_array($strFieldID, $arrActiveOptions)) {
+                    $arrFields[$strFieldID]['options'] = $this->getDataFromTable($objWrapper[$strFieldID]);
                 }
 
-                if (is_null($wrapperOptions['table']) && !in_array($fieldID, $activeOption)) {
-                    $fields[$i]['options'] = $wrapperOptions;
+                if (is_null($arrWrapperOptions['table']) && !in_array($strFieldID, $arrActiveOptions)) {
+                    $arrFields[$strFieldID]['options'] = $arrWrapperOptions;
                 }
             }
 
             // set countries
-            if ($field['fieldID'] == 'address_country') {
-                $countries = $this->getCountries();
-                $fields[$i]['options'] = DiverseFunction::conformOptionsArray($countries);
+            if ($arrField['fieldID'] == 'address_country') {
+                $arrCountries = $this->getCountries();
+                $arrFields[$strFieldID]['options'] = DiverseFunction::conformOptionsArray($arrCountries);
             }
 
             // get options
-            if ($fieldID && in_array($fieldID, $activeOption)) {
+            if ($strFieldID && in_array($strFieldID, $arrActiveOptions)) {
 
-                $results = $autoComplete->getAutoCompletion($listModuleTable, $listModuleID, $fieldID, $objPage->dateFormat, $objPage->timeFormat);
+                $results = $objAutoComplete->getAutoCompletion($strModuleTableName, $strWrapperID, $strFieldID, $objPage->dateFormat, $objPage->timeFormat);
 
                 // taxonomy tags
-                if ($field['reactToTaxonomy'] == '1') {
+                if ($arrField['reactToTaxonomy'] == '1') {
                     $tempResults = array();
-                    $arrValues = $this->getDataFromTaxonomyTags($field['reactToField'], $fieldsDB, true);
-                    foreach($results as $result)
-                    {
-                        if(!in_array($result['value'], $arrValues))
-                        {
+                    $arrValues = $this->getDataFromTaxonomyTags($arrField['reactToField'], $arrField, true);
+                    foreach ($results as $result) {
+                        if (!in_array($result['value'], $arrValues)) {
                             continue;
                         }
                         $tempResults[] = $result;
@@ -165,154 +246,185 @@ class ModuleFormFilter extends \Contao\Module
                     unset($tempResults);
                 }
 
-                $fields[$i]['options'] = is_array($results) ? $results : array();
+                $arrFields[$strFieldID]['options'] = is_array($results) ? $results : array();
             }
 
+            // if ->
+            if( is_array($arrFields[$strFieldID]['options']) ) {
+                $arrNewOptions = array();
+                foreach ($arrFields[$strFieldID]['options'] as $intIndex => $arrKeyValue) {
+
+                    if(is_array($arrFilteredOptions[$strFieldID]) && !in_array($arrKeyValue['value'], $arrFilteredOptions[$strFieldID])) {
+                        continue;
+                    }
+
+                    $arrNewOptions[] = $arrKeyValue;
+                }
+
+                $arrFields[$strFieldID]['options'] = $arrNewOptions;
+            }
+            // end if <-
+
             // set table name
-            $fields[$i]['tablename'] = !strpos($listModuleTable, '_data') ? $listModuleTable . '_data' : $listModuleTable;
+            $arrFields[$strFieldID]['tablename'] = !strpos($strModuleTableName, '_data') ? $strModuleTableName . '_data' : $strModuleTableName;
 
             // date field
-            if ($field['type'] == 'date_field') {
-                $format = $field['addTime'] ? $objPage->datimFormat : $format;
-                $fields[$i]['format'] = $format;
-                $fields[$i]['operator'] = $this->getOperator();
-                $fields[$i]['selected_operator'] = Input::get($fieldID . '_int');
+            if ($arrField['type'] == 'date_field') {
+                $format = $arrField['addTime'] ? $objPage->datimFormat : $strDateFormat;
+                $arrFields[$strFieldID]['format'] = $format;
+                $arrFields[$strFieldID]['operator'] = $this->getOperator();
+                $arrFields[$strFieldID]['selected_operator'] = \Input::get($strFieldID . '_int');
             }
 
             // search field (int)
-            if ($field['type'] == 'search_field' && $field['isInteger'] == '1') {
-                $fields[$i]['operator'] = $this->getOperator();
-                $fields[$i]['selected_operator'] = Input::get($fieldID . '_int');
+            if ($arrField['type'] == 'search_field' && $arrField['isInteger'] == '1') {
+                $arrFields[$strFieldID]['operator'] = $this->getOperator();
+                $arrFields[$strFieldID]['selected_operator'] = \Input::get($strFieldID . '_int');
             }
 
             // search field
-            if ($field['type'] == 'search_field') {
+            if ($arrField['type'] == 'search_field') {
                 //backwards compatible
-                $fields[$i]['auto_complete'] = $fields[$i]['options'];
+                $arrFields[$strFieldID]['auto_complete'] = $arrFields[$strFieldID]['options'];
             }
 
-            if ($field['type'] == 'toggle_field') {
-                $fields[$i]['showLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
-                $fields[$i]['ignoreLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
+            if ($arrField['type'] == 'toggle_field') {
+                $arrFields[$strFieldID]['showLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_show'];
+                $arrFields[$strFieldID]['ignoreLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_highlight_ignore'];
             }
 
-            $fields[$i]['wrapperID'] = $listModuleID;
-            $fields[$i]['selected'] = $inputValue;
+            $arrFields[$strFieldID]['wrapperID'] = $strWrapperID;
+            $arrFields[$strFieldID]['selected'] = $arrFields[$strFieldID]['value'];
 
             //
-            if ($field['type'] == 'search_field' && $field['isInteger'] == '1') {
-                if (!$fields[$i]['selected'] && !is_null(Input::get($field['fieldID']))) {
-                    $fields[$i]['selected'] = '';
+            if ($arrField['type'] == 'search_field' && $arrField['isInteger'] == '1') {
+                if (!$arrFields[$strFieldID]['selected'] && !is_null(\Input::get($arrField['fieldID']))) {
+                    $arrFields[$strFieldID]['selected'] = '';
                 }
             }
 
-            // ex
-            if ($field['type'] == 'toggle_field' && !$inputValue) {
-                $fields[$i]['selected'] = '';
+            //
+            if ($arrField['type'] == 'toggle_field' && !$arrFields[$strFieldID]['value']) {
+                $arrFields[$strFieldID]['selected'] = '';
             }
 
-            $tplName = $this->parseTemplateName($fields[$i]['used_templates']);
-
-            // ready for parsing
-            $arrWidget[$fieldID] = array(
-                'data' => $fields[$i],
-                'tpl' => $tplName
+            // set templates
+            $strTemplateName = $this->parseTemplateName($arrField['used_templates']);
+            $arrWidgets[$strFieldID] = array(
+                'data' => $arrFields[$strFieldID],
+                'tpl' => $strTemplateName
             );
+
         }
 
-        $strWidget = '';
+        foreach ($arrWidgets as $strFieldID => $arrWidget) {
 
-        // check if tpl is enabled and parse
-        foreach ($arrWidget as $fieldID => $widget) {
 
-            //
-            if ($widget['data']['type'] == 'wrapper_field' && $widget['data']['from_field'] && $widget['data']['to_field']) {
+            if ($arrWidget['data']['type'] == 'wrapper_field' && $arrWidget['data']['from_field'] && $arrWidget['data']['to_field']) {
 
-                if ($widget['data']['from_field'] == $widget['data']['to_field']) {
+                if ($arrWidget['data']['from_field'] == $arrWidget['data']['to_field']) {
 
-                    $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
-                    $widget['data']['title'] = $fromFieldData['title'];
-                    $widget['data']['description'] = $fromFieldData['description'];
+                    $fromFieldData = $arrWidget[$arrWidget['data']['from_field']]['data'];
+                    $arrWidget['data']['title'] = $fromFieldData['title'];
+                    $arrWidget['data']['description'] = $fromFieldData['description'];
 
                     $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
                     $fromFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_from_label'];
                     $fromFieldData['description'] = '';
-                    $fromTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['from_field']]['tpl']);
+                    $fromTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['from_field']]['tpl']);
                     $fromTemplateObj->setData($fromFieldData);
                     $from_template = $fromTemplateObj->parse();
-                    $widget['data']['from_template'] = $from_template;
+                    $arrWidget['data']['from_template'] = $from_template;
 
                     //to
-                    $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
+                    $toFieldData = $arrWidget[$arrWidget['data']['to_field']]['data'];
                     $toFieldData['fieldID'] = $toFieldData['fieldID'] . '_btw';
                     $toFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_to_label'];
                     $toFieldData['description'] = '';
-                    $selectValue = Input::get($toFieldData['fieldID']);
+                    $selectValue = \Input::get($toFieldData['fieldID']);
                     if (!is_null($selectValue) && !$selectValue && $toFieldData['type'] != 'date_field') {
                         $selectValue = '';
                     }
                     $toFieldData['selected'] = $selectValue;
                     $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
-                    $toTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['to_field']]['tpl']);
+                    $toTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['to_field']]['tpl']);
                     $toTemplateObj->setData($toFieldData);
                     $to_template = $toTemplateObj->parse();
-                    $widget['data']['to_template'] = $to_template;
+                    $arrWidget['data']['to_template'] = $to_template;
 
                 } else {
 
                     // generate from field tpl
-                    $fromFieldData = $arrWidget[$widget['data']['from_field']]['data'];
+                    $fromFieldData = $arrWidget[$arrWidget['data']['from_field']]['data'];
                     $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
-                    $fromTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['from_field']]['tpl']);
+                    $fromTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['from_field']]['tpl']);
                     $fromTemplateObj->setData($fromFieldData);
                     $from_template = $fromTemplateObj->parse();
-                    $widget['data']['from_template'] = $from_template;
+                    $arrWidget['data']['from_template'] = $from_template;
 
                     // generate to field tpl
-                    $toFieldData = $arrWidget[$widget['data']['to_field']]['data'];
+                    $toFieldData = $arrWidget[$arrWidget['data']['to_field']]['data'];
                     $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
-                    $toTemplateObj = new FrontendTemplate($arrWidget[$widget['data']['to_field']]['tpl']);
+                    $toTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['to_field']]['tpl']);
                     $toTemplateObj->setData($toFieldData);
                     $to_template = $toTemplateObj->parse();
-                    $widget['data']['to_template'] = $to_template;
+                    $arrWidget['data']['to_template'] = $to_template;
 
                 }
             }
 
             // sort out fixed field
-            if ($this->sortOutFixedField($fieldID, $modeSettings)) {
+            if ($this->sortOutFixedField($strFieldID, $arrModeSettings)) {
                 continue;
             }
 
-            //if not active
-            if (!$widget['data']['active']) {
-                continue;
-            }
-
-            //
-            if ($widget['data']['overwrite'] == '1') {
+            // disable inactive fields
+            if (!$arrWidget['data']['active']) {
                 continue;
             }
 
             //
-            if ($pageTaxonomy[$fieldID] && $pageTaxonomy[$fieldID]['set']['overwrite'] == '1') {
+            if ($arrWidget['data']['overwrite'] == '1') {
                 continue;
             }
 
-            $widgetTemplate = new FrontendTemplate($widget['tpl']);
-            $widgetTemplate->setData($widget['data']);
-            $strWidget .= $widgetTemplate->parse();
+            //
+            if ($arrPageTaxonomy[$strFieldID] && $arrPageTaxonomy[$strFieldID]['set']['overwrite'] == '1') {
+                continue;
+            }
+
+            $strWidgetTemplate = new \FrontendTemplate($arrWidget['tpl']);
+            $strWidgetTemplate->setData($arrWidget['data']);
+            $strWidget .= $strWidgetTemplate->parse();
+
         }
 
+
         $strResult = '';
-        $objTemplate = new FrontendTemplate($formTemplate);
+
+        $objTemplate = new \FrontendTemplate($strFormTemplate);
         $objTemplate->setData(array('widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit']));
+
         $strResult .= $objTemplate->parse();
-        $this->Template->action = $formAction;
+
+        $this->Template->action = $strAction;
         $this->Template->reset = $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'];
         $this->Template->cssID = $this->cssID;
         $this->Template->fields = $strResult;
+        
+    }
 
+    /**
+     * @param $strPageTaxonomy
+     * @return array|mixed|string
+     */
+    protected function getPageTaxonomy($strPageTaxonomy)
+    {
+        $arrPageTaxonomy = $strPageTaxonomy ? deserialize($strPageTaxonomy) : array();
+        if (is_string($arrPageTaxonomy)) {
+            $arrPageTaxonomy = array();
+        }
+        return $arrPageTaxonomy;
     }
 
     /**
@@ -399,14 +511,12 @@ class ModuleFormFilter extends \Contao\Module
     private function getDataFromTaxonomy($taxonomyID)
     {
         $arrOptions = array();
-        if(!$taxonomyID)
-        {
+        if (!$taxonomyID) {
             return $arrOptions;
         }
         $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? AND published = "1"')->execute($taxonomyID);
-        while($taxonomiesDB->next()) {
-            if(!$taxonomiesDB->alias)
-            {
+        while ($taxonomiesDB->next()) {
+            if (!$taxonomiesDB->alias) {
                 continue;
             }
             $arrOptions[] = array(
@@ -429,21 +539,18 @@ class ModuleFormFilter extends \Contao\Module
         $arrValues = array();
         $specieAlias = \Input::get($field);
 
-        if(!$field || !$specieAlias)
-        {
+        if (!$field || !$specieAlias) {
             return $arrOptions;
         }
 
         $specieID = isset($fieldsDB['select_taxonomy_' . $field]) ? $fieldsDB['select_taxonomy_' . $field] : '';
-        if(!$specieID)
-        {
+        if (!$specieID) {
             return $arrOptions;
         }
 
         $tagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($specieAlias, $specieID);
-        while($tagsDB->next()) {
-            if(!$tagsDB->alias)
-            {
+        while ($tagsDB->next()) {
+            if (!$tagsDB->alias) {
                 continue;
             }
             $arrValues[] = $tagsDB->alias;

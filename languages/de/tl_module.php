@@ -75,6 +75,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][1] = 'Bitte wähle
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][0] = 'Filtereinstellungen zurücksetzen erlauben';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Die Besucher dürfen die Filtereinstellungen zurücksetzen.';
 
+// fm_related_options
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Nur zusammenhängende Filter-Auswahl anzeigen.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Hier können Sie einstellen, dass die Filter-Auswahl ebenfalls gefiltert wird.';
+
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Kartenansicht aktivieren';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][1] = 'Hier können Sie die Kartenansicht aktivieren.';

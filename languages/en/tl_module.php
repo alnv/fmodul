@@ -75,6 +75,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][1] = 'Please selec
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][0] = 'Add reset button to form';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Allow to reset form filter in Frontend.';
 
+// fm_related_options
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Show only related options.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Here you can define related options for your select inputs.';
+
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Enable Map View';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][1] = 'Hereyou can enable google map view.';

@@ -147,54 +147,53 @@ class ModuleFormFilter extends \Contao\Module
         }
 
         $arrFilteredOptions = array();
-        // -> if
 
-        // get only active options
-        $arrQueryData = HelperModel::generateSQLQueryFromFilterArray($arrFields);
-        $strQuery = $arrQueryData['qStr'];
-        $qTextSearch = $arrQueryData['isFulltextSearch'] ? $arrQueryData['$qTextSearch'] : '';
+        if ($this->fm_related_options) {
 
-        //get text search results
-        $textSearchResults = array();
-        if ($qTextSearch) {
-            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $strModuleTableName, $strWrapperID, $arrQueryData['searchSettings']);
-        }
+            // get only active options
+            $arrQueryData = HelperModel::generateSQLQueryFromFilterArray($arrFields);
+            $strQuery = $arrQueryData['qStr'];
+            $qTextSearch = $arrQueryData['isFulltextSearch'] ? $arrQueryData['$qTextSearch'] : '';
 
-        // get only published items
-        $qProtectedStr = ' AND published = "1"';
-
-        // get all items
-        $objList = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . '_data WHERE pid = ' . $strWrapperID . $qProtectedStr . $strQuery)->query();
-
-        // filtered options
-        $_arrFilteredOptions = array();
-
-        while ($objList->next()) {
-            $arrListItem = $objList->row();
-
+            //get text search results
+            $textSearchResults = array();
             if ($qTextSearch) {
-                if (!$textSearchResults[$arrListItem['id']]) {
-                    continue;
+                $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $strModuleTableName, $strWrapperID, $arrQueryData['searchSettings']);
+            }
+
+            // get only published items
+            $qProtectedStr = ' AND published = "1"';
+
+            // get all items
+            $objList = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . '_data WHERE pid = ' . $strWrapperID . $qProtectedStr . $strQuery)->query();
+
+            // filtered options
+            $_arrFilteredOptions = array();
+
+            while ($objList->next()) {
+                $arrListItem = $objList->row();
+
+                if ($qTextSearch) {
+                    if (!$textSearchResults[$arrListItem['id']]) {
+                        continue;
+                    }
                 }
+
+                foreach ($arrActiveFields as $strActiveField) {
+                    $arrFilteredOptions[$strActiveField] = array();
+                    $arrValues = explode(',', $arrListItem[$strActiveField]);
+                    $_arrFilteredOptions[$strActiveField][] = array_values($arrValues);
+                }
+
             }
 
-            foreach ($arrActiveFields as $strActiveField) {
-                $arrFilteredOptions[$strActiveField] = array();
-                $arrValues = explode(',', $arrListItem[$strActiveField]);
-                $_arrFilteredOptions[$strActiveField][] = array_values($arrValues);
+            // pluck values
+            foreach ($_arrFilteredOptions as $strFieldID => $arrFilteredOption) {
+                $arrFilteredOption = call_user_func_array('array_merge', $arrFilteredOption);
+                $arrFilteredOption = array_unique($arrFilteredOption);
+                $arrFilteredOptions[$strFieldID] = $arrFilteredOption;
             }
-
         }
-
-        // pluck values
-        foreach ($_arrFilteredOptions as $strFieldID => $arrFilteredOption) {
-            $arrFilteredOption = call_user_func_array('array_merge', $arrFilteredOption);
-            $arrFilteredOption = array_unique($arrFilteredOption);
-            $arrFilteredOptions[$strFieldID] = $arrFilteredOption;
-        }
-
-        // if end <-
-
         // set options
         $objWrapper = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . ' WHERE id = ?')->execute($strWrapperID)->row();
 
@@ -248,13 +247,12 @@ class ModuleFormFilter extends \Contao\Module
 
                 $arrFields[$strFieldID]['options'] = is_array($results) ? $results : array();
             }
-
-            // if ->
-            if( is_array($arrFields[$strFieldID]['options']) ) {
+            
+            if ($this->fm_related_options && is_array($arrFields[$strFieldID]['options'])) {
                 $arrNewOptions = array();
                 foreach ($arrFields[$strFieldID]['options'] as $intIndex => $arrKeyValue) {
 
-                    if(is_array($arrFilteredOptions[$strFieldID]) && !in_array($arrKeyValue['value'], $arrFilteredOptions[$strFieldID])) {
+                    if (is_array($arrFilteredOptions[$strFieldID]) && !in_array($arrKeyValue['value'], $arrFilteredOptions[$strFieldID])) {
                         continue;
                     }
 
@@ -263,7 +261,6 @@ class ModuleFormFilter extends \Contao\Module
 
                 $arrFields[$strFieldID]['options'] = $arrNewOptions;
             }
-            // end if <-
 
             // set table name
             $arrFields[$strFieldID]['tablename'] = !strpos($strModuleTableName, '_data') ? $strModuleTableName . '_data' : $strModuleTableName;
@@ -411,7 +408,7 @@ class ModuleFormFilter extends \Contao\Module
         $this->Template->reset = $GLOBALS['TL_LANG']['MSC']['fm_ff_reset'];
         $this->Template->cssID = $this->cssID;
         $this->Template->fields = $strResult;
-        
+
     }
 
     /**

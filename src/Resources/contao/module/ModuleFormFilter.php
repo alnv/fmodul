@@ -66,6 +66,10 @@ class ModuleFormFilter extends \Contao\Module
         $arrModeSettings = deserialize($objModule['f_display_mode']);
         $arrModeSettings = is_array($arrModeSettings) ? array_values($arrModeSettings) : array();
 
+        if (!$strModuleTableName || !$strWrapperID) {
+            return;
+        }
+
         // set fields from db
         if (is_array($arrFEFields)) {
 
@@ -99,7 +103,6 @@ class ModuleFormFilter extends \Contao\Module
             // replace fields array
             $arrFields = $_arrFields;
         }
-
 
         // generate action attribute
         $strAction = \Environment::get('request');
@@ -321,20 +324,20 @@ class ModuleFormFilter extends \Contao\Module
 
                 if ($arrWidget['data']['from_field'] == $arrWidget['data']['to_field']) {
 
-                    $fromFieldData = $arrWidget[$arrWidget['data']['from_field']]['data'];
+                    $fromFieldData = $arrWidgets[$arrWidget['data']['from_field']]['data'];
                     $arrWidget['data']['title'] = $fromFieldData['title'];
                     $arrWidget['data']['description'] = $fromFieldData['description'];
 
                     $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
                     $fromFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_from_label'];
                     $fromFieldData['description'] = '';
-                    $fromTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['from_field']]['tpl']);
+                    $fromTemplateObj = new \FrontendTemplate($arrWidgets[$arrWidget['data']['from_field']]['tpl']);
                     $fromTemplateObj->setData($fromFieldData);
                     $from_template = $fromTemplateObj->parse();
                     $arrWidget['data']['from_template'] = $from_template;
 
                     //to
-                    $toFieldData = $arrWidget[$arrWidget['data']['to_field']]['data'];
+                    $toFieldData = $arrWidgets[$arrWidget['data']['to_field']]['data'];
                     $toFieldData['fieldID'] = $toFieldData['fieldID'] . '_btw';
                     $toFieldData['title'] = $GLOBALS['TL_LANG']['MSC']['fm_to_label'];
                     $toFieldData['description'] = '';
@@ -344,7 +347,7 @@ class ModuleFormFilter extends \Contao\Module
                     }
                     $toFieldData['selected'] = $selectValue;
                     $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
-                    $toTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['to_field']]['tpl']);
+                    $toTemplateObj = new \FrontendTemplate($arrWidgets[$arrWidget['data']['to_field']]['tpl']);
                     $toTemplateObj->setData($toFieldData);
                     $to_template = $toTemplateObj->parse();
                     $arrWidget['data']['to_template'] = $to_template;
@@ -352,17 +355,17 @@ class ModuleFormFilter extends \Contao\Module
                 } else {
 
                     // generate from field tpl
-                    $fromFieldData = $arrWidget[$arrWidget['data']['from_field']]['data'];
+                    $fromFieldData = $arrWidgets[$arrWidget['data']['from_field']]['data'];
                     $fromFieldData['operator'] = array('gte' => $GLOBALS['TL_LANG']['MSC']['f_gte']);
-                    $fromTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['from_field']]['tpl']);
+                    $fromTemplateObj = new \FrontendTemplate($arrWidgets[$arrWidget['data']['from_field']]['tpl']);
                     $fromTemplateObj->setData($fromFieldData);
                     $from_template = $fromTemplateObj->parse();
                     $arrWidget['data']['from_template'] = $from_template;
 
                     // generate to field tpl
-                    $toFieldData = $arrWidget[$arrWidget['data']['to_field']]['data'];
+                    $toFieldData = $arrWidgets[$arrWidget['data']['to_field']]['data'];
                     $toFieldData['operator'] = array('lte' => $GLOBALS['TL_LANG']['MSC']['f_lte']);
-                    $toTemplateObj = new \FrontendTemplate($arrWidget[$arrWidget['data']['to_field']]['tpl']);
+                    $toTemplateObj = new \FrontendTemplate($arrWidgets[$arrWidget['data']['to_field']]['tpl']);
                     $toTemplateObj->setData($toFieldData);
                     $to_template = $toTemplateObj->parse();
                     $arrWidget['data']['to_template'] = $to_template;

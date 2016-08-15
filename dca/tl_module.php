@@ -17,7 +17,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 
 // module palette
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type,f_list_field,f_form_fields,f_reset_button,f_active_options,fm_related_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend:hide},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{defaultValues_legend:hide},fm_defaultValues;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_taxonomy'] = '{title_legend},name,headline,type;{taxonomy_legend},fm_taxonomy,f_select_module,f_select_wrapper;{fm_redirect_legend:hide},fm_taxonomy_page;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
@@ -188,7 +188,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'],
     'inputType' => 'checkbox',
     'exclude' => true,
-    'eval' => array('tl_class' => 'clr m12'),
+    'eval' => array('tl_class' => 'clr'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_related_options'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'],
+    'inputType' => 'checkbox',
+    'exclude' => true,
+    'eval' => array('tl_class' => 'clr'),
     'sql' => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options'] = array
@@ -197,7 +204,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options'] = array
     'exclude' => true,
     'inputType' => 'checkbox',
     'options' => array(),
-    'eval' => array('multiple' => true),
+    'eval' => array('multiple' => true, 'tl_class' => 'clr'),
     'sql' => "blob NULL"
 );
 // maps

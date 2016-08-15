@@ -71,6 +71,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'attributes' => 'onclick="Backend.getScrollOffset()"',
                 'button_callback' => array('tl_fmodules', 'manageFeeds')
             ),
+            /*
             'all' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -78,6 +79,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             )
+            */
         ),
         'operations' => array(
 
@@ -135,6 +137,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'eval' => array('mandatory' => true, 'rgxp' => 'extnd', 'unique' => true, 'doNotCopy' => true, 'spaceToUnderscore' => true, 'maxlength' => 64, 'tl_class' => 'w50'),
             'sql' => "varchar(128) COLLATE utf8_bin NOT NULL default ''",
             'save_callback' => array(
+                array('tl_fmodules', 'parseTableName'),
                 array('tl_fmodules', 'generateTableName'),
                 array('tl_fmodules', 'updateTable')
             )
@@ -437,6 +440,13 @@ class tl_fmodules extends \Backend
         return '<a href="http://fmodul.alexandernaumov.de/kaufen.html" target="_blank" title="' . specialchars($GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1]) . '" class="header_store">' . $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] . '</a>';
     }
 
+    /**
+     * @param $varValue
+     * @return mixed
+     */
+    public function parseTableName($varValue) {
+        return str_replace('-', '_', $varValue);
+    }
 
     /**
      * @param $varValue
@@ -445,7 +455,6 @@ class tl_fmodules extends \Backend
      */
     public function generateTableName($varValue)
     {
-
         if (substr($varValue, 0, 3) == 'fm_') {
             return $varValue;
         }

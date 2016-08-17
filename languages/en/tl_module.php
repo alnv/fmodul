@@ -64,8 +64,8 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][1] = 'Please select your detail view template.';
 
 // f_form_fields
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Search form';
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Here you can edit search form.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Form fields';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Here you can edit form fields.';
 
 // f_form_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][0] = 'Search form template';

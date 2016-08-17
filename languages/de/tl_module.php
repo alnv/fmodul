@@ -64,8 +64,8 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][0] = 'Template a
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][1] = 'Bitte wählen Sie ein Template für die Detailansicht aus.';
 
 // f_form_fields
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Filter-Formular';
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Hier können Sie den Filter-Formular bearbeiten.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Formular Felder';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Hier können Sie die Formular Felder bearbeiten.';
 
 // f_form_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][0] = 'Template auswählen';
@@ -76,8 +76,8 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][0] = 'Filtereinstel
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Die Besucher dürfen die Filtereinstellungen zurücksetzen.';
 
 // fm_related_options
-$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Nur zusammenhängende Filter-Auswahl anzeigen.';
-$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Hier können Sie einstellen, dass die Filter-Auswahl ebenfalls gefiltert wird.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Nur zusammenhängende Werte anzeigen.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Hier können Sie einstellen, dass die Werte ebenfalls gefiltert wird.';
 
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Kartenansicht aktivieren';

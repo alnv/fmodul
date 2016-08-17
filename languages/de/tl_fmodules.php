@@ -21,11 +21,12 @@ $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'Feeds für die Backend Module 
 
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Einstellung';
-$GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Backend Paletten';
+$GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Paletten';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Zugriffsschutz';
-$GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Backend Sortierung';
-$GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Backend Navigation';
+$GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Sortierung';
+$GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Navigation';
 $GLOBALS['TL_LANG']['tl_fmodules']['mandatory_legend'] = 'Pflichtfelder';
+$GLOBALS['TL_LANG']['tl_fmodules']['permission_legend'] = 'Berechtigungen';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Modulname';
@@ -70,6 +71,12 @@ $GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'][1] = 'Sie können Pfli
 $GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][0] = 'Pflichtfelder';
 $GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][1] = 'Bitte wählen Sie Ihre Pflichtfelder aus.';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'][0] = 'Operation-Buttons deaktivieren';
+$GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'][1] = 'Hier können Sie die Operation-Buttons deaktivieren.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'][0] = 'Operation-Buttons auswählen';
+$GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'][1] = 'Bitte wählen Sie ein oder mehrere Operation-Buttons aus, welche Sie deaktivieren wollen.';
+
 $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Der Tabellenname muss mit "fm_" beginnen.';
 
 //referece
@@ -81,6 +88,9 @@ $GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Datum (m)';
 $GLOBALS['TL_LANG']['tl_fmodules']['date.9'] = 'Datum (Y)';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['list'] = 'Listenansicht';
+$GLOBALS['TL_LANG']['tl_fmodules']['detail'] = 'Detailansicht';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Bild-Auswahl';

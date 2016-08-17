@@ -105,11 +105,12 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         )
     ),
     'palettes' => array(
-        '__selector__' => array('protected', 'addMandatoryHandler'),
-        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy;{mandatory_legend},addMandatoryHandler;'
+        '__selector__' => array('protected', 'addMandatoryHandler', 'disableOperationButtons'),
+        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy;{mandatory_legend},addMandatoryHandler;{permission_legend},disableOperationButtons'
     ),
     'subpalettes' => array(
-        'addMandatoryHandler' => 'mandatoryHandler'
+        'addMandatoryHandler' => 'mandatoryHandler',
+        'disableOperationButtons' => 'operationButtons'
     ),
     'fields' => array
     (
@@ -215,6 +216,22 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'options_callback' => array('tl_fmodules', 'getDataProperties'),
             'eval' => array('multiple' => true),
             'sql' => "blob NULL"
+        ),
+        'disableOperationButtons' => array (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('submitOnChange' => true),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'operationButtons' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
+            'options' => array('list', 'detail'),
+            'eval' => array('multiple' => true, 'csv'=>','),
+            'sql' => "varchar(512) NOT NULL default ''"
         )
     )
 );

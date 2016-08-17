@@ -88,7 +88,6 @@ $GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Datum (m)';
 $GLOBALS['TL_LANG']['tl_fmodules']['date.9'] = 'Datum (Y)';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Aufsteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';
-
 $GLOBALS['TL_LANG']['tl_fmodules']['list'] = 'Listenansicht';
 $GLOBALS['TL_LANG']['tl_fmodules']['detail'] = 'Detailansicht';
 

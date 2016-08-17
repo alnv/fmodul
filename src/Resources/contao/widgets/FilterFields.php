@@ -134,7 +134,7 @@ class FilterFields extends Widget
                     '<input type="hidden" value="' . $value['dataFromTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][dataFromTaxonomy]">' .
                     '<input type="hidden" value="' . $value['reactToTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][reactToTaxonomy]">' .
                     '<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">' .
-                    '<h3 class="fm_field_block_headline" onclick="">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
+                    '<h3 class="fm_field_block_headline" onclick="fmToggleFieldBlock(this)">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
                     '<div class="fm_field_block_item">' .
                         '<div class="w50">' .
                             '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][0] . '</label></h3>' .
@@ -166,11 +166,29 @@ class FilterFields extends Widget
 
         }
 
-        $widgetTemplate = '<div class="tl_optionwizard tl_filter_fields" id="ctrl_' . $this->strId . '"><div class="sortable" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
+        $strWidget = '<div class="tl_optionwizard tl_filter_fields" id="ctrl_' . $this->strId . '"><div class="sortable" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
+
+        $strJS =
+            '<script>
+               function fmToggleFieldBlock(e) {   
+                  if(typeof $ != "undefined") {
+                     var tab = $(e);
+                     var block = tab.getNext();
+                     var isCollapsed = typeof tab.hasClass("collapsed") != "boolean" ? tab.hasClass("collapsed")[0] : tab.hasClass("collapsed");                   
+                     if(isCollapsed) {
+                        tab.removeClass("collapsed");
+                        block.removeClass("collapsed");
+                     }else{
+                        tab.addClass("collapsed");
+                        block.addClass("collapsed");
+                     }                 
+                  }                   
+               } 
+            </script>';
 
         \Cache::set('tabindex', $tabindex);
 
-        return $widgetTemplate;
+        return $strWidget.$strJS;
 
     }
 }

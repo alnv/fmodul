@@ -48,8 +48,12 @@
     color: #77ac45;
     display: inline-block;
     border: 1px solid #ddd;
-    min-width: 250px;
+    min-width: 300px;
     font-weight: 400;
+}
+
+.tl_filter_fields h3.fm_field_block_headline:hover{
+    background-color: #F5F5F5;
 }
 
 .tl_filter_fields .fm_field_block_item{
@@ -62,7 +66,7 @@
 
 .tl_filter_fields h3.fm_field_block_headline.collapsed{
     background: url("folPlus.gif") left center no-repeat;
-    background-color: #fafafa;
+    background-color: #F5F5F5;
 }
 
 .tl_filter_fields .fm_field_block_item.collapsed{

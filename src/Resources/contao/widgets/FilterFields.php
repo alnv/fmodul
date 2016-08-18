@@ -105,6 +105,14 @@ class FilterFields extends Widget
 
             }
 
+            // get all field names
+            $strFieldOptions = '<option value="">-</option>';
+            if( is_array($this->filterFields) && ( $value['type'] == 'multi_choice' || $value['type'] == 'simple_choice' ) ) {
+                foreach ($this->filterFields as $arrField) {
+                    $strFieldOptions .= '<option value="' . $arrField['fieldID'] . '" ' . ($arrField['fieldID'] == $value['dependsOn'] ? 'selected' : '') .' >' . $arrField['title'] . '</option>';
+                }
+            }
+
             $strAppearance = $appearance != '' ? serialize($appearance) : '';
             $dragBtnTemplate = '';
 
@@ -151,6 +159,20 @@ class FilterFields extends Widget
                             '<input type="text" tabindex="' . $tabindex++ . '" value="' . $value['cssClass'] . '" name="' . $this->strName . '[' . $key . '][cssClass]" id="ctrl_' . $this->strId . '[' . $key . '][cssClass]" class="tl_text"/>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_class'][1] . '</p>' .
                         '</div>' .
+                        ( $value['type'] == 'multi_choice' || $value['type'] == 'simple_choice' ?
+                        '<div  class="w50">' .
+                            '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][0] . '</label></h3>' .
+                            '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][dependsOn]" id="ctrl_' . $this->strId . '[' . $key . '][dependsOn]" class="tl_select" >'.$strFieldOptions.'</select>' .
+                            '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][1] . '</p>' .
+                        '</div>' : '' ).
+                        ( $value['type'] == 'multi_choice' || $value['tye'] == 'simple_choice' ?
+                        '<div class="clr">' .
+                            '<div class="tl_checkbox_single_container">' .
+                                '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][changeOnSubmit]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]" class="tl_checkbox" ' . ($value['changeOnSubmit'] ? 'checked="checked"' : '') . ' />' .
+                                ' <label for="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_changeOnSubmit'][0] . '</label>' .
+                                '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_changeOnSubmit'][1] . '</p>' .
+                            '</div>' .
+                        '</div>' : '').
                         '<div class="clr">' .
                             '<div class="tl_checkbox_single_container">' .
                             '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][active]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][active]" class="tl_checkbox" ' . ($value['active'] ? 'checked="checked"' : '') . ' />' .

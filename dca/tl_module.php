@@ -865,7 +865,9 @@ class tl_module_fmodule extends tl_module
                     'templates' => array(),
                     'appearance' => FieldAppearance::getAppearance()[$filterFieldsDB->type],
                     'used_templates' => '',
-                    'used_appearance' => ''
+                    'used_appearance' => '',
+                    'changeOnSubmit' => '',
+                    'dependsOn' => ''
                 );
             }
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields']['eval']['filterFields'] = $filterFields;

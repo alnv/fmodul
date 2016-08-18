@@ -12,6 +12,9 @@ $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Confirmatio
 $GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Default values-Settings';
 $GLOBALS['TL_LANG']['tl_module']['taxonomy_url_legend'] = 'Taxonomy URL-Settings';
 $GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomy-Settings';
+$GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'List view-Settings';
+$GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Form fields';
+$GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Form-Settings';
 
 //fields
 

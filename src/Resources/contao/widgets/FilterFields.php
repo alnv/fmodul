@@ -134,8 +134,8 @@ class FilterFields extends Widget
                     '<input type="hidden" value="' . $value['dataFromTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][dataFromTaxonomy]">' .
                     '<input type="hidden" value="' . $value['reactToTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][reactToTaxonomy]">' .
                     '<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">' .
-                    '<h3 class="fm_field_block_headline" onclick="fmToggleFieldBlock(this)">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
-                    '<div class="fm_field_block_item">' .
+                    '<h3 class="fm_field_block_headline collapsed" onclick="fmToggleFieldBlock(this)">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
+                    '<div class="fm_field_block_item collapsed">' .
                         '<div class="w50">' .
                             '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][0] . '</label></h3>' .
                             '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_appearance]" id="ctrl_' . $this->strId . '[' . $key . '][appearance]" class="tl_select" >' . $selectOptionsTemplate . '</select>' .
@@ -154,7 +154,7 @@ class FilterFields extends Widget
                         '<div class="clr">' .
                             '<div class="tl_checkbox_single_container">' .
                             '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][active]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][active]" class="tl_checkbox" ' . ($value['active'] ? 'checked="checked"' : '') . ' />' .
-                            '<label for="ctrl_' . $this->strId . '[' . $key . '][active]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'][0] . '</label>' .
+                            ' <label for="ctrl_' . $this->strId . '[' . $key . '][active]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'][0] . '</label>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'][1] . '</p>' .
                             '</div>' .
                         '</div>' .

@@ -1,4 +1,6 @@
 <?= $this->widgets; ?>
-<div class="widget-submit form-widget">
-    <input type="submit" class="submit" value="<?= $this->filter; ?>"/>
-</div>
+<?php if(!$this->enableSubmit): ?>
+    <div class="widget-submit form-widget">
+        <input type="submit" class="submit" value="<?= $this->filter; ?>"/>
+    </div>
+<?php endif; ?>

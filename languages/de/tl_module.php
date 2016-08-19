@@ -15,6 +15,7 @@ $GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomie-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'Listenansicht-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Formular Felder';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Formular-Einstellungen';
+
 // fields
 
 // f_select_module
@@ -78,8 +79,16 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][0] = 'Filtereinstel
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Die Besucher dürfen die Filtereinstellungen zurücksetzen.';
 
 // fm_related_options
-$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Nur zusammenhängende Werte anzeigen.';
-$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Hier können Sie einstellen, dass die Formular Werte auch gefiltert werden. Die Autovervollständigung wird damit irrelevant.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Nur zusammenhängende Werte anzeigen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Hier können Sie einstellen, dass die Formular Werte auch gefiltert werden.';
+
+// fm_related_start_point
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][0] = 'Startpunkt aktivieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][1] = 'Der erste Feld zeigt immer alle Optionen an.';
+
+// fm_disable_submit
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][0] = 'Absende-Schaltfläche entfernen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][1] = 'Hier können Sie die Absende-Schaltfläche aus dem Formular entfernen.';
 
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Kartenansicht aktivieren';

@@ -82,6 +82,14 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Allow to rese
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Show only related options.';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Here you can define related options for your select inputs.';
 
+// fm_related_start_point
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][0] = 'Enable start point';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][1] = 'First field show always all options.';
+
+// fm_disable_submit
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][0] = 'disable submit button';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][1] = 'Here you can disable submit button from form.';
+
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Enable Map View';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][1] = 'Hereyou can enable google map view.';

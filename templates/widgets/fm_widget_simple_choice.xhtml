@@ -5,7 +5,7 @@
         <legend><?= $this->title; ?></legend>
         <?php foreach ($this->options as $index => $option): ?>
                 <span class="radio_item">
-                    <input type="radio" id="id_<?= $this->fieldID; ?>_<?= $index; ?>" name="<?= $this->fieldID; ?>" value="<?= $option['value']; ?>" class="radio" <?= (($this->selected == $option['value'] ? 'checked' : '')) ?> >
+                    <input type="radio" id="id_<?= $this->fieldID; ?>_<?= $index; ?>" name="<?= $this->fieldID; ?>" value="<?= $option['value']; ?>" <?php if($this->changeOnSubmit):?> onchange="this.form.submit()" <?php endif; ?> class="radio" <?= (($this->selected == $option['value'] ? 'checked' : '')) ?> />
                     <label for="id_<?= $this->fieldID; ?>_<?= $index; ?>"><?= $option['label']; ?></label>
                 </span>
         <?php endforeach; ?>
@@ -17,11 +17,11 @@
     <label for="id_<?= $this->fieldID; ?>" class="widget-label"><?= $this->title; ?></label>
     <?php endif; ?>
 
-    <select id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>">
-        <option value=""><?= $this->title; ?></option>
-        <?php foreach ($this->options as $option): ?>
-        <option value="<?= $option['value']; ?>" <?= (($this->selected == $option['value'] ? 'selected' : '')) ?> ><?= $option['label']; ?></option>
-        <?php endforeach; ?>
+    <select id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>" <?php if($this->changeOnSubmit):?> onchange="this.form.submit()" <?php endif; ?>>
+    <option value=""><?= $this->title; ?></option>
+    <?php foreach ($this->options as $option): ?>
+    <option value="<?= $option['value']; ?>" <?= (($this->selected == $option['value'] ? 'selected' : '')) ?> ><?= $option['label']; ?></option>
+    <?php endforeach; ?>
     </select>
 
     <?php endif; ?>

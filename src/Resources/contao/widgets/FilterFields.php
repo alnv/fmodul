@@ -165,7 +165,7 @@ class FilterFields extends Widget
                             '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][dependsOn]" id="ctrl_' . $this->strId . '[' . $key . '][dependsOn]" class="tl_select" >'.$strFieldOptions.'</select>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][1] . '</p>' .
                         '</div>' : '' ).
-                        ( $value['type'] == 'multi_choice' || $value['tye'] == 'simple_choice' ?
+                        ( $value['type'] == 'multi_choice' || $value['type'] == 'simple_choice' ?
                         '<div class="clr">' .
                             '<div class="tl_checkbox_single_container">' .
                                 '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][changeOnSubmit]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]" class="tl_checkbox" ' . ($value['changeOnSubmit'] ? 'checked="checked"' : '') . ' />' .

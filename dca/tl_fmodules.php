@@ -261,7 +261,7 @@ class tl_fmodules extends \Backend
 
         $dataContainer = \FModule\ViewContainer::getInstance();
         $arrFields = $dataContainer->dcaDataFields();
-        $noNotSet = array('id', 'pid', 'tstamp', 'alias', 'author', 'source', 'url', 'jumpTo', 'target', 'protected', 'groups', 'guests', 'cssID', 'published');
+        $noNotSet = array('id', 'pid', 'tstamp', 'alias', 'author', 'size', 'source', 'url', 'jumpTo', 'target', 'protected', 'groups', 'guests', 'cssID', 'published');
 
         if(is_array($arrFields))
         {

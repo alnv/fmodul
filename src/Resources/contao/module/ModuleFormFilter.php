@@ -92,10 +92,15 @@ class ModuleFormFilter extends \Contao\Module
             $_arrFields = array();
             foreach ($arrFEFields as $strID => $arrFEField) {
 
+                // do not display if field has dependency on other field
+                if($arrFEField['dependsOn']) {
+                    if(!\Input::get($arrFEField['dependsOn'])) {
+                        continue;
+                    }
+                }
+
                 $_arrFields[$arrFEField['fieldID']] = $arrFEField;
-
                 foreach ($arrFields[$strID] as $strKey => $strValue) {
-
                     $_arrFields[$arrFEField['fieldID']][$strKey] = $strValue;
                 }
             }
@@ -128,6 +133,7 @@ class ModuleFormFilter extends \Contao\Module
 
         // get field values
         $arrActiveFields = array();
+        $blnStartPoint = true;
         foreach ($arrFields as $strFieldID => $arrField) {
 
             $strValue = \Input::get($strFieldID) ? \Input::get($strFieldID) : '';
@@ -145,10 +151,16 @@ class ModuleFormFilter extends \Contao\Module
                 $arrFields[$strFieldID]['enable'] = true;
             }
 
-            $arrActiveFields[] = $strFieldID;
+            // start point
+            if($this->fm_related_start_point && $blnStartPoint) {
+                $blnStartPoint = false;
+                continue;
+            }
 
+            $arrActiveFields[] = $strFieldID;
         }
 
+        unset($blnStartPoint);
         $arrFilteredOptions = array();
 
         if ($this->fm_related_options) {
@@ -174,6 +186,7 @@ class ModuleFormFilter extends \Contao\Module
             $_arrFilteredOptions = array();
 
             while ($objList->next()) {
+
                 $arrListItem = $objList->row();
 
                 if ($qTextSearch) {
@@ -197,6 +210,7 @@ class ModuleFormFilter extends \Contao\Module
                 $arrFilteredOptions[$strFieldID] = $arrFilteredOption;
             }
         }
+
         // set options
         $objWrapper = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . ' WHERE id = ?')->execute($strWrapperID)->row();
 
@@ -252,7 +266,9 @@ class ModuleFormFilter extends \Contao\Module
             }
             
             if ($this->fm_related_options && is_array($arrFields[$strFieldID]['options'])) {
+
                 $arrNewOptions = array();
+
                 foreach ($arrFields[$strFieldID]['options'] as $intIndex => $arrKeyValue) {
 
                     if (is_array($arrFilteredOptions[$strFieldID]) && !in_array($arrKeyValue['value'], $arrFilteredOptions[$strFieldID])) {
@@ -318,7 +334,6 @@ class ModuleFormFilter extends \Contao\Module
         }
 
         foreach ($arrWidgets as $strFieldID => $arrWidget) {
-
 
             if ($arrWidget['data']['type'] == 'wrapper_field' && $arrWidget['data']['from_field'] && $arrWidget['data']['to_field']) {
 
@@ -403,7 +418,7 @@ class ModuleFormFilter extends \Contao\Module
         $strResult = '';
 
         $objTemplate = new \FrontendTemplate($strFormTemplate);
-        $objTemplate->setData(array('widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit']));
+        $objTemplate->setData(array('widgets' => $strWidget, 'filter' => $GLOBALS['TL_LANG']['MSC']['widget_submit'], 'enableSubmit' => $this->fm_disable_submit));
 
         $strResult .= $objTemplate->parse();
 

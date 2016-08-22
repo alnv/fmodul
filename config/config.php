@@ -68,11 +68,17 @@ $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('FModule', 'createUserGroupD
 $GLOBALS['TL_HOOKS']['autoComplete'][] = array('FModule', 'getAutoCompleteAjax');
 $GLOBALS['TL_HOOKS']['removeOldFeeds'][] = array('FModule', 'purgeOldFeeds');
 $GLOBALS['TL_HOOKS']['generateXmlFiles'][] = array('FModule', 'generateFeeds');
-$GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('FModuleTranslation', 'translateUrlParameters');
 $GLOBALS['TL_HOOKS']['getPageIdFromUrl'][] = array('CleanUrls', 'getPageIdFromUrlStr');
+
+// change language module hooks
+$GLOBALS['TL_HOOKS']['changelanguageNavigation'][] = array('FModuleTranslation', 'translateUrlParameters'); // v3
+$GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('FModuleTranslation', 'translateUrlParametersBackwardsCompatible'); // backwards compatibility
 
 // InsertTags
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModuleInsertTags', 'setHooks');
+
+
+
 
 // Ajax
 $GLOBALS['TL_MOOTOOLS'][] =

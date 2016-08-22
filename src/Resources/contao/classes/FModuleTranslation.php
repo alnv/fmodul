@@ -75,7 +75,7 @@ class FModuleTranslation extends \Frontend
      * @param $strLanguage
      * @return mixed
      */
-    public function translateUrlParametersBackwardsCompatibility($arrGet, $strLanguage)
+    public function translateUrlParametersBackwardsCompatible($arrGet, $strLanguage)
     {
         global $objPage;
 

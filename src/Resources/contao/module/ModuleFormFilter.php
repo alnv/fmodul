@@ -134,7 +134,12 @@ class ModuleFormFilter extends \Contao\Module
         // get field values
         $arrActiveFields = array();
         $blnStartPoint = true;
+        $arrNotRelateAbleFields = array('orderBy', 'sorting_fields', 'pagination');
         foreach ($arrFields as $strFieldID => $arrField) {
+
+            if(in_array($arrField['fieldID'], $arrNotRelateAbleFields)) {
+                continue;
+            }
 
             $strValue = \Input::get($strFieldID) ? \Input::get($strFieldID) : '';
             $arrFields[$strFieldID]['value'] = $strValue;
@@ -162,7 +167,6 @@ class ModuleFormFilter extends \Contao\Module
 
         unset($blnStartPoint);
         $arrFilteredOptions = array();
-
         if ($this->fm_related_options) {
 
             // get only active options
@@ -218,7 +222,7 @@ class ModuleFormFilter extends \Contao\Module
 
             if ($arrField['type'] == 'multi_choice' || $arrField['type'] == 'simple_choice') {
 
-                $arrWrapperOptions = deserialize($objWrapper[$strFieldID]);
+                $arrWrapperOptions = $objWrapper[$strFieldID] ? deserialize($objWrapper[$strFieldID]) : array();
 
                 if ($arrField['dataFromTaxonomy'] == '1') {
                     $arrWrapperOptions = $this->getDataFromTaxonomy($objWrapper['select_taxonomy_' . $strFieldID]);

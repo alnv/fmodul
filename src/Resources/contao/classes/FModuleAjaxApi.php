@@ -12,17 +12,14 @@
  */
 
 use Contao\Config;
-use Contao\Frontend;
 use Contao\FrontendTemplate;
-use Contao\Input;
 use Contao\FilesModel;
-use Contao\ContentModel;
 
 /**
  * Class AjaxApiFModule
  * @package FModule
  */
-class FModuleAjaxApi extends Frontend
+class FModuleAjaxApi extends \Frontend
 {
 
     /**
@@ -48,6 +45,11 @@ class FModuleAjaxApi extends Frontend
     /**
      * @var array
      */
+    protected $markerCache = array();
+    
+    /**
+     * @var array
+     */
     protected $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination');
 
     /**
@@ -62,121 +64,162 @@ class FModuleAjaxApi extends Frontend
     public function getEntities()
     {
 
-        //options
-        $tablename = Input::get('tablename');
-        $wrapperID = Input::get('wrapperID');
-        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
-        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
-        $template = Input::get('template') ? Input::get('template') : 'fmodule_teaser';
+        $strTableName = \Input::get('tablename');
+        $strTableData = $strTableName . '_data';
+        $strWrapperID = \Input::get('wrapperID');
+        $dateFormat = \Input::get('dateFormat') ? \Input::get('dateFormat') : \Config::get('dateFormat');
+        $timeFormat = \Input::get('timeFormat') ? \Input::get('timeFormat') : \Config::get('timeFormat');
+        $strTemplate = \Input::get('template') ? \Input::get('template') : 'fmodule_teaser';
+        $this->tablename = $strTableData;
+        $arrResults = [];
 
-        $results = array();
+        $arrModuleData = $this->getModule($strTableName, $strWrapperID);
+        $arrFields = $arrModuleData['arrFields'];
+        $fieldWidgets = $arrModuleData['arrWidgets'];
+        $mapFields = $arrModuleData['mapFields'];
+        $arrCleanOptions = $arrModuleData['arrCleanOptions'];
 
-        if (!$tablename || !$wrapperID) {
-            $this->sendFailState("No back end module found");
+        if(!$strTableName || !$strWrapperID) {
+            $this->sendFailState("no back end module found");
         }
 
-        if (!$this->Database->tableExists($tablename)) {
-            $this->sendFailState($tablename . " do not exist");
+        if (!$this->Database->tableExists($strTableName)) {
+            $this->sendFailState("no table found");
         }
 
-        $this->import('FrontendUser', 'User');
+        // get wrapper
+        $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $strTableName . ' WHERE id = ?')->execute($strWrapperID)->row();
 
-        $dataTable = $tablename . '_data';
-        $this->tablename = $dataTable;
-
-        $fieldsArr = $this->getModule($tablename)['fieldsArr'];
-        $fieldWidgets = $this->getModule($tablename)['widgetsArr'];
-
-        $qPid = ' AND pid = "' . $wrapperID . '"';
-        $qResult = HelperModel::generateSQLQueryFromFilterArray($fieldsArr);
+        // get fields and create query
+        $qResult = HelperModel::generateSQLQueryFromFilterArray($arrFields);
         $qStr = $qResult['qStr'];
         $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch'] : '';
 
         //get text search results
         $textSearchResults = array();
         if ($qTextSearch) {
-            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID);
+            $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $strTableName, $strWrapperID, $qResult['searchSettings']);
         }
-        $qOrderBY = $this->getOrderBy();
 
-        $resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1"' . $qPid . $qStr . $qOrderBY . '')->query();
-        $wrapperDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
         $addDetailPage = $wrapperDB['addDetailPage'];
-        $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
+        $rootDB = $this->Database->prepare('SELECT * FROM ' . $strTableName . ' JOIN tl_page ON tl_page.id = ' . $strTableName . '.rootPage WHERE ' . $strTableName . '.id = ?')->execute($strWrapperID)->row();
+        $qOrderByStr = $this->getOrderBy();
+        $qProtectedStr = ' AND published = "1"';
 
+        // get list
+        $objList = $this->Database->prepare('SELECT * FROM ' . $strTableData . ' WHERE pid = ' . $strWrapperID . $qProtectedStr . $qStr . $qOrderByStr)->query();
 
-        while ($resultsDB->next()) {
+        $arrItems = array();
 
-            if (HelperModel::sortOutProtected($resultsDB->row(), $this->User->groups)) {
+        while ($objList->next()) {
+
+            $arrItem = $objList->row();
+
+            if (HelperModel::sortOutProtected($arrItem, $this->User->groups)) {
                 continue;
             }
 
-            if (!HelperModel::outSideScope($resultsDB->start, $resultsDB->stop)) {
+            if (!HelperModel::outSideScope($arrItem['start'], $arrItem['stop'])) {
                 continue;
             }
 
-            $imagePath = $this->generateSingeSrc($resultsDB);
+            // image
+            $imagePath = $this->generateSingeSrc($objList);
 
             if ($imagePath) {
-                $resultsDB->singleSRC = $imagePath;
+                $arrItem['singleSRC'] = $imagePath;
             }
 
-            $resultsDB->href = null;
+            if ($arrItem['size']) {
+                $arrItem['size'] = deserialize($arrItem['size']);
+            }
 
-            if ($addDetailPage == '1' && $resultsDB->source == 'default') {
+            if ($arrItem['cssID']) {
+                $arrItem['cssID'] = deserialize($arrItem['cssID']);
+            }
+
+            if($arrItem['addGallery'] && $arrItem['multiSRC']) {
+                $objGallery = new GalleryGenerator();
+                $objGallery->id = $arrItem['id'];
+                $objGallery->sortBy = $arrItem['sortBy'];
+                $objGallery->orderSRC = $arrItem['orderSRC'];
+                $objGallery->metaIgnore = $arrItem['metaIgnore'];
+                $objGallery->numberOfItems = $arrItem['numberOfItems'];
+                $objGallery->perPage = $arrItem['perPageGallery'];
+                $objGallery->perRow = $arrItem['perRow'];
+                $objGallery->size = $arrItem['size'];
+                $objGallery->fullsize = $arrItem['fullsize'];
+                $objGallery->galleryTpl = $arrItem['galleryTpl'];
+                $objGallery->getAllImages($arrItem['multiSRC']);
+                $arrItem['gallery'] = $objGallery->renderGallery();
+            }
+
+            // create href
+            $arrItem['href'] = null;
+
+            if ($addDetailPage == '1' && $objList->source == 'default') {
                 // reset target
-                $resultsDB->target = '';
-                $resultsDB->href = $this->generateUrl($rootDB, $resultsDB->alias);
+                $arrItem['target'] = '';
+                $arrItem['href'] = $this->generateUrl($rootDB, $arrItem['alias']); // $listDB->alias
             }
 
-            if ($resultsDB->source == 'external') {
-                $resultsDB->href = $resultsDB->url;
+            if ($arrItem['source'] == 'external') {
+                $arrItem['href'] = $arrItem['url'];
             }
 
-            if ($resultsDB->source == 'internal') {
+            if ($arrItem['source'] == 'internal') {
                 // reset target
-                $resultsDB->target = '';
-                $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($resultsDB->jumpTo)->row();
-                $resultsDB->href = $this->generateFrontendUrl($jumpToDB);
+                $arrItem['target'] = '';
+
+                $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($objList->jumpTo)->row();
+                $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
+                $arrItem['href'] = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
             }
 
-            // check for textsearch
+            // check for text search
             if ($qTextSearch) {
-                if (!$textSearchResults[$resultsDB->id]) {
+                if (!$textSearchResults[$arrItem['id']]) {
                     continue;
                 }
             }
 
-            $results[] = $resultsDB->row();
+            //
+            $arrItems[] = $arrItem;
         }
 
-        //pagination
-        $total = count($results);
+        if( \Input::get('orderBy') && mb_strtoupper(\Input::get('orderBy'), 'UTF-8') == 'RAND') {
+            shuffle($arrItems);
+        }
+
+        $total = count($arrItems);
         $this->listViewLimit = $total;
         $this->createPagination($total);
-
-        $jsonReturnData = array('entities' => array(), 'html' => '', 'fields' => $fieldsArr, 'redirectPage' => $rootDB, 'labels' => array('noResults' => $GLOBALS['TL_LANG']['MSC']['noResult']));
-        $objTemplate = new FrontendTemplate($template);
+        $objTemplate = new FrontendTemplate($strTemplate);
+        $strResults = '';
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
 
-            $item = $results[$i];
+            $item = $arrItems[$i];
 
-            //set css and id
+            // set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
-            $item['itemCSS'] = ' ' . $item['cssID'][1];
+            $item['itemCSS'] = $item['cssID'][1] ? ' ' . $item['cssID'][1] : '';
 
             // set date format
+            $date = date('Y-m-d', $item['date']);
+            $time = date('H:i', $item['time']);
+            $dateTime = $time ? $date . ' ' . $time : $date;
+            $item['dateTime'] = $dateTime;
             $item['date'] = $item['date'] ? date($dateFormat, $item['date']) : '';
             $item['time'] = $item['time'] ? date($timeFormat, $item['time']) : '';
 
-            //set more
+            // set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 
-            $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $dataTable, array('fview' => 'list'));
+            // get list view ce
+            $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $strTableName . '_data', array('fview' => 'list'));
             $arrElements = array();
-
             if ($objCte !== null) {
                 $intCount = 0;
                 $intLast = $objCte->count() - 1;
@@ -200,68 +243,121 @@ class FModuleAjaxApi extends Frontend
                     ++$intCount;
                 }
             }
-
             $item['teaser'] = $arrElements;
 
             // set odd and even classes
-            $item['cssClass'] = $i % 2 ? 'even' : 'odd';
+            $item['cssClass'] = $i % 2 ? ' even' : ' odd';
 
             //field
             if (!empty($fieldWidgets)) {
-
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
-
                 foreach ($fieldWidgets as $widget) {
-
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
                     $type = $widget['widgetType'];
                     $value = $item[$id];
-
-                    if (in_array($type, $arrayAsValue)) {
-                        $value = unserialize($value);
-                    }
-
+                    if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
                     $objFieldTemplate = new FrontendTemplate($tplName);
                     $objFieldTemplate->setData(array(
                         'value' => $value,
                         'type' => $type,
                         'item' => $item
                     ));
-
                     $item[$id] = $objFieldTemplate->parse();
                 }
             }
 
-            $objTemplate->setData($item);
-
             // set last first classes
-            if ($i == $this->listViewOffset) {
+            if ($i == 0) {
                 $item['cssClass'] .= ' first';
             }
             if ($i == ($this->listViewLimit - 1)) {
                 $item['cssClass'] .= ' last';
             }
 
+            // create marker path
+            if ($item['addMarker'] && $item['markerSRC']) {
+                if ($this->markerCache[$item['markerSRC']]) {
+                    $item['markerSRC'] = $this->markerCache[$item['markerSRC']];
+                } else {
+                    $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($item['markerSRC']);
+                    if ($markerDB->count()) {
+                        $pathInfo = $markerDB->row()['path'];
+                        if ($pathInfo) {
+                            $this->markerCache[$item['markerSRC']] = $pathInfo;
+                            $item['markerSRC'] = $pathInfo;
+                        }
+                    }
+                }
+            }
+
+            // map settings from field
+            if (!empty($mapFields)) {
+                foreach ($mapFields as $map) {
+                    $objMapTemplate = new FrontendTemplate($map['template']);
+                    $item['mapSettings'] = $map;
+                    $objMapTemplate->setData($item);
+                    $item[$map['fieldID']] = $objMapTemplate->parse();
+                }
+            }
+
+            // mapSettings
+            if (!empty($mapSettings)) {
+                $item['mapSettings'] = $mapSettings;
+            }
+
+            // set clean options
+            if (!empty($arrCleanOptions)) {
+
+                $item['cleanOptions'] = $arrCleanOptions;
+
+                // overwrite clean options
+                foreach ($arrCleanOptions as $fieldID => $options) {
+                    if ($item[$fieldID] && is_string($item[$fieldID])) {
+                        $arrValues = explode(',', $item[$fieldID]);
+                        $arrValuesAsString = array();
+                        $arrValuesAsArray = array();
+                        if (is_array($arrValues)) {
+                            foreach ($arrValues as $val) {
+                                $arrValuesAsArray[$val] = $options[$val];
+                                $arrValuesAsString[] = $options[$val];
+                            }
+                        }
+                        $item[$fieldID . 'AsArray'] = $arrValuesAsArray;
+                        $item[$fieldID] = implode(', ', $arrValuesAsString);
+                    }
+                }
+            }
+
+            //set data
+            $objTemplate->setData($item);
+
+            //set image
+            if ($item['addImage']) {
+                $this->addImageToTemplate($objTemplate, array(
+                    'singleSRC' => $item['singleSRC'],
+                    'alt' => $item['alt'],
+                    'size' => $item['size'],
+                    'fullsize' => $item['fullsize'],
+                    'caption' => $item['caption'],
+                    'title' => $item['title']
+                ));
+            }
+
             // set enclosure
             $objTemplate->enclosure = array();
             if ($item['addEnclosure']) {
                 $this->addEnclosuresToTemplate($objTemplate, $item);
-                $item['enclosure'] = $objTemplate->enclosure;
             }
 
-            //set image
-            if ($item['addImage']) {
-                $this->addImageToTemplate($objTemplate, $item);
-            }
+            $arrResults[] = $item;
 
-            $jsonReturnData['html'] .= $objTemplate->parse();
-            $jsonReturnData['entities'][] = $item;
-
+            $strResults .= $objTemplate->parse();
         }
 
+        $arrData = array('arrData' => $arrResults, 'strTemplate' => $strResults, 'arrFields' => $arrModuleData, 'arrWrapper' => $wrapperDB, 'arrLabels' => array('noResults' => $GLOBALS['TL_LANG']['MSC']['noResult']));
         header('Content-type: application/json');
-        echo json_encode($jsonReturnData, 512);
+        echo json_encode($arrData, 512);
         exit;
     }
 
@@ -271,7 +367,13 @@ class FModuleAjaxApi extends Frontend
     public function getDetail()
     {
 
+        $arrData = [];
+        header('Content-type: application/json');
+        echo json_encode($arrData, 512);
+        exit;
+
         //options
+        /*
         $tablename = Input::get('tablename');
         $wrapperID = Input::get('wrapperID');
         $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
@@ -429,6 +531,7 @@ class FModuleAjaxApi extends Frontend
         header('Content-type: application/json');
         echo json_encode($jsonReturnData, 512);
         exit;
+        */
     }
 
     /**
@@ -438,12 +541,12 @@ class FModuleAjaxApi extends Frontend
     {
 
         //options
-        $tablename = Input::get('tablename');
-        $fieldID = Input::get('fieldID');
-        $wrapperID = Input::get('wrapperID');
+        $tablename = \Input::get('tablename');
+        $fieldID = \Input::get('fieldID');
+        $wrapperID = \Input::get('wrapperID');
 
-        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
-        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
+        $dateFormat = \Input::get('dateFormat') ? \Input::get('dateFormat') : Config::get('dateFormat');
+        $timeFormat = \Input::get('timeFormat') ? \Input::get('timeFormat') : Config::get('timeFormat');
 	
 		$autoCompletion = new AutoCompletion();
 		$results = $autoCompletion->getAutoCompletion($tablename, $wrapperID, $fieldID, $dateFormat, $timeFormat);
@@ -485,60 +588,87 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
-     * @param $tablename
+     * @param $strTableName
+     * @param string $strWrapperID
      * @return array
      */
-    protected function getModule($tablename)
+    protected function getModule($strTableName, $strWrapperID = '')
     {
 
-        $moduleDB = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($tablename);
-
-        $fieldsArr = array();
+        $objModule = $this->Database->prepare('SELECT tl_fmodules.id AS moduleID, tl_fmodules.*, tl_fmodules_filters.*  FROM tl_fmodules LEFT JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY tl_fmodules_filters.sorting')->execute($strTableName);
+        $arrFields = array();
         $widgetsArr = array();
+        $mapFields = array();
+        $arrCleanOptions = array();
 
-        while ($moduleDB->next()) {
+        while ($objModule->next()) {
 
-            if (in_array($moduleDB->fieldID, $this->doNotSetByID) || in_array($moduleDB->type, $this->doNotSetByType)) {
+            $arrModule = $objModule->row();
+
+            if (in_array($arrModule['fieldID'], $this->doNotSetByID) || in_array($arrModule['type'], $this->doNotSetByType)) {
                 continue;
             }
 
-            $modArr = $moduleDB->row();
-            $getFilter = $this->getFilter($moduleDB->fieldID, $moduleDB->type);
-            $modArr['value'] = $getFilter['value'];
-            $modArr['operator'] = $getFilter['operator'];
-            $modArr['overwrite'] = null;
-            $modArr['active'] = null;
+            $getFilter = $this->getFilter($arrModule['fieldID'], $arrModule['type']);
+            $arrModule['value'] = $getFilter['value'];
+            $arrModule['operator'] = $getFilter['operator'];
+            $arrModule['overwrite'] = null;
+            $arrModule['active'] = null;
 
-            $val = QueryModel::isValue($modArr['value'], $moduleDB->type);
+            $val = QueryModel::isValue($arrModule['value'], $arrModule['type']);
+            if ($val) $arrModule['enable'] = true;
 
-            if ($val) {
-                $modArr['enable'] = true;
+            // check if has an wrapper
+            if (($arrModule['type'] === 'search_field' && $arrModule['isInteger']) || $arrModule['type'] === 'date_field') {
+                $btw = \Input::get($arrModule['fieldID'] . '_btw') ? \Input::get($arrModule['fieldID'] . '_btw') : '';
+                $btwHasValue = QueryModel::isValue($btw, $arrModule['type']);
+                if ($btwHasValue && !$val) {
+                    $arrModule['enable'] = true;
+                    $arrModule['value'] = 0;
+                }
+            }
+
+            // map
+            if ($arrModule['type'] == 'map_field') {
+
+                // set map settings
+                $mapFields[] = HelperModel::setGoogleMap($arrModule);
+
+                // set loadMapScript to true
+                $this->loadMapScript = true;
+
+                // load map libraries
+                if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
             }
 
             // field
-            if ($moduleDB->type == 'widget') {
-
-                $tplName = $moduleDB->widgetTemplate;
+            if ($arrModule['type'] == 'widget') {
+                $tplName = $arrModule['widgetTemplate'];
                 $tpl = '';
-
                 if (!$tplName) {
-                    $tplNameType = explode('.', $moduleDB->widget_type)[0];
+                    $tplNameType = explode('.', $arrModule['widget_type'])[0];
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
+                    $tpl = $this->parseTemplateName($tpl);
                 }
-
-                $widgetsArr[$moduleDB->fieldID] = array(
-                    'fieldID' => $moduleDB->fieldID,
-                    'widgetType' => $moduleDB->widget_type,
-                    'widgetTemplate' => $moduleDB->widgetTemplate ? $moduleDB->widgetTemplate : $tpl
+                $fieldWidgets[$arrModule['fieldID']] = array(
+                    'fieldID' => $arrModule['fieldID'],
+                    'widgetType' => $arrModule['widget_type'],
+                    'widgetTemplate' => $arrModule['widgetTemplate'] ? $arrModule['widgetTemplate'] : $tpl
                 );
             }
 
-            $fieldsArr[$moduleDB->fieldID] = $modArr;
+            // has options
+            if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
+                $dcaHelper = new DCAHelper();
+                $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $strTableName, $strWrapperID);
+            }
+
+            $arrFields[$arrModule['fieldID']] = $arrModule;
 
         }
 
-        return array('fieldsArr' => $fieldsArr, 'widgetsArr' => $widgetsArr);
+        return array('arrFields' => $arrFields, 'arrWidgets' => $widgetsArr, 'mapFields' => $mapFields, 'arrCleanOptions' => $arrCleanOptions);
     }
 
     /**
@@ -548,14 +678,14 @@ class FModuleAjaxApi extends Frontend
      */
     protected function getFilter($fieldID, $type)
     {
-        $getFilter = Input::get($fieldID) ? Input::get($fieldID) : '';
-        $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
+        $getFilter = \Input::get($fieldID) ? \Input::get($fieldID) : '';
+        $getOperator = \Input::get($fieldID . '_int') ? \Input::get($fieldID . '_int') : '';
 
         if ($type == 'multi_choice' && !is_array($getFilter)) {
             $getFilter = explode(',', $getFilter);
         }
 
-        if ($type == 'toggle_field' && is_null(Input::get($fieldID)) == false && Input::get($fieldID) != '1') {
+        if ($type == 'toggle_field' && is_null(\Input::get($fieldID)) == false && \Input::get($fieldID) != '1') {
             $getFilter = 'skip';
         }
 
@@ -568,22 +698,30 @@ class FModuleAjaxApi extends Frontend
     }
 
     /**
-     * @param $items
-     * @return null|string
+     * @param $templateName
+     * @return mixed
+     */
+    public function parseTemplateName($templateName)
+    {
+        return DiverseFunction::parseTemplateName($templateName);
+    }
+
+    /**
+     * @param int $total
      */
     protected function createPagination($total = 0)
     {
         // options
         // perPage
         // page
-        if (Input::get('perPage')) {
-            $perPage = (int)Input::get('perPage');
+        if (\Input::get('perPage')) {
+            $perPage = (int)\Input::get('perPage');
             $this->perPage = $perPage;
         }
 
         if ($this->perPage > 0) {
 
-            $page = (Input::get('page') !== null) ? (int)Input::get('page') : 1;
+            $page = (\Input::get('page') !== null) ? (int)\Input::get('page') : 1;
 
             if ($page < 1 || $page > max(ceil($total / $this->perPage), 1)) {
 
@@ -602,22 +740,18 @@ class FModuleAjaxApi extends Frontend
      */
     protected function getOrderBy()
     {
-        // options
-        // orderBy
-        // sorting_fields
-        $orderBYOptions = array('ASC', 'DESC', 'RAND');
-        $orderBY = Input::get('orderBy');
-        $orderBYStr = 'DESC';
+
+        $orderBYOptions = array('asc', 'desc');
+        $orderBY = \Input::get('orderBy');
+        $orderBYStr = 'desc';
 
         if ($orderBY && in_array(mb_strtoupper($orderBY, 'UTF-8'), $orderBYOptions)) {
-            if (mb_strtoupper($orderBY, 'UTF-8') == 'RAND') {
-                return 'ORDER BY RAND()';
-            }
             $orderBYStr = mb_strtoupper($orderBY, 'UTF-8');
         }
 
-        $sortingField = Input::get('sorting_fields');
+        $sortingField = \Input::get('sorting_fields');
         $sortingFields = array();
+
         if ($sortingField && is_string($sortingField)) {
             $sortingFields[] = $sortingField;
         }
@@ -625,17 +759,21 @@ class FModuleAjaxApi extends Frontend
         if ($sortingField && is_array($sortingField)) {
             $sortingFields = $sortingField;
         }
-        $temp = [];
-        foreach ($sortingFields as $field) {
-            if ($this->Database->fieldExists($field, $this->tablename)) {
-                $temp[] = $field;
+
+        $arrTemp = [];
+
+        foreach ($sortingFields as $arrField) {
+            if ($this->Database->fieldExists($arrField, $this->tablename)) {
+                $arrTemp[] = $arrField;
             }
         }
 
-        $sorting = array_filter($temp);
+        $sorting = array_filter($arrTemp);
+
         if (empty($sorting)) {
             $sorting[] = 'id';
         }
+
         $sorting = implode(',', $sorting);
 
         return ' ORDER BY ' . $sorting . ' ' . $orderBYStr;

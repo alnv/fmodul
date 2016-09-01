@@ -11,10 +11,6 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Config;
-use Contao\FrontendTemplate;
-use Contao\FilesModel;
-
 /**
  * Class AjaxApiFModule
  * @package FModule
@@ -194,7 +190,7 @@ class FModuleAjaxApi extends \Frontend
         $total = count($arrItems);
         $this->listViewLimit = $total;
         $this->createPagination($total);
-        $objTemplate = new FrontendTemplate($strTemplate);
+        $objTemplate = new \FrontendTemplate($strTemplate);
         $strResults = '';
 
         for ($i = $this->listViewOffset; $i < $this->listViewLimit; $i++) {
@@ -257,7 +253,7 @@ class FModuleAjaxApi extends \Frontend
                     $type = $widget['widgetType'];
                     $value = $item[$id];
                     if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
-                    $objFieldTemplate = new FrontendTemplate($tplName);
+                    $objFieldTemplate = new \FrontendTemplate($tplName);
                     $objFieldTemplate->setData(array(
                         'value' => $value,
                         'type' => $type,
@@ -294,7 +290,7 @@ class FModuleAjaxApi extends \Frontend
             // map settings from field
             if (!empty($mapFields)) {
                 foreach ($mapFields as $map) {
-                    $objMapTemplate = new FrontendTemplate($map['template']);
+                    $objMapTemplate = new \FrontendTemplate($map['template']);
                     $item['mapSettings'] = $map;
                     $objMapTemplate->setData($item);
                     $item[$map['fieldID']] = $objMapTemplate->parse();
@@ -367,77 +363,54 @@ class FModuleAjaxApi extends \Frontend
     public function getDetail()
     {
 
-        $arrData = [];
-        header('Content-type: application/json');
-        echo json_encode($arrData, 512);
-        exit;
+        $strTableName = \Input::get('tablename');
+        $strWrapperID = \Input::get('wrapperID');
+        $strDataTable = $strTableName . '_data';
+        $dateFormat = \Input::get('dateFormat') ? \Input::get('dateFormat') : \Config::get('dateFormat');
+        $timeFormat = \Input::get('timeFormat') ? \Input::get('timeFormat') : \Config::get('timeFormat');
+        $template = \Input::get('template') ? \Input::get('template') : 'fmodule_full';
+        $alias = \Input::get('alias');
+        $id = \Input::get('id');
 
-        //options
-        /*
-        $tablename = Input::get('tablename');
-        $wrapperID = Input::get('wrapperID');
-        $dateFormat = Input::get('dateFormat') ? Input::get('dateFormat') : Config::get('dateFormat');
-        $timeFormat = Input::get('timeFormat') ? Input::get('timeFormat') : Config::get('timeFormat');
-        $template = Input::get('template') ? Input::get('template') : 'fmodule_full';
-        $alias = Input::get('alias');
-        $id = Input::get('id');
-
-        $jsonReturnData = array();
-
-        if (!$tablename || !$wrapperID) {
-            $this->sendFailState("No nack end module found");
+        if (!$strTableName || !$strWrapperID) {
+            $this->sendFailState("no back end module found");
         }
 
-        if (!$this->Database->tableExists($tablename)) {
-            $this->sendFailState($tablename . " do not exist");
+        if (!$this->Database->tableExists($strTableName)) {
+            $this->sendFailState("table do not exist");
         }
 
-        $qStr = '';
 
-        if ($id) {
-            $qStr = ' AND id = "' . $id . '"';
-        }
-
-        if ($alias) {
-            $qStr = ' AND alias = "' . $alias . '"';
-        }
-
-        if (!$qStr) {
-            $this->sendFailState("No alias or id found");
-        }
-
-        $dataTable = $tablename . '_data';
-        $item = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1" AND pid = "' . $wrapperID . '"' . $qStr . '')->query()->row();
-
-        if (empty($item)) {
-            $this->sendFailState("Page not found", "404");
-        }
+        $arrModuleData = $this->getModule($strTableName, $strWrapperID);
+        $arrFields = $arrModuleData['arrFields'];
+        $fieldWidgets = $arrModuleData['arrWidgets'];
+        $mapFields = $arrModuleData['mapFields'];
+        $arrCleanOptions = $arrModuleData['arrCleanOptions'];
 
         $strResult = '';
-        $objTemplate = new FrontendTemplate($template);
+        $objTemplate = new \FrontendTemplate($template);
+        $qProtectedStr = ' AND published = "1"';
+        $arrItem = $this->Database->prepare('SELECT * FROM ' . $strDataTable . ' WHERE pid = ? AND (alias = ? OR id = ?) OR (alias = ? OR id = ?)' . $qProtectedStr . '')->execute($strWrapperID, $alias, (int)$alias, $id, (int)$id)->row();
+        $arrWrapper = $this->Database->prepare('SELECT * FROM ' . $strTableName . ' WHERE id = ?')->execute($strWrapperID)->row();
 
-        $fieldsArr = $this->getModule($tablename)['fieldsArr'];
-        $fieldWidgets = $this->getModule($tablename)['widgetsArr'];
-
-        $imagePath = $this->generateSingeSrc($item);
-
+        // image
+        $imagePath = $this->generateSingeSrc($arrItem);
         if ($imagePath) {
-            $item['singleSRC'] = $imagePath;
+            $arrItem['singleSRC'] = $imagePath;
         }
 
-        $item['size'] = $this->setImageSize($item['size']);
+        //set css and id
+        $arrItem['cssID'] = deserialize($arrItem['cssID']);
+        $arrItem['itemID'] = $arrItem['cssID'][0];
+        $arrItem['itemCSS'] = $arrItem['cssID'][1] ? ' ' . $arrItem['cssID'][1] : '';
+        $arrItem['cssClass'] = '';
 
-        $item['cssID'] = deserialize($item['cssID']);
-        $item['itemID'] = $item['cssID'][0];
-        $item['itemCSS'] = ' ' . $item['cssID'][1];
-
-        $objCte = ContentModel::findPublishedByPidAndTable($item['id'], $dataTable);
+        $objCte = \ContentModel::findPublishedByPidAndTable($arrItem['id'], $strTableName . '_data');
 
         $detail = array();
         $teaser = array();
 
         if ($objCte !== null) {
-
             $intCount = 0;
             $intLast = $objCte->count() - 1;
 
@@ -447,6 +420,7 @@ class FModuleAjaxApi extends \Frontend
                 $objRow = $objCte->current();
 
                 if ($intCount == 0 || $intCount == $intLast) {
+
                     if ($intCount == 0) {
                         $arrCss[] = 'first';
                     }
@@ -465,20 +439,26 @@ class FModuleAjaxApi extends \Frontend
                 } else {
 
                     $detail[] = $this->getContentElement($objRow, $this->strColumn);
-
                 }
 
                 ++$intCount;
-
             }
         }
 
+        // author
         $authorDB = null;
-        if ($item['author']) {
-            $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($item['author'])->row();
+        if ($arrItem['author']) {
+            $authorDB = $this->Database->prepare('SELECT * FROM tl_user WHERE id = ?')->execute($arrItem['author'])->row();
             unset($authorDB['password']);
             unset($authorDB['session']);
         }
+
+        $arrItem['teaser'] = $teaser;
+        $arrItem['detail'] = $detail;
+        $arrItem['author'] = $authorDB;
+        $arrItem['date'] = $arrItem['date'] ? date($dateFormat, $arrItem['date']) : '';
+        $arrItem['time'] = $arrItem['time'] ? date($timeFormat, $arrItem['time']) : '';
+        $arrItem['filter'] = $arrFields;
 
         if (!empty($fieldWidgets)) {
 
@@ -488,50 +468,114 @@ class FModuleAjaxApi extends \Frontend
                 $id = $widget['fieldID'];
                 $tplName = $widget['widgetTemplate'];
                 $type = $widget['widgetType'];
-                $value = $item[$id];
-
-                if (in_array($type, $arrayAsValue)) {
-                    $value = unserialize($value);
-                }
-
-                $objFieldTemplate = new FrontendTemplate($tplName);
+                $value = $arrItem[$id];
+                if (in_array($type, $arrayAsValue)) $value = deserialize($value);
+                $objFieldTemplate = new \FrontendTemplate($tplName);
                 $objFieldTemplate->setData(array(
                     'value' => $value,
                     'type' => $type,
-                    'item' => $item
+                    'item' => $arrItem
                 ));
-
-                $item[$id] = $objFieldTemplate->parse();
+                $arrItem[$id] = $objFieldTemplate->parse();
             }
-
         }
 
-        $item['author'] = $authorDB;
-        $item['detail'] = $detail;
-        $item['teaser'] = $teaser;
-        $item['filter'] = $fieldsArr;
-        $item['date'] = $item['date'] ? date($dateFormat, $item['date']) : '';
-        $item['time'] = $item['time'] ? date($timeFormat, $item['time']) : '';
+        // create marker path
+        if ($arrItem['addMarker'] && $arrItem['markerSRC']) {
+            if ($this->markerCache[$arrItem['markerSRC']]) {
+                $arrItem['markerSRC'] = $this->markerCache[$arrItem['markerSRC']];
+            } else {
+                $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($arrItem['markerSRC']);
+                if ($markerDB->count()) {
+                    $pathInfo = $markerDB->row()['path'];
+                    if ($pathInfo) {
+                        $this->markerCache[$arrItem['markerSRC']] = $pathInfo;
+                        $arrItem['markerSRC'] = $pathInfo;
+                    }
+                }
+            }
+        }
 
-        $objTemplate->setData($item);
+        // add gallery
+        if($arrItem['addGallery'] && $arrItem['multiSRC']) {
+            $objGallery = new GalleryGenerator();
+            $objGallery->id = $arrItem['id'];
+            $objGallery->sortBy = $arrItem['sortBy'];
+            $objGallery->orderSRC = $arrItem['orderSRC'];
+            $objGallery->metaIgnore = $arrItem['metaIgnore'];
+            $objGallery->numberOfItems = $arrItem['numberOfItems'];
+            $objGallery->perPage = $arrItem['perPageGallery'];
+            $objGallery->perRow = $arrItem['perRow'];
+            $objGallery->size = $arrItem['size'];
+            $objGallery->fullsize = $arrItem['fullsize'];
+            $objGallery->galleryTpl = $arrItem['galleryTpl'];
+            $objGallery->getAllImages($arrItem['multiSRC']);
+            $arrItem['gallery'] = $objGallery->renderGallery();
+        }
 
+        // map
+        if (!empty($mapFields)) {
+            foreach ($mapFields as $map) {
+                $objMapTemplate = new \FrontendTemplate($map['template']);
+                $arrItem['mapSettings'] = $map;
+                $objMapTemplate->setData($arrItem);
+                $arrItem[$map['fieldID']] = $objMapTemplate->parse();
+            }
+        }
+
+        // set clean options
+        if (!empty($arrCleanOptions)) {
+            $arrItem['cleanOptions'] = $arrCleanOptions;
+            // overwrite clean options
+            foreach ($arrCleanOptions as $fieldID => $options) {
+                if ($arrItem[$fieldID] && is_string($arrItem[$fieldID])) {
+                    $arrValues = explode(',', $arrItem[$fieldID]);
+                    $arrValuesAsString = array();
+                    $arrValuesAsArray = array();
+                    if (is_array($arrValues)) {
+                        foreach ($arrValues as $val) {
+                            $arrValuesAsArray[$val] = $options[$val];
+                            $arrValuesAsString[] = $options[$val];
+                        }
+                    }
+                    $arrItem[$fieldID . 'AsArray'] = $arrValuesAsArray;
+                    $arrItem[$fieldID] = implode(', ', $arrValuesAsString);
+                }
+            }
+        }
+
+        // set data
+        $objTemplate->setData($arrItem);
+
+        // enclosure
         $objTemplate->enclosure = array();
-        if ($item['addEnclosure']) {
-            $this->addEnclosuresToTemplate($objTemplate, $item);
-            $item['enclosure'] = $objTemplate->enclosure;
+
+        if ($arrItem['addEnclosure']) {
+            $this->addEnclosuresToTemplate($objTemplate, $arrItem);
         }
 
-        if ($item['addImage']) {
-            $this->addImageToTemplate($objTemplate, $item);
+        // add image
+        if ($arrItem['addImage']) {
+            $this->addImageToTemplate($objTemplate, array(
+                'singleSRC' => $arrItem['singleSRC'],
+                'alt' => $arrItem['alt'],
+                'size' => $arrItem['size'],
+                'fullsize' => $arrItem['fullsize'],
+                'caption' => $arrItem['caption'],
+                'title' => $arrItem['title']
+            ));
         }
 
         $strResult .= $objTemplate->parse();
-        $jsonReturnData['detail'] = $item;
-        $jsonReturnData['html'] = $strResult;
+        $arrData = [ 'arrData' =>  $arrItem, 'mapFields' => $mapFields, 'arrWrapper' => $arrWrapper, 'strTemplate' => $strResult, 'arrGoBack' => [
+            'referer' => 'javascript:history.go(-1)',
+            'back' =>  $GLOBALS['TL_LANG']['MSC']['goBack']
+        ]];
+
         header('Content-type: application/json');
-        echo json_encode($jsonReturnData, 512);
+        echo json_encode($arrData, 512);
         exit;
-        */
+
     }
 
     /**
@@ -545,8 +589,8 @@ class FModuleAjaxApi extends \Frontend
         $fieldID = \Input::get('fieldID');
         $wrapperID = \Input::get('wrapperID');
 
-        $dateFormat = \Input::get('dateFormat') ? \Input::get('dateFormat') : Config::get('dateFormat');
-        $timeFormat = \Input::get('timeFormat') ? \Input::get('timeFormat') : Config::get('timeFormat');
+        $dateFormat = \Input::get('dateFormat') ? \Input::get('dateFormat') : \Config::get('dateFormat');
+        $timeFormat = \Input::get('timeFormat') ? \Input::get('timeFormat') : \Config::get('timeFormat');
 	
 		$autoCompletion = new AutoCompletion();
 		$results = $autoCompletion->getAutoCompletion($tablename, $wrapperID, $fieldID, $dateFormat, $timeFormat);
@@ -806,7 +850,7 @@ class FModuleAjaxApi extends \Frontend
 
         if ($singleSrc != '') {
 
-            $objModel = FilesModel::findByUuid($singleSrc);
+            $objModel = \FilesModel::findByUuid($singleSrc);
 
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
 

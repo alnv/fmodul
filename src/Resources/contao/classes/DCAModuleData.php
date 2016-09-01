@@ -385,6 +385,7 @@ class DCAModuleData extends ViewContainer
         }
 
         $list = array(
+
             'sorting' => array(
                 'mode' => $mode,
                 'flag' => $flag,
@@ -393,10 +394,12 @@ class DCAModuleData extends ViewContainer
                 'panelLayout' => 'search;filter;limit',
                 'child_record_callback' => array('DCAModuleData', 'listData')
             ),
+
             'label' => array(
                 'fields' => array('title', 'info'),
                 'format' => '%s <span style="color: #c2c2c2">[%s]</span>'
             ),
+
             'global_operations' => array(
                 'all' => array
                 (
@@ -406,6 +409,7 @@ class DCAModuleData extends ViewContainer
                     'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
                 )
             ),
+
             'operations' => array(
                 'editheader' => array
                 (
@@ -447,6 +451,18 @@ class DCAModuleData extends ViewContainer
                 )
             )
         );
+
+        // disable operations fields
+        if($moduleObj['disableOperationButtons']) {
+            $arrOperationsFields = $moduleObj['operationButtons'] ? explode(',', $moduleObj['operationButtons']) : array();
+            if (in_array('list', $arrOperationsFields)) {
+                unset($list['operations']['editList']);
+            }
+            if (in_array('detail', $arrOperationsFields)) {
+                unset($list['operations']['editDetail']);
+            }
+        }
+
         foreach ($fields as $field) {
             if ($field['fieldID'] && $field['type'] == 'toggle_field') {
                 $list['operations'][$field['fieldID']] = array(
@@ -458,11 +474,13 @@ class DCAModuleData extends ViewContainer
                 );
             }
         }
+
         $list['operations']['show'] = array(
             'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['show'],
             'href' => 'act=show',
             'icon' => 'show.gif'
         );
+
         return $list;
     }
 

@@ -22,3 +22,58 @@
 .mode_checkbox{
     margin-top: 5px;
 }
+
+.tl_filter_fields .fm_field_block{
+    margin-bottom: .75em;
+    margin-top: .75em;
+}
+
+.tl_filter_fields .fm_field_block:first-child{
+    margin-top: 0;
+}
+
+.tl_filter_fields .fm_field_block:last-child{
+    margin-bottom: 0;
+}
+
+.tl_filter_fields .fm_field_block  .fm_field_block_drag{
+    position: absolute;
+    right: 5px;
+    top: 6px;
+}
+
+.tl_filter_fields h3.fm_field_block_headline {
+    position: relative;
+    top: 1px;
+    padding: 10px 18px 10px 20px;
+    line-height: 1;
+    background: url("folMinus.gif") left center no-repeat;
+    background-color: #fafafa;
+    cursor: pointer;
+    color: #77ac45;
+    display: inline-block;
+    border: 1px solid #ddd;
+    min-width: 300px;
+    font-weight: 400;
+}
+
+.tl_filter_fields h3.fm_field_block_headline:hover{
+    background-color: #F5F5F5;
+}
+
+.tl_filter_fields .fm_field_block_item{
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 1em;
+    margin-bottom: 1em;
+
+}
+
+.tl_filter_fields h3.fm_field_block_headline.collapsed{
+    background: url("folPlus.gif") left center no-repeat;
+    background-color: #F5F5F5;
+}
+
+.tl_filter_fields .fm_field_block_item.collapsed{
+    display: none;
+}

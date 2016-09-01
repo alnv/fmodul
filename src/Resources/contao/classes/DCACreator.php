@@ -125,6 +125,8 @@ class DCACreator
             $module['selectPosition'] = $modulesDB->row()['selectPosition'];
             $module['addMandatoryHandler'] = $modulesDB->row()['addMandatoryHandler'];
             $module['mandatoryHandler'] = $modulesDB->row()['mandatoryHandler'];
+            $module['disableOperationButtons'] = $modulesDB->row()['disableOperationButtons'];
+            $module['operationButtons'] = $modulesDB->row()['operationButtons'];
             $id = $modulesDB->row()['id'];
 
             // backwards compatible

@@ -53,18 +53,15 @@ class FilterFields extends Widget
         }
 
         //no selected list
-        if(!$this->filterFields)
-        {
-            return '<p>'.$GLOBALS['TL_LANG']['MSC']['fm_ff_no_list'].'</p>';
+        if (!$this->filterFields) {
+            return '<p>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_no_list'] . '</p>';
         }
 
-        if( !is_array( $this->varValue ))
-        {
+        if (!is_array($this->varValue)) {
             $this->varValue = $this->filterFields;
         }
 
-        if( count($this->varValue) !=  count($this->filterFields) )
-        {
+        if (count($this->varValue) != count($this->filterFields)) {
             $this->varValue = $this->filterFields;
         }
 
@@ -75,7 +72,7 @@ class FilterFields extends Widget
         }
 
         $tabindex = \Cache::get('tabindex');
-        $tbodyTemplate = '';
+        $strBodyTemplate = '';
 
         foreach ($values as $key => $value) {
 
@@ -92,7 +89,7 @@ class FilterFields extends Widget
             }
 
             $selectOptionsTemplate = '<option value="default" selected >Standard</option>';
-            $appearance = is_string( $value['appearance'] ) ? deserialize( $value['appearance'] ) : $value['appearance'];
+            $appearance = is_string($value['appearance']) ? deserialize($value['appearance']) : $value['appearance'];
 
             if ($appearance) {
 
@@ -108,6 +105,14 @@ class FilterFields extends Widget
 
             }
 
+            // get all field names
+            $strFieldOptions = '<option value="">-</option>';
+            if( is_array($this->filterFields) /*&& ( $value['type'] == 'multi_choice' || $value['type'] == 'simple_choice' ) */ ) {
+                foreach ($this->filterFields as $arrField) {
+                    $strFieldOptions .= '<option value="' . $arrField['fieldID'] . '" ' . ($arrField['fieldID'] == $value['dependsOn'] ? 'selected' : '') .' >' . $arrField['title'] . '</option>';
+                }
+            }
+
             $strAppearance = $appearance != '' ? serialize($appearance) : '';
             $dragBtnTemplate = '';
 
@@ -121,55 +126,90 @@ class FilterFields extends Widget
                 }
             }
 
-            $rowTemplate =
-                '<tr>
-					<td>
-						<h4>' . $value['title'] . ':</h4>
-						<input type="hidden" value="' . $value['id'] . '" name="' . $this->strName . '[' . $key . '][objID]">
-						<input type="hidden" value="' . $value['title'] . '" name="' . $this->strName . '[' . $key . '][title]">
-						<input type="hidden" value="' . $this->currentListID . '" name="' . $this->strName . '[' . $key . '][currentID]">
-						<input type="hidden" value="' . $value['fieldID'] . '" name="' . $this->strName . '[' . $key . '][fieldID]">
-						<input type="hidden" value="' . $value['type'] . '" name="' . $this->strName . '[' . $key . '][type]">
-						<input type="hidden" value="'.htmlspecialchars($strAppearance).'" name="' . $this->strName . '[' . $key . '][appearance]">
-						<input type="hidden" value="' . $value['isInteger'] . '" name="' . $this->strName . '[' . $key . '][isInteger]">
-						<input type="hidden" value="' . $value['addTime'] . '" name="' . $this->strName . '[' . $key . '][addTime]">
-						<input type="hidden" value="' . $value['from_field'] . '" name="' . $this->strName . '[' . $key . '][from_field]">
-						<input type="hidden" value="' . $value['to_field'] . '" name="' . $this->strName . '[' . $key . '][to_field]">
-						<input type="hidden" value="' . $value['description'] . '" name="' . $this->strName . '[' . $key . '][description]">
-						<input type="hidden" value="' . $value['dataFromTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][dataFromTaxonomy]">
-						<input type="hidden" value="' . $value['reactToTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][reactToTaxonomy]">
-						<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">
-					</td>
-					<td> <select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_appearance]" id="ctrl_' . $this->strId . '[' . $key . '][appearance]" class="tl_select" style="width: 150px;">' . $selectOptionsTemplate . '</select> </td>
-					<td> <select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_templates]" id="ctrl_' . $this->strId . '[' . $key . '][template]" class="tl_select" style="width: 200px;">' . $widgetsOptionsTemplate . '</select> </td>
-					<td> <input type="text" tabindex="' . $tabindex++ . '" value="' . $value['cssClass'] . '" name="' . $this->strName . '[' . $key . '][cssClass]" id="ctrl_' . $this->strId . '[' . $key . '][cssClass]" class="tl_text_2"/> </td>
-					<td>' . $dragBtnTemplate . '</td>
-					<td><input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][active]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][active]" class="tl_checkbox" ' . ($value['active'] ? 'checked="checked"' : '') . ' /></td>
-				</tr>';
+            $strFieldTemplate =
+                '<div class="fm_field_block">' .
+                    '<input type="hidden" value="' . $value['id'] . '" name="' . $this->strName . '[' . $key . '][objID]">' .
+                    '<input type="hidden" value="' . $value['title'] . '" name="' . $this->strName . '[' . $key . '][title]">' .
+                    '<input type="hidden" value="' . $this->currentListID . '" name="' . $this->strName . '[' . $key . '][currentID]">' .
+                    '<input type="hidden" value="' . $value['fieldID'] . '" name="' . $this->strName . '[' . $key . '][fieldID]">' .
+                    '<input type="hidden" value="' . $value['type'] . '" name="' . $this->strName . '[' . $key . '][type]">' .
+                    '<input type="hidden" value="'.htmlspecialchars($strAppearance).'" name="' . $this->strName . '[' . $key . '][appearance]">' .
+                    '<input type="hidden" value="' . $value['isInteger'] . '" name="' . $this->strName . '[' . $key . '][isInteger]">' .
+                    '<input type="hidden" value="' . $value['addTime'] . '" name="' . $this->strName . '[' . $key . '][addTime]">' .
+                    '<input type="hidden" value="' . $value['from_field'] . '" name="' . $this->strName . '[' . $key . '][from_field]">' .
+                    '<input type="hidden" value="' . $value['to_field'] . '" name="' . $this->strName . '[' . $key . '][to_field]">' .
+                    '<input type="hidden" value="' . $value['description'] . '" name="' . $this->strName . '[' . $key . '][description]">' .
+                    '<input type="hidden" value="' . $value['dataFromTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][dataFromTaxonomy]">' .
+                    '<input type="hidden" value="' . $value['reactToTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][reactToTaxonomy]">' .
+                    '<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">' .
+                    '<h3 class="fm_field_block_headline collapsed" onclick="fmToggleFieldBlock(this)">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
+                    '<div class="fm_field_block_item collapsed">' .
+                        '<div class="w50">' .
+                            '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][0] . '</label></h3>' .
+                            '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_appearance]" id="ctrl_' . $this->strId . '[' . $key . '][appearance]" class="tl_select" >' . $selectOptionsTemplate . '</select>' .
+                            '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][1] . '</p>' .
+                        '</div>' .
+                        '<div  class="w50">' .
+                            '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_template'][0] . '</label></h3>' .
+                            '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_templates]" id="ctrl_' . $this->strId . '[' . $key . '][template]" class="tl_select" >' . $widgetsOptionsTemplate . '</select>' .
+                            '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_template'][1] . '</p>' .
+                        '</div>' .
+                        '<div  class="w50">' .
+                            '<h3><label for="ctrl_' . $this->strId . '[' . $key . '][cssClass]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_class'][0] . '</label></h3>' .
+                            '<input type="text" tabindex="' . $tabindex++ . '" value="' . $value['cssClass'] . '" name="' . $this->strName . '[' . $key . '][cssClass]" id="ctrl_' . $this->strId . '[' . $key . '][cssClass]" class="tl_text"/>' .
+                            '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_class'][1] . '</p>' .
+                        '</div>' .
+                        '<div  class="w50">' .
+                            '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][0] . '</label></h3>' .
+                            '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][dependsOn]" id="ctrl_' . $this->strId . '[' . $key . '][dependsOn]" class="tl_select" >'.$strFieldOptions.'</select>' .
+                            '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][1] . '</p>' .
+                        '</div>' .
+                        ( $value['type'] == 'multi_choice' || $value['type'] == 'simple_choice' ?
+                        '<div class="clr">' .
+                            '<div class="tl_checkbox_single_container">' .
+                                '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][changeOnSubmit]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]" class="tl_checkbox" ' . ($value['changeOnSubmit'] ? 'checked="checked"' : '') . ' />' .
+                                ' <label for="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_changeOnSubmit'][0] . '</label>' .
+                                '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_changeOnSubmit'][1] . '</p>' .
+                            '</div>' .
+                        '</div>' : '').
+                        '<div class="clr">' .
+                            '<div class="tl_checkbox_single_container">' .
+                            '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][active]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][active]" class="tl_checkbox" ' . ($value['active'] ? 'checked="checked"' : '') . ' />' .
+                            ' <label for="ctrl_' . $this->strId . '[' . $key . '][active]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'][0] . '</label>' .
+                            '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'][1] . '</p>' .
+                            '</div>' .
+                        '</div>' .
+                    '</div>' .
+                '</div>';
 
-            $tbodyTemplate .= $rowTemplate;
+
+            $strBodyTemplate .= $strFieldTemplate;
 
         }
 
-        $widgetTemplate =
-            '<table class="tl_optionwizard" id="ctrl_' . $this->strId . '" >
-				<thead>
-					<tr>
-						<th>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_name'] . '</th>
-						<th>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'] . '</th>
-						<th>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_template'] . '</th>
-						<th>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_class'] . '</th>
-						<th></th>
-						<th>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'] . '</th>
-					</tr>
-				</thead>
-				<tbody class="sortable" data-tabindex="' . $tabindex . '">' . $tbodyTemplate . '</tbody>
-			</table>';
+        $strWidget = '<div class="tl_optionwizard tl_filter_fields" id="ctrl_' . $this->strId . '"><div class="sortable" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
 
+        $strJS =
+            '<script>
+               function fmToggleFieldBlock(e) {   
+                  if(typeof $ != "undefined") {
+                     var tab = $(e);
+                     var block = tab.getNext();
+                     var isCollapsed = typeof tab.hasClass("collapsed") != "boolean" ? tab.hasClass("collapsed")[0] : tab.hasClass("collapsed");                   
+                     if(isCollapsed) {
+                        tab.removeClass("collapsed");
+                        block.removeClass("collapsed");
+                     }else{
+                        tab.addClass("collapsed");
+                        block.addClass("collapsed");
+                     }                 
+                  }                   
+               } 
+            </script>';
 
         \Cache::set('tabindex', $tabindex);
 
-        return $widgetTemplate;
+        return $strWidget.$strJS;
 
     }
 }

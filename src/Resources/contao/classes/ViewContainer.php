@@ -192,7 +192,7 @@ class ViewContainer extends DCAHelper
                 'inputType' => 'imageSize',
                 'options' => System::getImageSizes(),
                 'reference' => &$GLOBALS['TL_LANG']['MSC'],
-                'eval' => array('rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'size'), 'helpwizard' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
+                'eval' => array('rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "varchar(64) NOT NULL default ''"
             ),
             'fullsize' => array

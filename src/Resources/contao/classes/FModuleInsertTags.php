@@ -396,6 +396,23 @@ class FModuleInsertTags extends Frontend
                 $item['picture'] = $objTemplate->picture;
             }
 
+            // parse Gallery
+            if($item['addGallery']) {
+                $objGallery = new GalleryGenerator();
+                $objGallery->id = $item['id'];
+                $objGallery->sortBy = $item['sortBy'];
+                $objGallery->orderSRC = $item['orderSRC'];
+                $objGallery->metaIgnore = $item['metaIgnore'];
+                $objGallery->numberOfItems = $item['numberOfItems'];
+                $objGallery->perPage = $item['perPageGallery'];
+                $objGallery->perRow = $item['perRow'];
+                $objGallery->size = $item['size'];
+                $objGallery->fullsize = $item['fullsize'];
+                $objGallery->galleryTpl = $item['galleryTpl'];
+                $objGallery->getAllImages($item['multiSRC']);
+                $item['gallery'] = $objGallery->renderGallery();
+            }
+
             // parse enclosure
             $objTemplate->enclosure = array();
             if ($item['addEnclosure']) {
@@ -599,6 +616,23 @@ class FModuleInsertTags extends Frontend
         $imagePath = $this->generateSingeSrc($viewDB);
         if ($imagePath) {
             $item['singleSRC'] = $imagePath;
+        }
+
+        // parse Gallery
+        if($item['addGallery']) {
+            $objGallery = new GalleryGenerator();
+            $objGallery->id = $item['id'];
+            $objGallery->sortBy = $item['sortBy'];
+            $objGallery->orderSRC = $item['orderSRC'];
+            $objGallery->metaIgnore = $item['metaIgnore'];
+            $objGallery->numberOfItems = $item['numberOfItems'];
+            $objGallery->perPage = $item['perPageGallery'];
+            $objGallery->perRow = $item['perRow'];
+            $objGallery->size = $item['size'];
+            $objGallery->fullsize = $item['fullsize'];
+            $objGallery->galleryTpl = $item['galleryTpl'];
+            $objGallery->getAllImages($item['multiSRC']);
+            $item['gallery'] = $objGallery->renderGallery();
         }
 
         // parse marker

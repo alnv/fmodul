@@ -1,17 +1,34 @@
 <div class="widget-multi-choice form-widget <?= $this->cssClass; ?>">
 
+    <?php if($this->used_appearance && $this->used_appearance == 'checkbox'): ?>
+
+    <fieldset class="checkbox_container">
+        <legend><?= $this->title; ?></legend>
+        <input type="hidden" name="<?= $this->fieldID; ?>" value="">
+        <?php foreach($this->options as $index => $option): ?>
+        <div class="checkbox_item">
+            <input type="checkbox" id="id_<?= $this->fieldID; ?>_<?= $index ?>" name="<?= $this->fieldID; ?>[]" value="<?= $option['value']; ?>" <?php if($this->changeOnSubmit):?> onchange="this.form.submit()" <?php endif; ?> class="checkbox" <?php if($this->selected != '' ): ?> <?= ( ( in_array( $option['value'], $this->selected ) ? 'checked' : '' ) ) ?> <?php endif; ?> />
+            <label for="id_<?= $this->fieldID; ?>_<?= $index ?>"><?= $option['label']; ?></label>
+        </div>
+        <?php endforeach; ?>
+    </fieldset>
+
+    <?php else: ?>
+
     <?php if($this->title):?>
-        <label for="id_<?= $this->fieldID; ?>" class="widget-label"><?= $this->title; ?></label>
+    <label for="id_<?= $this->fieldID; ?>" class="widget-label"><?= $this->title; ?></label>
     <?php endif;?>
 
-    <select multiple="" id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>[]">
-        <?php foreach($this->options as $option): ?>
-            <option value="<?= $option['value']; ?>" <?php if($this->selected != '' ): ?> <?= ( ( in_array( $option['value'], $this->selected ) ? 'selected' : '' ) ) ?> <?php endif; ?>><?= $option['label']; ?></option>
-        <?php endforeach; ?>
+    <select <?php if($this->used_appearance == 'tags'): ?> multiple="" <?php endif; ?> id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>[]" <?php if($this->changeOnSubmit):?> onchange="this.form.submit()" <?php endif; ?>>
+    <?php if($this->used_appearance != 'tags'): ?><option value=""><?= $this->title; ?></option><?php endif; ?>
+    <?php foreach($this->options as $option): ?>
+    <option value="<?= $option['value']; ?>" <?php if($this->selected != '' ): ?> <?= ( ( in_array( $option['value'], $this->selected ) ? 'selected' : '' ) ) ?> <?php endif; ?>><?= $option['label']; ?></option>
+    <?php endforeach; ?>
     </select>
 
-    <?php if ($this->description): ?>
-        <p class="description"><?= $this->description; ?></p>
     <?php endif; ?>
 
+    <?php if ($this->description): ?>
+    <p class="description"><?= $this->description; ?></p>
+    <?php endif; ?>
 </div>

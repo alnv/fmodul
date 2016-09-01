@@ -12,6 +12,9 @@ $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Bestätigun
 $GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Standardwert-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['taxonomy_url_legend'] = 'Taxonomie URL-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomie-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'Listenansicht-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Formular Felder';
+$GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Formular-Einstellungen';
 
 // fields
 
@@ -45,7 +48,7 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_doNotSet_404'][1] = ' Auf der Weit
 
 // f_active_options
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_active_options'][0] = 'Autovervollständigung aktivieren';
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_active_options'][1] = 'Sie können die Autovervollständigung mit $this->options im jeweiligen Template ausgeben. Bitte die Autovervollständigung nur bei Bedarf aktivieren.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_active_options'][1] = 'Sie können die Autovervollständigung mit $this->options im jeweiligen Template ausgeben.';
 
 // f_orderby
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_orderby'][0] = 'Frontend-Sortierreihenfolge';
@@ -56,16 +59,16 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_list_template'][0] = 'Template aus
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_list_template'][1] = 'Bitte wählen Sie ein Template aus.';
 
 // f_list_field
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_list_field'][0] = 'Template auswählen';
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_list_field'][1] = 'Bitte wählen Sie ein Template aus.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_list_field'][0] = 'Listenansicht';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_list_field'][1] = 'Bitte wählen Sie eine Listenansicht aus.';
 
 // f_detail_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][0] = 'Template auswählen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][1] = 'Bitte wählen Sie ein Template für die Detailansicht aus.';
 
 // f_form_fields
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Filter-Formular';
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Hier können Sie den Filter-Formular bearbeiten.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Formular Felder';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Hier können Sie die Formular Felder bearbeiten.';
 
 // f_form_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][0] = 'Template auswählen';
@@ -74,6 +77,18 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][1] = 'Bitte wähle
 // f_reset_button
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][0] = 'Filtereinstellungen zurücksetzen erlauben';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Die Besucher dürfen die Filtereinstellungen zurücksetzen.';
+
+// fm_related_options
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Nur zusammenhängende Werte anzeigen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Hier können Sie einstellen, dass die Formular Werte auch gefiltert werden.';
+
+// fm_related_start_point
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][0] = 'Startpunkt aktivieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][1] = 'Der erste Feld zeigt immer alle Optionen an.';
+
+// fm_disable_submit
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][0] = 'Absende-Schaltfläche entfernen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][1] = 'Hier können Sie die Absende-Schaltfläche aus dem Formular entfernen.';
 
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Kartenansicht aktivieren';

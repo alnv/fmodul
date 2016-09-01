@@ -14,8 +14,6 @@
 use FModule\ViewContainer;
 use FModule\FieldAppearance;
 use FModule\SqlData;
-use Contao\Backend;
-use Contao\DataContainer;
 
 
 /**
@@ -392,7 +390,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
 /**
  * Class tl_fmodules_filters
  */
-class tl_fmodules_filters extends Backend
+class tl_fmodules_filters extends \Backend
 {
 
     /**

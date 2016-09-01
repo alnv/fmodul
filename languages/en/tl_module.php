@@ -12,6 +12,9 @@ $GLOBALS['TL_LANG']['tl_module']['fm_confirmation_legend'] = 'E-Mail Confirmatio
 $GLOBALS['TL_LANG']['tl_module']['defaultValues_legend'] = 'Default values-Settings';
 $GLOBALS['TL_LANG']['tl_module']['taxonomy_url_legend'] = 'Taxonomy URL-Settings';
 $GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomy-Settings';
+$GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'List view-Settings';
+$GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Form fields';
+$GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Form-Settings';
 
 //fields
 
@@ -64,8 +67,8 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'][1] = 'Please select your detail view template.';
 
 // f_form_fields
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Search form';
-$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Here you can edit search form.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][0] = 'Form fields';
+$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'][1] = 'Here you can edit form fields.';
 
 // f_form_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][0] = 'Search form template';
@@ -74,6 +77,18 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'][1] = 'Please selec
 // f_reset_button
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][0] = 'Add reset button to form';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'][1] = 'Allow to reset form filter in Frontend.';
+
+// fm_related_options
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][0] = 'Show only related options.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'][1] = 'Here you can define related options for your select inputs.';
+
+// fm_related_start_point
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][0] = 'Enable start point';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][1] = 'First field show always all options.';
+
+// fm_disable_submit
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][0] = 'disable submit button';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][1] = 'Here you can disable submit button from form.';
 
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Enable Map View';

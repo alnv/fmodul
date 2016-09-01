@@ -22,10 +22,11 @@ $GLOBALS['TL_LANG']['tl_fmodules']['feeds'][1] = 'New feed';
 //legend
 $GLOBALS['TL_LANG']['tl_fmodules']['main_legend'] = 'Settings';
 $GLOBALS['TL_LANG']['tl_fmodules']['protected_legend'] = 'Access protection';
-$GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Back end palettes';
-$GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Back end sorting';
-$GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Back end navigation';
+$GLOBALS['TL_LANG']['tl_fmodules']['palettes_builder_legend'] = 'Palettes';
+$GLOBALS['TL_LANG']['tl_fmodules']['list_legend'] = 'Sorting';
+$GLOBALS['TL_LANG']['tl_fmodules']['navigation_legend'] = 'Navigation';
 $GLOBALS['TL_LANG']['tl_fmodules']['mandatory_legend'] = 'Mandatory';
+$GLOBALS['TL_LANG']['tl_fmodules']['permission_legend'] = 'Permissions';
 
 //fields
 $GLOBALS['TL_LANG']['tl_fmodules']['name'][0] = 'Module name';
@@ -66,6 +67,11 @@ $GLOBALS['TL_LANG']['tl_fmodules']['addMandatoryHandler'][1] = 'Here you can ove
 $GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][0] = 'Mandatory fields';
 $GLOBALS['TL_LANG']['tl_fmodules']['mandatoryHandler'][1] = 'Select your mandatory fields.';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'][0] = 'Disable operation buttons';
+$GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'][1] = 'Here you can disable operation buttons.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'][0] = 'operation buttons';
+$GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'][1] = 'Please select your operations buttons.';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Table name must start with "fm_".';
 
@@ -78,6 +84,8 @@ $GLOBALS['TL_LANG']['tl_fmodules']['date.7'] = 'Date (m)';
 $GLOBALS['TL_LANG']['tl_fmodules']['date.9'] = 'Date (Y)';
 $GLOBALS['TL_LANG']['tl_fmodules']['asc'] = 'Ascending';
 $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descending';
+$GLOBALS['TL_LANG']['tl_fmodules']['list'] = 'List view';
+$GLOBALS['TL_LANG']['tl_fmodules']['detail'] = 'Detail view';
 
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Image';

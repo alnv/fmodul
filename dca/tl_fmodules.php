@@ -70,16 +70,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
                 'class' => 'header_rss',
                 'attributes' => 'onclick="Backend.getScrollOffset()"',
                 'button_callback' => array('tl_fmodules', 'manageFeeds')
-            ),
-            /*
-            'all' => array
-            (
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             )
-            */
         ),
         'operations' => array(
 
@@ -114,11 +105,12 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         )
     ),
     'palettes' => array(
-        '__selector__' => array('protected', 'addMandatoryHandler'),
-        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy;{mandatory_legend},addMandatoryHandler;'
+        '__selector__' => array('protected', 'addMandatoryHandler', 'disableOperationButtons'),
+        'default' => '{main_legend},name,info,tablename;{navigation_legend},selectNavigation,selectPosition;{palettes_builder_legend},paletteBuilder;{list_legend},sorting,orderBy;{mandatory_legend},addMandatoryHandler;{permission_legend},disableOperationButtons'
     ),
     'subpalettes' => array(
-        'addMandatoryHandler' => 'mandatoryHandler'
+        'addMandatoryHandler' => 'mandatoryHandler',
+        'disableOperationButtons' => 'operationButtons'
     ),
     'fields' => array
     (
@@ -224,6 +216,22 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             'options_callback' => array('tl_fmodules', 'getDataProperties'),
             'eval' => array('multiple' => true),
             'sql' => "blob NULL"
+        ),
+        'disableOperationButtons' => array (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('submitOnChange' => true),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'operationButtons' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'reference' => &$GLOBALS['TL_LANG']['tl_fmodules'],
+            'options' => array('list', 'detail'),
+            'eval' => array('multiple' => true, 'csv'=>','),
+            'sql' => "varchar(512) NOT NULL default ''"
         )
     )
 );
@@ -253,16 +261,13 @@ class tl_fmodules extends \Backend
 
         $dataContainer = \FModule\ViewContainer::getInstance();
         $arrFields = $dataContainer->dcaDataFields();
-        $noNotSet = array('id', 'pid', 'tstamp', 'alias', 'author', 'source', 'url', 'jumpTo', 'target', 'protected', 'groups', 'guests', 'cssID', 'published');
+        $doNotSet = array('id', 'pid', 'tstamp', 'alias', 'author', 'size', 'source', 'url', 'jumpTo', 'target', 'protected', 'groups', 'guests', 'cssID', 'published');
 
         if(is_array($arrFields))
         {
             foreach($arrFields as $name => $field)
             {
-                if(in_array($name, $noNotSet))
-                {
-                    continue;
-                }
+                if(in_array($name, $doNotSet)) {continue;}
                 $return[$name] = $field['label'] ? $field['label'][0] : $name;
             }
         }
@@ -455,10 +460,9 @@ class tl_fmodules extends \Backend
      */
     public function generateTableName($varValue)
     {
-        if (substr($varValue, 0, 3) == 'fm_') {
+        if (substr($varValue, 0, 3) == 'fm_' && substr($varValue, 3)) {
             return $varValue;
         }
-
         throw new \Exception($GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName']);
     }
 

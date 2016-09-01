@@ -137,10 +137,6 @@ class ModuleFormFilter extends \Contao\Module
         $arrNotRelateAbleFields = array('orderBy', 'sorting_fields', 'pagination');
         foreach ($arrFields as $strFieldID => $arrField) {
 
-            if(in_array($arrField['fieldID'], $arrNotRelateAbleFields)) {
-                continue;
-            }
-
             $strValue = \Input::get($strFieldID) ? \Input::get($strFieldID) : '';
             $arrFields[$strFieldID]['value'] = $strValue;
             $arrFields[$strFieldID]['enable'] = false;
@@ -156,9 +152,14 @@ class ModuleFormFilter extends \Contao\Module
                 $arrFields[$strFieldID]['enable'] = true;
             }
 
-            // start point
+            // do not set start point
             if($this->fm_related_start_point && $blnStartPoint) {
                 $blnStartPoint = false;
+                continue;
+            }
+
+            // do not set
+            if(in_array($arrField['fieldID'], $arrNotRelateAbleFields)) {
                 continue;
             }
 

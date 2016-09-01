@@ -11,14 +11,14 @@
  * @copyright 2016 Alexander Naumov
  */
 
-// Path
+// path
 $GLOBALS['FM_AUTO_PATH'] = 'system/modules/fmodule/assets/';
 
 if ((version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true)) {
     $GLOBALS['FM_AUTO_PATH'] = 'bundles/fmodule/';
 }
 
-// Back End Modules
+// back end modules
 $GLOBALS['BE_MOD']['system']['fmodule'] = array(
     'icon' => $GLOBALS['FM_AUTO_PATH'] . 'icon.png',
     'name' => 'F Module',
@@ -35,7 +35,7 @@ $GLOBALS['BE_MOD']['system']['taxonomy'] = array(
     'tables' => array('tl_taxonomies')
 );
 
-// Front End Modules
+// font end modules
 array_insert($GLOBALS['FE_MOD'], 5, array(
     'fmodule' => array(
         'fmodule_fe_list' => 'ModuleListView',
@@ -46,21 +46,21 @@ array_insert($GLOBALS['FE_MOD'], 5, array(
     )
 ));
 
-// Widgets
+// widgets
 $GLOBALS['BE_FFL']['optionWizardExtended'] = 'OptionWizardExtended';
 $GLOBALS['BE_FFL']['modeSettings'] = 'ModeSettings';
 $GLOBALS['BE_FFL']['filterFields'] = 'FilterFields';
 $GLOBALS['BE_FFL']['keyValueWizardCustom'] = 'KeyValueWizardCustom';
 
-// Files
+// files
 if (TL_MODE == 'BE') {
     $GLOBALS['TL_CSS'][] = $GLOBALS['FM_AUTO_PATH'] . 'stylesheet.css';
 }
 
-// Google Maps
+// google Maps
 $GLOBALS['loadGoogleMapLibraries'] = false;
 
-// Hooks
+// hooks
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('DCACreator', 'index');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('FModule', 'setLanguage');
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('FModule', 'getSearchablePages');
@@ -76,13 +76,13 @@ $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('FModuleTranslation', '
 
 
 
-// InsertTags
+// insertTags
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('FModuleInsertTags', 'setHooks');
 
-// Ajax
+// ajax
 $GLOBALS['TL_MOOTOOLS'][] =
     "<script>
-        if(AjaxRequest)
+        if(typeof AjaxRequest != 'undefined')
         {
             AjaxRequest.toggleFMField = function(el)
             {
@@ -111,7 +111,7 @@ $GLOBALS['TL_MOOTOOLS'][] =
         }
     </script>
     <script>
-    	if(Backend)
+    	if(typeof Backend != 'undefined')
     	{
 			Backend.keyValueWizardCustom = function(el, command, id) {
 			var table = $(id),
@@ -189,7 +189,7 @@ $GLOBALS['TL_MOOTOOLS'][] =
     }
 	</script>";
 
-// Permissions
+// permissions
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesp';
 
@@ -202,7 +202,7 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfilters';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfiltersp';
 
-// ProSearch
+// proSearch
 $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
     'tables' => array('tl_fmodules', 'tl_fmodules_filters'),
     'searchIn' => array('name', 'tablename', 'info', 'title', 'type', 'fieldID'),
@@ -211,7 +211,7 @@ $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = array(
     'setCustomShortcut' => array(array('ProSearchApi', 'setCustomShortcut'))
 );
 
-// Wrapper
+// wrapper
 $GLOBALS['TL_WRAPPERS']['start'][] = 'legend_start';
 $GLOBALS['TL_WRAPPERS']['stop'][] = 'legend_end';
 
@@ -219,8 +219,8 @@ $GLOBALS['TL_WRAPPERS']['stop'][] = 'legend_end';
 if (TL_MODE == 'FE')
 {
     $validSums = new FModule\FModule();
-    $license = Contao\Config::get('fmodule_license');
-    if (!isset($license) || !in_array(md5($license), $validSums->validSums, true)) {
+    $strLicense = Contao\Config::get('fmodule_license');
+    if (!isset($strLicense) || !in_array(md5($strLicense), $validSums->validSums, true)) {
         $GLOBALS['TL_HEAD'][] = '<link title="F Module | Buy license" rel="license" href="http://fmodul.alexandernaumov.de/kaufen.html" />';
         $GLOBALS['TL_HEAD'][] = '<link title="F Module | Documentation" rel="help" href="http://fmodul.alexandernaumov.de/ressourcen.html" />';
     }

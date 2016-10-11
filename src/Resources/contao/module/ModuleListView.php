@@ -140,6 +140,7 @@ class ModuleListView extends Module
         $fieldWidgets = array();
         $this->tablename = $tablename;
         $mapFields = array();
+        $geoLocatorValues = array();
         $arrCleanOptions = array();
 
         // map view settings
@@ -178,6 +179,7 @@ class ModuleListView extends Module
             $arrModule = $moduleDB->row();
 
             if (in_array($arrModule['fieldID'], $doNotSetByID) || in_array($arrModule['type'], $doNotSetByType)) {
+
                 continue;
             }
 
@@ -254,12 +256,54 @@ class ModuleListView extends Module
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
 
+            // compass
+            if($arrModule['type'] == 'geo_locator' && $arrModule['value']) {
+
+                $geoLocatorValues[$arrModule['locatorType']] = $arrModule['value'];
+                continue;
+            }
+
             $arrFields[$arrModule['fieldID']] = $arrModule;
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
             $arrFields = $this->setFilterValues($taxonomyFromFE, $taxonomyFromPage, $arrFields);
         }
+
+        // compass
+        if(!empty($geoLocatorValues)) {
+
+            $strCountry = $geoLocatorValues['geo_country'] ? $geoLocatorValues['geo_country'] : 'Germany';
+            $arrLongLatCords = array();
+
+            $strGeoAddress = sprintf('%s %s %s %s, %s',
+                ($geoLocatorValues['geo_street'] ? $geoLocatorValues['geo_street'] : ''),
+                ($geoLocatorValues['geo_zip'] ? $geoLocatorValues['geo_zip'] : ''),
+                ($geoLocatorValues['geo_city'] ? $geoLocatorValues['geo_city'] : ''),
+                ($geoLocatorValues['geo_state'] ? $geoLocatorValues['geo_state'] : ''),
+                $strCountry
+            );
+
+            $strGeoAddress = trim($strGeoAddress);
+
+            if(!empty($strGeoAddress)) {
+
+                $objGeoCords = GeoCoding::getInstance();
+                $arrLongLatCords = $objGeoCords->getGeoCords($strGeoAddress, $strCountry);
+            }
+
+            if($arrLongLatCords['lat'] == '0' && $arrLongLatCords['lng'] == '0') {
+
+                $arrLongLatCords = array();
+            }
+        }
+
+        // compass ->
+        // @todo
+        // create sql query
+        // fe list enable checkbox
+        // fe list country
+        // translate labels
 
         $qResult = HelperModel::generateSQLQueryFromFilterArray($arrFields);
         $qStr = $qResult['qStr'];

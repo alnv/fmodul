@@ -76,7 +76,7 @@ TemplateLoader::addFiles(array
     'mod_form_filter' => $pathToTemplates,
     'mod_fmodule_map' => $pathToTemplates . '/maps',
 
-    // 2 modules
+    // fe modules
     'fm_form_filter' => $pathToTemplates . '/form',
     'fmodule_full' => $pathToTemplates . '/list',
     'fmodule_teaser' => $pathToTemplates . '/list',
@@ -89,6 +89,9 @@ TemplateLoader::addFiles(array
     'fm_widget_fulltext_search' => $pathToTemplates . '/widgets',
     'fm_widget_wrapper_field' => $pathToTemplates . '/widgets',
     'fm_widget_toggle_field' => $pathToTemplates . '/widgets',
+
+    // geo
+    'fm_widget_geo_locator' => $pathToTemplates . '/widgets',
 
     // maps
     'fm_map_field' => $pathToTemplates . '/maps',

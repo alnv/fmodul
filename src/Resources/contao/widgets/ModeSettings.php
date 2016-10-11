@@ -55,7 +55,7 @@ class ModeSettings extends Widget
     {
 
         $allowedDCA = array('tl_module', 'tl_page');
-        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget', 'fulltext_search', 'map_field');
+        $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'widget', 'fulltext_search', 'map_field', 'locatorType');
         $doNotSetByID = array('orderBy', 'sorting_fields', 'pagination', 'auto_item', 'auto_page');
 
         if (!in_array($this->strTable, $allowedDCA)) {

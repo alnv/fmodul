@@ -257,9 +257,9 @@ class ModuleListView extends Module
             }
 
             // compass
-            if($arrModule['type'] == 'geo_locator' && $arrModule['value']) {
+            if($arrModule['type'] == 'geo_locator') {
 
-                $geoLocatorValues[$arrModule['locatorType']] = $arrModule['value'];
+                if($arrModule['value']) $geoLocatorValues[$arrModule['locatorType']] = $arrModule['value'];
                 continue;
             }
 
@@ -271,10 +271,12 @@ class ModuleListView extends Module
         }
 
         // compass
+        $arrLongLatCords = array();
+        $strDistanceField = "";
+        $strHavingQuery = "";
         if(!empty($geoLocatorValues)) {
 
             $strCountry = $geoLocatorValues['geo_country'] ? $geoLocatorValues['geo_country'] : 'Germany';
-            $arrLongLatCords = array();
 
             $strGeoAddress = sprintf('%s %s %s %s, %s',
                 ($geoLocatorValues['geo_street'] ? $geoLocatorValues['geo_street'] : ''),
@@ -296,22 +298,24 @@ class ModuleListView extends Module
 
                 $arrLongLatCords = array();
             }
+
+            if(!empty($arrLongLatCords)) {
+
+                $strDistanceField = "3956 * 1.6 * 2 * ASIN(SQRT( POWER(SIN((" . $arrLongLatCords['lat'] . "-abs(geo_latitude)) * pi()/180 / 2),2) + COS(" . $arrLongLatCords['lat'] . " * pi()/180 ) * COS( abs(geo_latitude) *  pi()/180) * POWER(SIN((" . $arrLongLatCords['lng'] . "-geo_longitude) *  pi()/180 / 2), 2) )) AS _distance";
+                $strHavingQuery = " HAVING _distance < " . ( \Input::get('_distance') ? \Input::get('_distance') : '25') . "";
+            }
         }
 
-        // compass ->
-        // @todo
-        // create sql query
-        // fe list enable checkbox
-        // fe list country
-        // translate labels
-
+        $selectedFields = $strDistanceField ? '*, ' . $strDistanceField : '*';
         $qResult = HelperModel::generateSQLQueryFromFilterArray($arrFields);
         $qStr = $qResult['qStr'];
         $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch'] : '';
 
         //get text search results
         $textSearchResults = array();
+
         if ($qTextSearch) {
+
             $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID, $qResult['searchSettings']);
         }
 
@@ -325,7 +329,7 @@ class ModuleListView extends Module
         if (HelperModel::previewMode()) $qProtectedStr = '';
 
         // get all items
-        $listDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE pid = ' . $wrapperID . $qProtectedStr . $qStr . $qOrderByStr)->query();
+        $listDB = $this->Database->prepare('SELECT ' . $selectedFields . ' FROM ' . $tablename . '_data WHERE pid = ' . $wrapperID . $qProtectedStr . $qStr . $strHavingQuery . $qOrderByStr)->query();
 
         // image size
         $imgSize = false;

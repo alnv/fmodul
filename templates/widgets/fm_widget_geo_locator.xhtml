@@ -1,0 +1,13 @@
+<div class="widget-geo-locator form-widget <?= $this->cssClass; ?>">
+
+   <?php if($this->title):?>
+   <label for="id_<?= $this->fieldID; ?>" class="widget-label"><?= $this->title; ?></label>
+   <?php endif;?>
+
+   <input type="text" id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>" value="<?= $this->selected; ?>"/>
+
+   <?php if ($this->description): ?>
+   <p class="description"><?= $this->description; ?></p>
+   <?php endif; ?>
+
+</div>

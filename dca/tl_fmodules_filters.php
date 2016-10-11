@@ -108,6 +108,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchOrderBy,fullTextSearchFields;',
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{expert_legend:hide},fmGroup,evalCss;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
+        'geo_locator' => '{type_legend},type;{setting_legend},fieldID,title,description;{locator_legend},locatorType;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
         'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
@@ -145,8 +146,17 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'filter' => true,
             'inputType' => 'select',
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'map_field', 'wrapper_field', 'legend_start', 'legend_end'),
+            'options' => array('simple_choice', 'multi_choice', 'search_field', 'date_field', 'fulltext_search', 'widget', 'toggle_field', 'geo_locator', 'map_field', 'wrapper_field', 'legend_start', 'legend_end'),
             'eval' => array('submitOnChange' => true, 'mandatory' => true, 'chosen' => true),
+            'sql' => "varchar(32) NOT NULL default ''"
+        ),
+        'locatorType' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'],
+            'exclude' => true,
+            'default' => 'geo_zip',
+            'inputType' => 'radio',
+            'options' => array('geo_street', 'geo_zip', 'geo_city', 'geo_state', 'geo_country'),
+            'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
             'sql' => "varchar(32) NOT NULL default ''"
         ),
         'fieldID' => array

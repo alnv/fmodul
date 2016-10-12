@@ -20,7 +20,7 @@
         FModuleGoogleMap.push(function () {
 
             // set center map view
-            var location = new google.maps.LatLng("<?= $this->fm_center_lat; ?>", "<?= $this->fm_center_lng; ?>");
+            var location = new google.maps.LatLng("<?= $this->mapSettings['lat']; ?>", "<?= $this->mapSettings['lng']; ?>");
 
             // set unique map obj
             FModuleMap<?= $this->feViewID?> = new google.maps.Map(document.getElementById("map_<?= $this->id; ?>"), {

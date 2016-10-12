@@ -33,6 +33,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Expert-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Map-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Search-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['taxonomy_legend'] = 'Taxonomy-Settings';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['locator_legend'] = 'Locator-Settings';
 
 //fields
 
@@ -91,6 +92,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][1] = 'Enable marker in y
 // mapInfoBox
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][0] = 'Enable info box';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][1] = 'Enable info box in your map.';
+
+// locatorType
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][0] = 'Locator fields';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][1] = 'Please select locator field.';
 
 // legend_toggler
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
@@ -164,6 +169,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Please select S
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Multiple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Text field';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_locator'] = 'Locator';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Full text search';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Toggle field';
@@ -188,3 +194,11 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'This fieldID exist
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'It may only be one %s attribute!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDEmpty'] = 'FieldID can not be empty!';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'] = 'FieldID %s is not allowed!';
+
+// geo
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_street'] = 'Street';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_zip'] = 'Zip-Code';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_city'] = 'City';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_state'] = 'State';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_country'] = 'Country';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_distance'] = 'Distance';

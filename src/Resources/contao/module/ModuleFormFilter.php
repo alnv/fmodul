@@ -100,8 +100,10 @@ class ModuleFormFilter extends \Contao\Module
                 }
 
                 $_arrFields[$arrFEField['fieldID']] = $arrFEField;
-                foreach ($arrFields[$strID] as $strKey => $strValue) {
-                    $_arrFields[$arrFEField['fieldID']][$strKey] = $strValue;
+                if(is_array($arrFields[$strID])) {
+                    foreach ($arrFields[$strID] as $strKey => $strValue) {
+                        $_arrFields[$arrFEField['fieldID']][$strKey] = $strValue;
+                    }
                 }
             }
 

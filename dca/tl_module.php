@@ -18,7 +18,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 // module palette
 
 // list
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend},fm_addMap;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 // form
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type;{list_view_legend},f_list_field;{form_fields_legend},f_form_fields;{form_settings_legend},f_reset_button,fm_disable_submit,f_active_options,fm_related_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
@@ -42,6 +42,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_storeFile';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addNotificationEmail';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addConfirmationEmail';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_related_options';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addGeoLocator';
 
 // sub palettes
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_filter'] = 'f_filter_fields';
@@ -54,6 +55,7 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_storeFile'] = 'fm_uploadFolde
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addNotificationEmail'] = 'fm_notificationEmailSubject,fm_notificationSender,fm_notificationEmailName,fm_notificationEmailList,fm_sendNotificationToAdmin';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addConfirmationEmail'] = 'fm_confirmationEmailSubject,fm_confirmationSender,fm_confirmationEmailName,fm_confirmationEmailList,fm_confirmationRecipientEmail,fm_sendConfirmationToAdmin,fm_confirmationBody';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_related_options'] = 'fm_related_start_point';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addGeoLocator'] = 'fm_geoLocatorCountry,fm_adaptiveZoomFactor';
 
 // module fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy'] = array(
@@ -75,7 +77,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy_page'] = array(
     'sql' => "int(10) unsigned NOT NULL default '0'",
     'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
 );
-
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_select_module'],
@@ -316,6 +317,31 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapStyle'] = array(
     'eval' => array('allowHtml' => true, 'tl_class' => 'clr', 'rte' => 'ace|html'),
     'sql' => "text NULL"
 );
+
+// geo settings
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_addGeoLocator'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addGeoLocator'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true, 'tl_class' => 'm12'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_geoLocatorCountry'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'],
+    'exclude' => true,
+    'inputType' => 'select',
+    'options_callback' => array('tl_module_fmodule', 'getCountryNames'),
+    'eval' => array('tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+    'sql' => "varchar(255) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_adaptiveZoomFactor'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50 m12'),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
 // seo settings
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_overwrite_seoSettings'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_overwrite_seoSettings'],
@@ -926,6 +952,14 @@ class tl_module_fmodule extends tl_module
     public function getFormTemplates()
     {
         return $this->getTemplateGroup('fm_form_');
+    }
+
+    /**
+     * @return array
+     */
+    function getCountryNames() {
+
+        return array_values($this->getcountries());
     }
 
     /**

@@ -274,9 +274,11 @@ class ModuleListView extends Module
         $arrLongLatCords = array();
         $strDistanceField = "";
         $strHavingQuery = "";
+
         if(!empty($geoLocatorValues)) {
 
-            $strCountry = $geoLocatorValues['geo_country'] ? $geoLocatorValues['geo_country'] : 'Germany';
+            $strFECountry = $this->fm_geoLocatorCountry ? $this->fm_geoLocatorCountry : 'Deutschland';
+            $strCountry = $geoLocatorValues['geo_country'] ? $geoLocatorValues['geo_country'] : $strFECountry;
 
             $strGeoAddress = sprintf('%s %s %s %s, %s',
                 ($geoLocatorValues['geo_street'] ? $geoLocatorValues['geo_street'] : ''),
@@ -301,8 +303,42 @@ class ModuleListView extends Module
 
             if(!empty($arrLongLatCords)) {
 
+                $strDistance = $geoLocatorValues['geo_distance'] ? $geoLocatorValues['geo_distance'] : '25';
+
+                if(\Input::get('_distance')) {
+
+                    $strDistance = \Input::get('_distance');
+                }
+
+                if($this->fm_adaptiveZoomFactor && !empty($mapSettings)) {
+
+                    $intDistance = (int)$strDistance;
+
+                    $strZoom = '14';
+
+                    if($intDistance >= 25 && $intDistance <= 50) {
+                        $strZoom = '12';
+                    }
+
+                    if($intDistance > 50 && $intDistance <= 100) {
+                        $strZoom = '10';
+                    }
+
+                    if($intDistance > 100 && $intDistance <= 200) {
+                        $strZoom = '7';
+                    }
+
+                    if($intDistance > 200 ) {
+                        $strZoom = '6';
+                    }
+
+                    $mapSettings['mapZoom'] = $strZoom;
+                    $mapSettings['lat'] = (string)$arrLongLatCords['lat'];
+                    $mapSettings['lng'] = (string)$arrLongLatCords['lng'];
+                }
+
                 $strDistanceField = "3956 * 1.6 * 2 * ASIN(SQRT( POWER(SIN((" . $arrLongLatCords['lat'] . "-abs(geo_latitude)) * pi()/180 / 2),2) + COS(" . $arrLongLatCords['lat'] . " * pi()/180 ) * COS( abs(geo_latitude) *  pi()/180) * POWER(SIN((" . $arrLongLatCords['lng'] . "-geo_longitude) *  pi()/180 / 2), 2) )) AS _distance";
-                $strHavingQuery = " HAVING _distance < " . ( \Input::get('_distance') ? \Input::get('_distance') : '25') . "";
+                $strHavingQuery = " HAVING _distance < " . $strDistance . "";
             }
         }
 

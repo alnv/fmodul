@@ -15,6 +15,7 @@ $GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomie-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'Listenansicht-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Formular Felder';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Formular-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['fm_geo_legend'] = 'Umkreissuche-Einstellungen';
 
 // fields
 
@@ -133,6 +134,18 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapInfoBox'][1] = 'Hier können S
 // fm_map_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_map_template'][0] = 'Map Template auswählen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_map_template'][1] = 'Wähle ein Map Template aus.';
+
+// fm_addGeoLocator
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addGeoLocator'][0] = 'Umkreissuche optimieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addGeoLocator'][1] = 'Hier können Sie die Umkreissuche optimieren.';
+
+// fm_geoLocatorCountry
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'][0] = 'Land';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'][1] = 'Hier können Sie die Umkreissuche auf ein Land einschränken.';
+
+// fm_adaptiveZoomFactor
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][0] = 'Zoom-Faktor anpassen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][1] = 'Der Zoom-Faktor passt sich je nach der Distanz automatisch an.';
 
 // fm_overwrite_seoSettings
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_overwrite_seoSettings'][0] = 'Suchmaschinenoptimierung anpassen';

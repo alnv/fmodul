@@ -33,6 +33,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['expert_legend'] = 'Experten-Einstell
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['map_settings_legend'] = 'Karten-Einstellunegn';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search_settings'] = 'Suche-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['taxonomy_legend'] = 'Taxonomie-Einstellungen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['locator_legend'] = 'Umkreissuche-Einstellungen';
 
 //fields
 
@@ -91,6 +92,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapMarker'][1] = 'Hier können Sie e
 // mapInfoBox
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][0] = 'Info Box anzeigen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][1] = 'Hier können Sie eine Info Box in der Karte anzeigen.';
+
+// locatorType
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][0] = 'Umkreissuche Felder';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][1] = 'Bitte wählen Sie ein Feld aus.';
 
 // isInteger
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahlenwert';
@@ -166,6 +171,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['notAllowed'] = 'Dieser Feldname %s i
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Einfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Mehrfache Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['search_field'] = 'Textfeld';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_locator'] = 'Umkreissuche';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['date_field'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fulltext_search'] = 'Volltextsuche';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['toggle_field'] = 'Schalter';
@@ -184,3 +190,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['ROADMAP'] = 'Karte';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['SATELLITE'] = 'Satellit';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['HYBRID'] = 'Hybrid';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['TERRAIN'] = 'Terrain';
+
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_street'] = 'Straße';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_zip'] = 'Postleitzahl';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_city'] = 'Stadt';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_state'] = 'Bundesstaat';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_country'] = 'Land';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geo_distance'] = 'Distanz';

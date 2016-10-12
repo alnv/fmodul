@@ -15,6 +15,7 @@ $GLOBALS['TL_LANG']['tl_module']['taxonomy_legend'] = 'Taxonomy-Settings';
 $GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'List view-Settings';
 $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Form fields';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Form-Settings';
+$GLOBALS['TL_LANG']['tl_module']['fm_geo_legend'] = 'Locator-Settings';
 
 //fields
 
@@ -89,6 +90,18 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'][1] = 'First
 // fm_disable_submit
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][0] = 'disable submit button';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'][1] = 'Here you can disable submit button from form.';
+
+// fm_addGeoLocator
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addGeoLocator'][0] = 'Optimize locator';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addGeoLocator'][1] = 'Here you can optimize locator settings.';
+
+// fm_geoLocatorCountry
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'][0] = 'Country';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'][1] = 'Please select a Country.';
+
+// fm_adaptiveZoomFactor
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][0] = 'adaptive zoom';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][1] = 'Here you can enbale adaptive zoom.';
 
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Enable Map View';

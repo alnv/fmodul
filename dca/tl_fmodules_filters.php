@@ -154,9 +154,10 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'],
             'exclude' => true,
             'default' => 'geo_zip',
-            'inputType' => 'radio',
-            'options' => array('geo_street', 'geo_zip', 'geo_city', 'geo_state', 'geo_country'),
+            'inputType' => 'select',
+            'options' => array('geo_street', 'geo_zip', 'geo_city', 'geo_state', 'geo_country', 'geo_distance'),
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
+            'eval' => array('mandatory' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
         'fieldID' => array

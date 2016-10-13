@@ -83,6 +83,11 @@ class ModuleListView extends Module
     protected $strTag = array();
 
     /**
+     * @var bool
+     */
+    protected $blnLocatorInvoke = false;
+
+    /**
      * @var string
      */
     protected $strOrderBy = '';
@@ -283,9 +288,11 @@ class ModuleListView extends Module
         $strDistanceField = "";
         $strHavingQuery = "";
 
-        if(!empty($geoLocatorValues)) {
+        if($geoLocatorValues['geo_street'] || $geoLocatorValues['geo_zip'] || $geoLocatorValues['geo_city']) {
 
-            $strFECountry = $this->fm_geoLocatorCountry ? $this->fm_geoLocatorCountry : 'Deutschland';
+            $this->blnLocatorInvoke = true;
+
+            $strFECountry = $this->fm_geoLocatorCountry ? $this->fm_geoLocatorCountry : '';
             $strCountry = $geoLocatorValues['geo_country'] ? $geoLocatorValues['geo_country'] : $strFECountry;
 
             $strGeoAddress = sprintf('%s %s %s %s, %s',
@@ -311,7 +318,7 @@ class ModuleListView extends Module
 
             if(!empty($arrLongLatCords)) {
 
-                $strDistance = $geoLocatorValues['geo_distance'] ? $geoLocatorValues['geo_distance'] : '0';
+                $strDistance = $geoLocatorValues['geo_distance'] ? $geoLocatorValues['geo_distance'] : '';
 
                 if(\Input::get('_distance')) {
 
@@ -336,13 +343,13 @@ class ModuleListView extends Module
                         $strZoom = '7';
                     }
 
-                    $mapSettings['mapZoom'] = $strZoom;
+                    $mapSettings['mapZoom'] = $strDistance ? $strZoom : $mapSettings['mapZoom'];
                     $mapSettings['lat'] = (string)$arrLongLatCords['lat'];
                     $mapSettings['lng'] = (string)$arrLongLatCords['lng'];
                 }
 
                 $strDistanceField = "3956 * 1.6 * 2 * ASIN(SQRT( POWER(SIN((" . $arrLongLatCords['lat'] . "-abs(geo_latitude)) * pi()/180 / 2),2) + COS(" . $arrLongLatCords['lat'] . " * pi()/180 ) * COS( abs(geo_latitude) *  pi()/180) * POWER(SIN((" . $arrLongLatCords['lng'] . "-geo_longitude) *  pi()/180 / 2), 2) )) AS _distance";
-                $strHavingQuery = " HAVING _distance < " . $strDistance . "";
+                $strHavingQuery = $strDistance ? " HAVING _distance < " . $strDistance . "" : "";
             }
         }
 
@@ -753,7 +760,7 @@ class ModuleListView extends Module
         $this->strOrderBy = $orderBy;
         $sorting = $this->getSortingField();
 
-        if((\Input::get('geo_distance') || \Input::get('_distance')) && isset($this->fm_orderByDistance) && in_array($this->fm_orderByDistance, $allowedOrderByItems)) {
+        if($this->blnLocatorInvoke && ( $this->fm_orderByDistance && in_array($this->fm_orderByDistance, $allowedOrderByItems ))) {
 
             $orderBy = mb_strtoupper($this->fm_orderByDistance, 'UTF-8');
         }
@@ -801,11 +808,11 @@ class ModuleListView extends Module
 
         }
 
-        if( (\Input::get('geo_distance') || \Input::get('_distance')) && isset($this->fm_orderByDistance)) {
+        if($this->blnLocatorInvoke && $this->fm_orderByDistance) {
 
             $sortingFields[] = '_distance';
         }
-
+        
         if (count($sortingFields) > 0) {
             $sortingFields = array_filter($sortingFields);
             return implode(',', $sortingFields);

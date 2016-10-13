@@ -12,6 +12,9 @@
                 <?php if ($this->date): ?>
                         <p class="date"><time datetime="<?= $this->dateTime ?>"><?= $this->date ?><?php if ($this->time): ?>, <?= $this->time ?><?php endif; ?></time></p>
                 <?php endif; ?>
+                 <?php if ($this->_distance): ?>
+                     <p class="distance"><span><?= $this->_distanceLabel; ?></span> <strong><?= $this->_distance ?> km</strong></p>
+                 <?php endif; ?>
         </header>
 
         <?php if ($this->addImage): ?>

@@ -4,7 +4,21 @@
    <label for="id_<?= $this->fieldID; ?>" class="widget-label"><?= $this->title; ?></label>
    <?php endif;?>
 
+   <?php if( $this->locatorType == "geo_distance" && !empty($this->geoDistanceOptions)): ?>
+
+   <select id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>">
+      <?php foreach($this->geoDistanceOptions as $option): ?>
+
+      <option value="<?= $option ?>" <?= ( $this->selected ==  $option ? "selected" : "" ) ?>><?= $option ?> km</option>
+
+      <?php endforeach; ?>
+   </select>
+
+   <?php else: ?>
+
    <input type="text" id="id_<?= $this->fieldID; ?>" name="<?= $this->fieldID; ?>" value="<?= $this->selected; ?>"/>
+
+   <?php endif; ?>
 
    <?php if ($this->description): ?>
    <p class="description"><?= $this->description; ?></p>

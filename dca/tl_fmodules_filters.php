@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
     ),
 
     'palettes' => array(
-        '__selector__' => array('type', 'reactToTaxonomy'),
+        '__selector__' => array('type', 'reactToTaxonomy', 'locatorType'),
         'default' => '{type_legend},type;',
         'simple_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,negate,autoPage;{taxonomy_legend},dataFromTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'multi_choice' => '{type_legend},type;{setting_legend},fieldID,title,description,fieldAppearance,dataFromTable,negate,autoPage;{taxonomy_legend},reactToTaxonomy;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
@@ -109,6 +109,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{expert_legend:hide},fmGroup,evalCss;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'geo_locator' => '{type_legend},type;{setting_legend},fieldID,title,description;{locator_legend},locatorType;',
+        'geo_distance' => '{type_legend},type;{setting_legend},fieldID,title,description;{locator_legend},locatorType,geoDistanceDelimiter,geoDistanceOptions,geoDistanceUnit;',
         'legend_start' => '{type_legend},type;{setting_legend},fieldID,title;',
         'legend_end' => '{type_legend},type;{setting_legend},fieldID,title;',
         'widget' => '{type_legend},type;{setting_legend},widget_type,widgetTemplate,fieldID,title,description;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
@@ -159,6 +160,23 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
             'eval' => array('mandatory' => true),
             'sql' => "varchar(32) NOT NULL default ''"
+        ),
+        'geoDistanceDelimiter' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceDelimiter'],
+            'default' => ',',
+            'inputType' => 'text',
+            'exclude' => true,
+            'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+        'geoDistanceOptions' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceOptions'],
+            'inputType' => 'listWizard',
+            'exclude' => true,
+            'eval' => array('tl_class' => 'clr'),
+            'sql' => "blob NULL"
         ),
         'fieldID' => array
         (

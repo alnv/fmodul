@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_storeFile'] = 'fm_uploadFolde
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addNotificationEmail'] = 'fm_notificationEmailSubject,fm_notificationSender,fm_notificationEmailName,fm_notificationEmailList,fm_sendNotificationToAdmin';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addConfirmationEmail'] = 'fm_confirmationEmailSubject,fm_confirmationSender,fm_confirmationEmailName,fm_confirmationEmailList,fm_confirmationRecipientEmail,fm_sendConfirmationToAdmin,fm_confirmationBody';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_related_options'] = 'fm_related_start_point';
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addGeoLocator'] = 'fm_geoLocatorCountry,fm_adaptiveZoomFactor';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addGeoLocator'] = 'fm_geoLocatorCountry,fm_adaptiveZoomFactor,fm_orderByDistance';
 
 // module fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy'] = array(
@@ -340,6 +340,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_adaptiveZoomFactor'] = array(
     'inputType' => 'checkbox',
     'eval' => array('tl_class' => 'w50 m12'),
     'sql' => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_orderByDistance'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderByDistance'],
+    'exclude' => true,
+    'inputType' => 'select',
+    'eval' => array('tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
+    'options' => array('desc', 'asc'),
+    'reference' => &$GLOBALS['TL_LANG']['tl_module'],
+    'sql' => "varchar(8) NOT NULL default ''"
 );
 
 // seo settings

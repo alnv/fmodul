@@ -115,6 +115,7 @@ class ModuleListView extends Module
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
             Input::setGet('item', Input::get('auto_item'));
         }
+
         return parent::generate();
     }
 
@@ -260,6 +261,13 @@ class ModuleListView extends Module
             if($arrModule['type'] == 'geo_locator') {
 
                 if($arrModule['value']) $geoLocatorValues[$arrModule['locatorType']] = $arrModule['value'];
+
+                // get delimiter
+                if($arrModule['locatorType'] == 'geo_distance') {
+
+                    $geoLocatorValues['geoDistanceDelimiter'] = $arrModule['geoDistanceDelimiter'] ? $arrModule['geoDistanceDelimiter'] : ',';
+                }
+
                 continue;
             }
 
@@ -303,7 +311,7 @@ class ModuleListView extends Module
 
             if(!empty($arrLongLatCords)) {
 
-                $strDistance = $geoLocatorValues['geo_distance'] ? $geoLocatorValues['geo_distance'] : '25';
+                $strDistance = $geoLocatorValues['geo_distance'] ? $geoLocatorValues['geo_distance'] : '0';
 
                 if(\Input::get('_distance')) {
 
@@ -312,24 +320,20 @@ class ModuleListView extends Module
 
                 if($this->fm_adaptiveZoomFactor && !empty($mapSettings)) {
 
-                    $intDistance = (int)$strDistance;
+                    $intDistance = (int) $strDistance;
 
-                    $strZoom = '14';
+                    $strZoom = '12';
 
                     if($intDistance >= 25 && $intDistance <= 50) {
-                        $strZoom = '12';
-                    }
-
-                    if($intDistance > 50 && $intDistance <= 100) {
                         $strZoom = '10';
                     }
 
-                    if($intDistance > 100 && $intDistance <= 200) {
-                        $strZoom = '7';
+                    if($intDistance > 50 && $intDistance <= 100) {
+                        $strZoom = '8';
                     }
 
-                    if($intDistance > 200 ) {
-                        $strZoom = '6';
+                    if($intDistance > 100) {
+                        $strZoom = '7';
                     }
 
                     $mapSettings['mapZoom'] = $strZoom;
@@ -492,6 +496,13 @@ class ModuleListView extends Module
             $item['dateTime'] = $dateTime;
             $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
             $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
+
+            // distance
+            if($item['_distance']) {
+
+                $item['_distance'] = number_format($item['_distance'], 2, $geoLocatorValues['geoDistanceDelimiter'], $geoLocatorValues['geoDistanceDelimiter']);
+                $item['_distanceLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_distance'];
+            }
 
             // set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
@@ -741,6 +752,12 @@ class ModuleListView extends Module
         }
         $this->strOrderBy = $orderBy;
         $sorting = $this->getSortingField();
+
+        if((\Input::get('geo_distance') || \Input::get('_distance')) && isset($this->fm_orderByDistance) && in_array($this->fm_orderByDistance, $allowedOrderByItems)) {
+
+            $orderBy = mb_strtoupper($this->fm_orderByDistance, 'UTF-8');
+        }
+
         return ' ORDER BY ' . $sorting . ' ' . $orderBy;
     }
 
@@ -782,6 +799,11 @@ class ModuleListView extends Module
 
             $sortingFields = $temp;
 
+        }
+
+        if( (\Input::get('geo_distance') || \Input::get('_distance')) && isset($this->fm_orderByDistance)) {
+
+            $sortingFields[] = '_distance';
         }
 
         if (count($sortingFields) > 0) {

@@ -137,6 +137,7 @@ class ModuleFormFilter extends \Contao\Module
         $arrActiveFields = array();
         $blnStartPoint = true;
         $arrNotRelateAbleFields = array('orderBy', 'sorting_fields', 'pagination');
+
         foreach ($arrFields as $strFieldID => $arrField) {
 
             $strValue = \Input::get($strFieldID) ? \Input::get($strFieldID) : '';
@@ -248,6 +249,15 @@ class ModuleFormFilter extends \Contao\Module
             if ($arrField['fieldID'] == 'address_country') {
                 $arrCountries = $this->getCountries();
                 $arrFields[$strFieldID]['options'] = DiverseFunction::conformOptionsArray($arrCountries);
+            }
+
+            // geo locator
+            if($arrField['type'] == 'geo_locator') {
+
+                if($arrField['locatorType'] == 'geo_distance') {
+
+                    $arrFields[$strFieldID]['geoDistanceOptions'] =  $this->generateGeoDistanceOptions($arrField['geoDistanceOptions']);
+                }
             }
 
             // get options
@@ -434,6 +444,32 @@ class ModuleFormFilter extends \Contao\Module
         $this->Template->cssID = $this->cssID;
         $this->Template->fields = $strResult;
 
+    }
+
+    /**
+     * @param $strOptions
+     * @return array|mixed
+     */
+    protected function generateGeoDistanceOptions($strOptions) {
+
+        $arrOptions = array();
+
+        if($strOptions){
+
+            $arrOptionsTemp = deserialize($strOptions);
+
+            if(is_array($arrOptionsTemp)) {
+
+                $arrOptions = $arrOptionsTemp;
+            }
+        }
+
+        if(count($arrOptions) < 2 && !$arrOptions[0]) {
+
+            return array();
+        }
+
+        return $arrOptions;
     }
 
     /**

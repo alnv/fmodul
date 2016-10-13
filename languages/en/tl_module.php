@@ -103,6 +103,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'][1] = 'Please 
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][0] = 'adaptive zoom';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][1] = 'Here you can enbale adaptive zoom.';
 
+// fm_orderByDistance
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderByDistance'][0] = 'Sort by distance';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderByDistance'][1] = 'Sort your items by distance.';
+
 // fm_addMap
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][0] = 'Enable Map View';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'][1] = 'Hereyou can enable google map view.';

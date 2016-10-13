@@ -30,6 +30,7 @@ $GLOBALS['TL_LANG']['MSC']['f_gte'] = 'Greater equal';
 $GLOBALS['TL_LANG']['MSC']['f_gt'] = 'Greater then';
 $GLOBALS['TL_LANG']['MSC']['f_lt'] = 'Less equal';
 $GLOBALS['TL_LANG']['MSC']['f_lte'] = 'Less than';
+$GLOBALS['TL_LANG']['MSC']['fm_distance'] = 'Distance is about';
 
 //errors
 $GLOBALS['TL_LANG']['ERR']['fallbackExist'] = 'You can only define one language fallback per wrapper.';

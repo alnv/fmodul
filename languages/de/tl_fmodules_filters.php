@@ -97,6 +97,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][1] = 'Hier können Sie 
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][0] = 'Umkreissuche Felder';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][1] = 'Bitte wählen Sie ein Feld aus.';
 
+// geoDistanceDelimiter
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceDelimiter'][0] = 'Trennzeichen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceDelimiter'][1] = 'Bitte geben Sie ein Trennzeichen ein. Standard: Komma';
+
+// geoDistanceOptions
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceOptions'][0] = 'Distanz Optionen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceOptions'][1] = 'Hier können Sie Ihre eigene Werte festlegen und die Distanz selber bestimmer. Bitte geben Sie nur Zahlen ein!';
+
 // isInteger
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][0] = 'Zahlenwert';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['isInteger'][1] = 'Diese Einstellung erlaubt das Filtern von Zahlenwerten.';

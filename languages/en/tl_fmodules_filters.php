@@ -97,6 +97,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['mapInfoBox'][1] = 'Enable info box i
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][0] = 'Locator fields';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['locatorType'][1] = 'Please select locator field.';
 
+// geoDistanceDelimiter
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceDelimiter'][0] = 'Delimiter';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceDelimiter'][1] = 'Please enter your delimiter.';
+
+// geoDistanceOptions
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceOptions'][0] = 'Distance Options';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['geoDistanceOptions'][1] = 'Please enter your distance options. Use only numbers!';
+
 // legend_toggler
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][0] = 'Palette';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['legend_toggler'][1] = 'Here you can define your palette.';

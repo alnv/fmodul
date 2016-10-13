@@ -147,6 +147,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'][1] = 'Hier k�
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][0] = 'Zoom-Faktor anpassen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'][1] = 'Der Zoom-Faktor passt sich je nach der Distanz automatisch an.';
 
+// fm_orderByDistance
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderByDistance'][0] = 'Anhand der Distanz sortieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderByDistance'][1] = 'Hier können Sie das normale Sortier Verhalten überschreiben.';
+
 // fm_overwrite_seoSettings
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_overwrite_seoSettings'][0] = 'Suchmaschinenoptimierung anpassen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_overwrite_seoSettings'][1] = 'Hier können Sie die Suchmaschinenoptimierung anpassen.';

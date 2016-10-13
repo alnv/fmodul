@@ -158,7 +158,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'inputType' => 'select',
             'options' => array('geo_street', 'geo_zip', 'geo_city', 'geo_state', 'geo_country', 'geo_distance'),
             'reference' => &$GLOBALS['TL_LANG']['tl_fmodules_filters'],
-            'eval' => array('mandatory' => true),
+            'eval' => array('mandatory' => true, 'submitOnChange' => true),
             'sql' => "varchar(32) NOT NULL default ''"
         ),
         'geoDistanceDelimiter' => array

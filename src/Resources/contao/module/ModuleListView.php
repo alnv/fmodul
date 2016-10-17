@@ -812,7 +812,7 @@ class ModuleListView extends Module
 
             $sortingFields[] = '_distance';
         }
-        
+
         if (count($sortingFields) > 0) {
             $sortingFields = array_filter($sortingFields);
             return implode(',', $sortingFields);

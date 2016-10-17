@@ -52,7 +52,7 @@ class DCAModuleData extends ViewContainer
     /**
      * @var
      */
-    private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search', 'map_field');
+    private $doNotSetByType = array('wrapper_field', 'legend_start', 'legend_end', 'fulltext_search', 'map_field', 'geo_locator');
 
     /**
      * @var
@@ -227,10 +227,13 @@ class DCAModuleData extends ViewContainer
         $table = $dc->table ? mb_substr($dc->table, 0, strlen($dc->table) - 5) : '';
 
         if(!$this->Database->tableExists($table)) return $options;
+
         if(!$field && !$table && !$pid) return $options;
 
         $filterDB = $this->Database->prepare('SELECT tl_fmodules_filters.fieldID, tl_fmodules.tablename, tl_fmodules.id, tl_fmodules_filters.pid, tl_fmodules_filters.reactToField, tl_fmodules_filters.reactToTaxonomy FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tl_fmodules_filters.fieldID = ? AND tl_fmodules.tablename = ?')->limit(1)->execute($field, $table);
+
         if(!$filterDB->count()) return $options;
+
         $arrFilter = $filterDB->row();
 
         if($arrFilter['reactToField'] && $arrFilter['reactToTaxonomy'] == '1')
@@ -239,15 +242,19 @@ class DCAModuleData extends ViewContainer
             $alias = $dc->activeRecord->{$reactToField};
             $arrWrapper = $this->Database->prepare('SELECT * FROM '.$table.' WHERE id = ?')->limit(1)->execute($pid)->row();
             $taxonomyPid = '';
+
             if(isset($arrWrapper['select_taxonomy_' . $reactToField ]) && $arrWrapper['select_taxonomy_' . $reactToField ])
             {
                 $taxonomyPid = $arrWrapper['select_taxonomy_' . $reactToField ];
             }
+
             if(!$taxonomyPid)
             {
                 return $options;
             }
+
             $taxonomiesTagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($alias, $taxonomyPid);
+
             while($taxonomiesTagsDB->next())
             {
                 $options[$taxonomiesTagsDB->alias] = $taxonomiesTagsDB->name ? $taxonomiesTagsDB->name : $taxonomiesTagsDB->alias;

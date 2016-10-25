@@ -10,15 +10,12 @@
  * @license   commercial
  * @copyright 2016 Alexander Naumov
  */
- 
-use Contao\Frontend;
-use Contao\Input;
 
 /**
  * Class AutoCompletion
  * @package FModule
  */
-class AutoCompletion extends Frontend 
+class AutoCompletion extends \Frontend
 {
 
     /**
@@ -33,24 +30,17 @@ class AutoCompletion extends Frontend
 	{
 		//
 		$allowedTypes = array('search_field', 'multi_choice', 'simple_choice', 'fulltext_search', 'date_field');
-		
-		//
+
 		if ((!$tablename || !$wrapperID || !$fieldID)) {
             return "No back end module found";
         }
 
-        //
         if (!$this->Database->tableExists($tablename)) {
             return  $tablename . " do not exist";
         }
-		
-		//
+
 		$dataTable = $tablename . '_data';
-		
-		//get items
 		$resultsDB = $this->Database->prepare('SELECT * FROM ' . $dataTable . ' WHERE published = "1" AND pid = ?')->execute($wrapperID);
-        
-        //get field
         $fieldDB = $this->Database->prepare('SELECT * FROM tl_fmodules_filters WHERE fieldID = ?')->execute($fieldID);
         $field = $fieldDB->row();
                 		
@@ -58,37 +48,30 @@ class AutoCompletion extends Frontend
 		if (!$fieldDB->count()) {
             return 'Field ' . $fieldID . ' do not exist';
         }
-		
-		//
+
         if (!in_array($field['type'], $allowedTypes)) {
             return 'This field type is not supported';
         }
-        
-        //
+
         $wrapperOptionsDB = null;
-        
-        //
         $options = array();
 		
 		if ($field['type'] == 'multi_choice' || $field['type'] == 'simple_choice') {
-			
-			//
+
             $wrapperOptionsDB = $this->Database->prepare('SELECT ' . $fieldID . ' FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
 
-			//
             if ($wrapperOptionsDB[$fieldID] && is_string($wrapperOptionsDB[$fieldID])) {
                 $wrapperOptionsDB = deserialize($wrapperOptionsDB[$fieldID]);
             }
-			
-            //
+
             if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] != '1') {
             
                 foreach ($wrapperOptionsDB as $option) {
+
                     $options[$option['value']] = $option['label'];
                 }
             }
-			
-			//
+
             if (is_array($wrapperOptionsDB) && !empty($wrapperOptionsDB) && $field['dataFromTable'] == '1') {
             
                 if ($wrapperOptionsDB['table'] && $wrapperOptionsDB['col'] && $wrapperOptionsDB['title']) {
@@ -97,12 +80,15 @@ class AutoCompletion extends Frontend
                     $optionsFromTableDB = array();
 
                     while ($dataFromTableDB->next()) {
+
                         $keyValue = $dataFromTableDB->row();
                         $optionsFromTableDB[] = array('value' => $keyValue[$wrapperOptionsDB['col']], 'label' => $keyValue[$wrapperOptionsDB['title']]);
                     }
 
                     if (!empty($optionsFromTableDB)) {
+
                         foreach ($optionsFromTableDB as $option) {
+
                             $options[$option['value']] = $option['label'];
                         }
                     }
@@ -115,10 +101,8 @@ class AutoCompletion extends Frontend
             $options = $this->getCountries();
         }
 
-		//
 		$autoCompletionArr = array();
-		
-		//
+
         while ($resultsDB->next()) {
 
             $result = $resultsDB->row();
@@ -131,10 +115,10 @@ class AutoCompletion extends Frontend
                 foreach ($splitResults as $splitResult) {
                     $autoCompletionArr[$splitResult] = $options[$splitResult] ? $options[$splitResult] : $splitResult;
                 }
-            
             }
 
             if ($field['type'] == 'simple_choice') {
+
                 $autoCompletionArr[$items] = $options[$items] ? $options[$items] : $items;
             }
 
@@ -152,13 +136,11 @@ class AutoCompletion extends Frontend
             if ($field['type'] == 'fulltext_search') {
             
                 $autoCompletionArr[] = $result['title'];
-            
             }
 
             if ($field['type'] == 'search_field' && $field['isInteger']) {
             
                 $autoCompletionArr[$items] = $items;
-            
             }
 
             if ($field['type'] == 'search_field' && !$field['isInteger']) {
@@ -170,19 +152,16 @@ class AutoCompletion extends Frontend
                 foreach ($splitResults as $splitResult) {
                     $autoCompletionArr[] = $splitResult;
                 }
-
             }
-
         }
 
         $autoCompletionArr = array_unique($autoCompletionArr);
         $autoCompletionArr = array_filter($autoCompletionArr);
-        $autoCompletionArr = Input::decodeEntities($autoCompletionArr);
-        
-        // convert
+        ksort($autoCompletionArr);
+        $autoCompletionArr = \Input::decodeEntities($autoCompletionArr);
+
         $returnActiveOptions = $this->dataFormatter($field['type'], $autoCompletionArr);
-        
-        //
+
         return $returnActiveOptions;
 	}
 
@@ -193,21 +172,17 @@ class AutoCompletion extends Frontend
      */
 	protected function dataFormatter($type, $autoCompletionArr)
 	{
-		
-		//
+
 		$returnActiveOptions = array();
-		
-		//
+
 		if($type == 'fulltext_search' || $type == 'search_field')
 		{
 			foreach ($autoCompletionArr as $value => $label) {
 
             	$returnActiveOptions[] = $label;
-
         	}
 			
 			return $returnActiveOptions;
-			
 		}
 		
 		//
@@ -217,11 +192,8 @@ class AutoCompletion extends Frontend
                 'label' => $label,
                 'value' => $value
             );
-
         }
-		
 		//
 		return $returnActiveOptions;
-		
 	}	
 }

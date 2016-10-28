@@ -126,6 +126,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['singleSRC'][1] = 'Bitte wähle
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alt'][0] = 'Alternativer Text';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alt'][1] = 'Hier können Sie einen alternativen Text für das Bild eingeben (alt-Attribut).';
 
+// imgTitle
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imgTitle'][0] = 'Titel';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imgTitle'][1] = 'Bitte geben Sie ein Bild Titel ein.';
+
+// floating
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['floating'][0] = 'Bildausrichtung';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['floating'][1] = 'Bitte legen Sie fest, wie das Bild ausgerichtet werden soll.';
+
 // size
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['size'][0] = 'Bildbreite und Bildhöhe';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['size'][1] = 'Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.';

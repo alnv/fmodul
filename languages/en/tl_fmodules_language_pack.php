@@ -128,6 +128,14 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['singleSRC'][1] = 'Please selec
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alt'][0] = 'Alternate text';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['alt'][1] = 'Here you can enter an alternate text for the image (alt attribute).';
 
+// imgTitle
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imgTitle'][0] = 'Title';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imgTitle'][1] = 'Please enter your image title.';
+
+// floating
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['floating'][0] = 'Image alignment';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['floating'][1] = 'Please specify how to align the image.';
+
 // size
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['size'][0] = 'Image width and height';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['size'][1] = 'Here you can set the image dimensions and the resize mode.';

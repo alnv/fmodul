@@ -1,61 +1,105 @@
 <article <?php if ($this->itemID): ?> id="<?= $this->itemID ?>" <?php endif; ?> class="fmodule_teaser<?= $this->cssClass; ?><?= $this->itemCSS; ?>">
 
-<header class="header">
-        <?php if ($this->href): ?>
-            <h3 class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></h3>
-        <?php else: ?>
-            <h3 class="title" <?php if ($this->target): ?> target="_blank" <?php endif; ?> ><?= $this->title; ?></h3>
-        <?php endif; ?>
-        <?php if ($this->info): ?>
-            <p class="info"><?= $this->info; ?></p>
-        <?php endif; ?>
-        <?php if ($this->date): ?>
-            <p class="date"><time datetime="<?= $this->dateTime ?>"><?= $this->date ?><?php if ($this->time): ?>, <?= $this->time ?><?php endif; ?></time></p>
-        <?php endif; ?>
-         <?php if ($this->_distance): ?>
-            <p class="distance"><span><?= $this->_distanceLabel; ?></span> <strong><?= $this->_distance ?> km</strong></p>
-         <?php endif; ?>
-    </header>
+   <header class="header">
 
-    <?php if ($this->addImage): ?>
-        <figure class="image_container" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
-                <?php if ($this->href): ?>
-                    <a href="<?= $this->href; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if ($this->target): ?> target="_blank" <?php endif; ?>>
-                <?php endif; ?>
-                    <?php $this->insert('picture_default', $this->picture); ?>
-                <?php if ($this->href): ?>
-                    </a>
-                <?php endif; ?>
-            <?php if ($this->caption): ?>
-                <figcaption <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
+      <?php if ($this->href): ?>
+         <h3 class="title"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->title; ?></a></h3>
+      <?php else: ?>
+         <h3 class="title" <?php if ($this->target): ?> target="_blank" <?php endif; ?> ><?= $this->title; ?></h3>
+      <?php endif; ?>
+
+      <?php if ($this->info): ?>
+         <p class="info"><?= $this->info; ?></p>
+      <?php endif; ?>
+
+      <?php if ($this->date): ?>
+         <p class="date"><time datetime="<?= $this->dateTime ?>"><?= $this->date ?><?php if ($this->time): ?>, <?= $this->time ?><?php endif; ?></time></p>
+      <?php endif; ?>
+
+      <?php if ($this->_distance): ?>
+         <p class="distance"><span><?= $this->_distanceLabel; ?></span> <strong><?= $this->_distance ?> km</strong></p>
+      <?php endif; ?>
+
+   </header>
+
+   <?php if ($this->addBefore): ?>
+
+      <?php if ($this->addImage): ?>
+
+         <figure class="image_container <?= $this->floatClass; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
+
+            <?php if ($this->href): ?>
+               <a href="<?= $this->href; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if ($this->target): ?> target="_blank" <?php endif; ?>>
             <?php endif; ?>
-        </figure>
-    <?php endif; ?>
 
-    <?php if ($this->addGallery): ?>
-        <?= $this->gallery; ?>
-    <?php endif; ?>
+            <?php $this->insert('picture_default', $this->picture); ?>
 
-    <?php if ($this->description): ?>
-        <?= $this->description; ?>
-    <?php endif; ?>
+            <?php if ($this->href): ?>
+               </a>
+            <?php endif; ?>
 
-    <?php if (count($this->teaser) > 0): ?>
-        <?php foreach ($this->teaser as $teaserStr): ?>
-            <?= $teaserStr; ?>
-        <?php endforeach; ?>
-    <?php endif; ?>
+            <?php if ($this->caption): ?>
+               <figcaption <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
+            <?php endif; ?>
 
-    <?php if ($this->enclosure): ?>
-        <div class="enclosure">
-            <?php foreach ($this->enclosure as $enclosure): ?>
-                <p><img src="<?= $enclosure['icon'] ?>" width="18" height="18" alt="<?= $enclosure['mime'] ?>" class="mime_icon"> <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a></p>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+         </figure>
 
-    <?php if ($this->href): ?>
-        <p class="more"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->more; ?></a></p>
-    <?php endif; ?>
+      <?php endif; ?>
 
+   <?php endif; ?>
+
+   <?php if ($this->description): ?>
+      <?= $this->description; ?>
+   <?php endif; ?>
+
+   <?php if (count($this->teaser) > 0): ?>
+
+      <?php foreach ($this->teaser as $teaserStr): ?>
+         <?= $teaserStr; ?>
+      <?php endforeach; ?>
+
+   <?php endif; ?>
+
+   <?php if ($this->addGallery): ?>
+      <?= $this->gallery; ?>
+   <?php endif; ?>
+
+   <?php if ($this->enclosure): ?>
+
+      <div class="enclosure">
+         <?php foreach ($this->enclosure as $enclosure): ?>
+            <p><img src="<?= $enclosure['icon'] ?>" width="18" height="18" alt="<?= $enclosure['mime'] ?>" class="mime_icon"> <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a></p>
+         <?php endforeach; ?>
+      </div>
+
+   <?php endif; ?>
+
+   <?php if ($this->href): ?>
+      <p class="more"><a href="<?= $this->href; ?>" <?php if ($this->target): ?> target="_blank" <?php endif; ?> title="<?= $this->title; ?>"><?= $this->more; ?></a></p>
+   <?php endif; ?>
+
+   <?php if (!$this->addBefore): ?>
+
+      <?php if ($this->addImage): ?>
+
+         <figure class="image_container <?= $this->floatClass; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemscope itemtype="http://schema.org/ImageObject" <?php endif; ?>>
+
+            <?php if ($this->href): ?>
+               <a href="<?= $this->href; ?>" <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="contentUrl" <?php endif; ?> <?php if ($this->target): ?> target="_blank" <?php endif; ?>>
+            <?php endif; ?>
+
+            <?php $this->insert('picture_default', $this->picture); ?>
+
+            <?php if ($this->href): ?>
+               </a>
+            <?php endif; ?>
+
+            <?php if ($this->caption): ?>
+               <figcaption <?php if (version_compare(VERSION, '4.0', '>=')): ?> itemprop="caption" <?php endif; ?>><?= $this->caption; ?></figcaption>
+            <?php endif; ?>
+
+         </figure>
+
+      <?php endif; ?>
+   <?php endif; ?>
 </article>

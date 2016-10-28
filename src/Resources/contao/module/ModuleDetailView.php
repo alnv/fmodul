@@ -341,7 +341,12 @@ class ModuleDetailView extends Module
             }
         }
 
+        // floating class
+        $itemDB['floatClass'] = 'float_' . $itemDB['floating'];
+
         $objTemplate->setData($itemDB);
+
+        $strTitle = $itemDB['title'];
 
         //enclosure
         $objTemplate->enclosure = array();
@@ -353,17 +358,20 @@ class ModuleDetailView extends Module
         //add image
         if ($itemDB['addImage']) {
             $this->addImageToTemplate($objTemplate, array(
+
                 'singleSRC' => $itemDB['singleSRC'],
+                'title' => $itemDB['imgTitle'],
                 'alt' => $itemDB['alt'],
                 'size' => $itemDB['size'],
                 'fullsize' => $itemDB['fullsize'],
-                'caption' => $itemDB['caption'],
-                'title' => $itemDB['title']
+                'caption' => $itemDB['caption']
             ));
         }
 
-        $strResult .= $objTemplate->parse();
+        $objTemplate->title = $strTitle;
+        $objTemplate->addBefore = $itemDB['floatClass'] == 'float_below' ? false : true;
 
+        $strResult .= $objTemplate->parse();
 
         $this->Template->referer = 'javascript:history.go(-1)';
         $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];

@@ -627,27 +627,38 @@ class ModuleListView extends Module
                 }
             }
 
+            // floating class
+            $item['floatClass'] = 'float_' . $item['floating'];
+
             //set data
             $objTemplate->setData($item);
+            $strTitle = $item['title'];
 
             //set image
             if ($item['addImage']) {
+
                 $this->addImageToTemplate($objTemplate, array(
+
                     'singleSRC' => $item['singleSRC'],
                     'alt' => $item['alt'],
+                    'title' => $item['imgTitle'],
                     'size' => $item['size'],
                     'fullsize' => $item['fullsize'],
-                    'caption' => $item['caption'],
-                    'title' => $item['title']
+                    'caption' => $item['caption']
                 ));
             }
 
             // set enclosure
             $objTemplate->enclosure = array();
+
             if ($item['addEnclosure']) {
+
                 $this->addEnclosuresToTemplate($objTemplate, $item);
             }
 
+            $objTemplate->title = $strTitle; // fix title bug
+            $objTemplate->addBefore = $item['floatClass'] == 'float_below' ? false : true;
+            
             $strResults .= $objTemplate->parse();
         }
 

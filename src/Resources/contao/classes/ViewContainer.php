@@ -183,8 +183,26 @@ class ViewContainer extends DCAHelper
                 'exclude' => true,
                 'search' => true,
                 'inputType' => 'text',
-                'eval' => array('maxlength' => 255, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'alt'), 'tl_class' => 'long', 'fmEditable' => true, 'fmGroup' => 'image'),
+                'eval' => array('maxlength' => 255, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'alt'), 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'imgTitle' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['imgTitle'],
+                'exclude' => true,
+                'search' => true,
+                'inputType' => 'text',
+                'eval' => array('maxlength' => 255, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'imgTitle'), 'tl_class' => 'w50', 'fmEditable' => true, 'fmGroup' => 'image'),
+                'sql' => "varchar(255) NOT NULL default ''"
+            ),
+            'floating' => array(
+                'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['floating'],
+                'default' => 'above',
+                'exclude' => true,
+                'inputType' => 'radioTable',
+                'options' => array('above', 'left', 'right', 'below'),
+                'eval' => array('cols' => 4, 'tl_class' => 'w50'),
+                'reference' => &$GLOBALS['TL_LANG']['MSC'],
+                'sql' => "varchar(32) NOT NULL default ''"
             ),
             'size' => array(
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['size'],
@@ -200,7 +218,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fullsize'],
                 'exclude' => true,
                 'inputType' => 'checkbox',
-                'eval' => array('tl_class' => 'w50', 'mandatory' => $this->setCustomMandatory($arrMandatory, 'fullsize'), 'fmEditable' => true, 'fmGroup' => 'image'),
+                'eval' => array('tl_class' => 'w50 m12', 'mandatory' => $this->setCustomMandatory($arrMandatory, 'fullsize'), 'fmEditable' => true, 'fmGroup' => 'image'),
                 'sql' => "char(1) NOT NULL default ''"
             ),
             'caption' => array(
@@ -635,7 +653,7 @@ class ViewContainer extends DCAHelper
     {
         $palette = array(
             'fields' => array('alt', 'size', 'fullsize', 'caption'),
-            'palette' => '{image_settings_legend},alt,size,caption,fullsize;',
+            'palette' => '{image_settings_legend},alt,imgTitle,size,fullsize,caption,floating;',
             '__selector__' => '',
             'subPalettes' => '',
         );

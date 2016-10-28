@@ -1,7 +1,19 @@
-F Modul v1.10.0
+F Modul v1.11.0
 ===============
 
 Mit dieser Erweiterung ist es möglich eigene Contao Module zu erstellen. Damit kannst du dein Content besser strukturieren und damit deine Content Pflege optimieren.
+
+F Modul Features
+
+- Eigene Back end Module erstellen
+- Listen & Detailansicht
+- Google Maps
+- Unterstützt die ChangeLanguage-Erweiterung
+- Eigene Felder erstellen
+- Filter
+- AJAX
+- Taxonomies
+- Umkreissuche
 
 [Mehr erfahren…][2]
 

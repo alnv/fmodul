@@ -18,7 +18,7 @@ $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_mod
 // module palette
 
 // list
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{gallery_legend:hide},fm_disableGallery;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 // form
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type;{list_view_legend},f_list_field;{form_fields_legend},f_form_fields;{form_settings_legend},f_reset_button,fm_disable_submit,f_active_options,fm_related_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
@@ -196,6 +196,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
     'options_callback' => array('tl_module_fmodule', 'getListModules'),
     'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_disableGallery'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disableGallery'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'clr'),
+    'sql' => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'],
@@ -838,7 +846,7 @@ class tl_module_fmodule extends tl_module
         //
         if ($geo_address) {
             $geoCoding = GeoCoding::getInstance();
-            $cords = $geoCoding->getGeoCords($geo_address, $address_country);
+            $cords = $geoCoding->getGeoCords( $geo_address, $address_country, true );
         }
 
         if (!empty($cords)) {

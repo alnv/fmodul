@@ -831,8 +831,9 @@ class DCAModuleData extends ViewContainer
 
         //
         if ($geo_address) {
+
             $geoCoding = GeoCoding::getInstance();
-            $cords = $geoCoding->getGeoCords($geo_address, $address_country);
+            $cords = $geoCoding->getGeoCords( $geo_address, $address_country, true );
         }
 
         if (!empty($cords)) {

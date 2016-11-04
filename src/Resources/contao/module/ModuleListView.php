@@ -413,22 +413,6 @@ class ModuleListView extends Module
                 $arrItem['size'] = $imgSize;
             }
 
-            if($arrItem['addGallery'] && $arrItem['multiSRC']) {
-                $objGallery = new GalleryGenerator();
-                $objGallery->id = $arrItem['id'];
-                $objGallery->sortBy = $arrItem['sortBy'];
-                $objGallery->orderSRC = $arrItem['orderSRC'];
-                $objGallery->metaIgnore = $arrItem['metaIgnore'];
-                $objGallery->numberOfItems = $arrItem['numberOfItems'];
-                $objGallery->perPage = $arrItem['perPageGallery'];
-                $objGallery->perRow = $arrItem['perRow'];
-                $objGallery->size = $arrItem['size'];
-                $objGallery->fullsize = $arrItem['fullsize'];
-                $objGallery->galleryTpl = $arrItem['galleryTpl'];
-                $objGallery->getAllImages($arrItem['multiSRC']);
-                $arrItem['gallery'] = $objGallery->renderGallery();
-            }
-
             // create href
             $arrItem['href'] = null;
 
@@ -483,12 +467,31 @@ class ModuleListView extends Module
             $item = $arrItems[$i];
 
             // parse value if map is enabled
-            if ($this->fm_addMap) {
+            if ( $this->fm_addMap ) {
+
                 $item['geo_latitude'] = $item['geo_latitude'] ? $item['geo_latitude'] : '0';
                 $item['geo_longitude'] = $item['geo_longitude'] ? $item['geo_longitude'] : '0';
                 $item['title'] = mb_convert_encoding($item['title'], 'UTF-8');
                 $item['description'] = mb_convert_encoding($item['description'], 'UTF-8');
                 $item['info'] = mb_convert_encoding($item['info'], 'UTF-8');
+            }
+
+
+            if ( $item['addGallery'] && $item['multiSRC'] && !$this->fm_disableGallery ) {
+
+                $objGallery = new GalleryGenerator();
+                $objGallery->id = $item['id'];
+                $objGallery->sortBy = $item['sortBy'];
+                $objGallery->orderSRC = $item['orderSRC'];
+                $objGallery->metaIgnore = $item['metaIgnore'];
+                $objGallery->numberOfItems = $item['numberOfItems'];
+                $objGallery->perPage = $item['perPageGallery'];
+                $objGallery->perRow = $item['perRow'];
+                $objGallery->size = $item['size'];
+                $objGallery->fullsize = $item['fullsize'];
+                $objGallery->galleryTpl = $item['galleryTpl'];
+                $objGallery->getAllImages($item['multiSRC']);
+                $item['gallery'] = $objGallery->renderGallery();
             }
 
             // set css and id

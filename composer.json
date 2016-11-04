@@ -37,7 +37,7 @@
     ]
   },
   "replace": {
-    "contao-legacy/fmodule": "*"
+    "contao-legacy/f-modul": "*"
   },
   "extra": {
     "contao": {

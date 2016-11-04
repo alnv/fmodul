@@ -11,15 +11,11 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Backend;
-use Contao\Config;
-use Contao\Request;
-
 /**
  * Class GeoCoding
  * @package FModule
  */
-class GeoCoding extends Backend
+class GeoCoding extends \Backend
 {
     /**
      * @var array
@@ -46,9 +42,10 @@ class GeoCoding extends Backend
     /**
      * @param string $address
      * @param $lang
-     * @return array
+     * @param bool $blnServer
+     * @return array|mixed
      */
-    public function getGeoCords($address = '', $lang)
+    public function getGeoCords( $address = '', $lang, $blnServer = false )
     {
         // default return value
         $return = array('lat' => '0', 'lng' => '0');
@@ -62,13 +59,21 @@ class GeoCoding extends Backend
 
         // get lat and lng from cache
         $cacheReturn = $this->geoCordsCache[$keyID];
-        if(!is_null($cacheReturn) && is_array($cacheReturn)) return $cacheReturn;
+
+        if( !is_null( $cacheReturn ) && is_array( $cacheReturn ) ) {
+
+            return $cacheReturn;
+        }
 
         // check if api key exist
         $apiKey = '';
-        if(Config::get('googleApiKey'))
-        {
-            $apiKey = '&key='.Config::get('googleApiKey').'';
+        $strServerID = \Config::get('googleServerKey') ? \Config::get('googleServerKey') : '';
+        $strBrowserID = \Config::get('googleApiKey') ? \Config::get('googleApiKey') : '';
+        $strGoogleID = !$blnServer ? $strBrowserID : $strServerID;
+
+        if ( $strGoogleID ) {
+
+            $apiKey = '&key='. $strGoogleID . '';
         }
 
         // create google map api
@@ -76,19 +81,33 @@ class GeoCoding extends Backend
         $strURL = sprintf($api, urlencode($address), $apiKey, urlencode($lang), strlen($lang));
 
         // send request to google maps api
-        $request = new Request();
+        $request = new \Request();
         $request->send($strURL);
 
         // check if request is valid
-        if ($request->hasError()) return $return;
+        if ( $request->hasError() ) {
+
+            return $return;
+        }
+
         $response = $request->response ? json_decode($request->response, true) : array();
-        if(!is_array($response)) return $return;
-        if (empty($response)) return $return;
+
+
+        if( !is_array( $response ) ) {
+
+            return $return;
+        }
+
+        if ( empty( $response ) ) {
+
+            return $return;
+        }
 
         // set lng and lat
-        if ($response['results'][0]['geometry'])
-        {
+        if ( $response['results'][0]['geometry'] ) {
+
             $geometry = $response['results'][0]['geometry'];
+
             $return['lat'] = $geometry['location'] ? $geometry['location']['lat'] : '';
             $return['lng'] = $geometry['location'] ? $geometry['location']['lng'] : '';
         }

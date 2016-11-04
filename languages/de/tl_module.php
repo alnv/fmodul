@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'Listenansicht-Einstellun
 $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Formular Felder';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Formular-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_geo_legend'] = 'Umkreissuche-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['gallery_legend'] = 'Galerie-Einstellungen';
 
 // fields
 
@@ -162,6 +163,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoDescription'][1] = 'Bitte wäh
 // fm_seoPageTitle
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoPageTitle'][0] = 'Seitentitel';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoPageTitle'][1] = 'Bitte wählen Sie ein Feld für den Seitentitel aus.';
+
+// fm_disableGallery
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disableGallery'][0] = 'Galerie deaktivieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disableGallery'][1] = 'Es ist empfohlen die Galerie in der Listenansicht zu deaktivieren. Es kann zu massiven Performance Problemen führen!';
 
 // fm_seoHrefLang
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoHrefLang'][0] = 'Hreflang-Attribut aktivieren';

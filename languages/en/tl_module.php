@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['tl_module']['list_view_legend'] = 'List view-Settings';
 $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Form fields';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Form-Settings';
 $GLOBALS['TL_LANG']['tl_module']['fm_geo_legend'] = 'Locator-Settings';
+$GLOBALS['TL_LANG']['tl_module']['gallery_legend'] = 'Gallery-Settings';
 
 //fields
 
@@ -58,6 +59,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['f_active_options'][1] = 'Please acti
 // f_list_template
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_list_template'][0] = 'Template';
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_list_template'][1] = 'Please select your template.';
+
+// fm_disableGallery
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disableGallery'][0] = 'Disable Gallery';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disableGallery'][1] = 'Here you can disable your Gallery.';
 
 // f_list_field
 $GLOBALS['TL_LANG']['tl_module']['fields']['f_list_field'][0] = 'Select your list view';

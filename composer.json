@@ -29,7 +29,7 @@
   },
   "require": {
     "php": ">=5.4",
-    "contao/core": ">=3.5"
+    "contao/core-bundle":"~3.5 || ~4.1"
   },
   "autoload": {
     "classmap": [

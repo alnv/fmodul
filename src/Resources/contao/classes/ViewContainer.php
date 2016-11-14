@@ -168,7 +168,7 @@ class ViewContainer extends DCAHelper
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['addImage'],
                 'exclude' => true,
                 'inputType' => 'checkbox',
-                'eval' => array('submitOnChange' => true),
+                'eval' => array('submitOnChange' => true, 'mandatory' => $this->setCustomMandatory($arrMandatory, 'addImage')),
                 'sql' => "char(1) NOT NULL default ''"
             ),
             'singleSRC' => array(
@@ -573,8 +573,24 @@ class ViewContainer extends DCAHelper
     public function generalPalette($fields = array())
     {
         $palette = array(
-            'fields' => array('title', 'alias', 'author', 'info', 'description'),
-            'palette' => '{general_legend},title,alias,author,info,description;',
+            'fields' => array('title', 'alias', 'author'),
+            'palette' => '{general_legend},title,alias,author;',
+            '__selector__' => '',
+            'subPalettes' => '',
+        );
+
+        return $palette;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function teaserPalette($fields = array())
+    {
+        $palette = array(
+            'fields' => array('info', 'description'),
+            'palette' => '{teaser_legend},info,description;',
             '__selector__' => '',
             'subPalettes' => '',
         );
@@ -937,10 +953,11 @@ class ViewContainer extends DCAHelper
 
         // set regular expression
         $rgxp = $this->setRgxp($fieldData);
-        if ($rgxp) {
-            $field['eval']['rgxp'] = $rgxp;
-        }
+        
+        if ($rgxp) $field['eval']['rgxp'] = $rgxp;
 
+        //var_dump($field);
+        
         $field['sql'] = 'text NULL';
         return $field;
     }

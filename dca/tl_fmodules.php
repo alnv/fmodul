@@ -413,6 +413,7 @@ class tl_fmodules extends \Backend
     public function getPalettes()
     {
         return array(
+            'teaserPalette' => 'teaserPalette',
             'datePalette' => 'datePalette',
             'imagePalette' => 'imagePalette',
             'imageSettingsPalette' => 'imageSettingsPalette',

@@ -91,6 +91,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Absteigend';
 $GLOBALS['TL_LANG']['tl_fmodules']['list'] = 'Listenansicht';
 $GLOBALS['TL_LANG']['tl_fmodules']['detail'] = 'Detailansicht';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['teaserPalette'] = 'Teaser';
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Datum';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Bild-Auswahl';
 $GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Anlagen';

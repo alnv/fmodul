@@ -20,6 +20,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_address_legen
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['address_legend'] = 'Address';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_settings_legend'] = 'Image-Settings';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['gallery_legend'] = 'Gallery';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['teaser_legend'] = 'Teaser';
 
 // operations
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array( array('Add channel', 'Add new channel'), array('Add %s', 'Add new element'));

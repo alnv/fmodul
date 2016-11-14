@@ -20,6 +20,7 @@ $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['geo_address_legen
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['address_legend'] = 'Adresse';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['image_settings_legend'] = 'Bild-Einstellungen';
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['gallery_legend'] = 'Galerie-Auswahl';
+$GLOBALS['TL_LANG']['tl_fmodules_language_pack']['fm_legend']['teaser_legend'] = 'Teaser';
 
 // operations
 $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['new'] = array( array('Einen Wrapper erstellen', 'Neues Wrapper Element erstellen'), array('%s erstellen', 'Neues Element erstellen.'));

@@ -87,6 +87,7 @@ $GLOBALS['TL_LANG']['tl_fmodules']['desc'] = 'Descending';
 $GLOBALS['TL_LANG']['tl_fmodules']['list'] = 'List view';
 $GLOBALS['TL_LANG']['tl_fmodules']['detail'] = 'Detail view';
 
+$GLOBALS['TL_LANG']['tl_fmodules']['teaserPalette'] = 'Teaser';
 $GLOBALS['TL_LANG']['tl_fmodules']['datePalette'] = 'Date';
 $GLOBALS['TL_LANG']['tl_fmodules']['imagePalette'] = 'Image';
 $GLOBALS['TL_LANG']['tl_fmodules']['enclosurePalette'] = 'Enclosure';

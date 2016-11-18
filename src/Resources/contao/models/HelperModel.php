@@ -148,6 +148,9 @@ class HelperModel
                 break;
         }
 
+        // handle encoded characters %D9%86
+        $strUrl = rawurldecode($strUrl);
+
         // Link to the default page
         return $strBase . sprintf($strUrl, (($objItem->alias != '' && !\Config::get('disableAlias')) ? $objItem->alias : $objItem->id));
     }

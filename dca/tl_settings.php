@@ -12,7 +12,7 @@
  */
 
 //
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace('disableAlias;', 'disableAlias;{fmodule_legend:hide},googleApiKey,googleServerKey,taxonomyDisable;', $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace('sslProxyDomain;', 'sslProxyDomain;{fmodule_legend:hide},googleApiKey,googleServerKey,taxonomyDisable;', $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']);
 
 // googleApiKey
 $GLOBALS['TL_DCA']['tl_settings']['fields']['googleApiKey'] = array(

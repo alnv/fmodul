@@ -138,9 +138,15 @@ class DCAHelper extends Backend
             return $options;
         }
 
-        if (is_array($option)) {
-            foreach ($option as $value) {
-                if (!$value['value']) continue;
+        if ( is_array( $option ) ) {
+            
+            foreach ( $option as $value ) {
+            
+                if ( !isset($value['value']) || !isset($value['value']) ) {
+
+                    continue;
+                }
+            
                 $options[$value['value']] = $value['label'];
             }
         }

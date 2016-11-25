@@ -577,15 +577,21 @@ class DCAModuleSettings extends ViewContainer
      */
     public function createCols()
     {
-        if (!$this->name) {
+        if ( !$this->name ) {
+
             return null;
         }
-        foreach ($this->fields as $colname => $field) {
-            if (!$field['sql']) {
+
+        foreach ( $this->fields as $colname => $field ) {
+
+            if ( !$field['sql'] ) {
+                
                 continue;
             }
-            if (!$this->Database->fieldExists($colname, $this->name)) {
-                $this->Database->prepare('ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'])->execute();
+            
+            if ( !$this->Database->fieldExists( $colname, $this->name ) ) {
+
+                $this->Database->prepare( 'ALTER TABLE ' . $this->name . ' ADD ' . $colname . ' ' . $field['sql'] )->execute();
             }
         }
     }

@@ -8,13 +8,7 @@ class Initialize {
 
     // init classes
     public function getClasses(){
-
-        if ( TL_MODE == 'FE' ) {
-
-            \FrontendUser::getInstance();
-            \Database::getInstance();
-        }
-
+        
         // only in backend
         if ( TL_MODE == 'BE' ) {
 

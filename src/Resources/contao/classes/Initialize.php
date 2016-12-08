@@ -9,13 +9,19 @@ class Initialize {
     // init classes
     public function getClasses(){
 
+        if ( TL_MODE == 'FE' ) {
+
+            \FrontendUser::getInstance();
+            \Database::getInstance();
+        }
+
         // only in backend
-        if (TL_MODE == 'BE') {
+        if ( TL_MODE == 'BE' ) {
 
             // order is important
             \BackendUser::getInstance();
-            \Config::getInstance();
             \Database::getInstance();
+            \Config::getInstance();
             \Environment::getInstance();
             \Input::getInstance();
 

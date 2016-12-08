@@ -54,6 +54,7 @@ $GLOBALS['BE_FFL']['keyValueWizardCustom'] = 'KeyValueWizardCustom';
 
 // files
 if (TL_MODE == 'BE') {
+
     $GLOBALS['TL_CSS'][] = $GLOBALS['FM_AUTO_PATH'] . 'stylesheet.css';
 }
 
@@ -61,7 +62,7 @@ if (TL_MODE == 'BE') {
 $GLOBALS['loadGoogleMapLibraries'] = false;
 
 // hooks
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('DCACreator', 'index');
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Initialize', 'getClasses');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('FModule', 'setLanguage');
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = array('FModule', 'getSearchablePages');
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('FModule', 'createUserGroupDCA');

@@ -11,15 +11,6 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Backend;
-use Contao\Config;
-use Contao\Environment;
-use Contao\Files;
-use Contao\Input;
-use Contao\Database;
-use Contao\BackendUser;
-
-
 /**
  * Class DCACreator
  * @package FModule
@@ -49,53 +40,35 @@ class DCACreator
     }
 
     /**
-     * F Module start point
-     */
-    public function index()
-    {
-        if (TL_MODE == 'BE') {
-
-            Config::getInstance();
-            BackendUser::getInstance();
-            Database::getInstance();
-
-            // backwards
-            Environment::getInstance();
-            Input::getInstance();
-
-            // init BE Modules
-            if (Database::getInstance()->tableExists('tl_fmodules')) {
-                $saveLanguage = $_SESSION['fm_language'] ? $_SESSION['fm_language'] : 'de';
-                Backend::loadLanguageFile('tl_fmodules_language_pack', $saveLanguage);
-                $this->loadModules();
-                $this->createLabels();
-            }
-        }
-    }
-
-    /**
      *
      */
     public function createLabels()
     {
-        if (!Input::get('do') && !in_array(Input::get('do'), $this->modules)) {
+        if (!\Input::get('do') && !in_array(\Input::get('do'), $this->modules)) {
+
             return;
         }
 
         $languages = &$GLOBALS['TL_LANG']['tl_fmodules_language_pack'];
 
         foreach ($languages as $key => $value) {
+
             foreach ($this->modules as $module => $name) {
+
                 if ($key == 'new') {
+
                     $GLOBALS['TL_LANG'][$module]['new'] = $value[0];
                     $GLOBALS['TL_LANG'][$module . '_data']['new'] = array(sprintf($value[1][0], $name), $value[1][1]);
                     continue;
                 }
+
                 if ($key == 'fm_legend') {
+
                     $GLOBALS['TL_LANG'][$module] = $value;
                     $GLOBALS['TL_LANG'][$module . '_data'] = $value;
                     continue;
                 }
+
                 $GLOBALS['TL_LANG'][$module][$key] = $value;
                 $GLOBALS['TL_LANG'][$module . '_data'][$key] = $value;
             }
@@ -107,7 +80,7 @@ class DCACreator
      */
     private function createModules()
     {
-        $db = Database::getInstance();
+        $db = \Database::getInstance();
         $modulesDB = $db->prepare("SELECT * FROM tl_fmodules")->execute();
         $modules = [];
 
@@ -131,7 +104,9 @@ class DCACreator
 
             // backwards compatible
             $orderBy = 'sorting';
+
             if (!$db->fieldExists('sorting', 'tl_fmodules_filters')) {
+
                 $orderBy = 'id';
             }
 
@@ -183,8 +158,11 @@ class DCACreator
     public function getModuleByTableName($modulename)
     {
         $modules = $this->createModules();
+
         foreach ($modules as $module) {
+
             if ($modulename == $module['tablename']) {
+
                 return $module;
             }
         }
@@ -254,7 +232,7 @@ class DCACreator
     public function addAliasButton($arrButtons)
     {
 
-        if (Input::post('FORM_SUBMIT') == 'tl_select' && isset($_POST['alias'])) {
+        if (\Input::post('FORM_SUBMIT') == 'tl_select' && isset($_POST['alias'])) {
 
             // init objects
             $objSession = \Session::getInstance();
@@ -333,7 +311,7 @@ class DCACreator
     public function getModuleIcon($tablename)
     {
         $path = TL_ROOT . '/' . 'files/fmodule/assets/' . $tablename . '_icon';
-        $file = Files::getInstance();
+        $file = \Files::getInstance();
         $allowedFormat = array('gif', 'png', 'svg');
 
         if (!file_exists(TL_ROOT . '/' . 'files/fmodule')) {
@@ -353,9 +331,10 @@ class DCACreator
     /**
      *
      */
-    private function loadModules()
+    public function loadModules()
     {
         foreach ($this->createModules() as $module) {
+
             $this->createDCA($module);
         }
     }

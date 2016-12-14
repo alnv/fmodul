@@ -187,6 +187,9 @@ class ModuleFormFilter extends \Contao\Module
             // get only published items
             $qProtectedStr = ' AND published = "1"';
 
+            // preview mode
+            if (HelperModel::previewMode()) $qProtectedStr = '';
+
             // get all items
             $objList = $this->Database->prepare('SELECT * FROM ' . $strModuleTableName . '_data WHERE pid = ' . $strWrapperID . $qProtectedStr . $strQuery)->query();
 

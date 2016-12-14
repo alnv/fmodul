@@ -178,7 +178,9 @@ class DCACreator
     {
         // init tablename
         $tablename = $module['tablename'];
+
         if (!$tablename) return null;
+
         $this->modules[$tablename] = $module['name'];
 
         // parent
@@ -334,7 +336,7 @@ class DCACreator
     public function loadModules()
     {
         foreach ($this->createModules() as $module) {
-
+            
             $this->createDCA($module);
         }
     }

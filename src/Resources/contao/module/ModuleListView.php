@@ -377,7 +377,7 @@ class ModuleListView extends Module
 
         // get all items
         $listDB = $this->Database->prepare('SELECT ' . $selectedFields . ' FROM ' . $tablename . '_data WHERE pid = ' . $wrapperID . $qProtectedStr . $qStr . $strHavingQuery . $qOrderByStr)->query();
-
+        
         // image size
         $imgSize = false;
 
@@ -796,45 +796,37 @@ class ModuleListView extends Module
      */
     public function getSortingField()
     {
-        $sortingFromViewList = deserialize($this->f_sorting_fields) ? deserialize($this->f_sorting_fields) : array('id');
-        $sortingFromGET = Input::get('sorting_fields');
-        $isValue = QueryModel::isValue($sortingFromGET);
-        $sortingFields = array();
+        $arrSortingFields = deserialize( $this->f_sorting_fields ) ? deserialize( $this->f_sorting_fields ) : array('id');
+        $varInput = Input::get('sorting_fields');
 
-        if ($isValue) {
-            if (is_array($sortingFromGET)) {
-                $sortingFields = $sortingFromGET;
-            }
+        if ( !is_array( $arrSortingFields ) ) {
 
-            if (is_string($sortingFromGET)) {
-                $sortingFields[] = $sortingFromGET;
-            }
-
-            $temp = array();
-
-            foreach ($sortingFields as $field) {
-                if ($this->Database->fieldExists($field, $this->tablename)) {
-                    $temp[] = $field;
-                }
-            }
-
-            $sortingFields = $temp;
-
+            $arrSortingFields = array( 'id' );
         }
 
-        if($this->blnLocatorInvoke && $this->fm_orderByDistance) {
+        if ( $varInput ) {
 
-            $sortingFields[] = '_distance';
+            if ( is_array( $varInput ) ) {
+
+                $arrSortingFields = $varInput;
+            }
+
+            if ( is_string( $varInput ) ) {
+
+                $arrSortingFields = [ $varInput ];
+            }
         }
 
-        if (count($sortingFields) > 0) {
-            $sortingFields = array_filter($sortingFields);
-            return implode(',', $sortingFields);
+        if( $this->blnLocatorInvoke && $this->fm_orderByDistance ) {
+
+            $arrSortingFields[] = '_distance';
         }
 
-        if (count($sortingFromViewList) > 0 && is_array($sortingFromViewList)) {
-            $sortingFromViewList = array_filter($sortingFromViewList);
-            return implode(',', $sortingFromViewList);
+        $arrSortingFields = array_filter($arrSortingFields);
+
+        if ( $arrSortingFields && is_array( $arrSortingFields ) ) {
+
+            return implode(',', $arrSortingFields);
         }
 
         return 'id';

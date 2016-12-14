@@ -218,6 +218,7 @@ $GLOBALS['TL_WRAPPERS']['stop'][] = 'legend_end';
 
 // check license
 if (TL_MODE == 'FE') {
+    
     /**
      * @var array
      */

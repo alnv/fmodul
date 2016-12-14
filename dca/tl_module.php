@@ -1001,7 +1001,7 @@ class tl_module_fmodule extends tl_module
         $id = $dc->id;
         $moduleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ? LIMIT 1')->execute($id);
         $modulename = '';
-        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'toggle_field', 'map_field', 'geo_locator');
+        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'map_field', 'geo_locator');
         $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields');
         $type = '';
 

@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addGeoLocato
 // sub palettes
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_filter'] = 'f_filter_fields';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_sorting'] = 'f_sorting_fields,f_sorting_orderby';
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addMap'] = 'fm_center_address,fm_center_lat,fm_center_lng,fm_map_template,fm_mapZoom,fm_mapType,fm_mapScrollWheel,fm_mapMarker,fm_mapInfoBox,fm_mapStyle';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addMap'] = 'fm_center_address,fm_center_lat,fm_center_lng,fm_map_template,fm_mapZoom,fm_mapType,fm_mapScrollWheel,fm_mapMarker,fm_mapInfoBox,fm_mapStyle,fm_showAllItems';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_overwrite_seoSettings'] = 'fm_seoPageTitle,fm_seoDescription,fm_seoHrefLang';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteID'] = 'fm_redirect_jumpTo';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_redirect_source_siteURL'] = 'fm_redirect_url';
@@ -136,6 +136,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_limit_page'] = array
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(10) NOT NULL default ''"
 );
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_showAllItems'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'sql' => "char(1) NOT NULL default ''"
+);
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_doNotSet_404'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_doNotSet_404'],

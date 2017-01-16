@@ -370,13 +370,20 @@ class ModuleListView extends Module
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
         $qOrderByStr = $this->getOrderBy();
+        $strPidWhereStatement = 'pid = ' . $wrapperID;
         $qProtectedStr = ' AND published = "1"';
+
+        if ( $this->fm_addMap && $this->fm_showAllItems ) {
+
+            $strPidWhereStatement = '';
+            $qProtectedStr = 'published = "1"';
+        }
 
         //  preview mode
         if (HelperModel::previewMode()) $qProtectedStr = '';
 
         // get all items
-        $listDB = $this->Database->prepare('SELECT ' . $selectedFields . ' FROM ' . $tablename . '_data WHERE pid = ' . $wrapperID . $qProtectedStr . $qStr . $strHavingQuery . $qOrderByStr)->query();
+        $listDB = $this->Database->prepare('SELECT ' . $selectedFields . ' FROM ' . $tablename . '_data WHERE ' . $strPidWhereStatement . $qProtectedStr . $qStr . $strHavingQuery . $qOrderByStr)->query();
         
         // image size
         $imgSize = false;

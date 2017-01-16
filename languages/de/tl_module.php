@@ -296,6 +296,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'][1] = 'Bitte wählen Si
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][0] = 'Weiterleitungsseite auswählen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][1] = 'Bitte wählen Sie eine Weiterleitungsseite aus.';
 
+// fm_showAllItems
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][0] = 'Alle Elemente anzeigen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][1] = 'Es werden alle Elemente in der Tabelle angezeigt unabhängig vom jeweiligen Wrapper.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

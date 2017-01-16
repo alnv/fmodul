@@ -296,6 +296,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'][1] = 'Please select yo
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][0] = 'Redirect page';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][1] = 'Please select your redirect page.';
 
+// fm_showAllItems
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][0] = 'Show all Elements';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][1] = 'All items will be shown.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

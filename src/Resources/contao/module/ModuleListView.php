@@ -753,43 +753,6 @@ class ModuleListView extends Module
     }
 
     /**
-     * @return string
-     */
-    public function getOrderBy()
-    {
-        $orderByFromListView = $this->strOrderBy;
-        $orderBy = \Input::get('orderBy') ? mb_strtoupper(\Input::get('orderBy'), 'UTF-8') : $orderByFromListView;
-        $isValue = QueryModel::isValue($orderBy);
-        $allowedOrderByItems = array('asc', 'desc', 'ACS', 'DESC');
-
-        // return empty if random
-        if ($orderBy == 'RAND') {
-            return '';
-        }
-        
-        if ($isValue && is_array($orderBy)) {
-            $orderBy = $orderBy[0];
-        }
-
-        if ($isValue && in_array($orderBy, $allowedOrderByItems)) {
-            $orderBy = mb_strtoupper($orderBy, 'UTF-8');
-        }
-
-        if (!$orderBy) {
-            $orderBy = 'DESC';
-        }
-        $this->strOrderBy = $orderBy;
-        $sorting = $this->getSortingField();
-
-        if($this->blnLocatorInvoke && ( $this->fm_orderByDistance && in_array($this->fm_orderByDistance, $allowedOrderByItems ))) {
-
-            $orderBy = mb_strtoupper($this->fm_orderByDistance, 'UTF-8');
-        }
-
-        return ' ORDER BY ' . $sorting . ' ' . $orderBy;
-    }
-
-    /**
      * @param $templateName
      * @return mixed
      */
@@ -801,26 +764,44 @@ class ModuleListView extends Module
     /**
      * @return array|string
      */
-    public function getSortingField()
+    public function getOrderBy()
     {
-        $arrSortingFields = deserialize( $this->f_sorting_fields ) ? deserialize( $this->f_sorting_fields ) : array('id');
-        $varInput = Input::get('sorting_fields');
+        $arrReturn = [];
+        $arrAllowedOrderBy = [ 'asc', 'desc', 'ASC', 'DESC' ];
+        $arrSortingFieldsFromInput = Input::get('sorting_fields');
+        $arrSortingFields = $this->f_sorting_fields ? deserialize( $this->f_sorting_fields ) : ['id'];
+        $strOrderBy = \Input::get('orderBy') ? \Input::get('orderBy') : $this->strOrderBy;
 
-        if ( !is_array( $arrSortingFields ) ) {
+        if ( $strOrderBy == 'RAND' ) {
 
-            $arrSortingFields = array( 'id' );
+            return '';
         }
 
-        if ( $varInput ) {
+        if ( empty( $arrSortingFields ) || !is_array( $arrSortingFields ) ) {
 
-            if ( is_array( $varInput ) ) {
+            $arrSortingFields = ['id'];
+        }
+        
+        if ( $strOrderBy && in_array( $strOrderBy, $arrAllowedOrderBy ) ) {
 
-                $arrSortingFields = $varInput;
+            $strOrderBy = mb_strtoupper( $strOrderBy, 'UTF-8');
+        }
+
+        else {
+
+            $strOrderBy = 'DESC';
+        }
+
+        if ( $arrSortingFieldsFromInput ) {
+            
+            if ( !empty( $arrSortingFieldsFromInput ) && is_array( $arrSortingFieldsFromInput ) ) {
+
+                $arrSortingFields = $arrSortingFieldsFromInput;
             }
+            
+            if ( $arrSortingFieldsFromInput && is_string( $arrSortingFieldsFromInput ) ) {
 
-            if ( is_string( $varInput ) ) {
-
-                $arrSortingFields = [ $varInput ];
+                $arrSortingFields = [ $arrSortingFieldsFromInput ];
             }
         }
 
@@ -829,14 +810,14 @@ class ModuleListView extends Module
             $arrSortingFields[] = '_distance';
         }
 
-        $arrSortingFields = array_filter($arrSortingFields);
+        $arrSortingFields = array_filter( $arrSortingFields );
 
-        if ( $arrSortingFields && is_array( $arrSortingFields ) ) {
+        foreach ( $arrSortingFields as $strSortingField ){
 
-            return implode(',', $arrSortingFields);
+            $arrReturn[] = sprintf( '%s %s', $strSortingField, $strOrderBy );
         }
 
-        return 'id';
+        return ' ORDER BY ' . implode( ',', $arrReturn );
     }
 
     /**

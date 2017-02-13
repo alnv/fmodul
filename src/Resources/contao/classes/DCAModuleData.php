@@ -253,7 +253,7 @@ class DCAModuleData extends ViewContainer
                 return $options;
             }
 
-            $taxonomiesTagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($alias, $taxonomyPid);
+            $taxonomiesTagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?) ORDER BY sorting')->execute($alias, $taxonomyPid);
 
             while($taxonomiesTagsDB->next())
             {

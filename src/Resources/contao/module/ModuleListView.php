@@ -20,81 +20,24 @@ use Contao\Module;
 use Contao\Pagination;
 
 
-/**
- * Class ModuleListView
- * @package FModule
- */
 class ModuleListView extends Module
 {
 
-    /**
-     * @var string
-     */
     protected $strTemplate = 'mod_fmodule_list';
-
-    /**
-     * @var
-     */
     public $tablename;
-
-    /**
-     * @var
-     */
     public $listViewLimit;
-
-    /**
-     * @var
-     */
     public $listViewOffset = 0;
-
-    /**
-     * @var array
-     */
     protected $markerCache = array();
-
-    /**
-     * @var bool
-     */
     protected $loadMapScript = false;
-
-    /**
-     * @var null
-     */
     protected $feViewID = null;
-
-    /**
-     * @var string
-     */
     protected $strAutoItem = '';
-
-    /**
-     * @var string
-     */
     protected $strTaxonomy = '';
-
-    /**
-     * @var string
-     */
     protected $strSpecie = '';
-
-    /**
-     * @var string
-     */
     protected $strTag = array();
-
-    /**
-     * @var bool
-     */
     protected $blnLocatorInvoke = false;
-
-    /**
-     * @var string
-     */
     protected $strOrderBy = '';
-    
-    /**
-     *
-     */
+
+
     public function generate()
     {
         // backend view
@@ -124,9 +67,7 @@ class ModuleListView extends Module
         return parent::generate();
     }
 
-    /**
-     *
-     */
+
     protected function compile()
     {
 
@@ -257,7 +198,8 @@ class ModuleListView extends Module
             }
 
             // has options
-            if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice') {
+            if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice' || $arrModule['type'] == 'taxonomy_field' ) {
+
                 $dcaHelper = new DCAHelper();
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
@@ -619,6 +561,7 @@ class ModuleListView extends Module
             // set clean options
             if (!empty($arrCleanOptions)) {
                 $item['cleanOptions'] = $arrCleanOptions;
+
                 // overwrite clean options
                 foreach ($arrCleanOptions as $fieldID => $options) {
                     if ($item[$fieldID] && is_string($item[$fieldID])) {
@@ -772,7 +715,7 @@ class ModuleListView extends Module
         $arrSortingFields = $this->f_sorting_fields ? deserialize( $this->f_sorting_fields ) : ['id'];
         $strOrderBy = \Input::get('orderBy') ? \Input::get('orderBy') : $this->strOrderBy;
 
-        if ( $strOrderBy == 'RAND' ) {
+        if ( $strOrderBy == 'RAND' || $strOrderBy == 'rand' ) {
 
             return '';
         }

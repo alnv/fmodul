@@ -41,7 +41,7 @@ class DCAHelper extends Backend
     public function getOptions($field, $arrTable, $wrapperID = '')
     {
         $options = array();
-        $hasOptions = array('multi_choice', 'simple_choice');
+        $hasOptions = array('multi_choice', 'simple_choice', 'taxonomy_field');
         $table = '';
 
         if (is_array($arrTable)) {
@@ -95,13 +95,14 @@ class DCAHelper extends Backend
 
         // species
         if ($field['dataFromTaxonomy'] == '1' && $option) {
-            $speciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ?')->execute($option);
+            $speciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? ORDER BY sorting')->execute($option);
             if (!$speciesDB->count()) {
                 return $options;
             }
             while ($speciesDB->next()) {
                 $options[$speciesDB->alias] = $speciesDB->name ? $speciesDB->name : $speciesDB->alias;
             }
+
             return $options;
         }
 

@@ -152,8 +152,8 @@ class FModuleOrderByWizard extends \Widget {
         $return = '<table class="tl_optionwizard" id="ctrl_'.$this->strId.'">
               <thead>
                 <tr>
-                  <th>'.$GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['catalogManagerFields'].'</th>
-                  <th>'.$GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['catalogManagerOrder'].'</th>
+                  <th>'.$GLOBALS['TL_LANG']['MSC']['fm_sortFields'].'</th>
+                  <th>'.$GLOBALS['TL_LANG']['MSC']['fm_orderBy'].'</th>
                   <th>&nbsp;</th>
                 </tr>
               </thead>

@@ -44,13 +44,15 @@ foreach( $arrModules as $strTablename ){
 
 		$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'fm_' . $strTablename . '_data';
 		$GLOBALS['TL_DCA']['tl_content']['list']['sorting']['filter'][] = [ 'fview = ?', $strViewMode ];
+
+		$GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback'][] = [ 'tl_content_fmodule', 'addView' ];
+		$GLOBALS['TL_DCA']['tl_content']['config']['oncut_callback'][] = [ 'tl_content_fmodule', 'onCutAddFView' ];
+		$GLOBALS['TL_DCA']['tl_content']['config']['oncopy_callback'][] = [ 'tl_content_fmodule', 'onCopyAddFView' ];
+		$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = [ 'tl_content_fmodule', 'redirectToView' ];
+
+		break;
 	}
 }
-
-$GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback'][] = [ 'tl_content_fmodule', 'addView' ];
-$GLOBALS['TL_DCA']['tl_content']['config']['oncut_callback'][] = [ 'tl_content_fmodule', 'onCutAddFView' ];
-$GLOBALS['TL_DCA']['tl_content']['config']['oncopy_callback'][] = [ 'tl_content_fmodule', 'onCopyAddFView' ];
-$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = [ 'tl_content_fmodule', 'redirectToView' ];
 
 
 class tl_content_fmodule extends \Contao\Backend

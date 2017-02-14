@@ -699,15 +699,28 @@ class tl_module_fmodule extends tl_module {
 
     public function getSortableCatalogFieldsByTablename( $strTablename ) {
 
+        $arrForbiddenIDs = [ 'auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields' ];
+        $arrForbiddenTypes = [ 'fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'map_field', 'geo_locator' ];
+
         if ( !empty( $this->arrSortableCatalogFieldsCache ) && is_array( $this->arrSortableCatalogFieldsCache ) ) {
 
             return $this->arrSortableCatalogFieldsCache;
         }
 
-        $arrFields = [];
-        $objCatalogFields = $this->Database->prepare( 'SELECT * FROM tl_fmodules_filters WHERE pid = ( SELECT id FROM tl_fmodules WHERE tablename = ? LIMIT 1 ) ORDER BY sorting' )->execute( $strTablename );
+        $arrFields = [ 'id' => 'ID', 'title' => &$GLOBALS['TL_LANG']['MSC']['fm_title'], 'date' => &$GLOBALS['TL_LANG']['MSC']['fm_date'] ];
+        $objCatalogFields = $this->Database->prepare( 'SELECT * FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ?' )->execute( $strTablename );
 
         while ( $objCatalogFields->next() ) {
+
+            if ( in_array( $objCatalogFields->fieldID, $arrForbiddenIDs ) ) {
+
+                continue;
+            }
+
+            if ( in_array( $objCatalogFields->type, $arrForbiddenTypes ) ) {
+
+                continue;
+            }
 
             $arrFields[ $objCatalogFields->fieldID ] = $objCatalogFields->title ? $objCatalogFields->title : $objCatalogFields->fieldID;
         }
@@ -720,7 +733,7 @@ class tl_module_fmodule extends tl_module {
 
     public function getOrderByItems() {
 
-        return [ 'ASC' => &$GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['asc'], 'DESC' => &$GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['desc'] ];
+        return [ 'ASC' => &$GLOBALS['TL_LANG']['MSC']['fm_asc'], 'DESC' => &$GLOBALS['TL_LANG']['MSC']['fm_desc'] ];
     }
 
     public function getSignTemplate() {
@@ -990,8 +1003,6 @@ class tl_module_fmodule extends tl_module {
         $id = $dc->id;
         $moduleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ? LIMIT 1')->execute($id);
         $modulename = '';
-        $doNotSetByType = array('fulltext_search', 'legend_start', 'legend_end', 'widget', 'wrapper_field', 'map_field', 'geo_locator');
-        $doNotSetByID = array('auto_item', 'auto_page', 'pagination', 'orderBy', 'sorting_fields');
         $type = '';
 
         while ($moduleDB->next()) {
@@ -1016,29 +1027,8 @@ class tl_module_fmodule extends tl_module {
             $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper']['eval']['mandatory'] = false;
         }
 
-        // break up
         if ($type != 'fmodule_fe_list') {
             return null;
         }
-
-        // set sorting fields
-        $filterDB = $this->Database->prepare('SELECT * FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ?')->execute($modulename);
-        $sorting = array('id' => 'ID', 'title' => 'Titel', 'date' => 'Datum');
-
-        while ($filterDB->next()) {
-
-            if (in_array($filterDB->fieldID, $doNotSetByID)) {
-                continue;
-            }
-
-            if (in_array($filterDB->type, $doNotSetByType)) {
-                continue;
-            }
-
-            $sorting[$filterDB->fieldID] = $filterDB->title;
-
-        }
-
-        $GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields']['options'] = $sorting;
     }
 }

@@ -38,9 +38,9 @@ class ModuleListView extends Module
     protected $strOrderBy = '';
 
 
-    public function generate()
-    {
-        // backend view
+    public function generate() {
+
+
         if (TL_MODE == 'BE') {
 
             $objTemplate = new \BackendTemplate('be_wildcard');
@@ -68,14 +68,16 @@ class ModuleListView extends Module
     }
 
 
-    protected function compile()
-    {
+    protected function compile() {
 
         global $objPage;
         
         $f_display_mode = deserialize($this->f_display_mode);
         $page_taxonomy = deserialize($objPage->page_taxonomy);
-        $this->strOrderBy = $this->f_orderby ? mb_strtoupper($this->f_orderby, 'UTF-8') : '';
+        
+        //$this->strOrderBy = $this->f_orderby ? mb_strtoupper($this->f_orderby, 'UTF-8') : '';
+        $this->fm_orderBy = deserialize( $this->fm_orderBy );
+
         $taxonomyFromFE = is_array($f_display_mode) ? $f_display_mode : array();
         $taxonomyFromPage = is_array($page_taxonomy) ? $page_taxonomy : array();
         $tablename = $this->f_select_module;
@@ -308,10 +310,11 @@ class ModuleListView extends Module
             $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID, $qResult['searchSettings']);
         }
 
-        // get list view
+
+        $qOrderByStr = $this->getOrderBy();
         $addDetailPage = $wrapperDB['addDetailPage'];
         $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
-        $qOrderByStr = $this->getOrderBy();
+
         $strPidWhereStatement = 'pid = ' . $wrapperID;
         $qProtectedStr = ' AND published = "1"';
 
@@ -396,13 +399,6 @@ class ModuleListView extends Module
 
         }
 
-        // set random
-        if($this->strOrderBy == 'RAND') {
-             shuffle($arrItems);
-        }
-
-        //pagination
-        $strPagination = '';
         $total = count($arrItems);
         $strPagination = $this->createPagination($total);
         $this->Template->pagination = $strPagination;
@@ -637,14 +633,13 @@ class ModuleListView extends Module
         $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
     }
 
-    /**
-     * @param $return
-     * @return mixed
-     */
-    protected function setValuesForAutoPageAttribute($return)
-    {
+
+    protected function setValuesForAutoPageAttribute($return) {
+
         global $objPage;
+
         $alias = $objPage->alias;
+
         if ($return['type'] == 'multi_choice') {
             $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
             $alias = Environment::get('requestUri');
@@ -659,12 +654,9 @@ class ModuleListView extends Module
         return $return;
     }
 
-    /**
-     * @param $return
-     * @return mixed
-     */
-    protected function setValuesForTaxonomySpecieAttribute($return)
-    {
+
+    protected function setValuesForTaxonomySpecieAttribute($return) {
+
         if(\Input::get($return['fieldID']))
         {
             $this->strSpecie = \Input::get($return['fieldID']);
@@ -675,102 +667,95 @@ class ModuleListView extends Module
         return $return;
     }
 
-    /**
-     * @param $return
-     * @return mixed
-     */
-    protected function setValuesForTaxonomyTagsAttribute($return)
-    {
-        // allow multiple values
-        if(\Input::get($return['fieldID']))
-        {
+
+    protected function setValuesForTaxonomyTagsAttribute($return) {
+
+        if ( \Input::get($return['fieldID']) ) {
+
             $this->strTag = \Input::get($return['fieldID']);
         }
-        if (is_string($this->strTag)) {
+
+        if ( is_string($this->strTag) ) {
+
             $this->strTag = explode(',', $this->strTag);
         }
-        if ($this->strTag && is_array($this->strTag)) {
+
+        if ( $this->strTag && is_array($this->strTag) ) {
+            
             $return['value'] = $this->strTag;
         }
+
         return $return;
     }
 
-    /**
-     * @param $templateName
-     * @return mixed
-     */
-    public function parseTemplateName($templateName)
-    {
+
+    public function parseTemplateName($templateName) {
+
         return DiverseFunction::parseTemplateName($templateName);
     }
 
-    /**
-     * @return array|string
-     */
-    public function getOrderBy()
-    {
+
+    public function getOrderBy() {
+
+        $arrFields = [];
         $arrReturn = [];
-        $arrAllowedOrderBy = [ 'asc', 'desc', 'ASC', 'DESC' ];
-        $arrSortingFieldsFromInput = Input::get('sorting_fields');
-        $arrSortingFields = $this->f_sorting_fields ? deserialize( $this->f_sorting_fields ) : ['id'];
-        $strOrderBy = \Input::get('orderBy') ? \Input::get('orderBy') : $this->strOrderBy;
+        $strInputOrderBy = \Input::get('orderBy') ? \Input::get('orderBy') : 'DESC';
+        $varInputSortingFields = \Input::get('sorting_fields') ? \Input::get('sorting_fields') : '';
 
-        if ( $strOrderBy == 'RAND' || $strOrderBy == 'rand' ) {
+        if ( !empty( $this->fm_orderBy ) && is_array( $this->fm_orderBy ) ) {
 
-            return '';
-        }
+            foreach ( $this->fm_orderBy as $arrOrderBy ) {
 
-        if ( empty( $arrSortingFields ) || !is_array( $arrSortingFields ) ) {
+                if ( $arrOrderBy['key'] && $arrOrderBy['value'] ) {
 
-            $arrSortingFields = ['id'];
-        }
-        
-        if ( $strOrderBy && in_array( $strOrderBy, $arrAllowedOrderBy ) ) {
-
-            $strOrderBy = mb_strtoupper( $strOrderBy, 'UTF-8');
-        }
-
-        else {
-
-            $strOrderBy = 'DESC';
-        }
-
-        if ( $arrSortingFieldsFromInput ) {
-            
-            if ( !empty( $arrSortingFieldsFromInput ) && is_array( $arrSortingFieldsFromInput ) ) {
-
-                $arrSortingFields = $arrSortingFieldsFromInput;
+                    $arrFields[] = $arrOrderBy['key'];
+                    $arrReturn[] =  sprintf( '%s %s', $arrOrderBy['key'], $arrOrderBy['value'] );
+                }
             }
-            
-            if ( $arrSortingFieldsFromInput && is_string( $arrSortingFieldsFromInput ) ) {
+        }
 
-                $arrSortingFields = [ $arrSortingFieldsFromInput ];
+        if ( !empty( $varInputSortingFields ) && is_array( $varInputSortingFields ) ) {
+
+            foreach ( $varInputSortingFields as $strField ) {
+
+                if ( !in_array( $strField, $arrFields ) && in_array( $strInputOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
+
+                    $arrFields[] = $strField;
+                    $arrReturn[] =  sprintf( '%s %s', $strField, mb_strtoupper( $strInputOrderBy, 'UTF-8' ) );
+                }
+            }
+        }
+
+        if ( $varInputSortingFields && is_string( $varInputSortingFields ) ) {
+
+            if ( !in_array( $varInputSortingFields, $arrFields ) && in_array( $strInputOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
+
+                $arrFields[] = $varInputSortingFields;
+                $arrReturn[] =  sprintf( '%s %s', $varInputSortingFields, mb_strtoupper( $strInputOrderBy, 'UTF-8' ) );
             }
         }
 
         if( $this->blnLocatorInvoke && $this->fm_orderByDistance ) {
 
-            $arrSortingFields[] = '_distance';
+            $strDistanceOrderBy = $this->fm_orderByDistance ? $this->fm_orderByDistance : 'DESC';
+
+            if ( !in_array( '_distance', $arrFields ) && in_array( $strDistanceOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
+
+                $arrFields[] = '_distance';
+                $arrReturn[] =  sprintf( '%s %s', '_distance', mb_strtoupper( $strDistanceOrderBy, 'UTF-8' ) );
+            }
         }
 
-        $arrSortingFields = array_filter( $arrSortingFields );
+        if ( empty( $arrReturn ) ) {
 
-        foreach ( $arrSortingFields as $strSortingField ){
-
-            $arrReturn[] = sprintf( '%s %s', $strSortingField, $strOrderBy );
+            return '';
         }
 
         return ' ORDER BY ' . implode( ',', $arrReturn );
     }
 
-    /**
-     * @param $taxonomyFromFE
-     * @param $taxonomyFromPage
-     * @param $return
-     * @return mixed
-     */
-    public function setFilterValues($taxonomyFromFE, $taxonomyFromPage, $return)
-    {
+
+    public function setFilterValues($taxonomyFromFE, $taxonomyFromPage, $return) {
 
         $taxonomies = array();
 
@@ -798,13 +783,9 @@ class ModuleListView extends Module
 
     }
 
-    /**
-     * @param $filterValue
-     * @param $return
-     * @return mixed
-     */
-    protected function taxonomyValueSetter($filterValue, $return)
-    {
+
+    protected function taxonomyValueSetter($filterValue, $return) {
+
 
         $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
         $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
@@ -844,13 +825,8 @@ class ModuleListView extends Module
     }
 
 
-    /**
-     * @param $fieldID
-     * @param $type
-     * @return array
-     */
-    public function getFilter($fieldID, $type)
-    {
+    public function getFilter($fieldID, $type) {
+
         $getFilter = Input::get($fieldID) ? Input::get($fieldID) : '';
         $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
 
@@ -868,13 +844,11 @@ class ModuleListView extends Module
         );
     }
 
-    /**
-     * @param int $total
-     * @return null|string
-     */
-    public function createPagination($total = 0)
-    {
+
+    public function createPagination($total = 0) {
+
         global $objPage;
+
         $this->listViewLimit = $total;
         $getPagination = \Input::get('pagination');
 
@@ -918,10 +892,7 @@ class ModuleListView extends Module
         return '';
     }
 
-    /**
-     * @param $row
-     * @return bool|void
-     */
+
     private function generateSingeSrc($row)
     {
         if ($row->singleSRC != '') {
@@ -933,22 +904,16 @@ class ModuleListView extends Module
         return null;
     }
 
-    /**
-     * @param $objTarget
-     * @param $alias
-     * @return string
-     */
-    private function generateUrl($objTarget, $alias)
-    {
+
+    private function generateUrl($objTarget, $alias) {
+
         $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
         return $this->generateFrontendUrl($objTarget, '/' . $alias . $strTaxonomyUrl);
     }
 
-    /**
-     * @return string
-     */
-    private function generateTaxonomyUrl()
-    {
+
+    private function generateTaxonomyUrl() {
+
         $strTaxonomyUrl = '';
         if ($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
 

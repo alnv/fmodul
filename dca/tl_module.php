@@ -11,28 +11,15 @@
  * @copyright 2016 Alexander Naumov
  */
 
-// config
 $GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('tl_module_fmodule', 'setFEModule');
 $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_module_fmodule', 'saveGeoCoding');
 
-// module palette
-
-// list
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_sort_legend},f_sorting_fields,f_orderby,f_limit_page,f_perPage;{gallery_legend:hide},fm_disableGallery;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-
-// form
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_orderBy_legend},fm_orderBy,fm_randomSorting;{fm_pagination_legend},f_limit_page,f_perPage;{gallery_legend:hide},fm_disableGallery;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type;{list_view_legend},f_list_field;{form_fields_legend},f_form_fields;{form_settings_legend},f_reset_button,fm_disable_submit,f_active_options,fm_related_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-
-// detail
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-
-// sign
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend:hide},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{defaultValues_legend:hide},fm_defaultValues;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
-
-//taxonomy
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_taxonomy'] = '{title_legend},name,headline,type;{taxonomy_legend},fm_taxonomy,f_select_module,f_select_wrapper;{fm_redirect_legend:hide},fm_taxonomy_page;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
-// selector
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_filter';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'f_set_sorting';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addMap';
@@ -44,7 +31,6 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addConfirmat
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_related_options';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'fm_addGeoLocator';
 
-// sub palettes
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_filter'] = 'f_filter_fields';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['f_set_sorting'] = 'f_sorting_fields,f_sorting_orderby';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addMap'] = 'fm_center_address,fm_center_lat,fm_center_lng,fm_map_template,fm_mapZoom,fm_mapType,fm_mapScrollWheel,fm_mapMarker,fm_mapInfoBox,fm_mapStyle,fm_showAllItems';
@@ -57,7 +43,6 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addConfirmationEmail'] = 'fm_
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_related_options'] = 'fm_related_start_point';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['fm_addGeoLocator'] = 'fm_geoLocatorCountry,fm_adaptiveZoomFactor,fm_orderByDistance';
 
-// module fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy'],
     'exclude' => true,
@@ -67,7 +52,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// fm_taxonomy_page
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy_page'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'],
     'exclude' => true,
@@ -77,6 +61,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_taxonomy_page'] = array(
     'sql' => "int(10) unsigned NOT NULL default '0'",
     'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_select_module'],
@@ -87,6 +72,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_module'] = array
     'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_select_wrapper'],
@@ -96,28 +82,34 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
     'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
-$GLOBALS['TL_DCA']['tl_module']['fields']['f_orderby'] = array
-(
-    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_orderby'],
-    'inputType' => 'radio',
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_orderBy'] = [
+
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'],
+    'inputType' => 'catalogOrderByWizard',
+
+    'eval' => [
+
+        'chosen' => true,
+        'blankOptionLabel' => '-',
+        'includeBlankOption'=>true,
+        'orderByTablename' => null,
+        'orderByOptionsCallback' => [ 'tl_module_fmodule', 'getOrderByItems' ],
+        'fieldOptionsCallback' => [ 'tl_module_fmodule', 'getSortableCatalogFieldsByTablename' ]
+    ],
+
     'exclude' => true,
-    'default' => 'desc',
-    'eval' => array('tl_class' => 'clr m12'),
-    'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array('desc', 'asc', 'rand'),
-    'sql' => "varchar(255) NOT NULL default ''"
-);
-$GLOBALS['TL_DCA']['tl_module']['fields']['f_sorting_fields'] = array
-(
-    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_sorting_fields'],
-    'inputType' => 'checkboxWizard',
+    'sql' => "blob NULL"
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_randomSorting'] = [
+
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'],
+    'inputType' => 'checkbox',
     'exclude' => true,
-    'default' => 'id',
-    'reference' => &$GLOBALS['TL_LANG']['tl_module'],
-    'options' => array('id' => 'ID', 'title' => 'Titel', 'date' => 'Datum'),
-    'eval' => array('multiple' => true),
-    'sql' => "varchar(255) NOT NULL default ''"
-);
+    'sql' => "char(1) NOT NULL default ''"
+];
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_perPage'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_perPage'],
@@ -127,6 +119,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_perPage'] = array
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(10) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_limit_page'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_limit_page'],
@@ -153,6 +146,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_doNotSet_404'] = array
     'eval' => array('tl_class' => 'clr m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_display_mode'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_display_mode'],
     'exclude' => true,
@@ -160,6 +154,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_display_mode'] = array(
     'eval' => array('submitOnChange' => true),
     'sql' => "blob NULL"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_template'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_list_template'],
@@ -170,6 +165,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_template'] = array
     'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_detail_template'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_detail_template'],
@@ -180,6 +176,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_detail_template'] = array
     'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_template'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_template'],
@@ -190,6 +187,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_template'] = array
     'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_form_fields'],
     'exclude' => true,
@@ -197,6 +195,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_form_fields'] = array(
     'eval' => array('tl_class' => 'clr'),
     'sql' => "blob NULL"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_list_field'],
@@ -206,6 +205,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_list_field'] = array
     'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_disableGallery'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disableGallery'],
@@ -214,6 +214,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_disableGallery'] = array
     'eval' => array('tl_class' => 'clr'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_reset_button'],
     'inputType' => 'checkbox',
@@ -221,6 +222,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_reset_button'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_related_options'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_options'],
     'inputType' => 'checkbox',
@@ -228,6 +230,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_related_options'] = array(
     'eval' => array('tl_class' => 'clr', 'submitOnChange' => true),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_related_start_point'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_related_start_point'],
     'inputType' => 'checkbox',
@@ -235,6 +238,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_related_start_point'] = array(
     'eval' => array('tl_class' => 'clr'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_disable_submit'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_disable_submit'],
     'inputType' => 'checkbox',
@@ -242,6 +246,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_disable_submit'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['f_active_options'],
@@ -251,7 +256,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_active_options'] = array
     'eval' => array('multiple' => true, 'tl_class' => 'clr'),
     'sql' => "blob NULL"
 );
-// maps
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addMap'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMap'],
     'exclude' => true,
@@ -259,6 +264,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addMap'] = array(
     'eval' => array('submitOnChange' => true),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_center_address'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_center_address'],
     'exclude' => true,
@@ -266,6 +272,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_center_address'] = array(
     'eval' => array('tl_class' => 'long'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_center_lat'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_center_lat'],
     'exclude' => true,
@@ -273,6 +280,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_center_lat'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_center_lng'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_center_lng'],
     'exclude' => true,
@@ -280,6 +288,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_center_lng'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_map_template'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_map_template'],
     'exclude' => true,
@@ -288,6 +297,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_map_template'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapZoom'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapZoom'],
     'exclude' => true,
@@ -297,6 +307,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapZoom'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "int(10) unsigned NOT NULL default '6'"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapScrollWheel'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapScrollWheel'],
     'exclude' => true,
@@ -304,6 +315,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapScrollWheel'] = array(
     'eval' => array('tl_class' => 'clr m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapMarker'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapMarker'],
     'exclude' => true,
@@ -311,6 +323,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapMarker'] = array(
     'eval' => array('tl_class' => 'clr m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapInfoBox'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapInfoBox'],
     'exclude' => true,
@@ -318,6 +331,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapInfoBox'] = array(
     'eval' => array('tl_class' => 'clr m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapType'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapType'],
     'exclude' => true,
@@ -327,6 +341,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapType'] = array(
     'eval' => array('tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapStyle'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_mapStyle'],
     'exclude' => true,
@@ -335,7 +350,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_mapStyle'] = array(
     'sql' => "text NULL"
 );
 
-// geo settings
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addGeoLocator'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addGeoLocator'],
     'exclude' => true,
@@ -343,6 +357,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addGeoLocator'] = array(
     'eval' => array('submitOnChange' => true, 'tl_class' => 'm12'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_geoLocatorCountry'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_geoLocatorCountry'],
     'exclude' => true,
@@ -351,6 +366,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_geoLocatorCountry'] = array(
     'eval' => array('tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_adaptiveZoomFactor'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_adaptiveZoomFactor'],
     'exclude' => true,
@@ -358,6 +374,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_adaptiveZoomFactor'] = array(
     'eval' => array('tl_class' => 'w50 m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_orderByDistance'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderByDistance'],
     'exclude' => true,
@@ -368,7 +385,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_orderByDistance'] = array(
     'sql' => "varchar(8) NOT NULL default ''"
 );
 
-// seo settings
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_overwrite_seoSettings'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_overwrite_seoSettings'],
     'exclude' => true,
@@ -376,7 +392,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_overwrite_seoSettings'] = array(
     'eval' => array('submitOnChange' => true),
     'sql' => "char(1) NOT NULL default ''"
 );
-// fm_seoDescription
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoDescription'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoDescription'],
     'exclude' => true,
@@ -385,7 +401,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoDescription'] = array(
     'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'chosen' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
-// fm_seoPageTitle
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoPageTitle'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoPageTitle'],
     'exclude' => true,
@@ -394,7 +410,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoPageTitle'] = array(
     'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'chosen' => true),
     'sql' => "varchar(255) NOT NULL default ''"
 );
-// fm_seoHrefLang
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoHrefLang'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_seoHrefLang'],
     'exclude' => true,
@@ -403,8 +419,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_seoHrefLang'] = array(
     'sql' => "char(1) NOT NULL default ''"
 );
 
-
-// redirect
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_source'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_redirect_source'],
     'default' => '',
@@ -415,6 +429,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_source'] = array(
     'eval' => array('submitOnChange' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(64) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_form_redirect'],
     'exclude' => true,
@@ -422,6 +437,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect'] = array(
     'eval' => array('submitOnChange' => true),
     'sql' => "char(1) NOT NULL default ''"
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_jumpTo'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_redirect_jumpTo'],
     'exclude' => true,
@@ -431,6 +447,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_jumpTo'] = array(
     'sql' => "int(10) unsigned NOT NULL default '0'",
     'relation' => array('type' => 'belongsTo', 'load' => 'lazy')
 );
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_url'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_redirect_url'],
     'exclude' => true,
@@ -440,7 +457,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_redirect_url'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// registration
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_editable_fields'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_editable_fields'],
     'exclude' => true,
@@ -449,7 +465,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_editable_fields'] = array(
     'eval' => array('multiple' => true),
     'sql' => "blob NULL"
 );
-// fm_sign_template
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_sign_template'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_sign_template'],
@@ -460,7 +476,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_sign_template'] = array
     'eval' => array('tl_class' => 'w50', 'chosen' => true),
     'sql' => "varchar(32) NOT NULL default ''"
 );
-// fm_storeFile
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_storeFile'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_storeFile'],
@@ -469,7 +485,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_storeFile'] = array
     'eval' => array('submitOnChange' => true),
     'sql' => "char(1) NOT NULL default ''"
 );
-// fm_uploadFolder
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_uploadFolder'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_uploadFolder'],
@@ -478,7 +494,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_uploadFolder'] = array
     'eval' => array('fieldType' => 'radio', 'tl_class' => 'clr', 'mandatory' => true),
     'sql' => "binary(16) NULL"
 );
-// fm_useHomeDir
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_useHomeDir'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_useHomeDir'],
@@ -487,7 +503,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_useHomeDir'] = array
     'eval' => array('tl_class' => 'w50'),
     'sql' => "char(1) NOT NULL default ''"
 );
-// fm_useHomeDir
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_doNotOverwrite'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_doNotOverwrite'],
@@ -496,7 +512,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_doNotOverwrite'] = array
     'eval' => array('tl_class' => 'w50'),
     'sql' => "char(1) NOT NULL default ''"
 );
-// maxlength
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_maxlength'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_maxlength'],
@@ -505,7 +521,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_maxlength'] = array
     'eval' => array('rgxp' => 'natural', 'tl_class' => 'w50'),
     'sql' => "int(10) unsigned NOT NULL default '0'"
 );
-// fm_extensions
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_extensions'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_extensions'],
@@ -515,7 +531,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_extensions'] = array
     'eval' => array('rgxp' => 'extnd', 'maxlength' => 255, 'tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
-// fm_EntityAuthor
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_EntityAuthor'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_EntityAuthor'],
     'exclude' => true,
@@ -526,7 +542,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_EntityAuthor'] = array(
     'sql' => "int(10) unsigned NOT NULL default '0'",
 );
 
-// fm_addNotificationEmail
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addNotificationEmail'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addNotificationEmail'],
     'exclude' => true,
@@ -535,7 +550,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addNotificationEmail'] = array(
     'sql' => "char(1) NOT NULL default ''"
 );
 
-// fm_notificationEmailSubject
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailSubject'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_notificationEmailSubject'],
     'exclude' => true,
@@ -544,7 +558,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailSubject'] = array
     'sql' => "varchar(512) NOT NULL default ''"
 );
 
-// fm_notificationEmailName
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailName'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_notificationEmailName'],
     'exclude' => true,
@@ -553,7 +566,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailName'] = array(
     'sql' => "varchar(128) NOT NULL default ''"
 );
 
-// fm_sendNotificationToAdmin
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_sendNotificationToAdmin'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_sendNotificationToAdmin'],
     'exclude' => true,
@@ -562,7 +574,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_sendNotificationToAdmin'] = array(
     'sql' => "char(1) NOT NULL default ''"
 );
 
-// fm_notificationEmailList
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailList'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_notificationEmailList'],
     'exclude' => true,
@@ -571,7 +582,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationEmailList'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// fm_notificationSender
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationSender'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_notificationSender'],
     'exclude' => true,
@@ -581,7 +591,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_notificationSender'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// fm_addConfirmationEmail
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addConfirmationEmail'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addConfirmationEmail'],
@@ -591,7 +600,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_addConfirmationEmail'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
-// fm_confirmationEmailSubject
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailSubject'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_confirmationEmailSubject'],
     'exclude' => true,
@@ -600,7 +608,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailSubject'] = array
     'sql' => "varchar(512) NOT NULL default ''"
 );
 
-// fm_confirmationEmailName
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailName'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_confirmationEmailName'],
     'exclude' => true,
@@ -609,7 +616,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailName'] = array(
     'sql' => "varchar(128) NOT NULL default ''"
 );
 
-// fm_sendConfirmationToAdmin
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_sendConfirmationToAdmin'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_sendConfirmationToAdmin'],
     'exclude' => true,
@@ -618,7 +624,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_sendConfirmationToAdmin'] = array(
     'sql' => "char(1) NOT NULL default ''"
 );
 
-// fm_confirmationEmailList
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailList'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_confirmationEmailList'],
     'exclude' => true,
@@ -627,7 +632,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationEmailList'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// fm_confirmationSender
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationSender'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_confirmationSender'],
     'exclude' => true,
@@ -637,7 +641,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationSender'] = array(
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// fm_confirmationRecipientEmail
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationRecipientEmail'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_confirmationRecipientEmail'],
     'exclude' => true,
@@ -647,7 +650,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationRecipientEmail'] = arr
     'sql' => "varchar(255) NOT NULL default ''"
 );
 
-// fm_confirmationBody
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationBody'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_confirmationBody'],
@@ -657,7 +659,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_confirmationBody'] = array
     'sql' => "text NULL"
 );
 
-// fm_defaultValues
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_defaultValues'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_defaultValues'],
@@ -667,9 +668,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_defaultValues'] = array
     'sql' => "blob NULL"
 );
 
-// taxonomy url
-
-// fm_use_specieUrl
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_specieUrl'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_specieUrl'],
@@ -679,7 +677,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_specieUrl'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
-// fm_use_tagsUrl
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_tagsUrl'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_use_tagsUrl'],
@@ -692,29 +689,48 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_tagsUrl'] = array
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
 
-/**
- * Class tl_module_fmodule
- */
-class tl_module_fmodule extends tl_module
-{
-    /**
-     * @var array
-     */
-    protected $moduleColsCache = array();
 
-    /**
-     * @return array
-     */
-    public function getSignTemplate()
-    {
+class tl_module_fmodule extends tl_module {
+
+
+    protected $moduleColsCache = [];
+    private $arrSortableCatalogFieldsCache = [];
+
+
+    public function getSortableCatalogFieldsByTablename( $strTablename ) {
+
+        if ( !empty( $this->arrSortableCatalogFieldsCache ) && is_array( $this->arrSortableCatalogFieldsCache ) ) {
+
+            return $this->arrSortableCatalogFieldsCache;
+        }
+
+        $arrFields = [];
+        $objCatalogFields = $this->Database->prepare( 'SELECT * FROM tl_fmodules_filters WHERE pid = ( SELECT id FROM tl_fmodules WHERE tablename = ? LIMIT 1 ) ORDER BY sorting' )->execute( $strTablename );
+
+        while ( $objCatalogFields->next() ) {
+
+            $arrFields[ $objCatalogFields->fieldID ] = $objCatalogFields->title ? $objCatalogFields->title : $objCatalogFields->fieldID;
+        }
+
+        $this->arrSortableCatalogFieldsCache = $arrFields;
+
+        return $this->arrSortableCatalogFieldsCache;
+    }
+
+
+    public function getOrderByItems() {
+
+        return [ 'ASC' => &$GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['asc'], 'DESC' => &$GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['desc'] ];
+    }
+
+    public function getSignTemplate() {
+
         return $this->getTemplateGroup('sign_');
     }
 
-    /**
-     * @return array
-     */
-    public function getTaxonomies()
-    {
+
+    public function getTaxonomies() {
+
         $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ?')->execute('0');
         $arrTaxonomies = array();
 
@@ -726,21 +742,15 @@ class tl_module_fmodule extends tl_module
         return $arrTaxonomies;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
-    public function getEmailFields(\DataContainer $dc)
-    {
-        // set variables here
+
+    public function getEmailFields(\DataContainer $dc) {
+
         $return = array();
         $modulename = $dc->activeRecord->f_select_module;
         $tableData = $modulename . '_data';
 
-        // return empty array
         if (!$modulename) return $return;
 
-        // get editable fields
         System::loadLanguageFile('tl_fmodules_language_pack');
         $this->loadDataContainer($tableData);
 
@@ -753,13 +763,9 @@ class tl_module_fmodule extends tl_module
         return $return;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
-    public function getEditableFModuleProperties(\DataContainer $dc)
-    {
-        // set variables here
+
+    public function getEditableFModuleProperties(\DataContainer $dc) {
+
         $return = array();
         $modulename = $dc->activeRecord->f_select_module;
         $tableData = $modulename . '_data';
@@ -788,13 +794,9 @@ class tl_module_fmodule extends tl_module
         return $return;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
-    public function getModuleCols(\DataContainer $dc)
-    {
-        // get cols from cache
+
+    public function getModuleCols(\DataContainer $dc) {
+
         if (!empty($this->moduleColsCache)) return $this->moduleColsCache;
 
         // set empty cols array
@@ -836,12 +838,8 @@ class tl_module_fmodule extends tl_module
         return $cols;
     }
 
-    /**
-     * @param \DataContainer $dc
-     * @return null
-     */
-    public function saveGeoCoding(\DataContainer $dc)
-    {
+
+    public function saveGeoCoding(\DataContainer $dc) {
         if (!$dc->activeRecord) {
             return null;
         }
@@ -870,12 +868,9 @@ class tl_module_fmodule extends tl_module
         }
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
-    public function getListModules(\DataContainer $dc)
-    {
+
+    public function getListModules(\DataContainer $dc) {
+
         $type = 'fmodule_fe_list';
         $listID = $dc->activeRecord->f_list_field;
         $tl_moduleDB = $this->Database->prepare('SELECT name, id, f_select_module FROM tl_module WHERE type = ?')->execute($type);
@@ -946,67 +941,52 @@ class tl_module_fmodule extends tl_module
         return $options;
     }
 
-    /**
-     * @return array
-     */
-    public function getDetailTemplates()
-    {
+
+    public function getDetailTemplates() {
+
         return $this->getTemplateGroup('fmodule_');
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
-    public function getListTemplates(\DataContainer $dc)
-    {
+
+    public function getListTemplates(\DataContainer $dc) {
+
         return $this->getTemplateGroup('fmodule_');
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
-    public function getMapTemplates(\DataContainer $dc)
-    {
+
+    public function getMapTemplates(\DataContainer $dc) {
+
         return $this->getTemplateGroup('fm_map_location');
     }
 
-    /**
-     * @return array
-     */
-    public function getFormTemplates()
-    {
+
+    public function getFormTemplates() {
+
         return $this->getTemplateGroup('fm_form_');
     }
 
-    /**
-     * @return array
-     */
+
     function getCountryNames() {
 
         return array_values($this->getcountries());
     }
 
-    /**
-     * @return array
-     */
-    public function getModules()
-    {
+
+    public function getModules() {
         $return = array();
         $modulesDB = $this->Database->prepare('SELECT tablename, name FROM tl_fmodules')->execute();
+
         while ($modulesDB->next()) {
+
             $return[$modulesDB->tablename] = $modulesDB->name;
         }
+
         return $return;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return null
-     */
-    public function setFEModule(\DataContainer $dc)
-    {
+
+    public function setFEModule(\DataContainer $dc) {
+
         $id = $dc->id;
         $moduleDB = $this->Database->prepare('SELECT * FROM tl_module WHERE id = ? LIMIT 1')->execute($id);
         $modulename = '';

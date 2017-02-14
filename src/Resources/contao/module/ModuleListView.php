@@ -681,7 +681,7 @@ class ModuleListView extends Module
         }
 
         if ( $this->strTag && is_array($this->strTag) ) {
-            
+
             $return['value'] = $this->strTag;
         }
 
@@ -750,6 +750,8 @@ class ModuleListView extends Module
 
             return '';
         }
+
+        $arrReturn = array_unique( $arrReturn );
 
         return ' ORDER BY ' . implode( ',', $arrReturn );
     }

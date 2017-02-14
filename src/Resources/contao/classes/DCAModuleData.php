@@ -476,7 +476,7 @@ class DCAModuleData extends ViewContainer
                     'label' => array($field['title'], $field['description']),
                     'icon' => $this->getToggleIcon('1', $field['description'], $field['fieldID'], true),
                     'href' => $field['fieldID'],
-                    'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFMField(this)"',
+                    'attributes' => 'onclick="Backend.getScrollOffset();return FModule.toggleFMField(this)"',
                     'button_callback' => array('DCAModuleData', 'iconFeatured')
                 );
             }

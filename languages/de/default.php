@@ -33,6 +33,12 @@ $GLOBALS['TL_LANG']['MSC']['f_gt'] = 'Größer als';
 $GLOBALS['TL_LANG']['MSC']['f_lt'] = 'Kleiner als';
 $GLOBALS['TL_LANG']['MSC']['f_lte'] = 'Kleiner gleich';
 $GLOBALS['TL_LANG']['MSC']['fm_distance'] = 'Entfernung ca.';
+$GLOBALS['TL_LANG']['MSC']['fm_sortFields'] = 'Felder';
+$GLOBALS['TL_LANG']['MSC']['fm_orderBy'] = 'Sortierreihenfolge';
+$GLOBALS['TL_LANG']['MSC']['fm_asc'] = 'Aufsteigend';
+$GLOBALS['TL_LANG']['MSC']['fm_desc'] = 'Absteigend';
+$GLOBALS['TL_LANG']['MSC']['fm_title'] = 'Titel';
+$GLOBALS['TL_LANG']['MSC']['fm_date'] = 'Datum';
 
 // errors
 $GLOBALS['TL_LANG']['ERR']['fallbackExist'] = 'Sie können nur einen Fallback pro Wrapper definieren.';

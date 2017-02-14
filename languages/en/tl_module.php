@@ -17,6 +17,8 @@ $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Form fields';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Form-Settings';
 $GLOBALS['TL_LANG']['tl_module']['fm_geo_legend'] = 'Locator-Settings';
 $GLOBALS['TL_LANG']['tl_module']['gallery_legend'] = 'Gallery-Settings';
+$GLOBALS['TL_LANG']['tl_module']['fm_orderBy_legend'] = 'Sort-Settings';
+$GLOBALS['TL_LANG']['tl_module']['fm_pagination_legend'] = 'Pagination';
 
 //fields
 

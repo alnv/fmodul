@@ -17,6 +17,8 @@ $GLOBALS['TL_LANG']['tl_module']['form_fields_legend'] = 'Formular Felder';
 $GLOBALS['TL_LANG']['tl_module']['form_settings_legend'] = 'Formular-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['fm_geo_legend'] = 'Umkreissuche-Einstellungen';
 $GLOBALS['TL_LANG']['tl_module']['gallery_legend'] = 'Galerie-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['fm_orderBy_legend'] = 'Sortierung';
+$GLOBALS['TL_LANG']['tl_module']['fm_pagination_legend'] = 'Seitennummerierung';
 
 // fields
 
@@ -299,6 +301,12 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][1] = 'Bitte wähl
 // fm_showAllItems
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][0] = 'Alle Elemente anzeigen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][1] = 'Es werden alle Elemente in der Tabelle angezeigt unabhängig vom jeweiligen Wrapper.';
+
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'][0] = 'Sortieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'][1] = 'Hier können Sie Ihre Datensätze sortieren.';
+
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'][0] = 'Zufallssortierung aktivieren';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'][1] = 'Die Datensätze werden zufällig sortiert.';
 
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';

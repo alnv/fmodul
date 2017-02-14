@@ -77,7 +77,13 @@ $GLOBALS['TL_LANG']['tl_fmodules']['disableOperationButtons'][1] = 'Hier können
 $GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'][0] = 'Operation-Buttons auswählen';
 $GLOBALS['TL_LANG']['tl_fmodules']['operationButtons'][1] = 'Bitte wählen Sie ein oder mehrere Operation-Buttons aus, welche Sie deaktivieren wollen.';
 
-$GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'Der Tabellenname muss mit "fm_" beginnen.';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'][0] = 'Sort';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'][1] = 'Here you can sort your entities.';
+
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'][0] = 'Random';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'][1] = 'Here you can sort your entities randomly.';
+
+$GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName'] = 'The Table name have to start with "fm_".';
 
 //referece
 $GLOBALS['TL_LANG']['tl_fmodules']['title'] = 'Titel';

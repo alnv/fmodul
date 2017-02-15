@@ -82,7 +82,7 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = [ 'FModuleInsertTags', 'setHooks' 
 
 if ( TL_MODE == 'BE' ) {
 
-    $GLOBALS['TL_JAVASCRIPT']['catalogManagerBackendExtension'] = $GLOBALS['TL_CONFIG']['debugMode']
+    $GLOBALS['TL_JAVASCRIPT']['FModuleJS'] = $GLOBALS['TL_CONFIG']['debugMode']
         ? $GLOBALS['FM_AUTO_PATH'] . 'FModule.js'
         : $GLOBALS['FM_AUTO_PATH'] . 'FModule.js';
 }

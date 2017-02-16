@@ -624,7 +624,7 @@ class ModuleListView extends Module
             $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
         }
 
-        if ( $this->fm_randomSorting ) {
+        if ( $this->fm_randomSorting || ( \Input::get('orderBy') && in_array( \Input::get('orderBy'), [ 'rand', 'RAND' ] ) ) ) {
 
             shuffle( $arrResults );
         }
@@ -704,7 +704,6 @@ class ModuleListView extends Module
 
     public function getOrderBy() {
 
-        $arrFields = [];
         $arrReturn = [];
         $strInputOrderBy = \Input::get('orderBy') ? \Input::get('orderBy') : 'DESC';
         $varInputSortingFields = \Input::get('sorting_fields') ? \Input::get('sorting_fields') : '';
@@ -715,8 +714,7 @@ class ModuleListView extends Module
 
                 if ( $arrOrderBy['key'] && $arrOrderBy['value'] ) {
 
-                    $arrFields[] = $arrOrderBy['key'];
-                    $arrReturn[] =  sprintf( '%s %s', $arrOrderBy['key'], $arrOrderBy['value'] );
+                    $arrReturn[ $arrOrderBy['key'] ] =  sprintf( '%s %s', $arrOrderBy['key'], $arrOrderBy['value'] );
                 }
             }
         }
@@ -725,20 +723,18 @@ class ModuleListView extends Module
 
             foreach ( $varInputSortingFields as $strField ) {
 
-                if ( !in_array( $strField, $arrFields ) && in_array( $strInputOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
+                if ( in_array( $strInputOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
 
-                    $arrFields[] = $strField;
-                    $arrReturn[] =  sprintf( '%s %s', $strField, mb_strtoupper( $strInputOrderBy, 'UTF-8' ) );
+                    $arrReturn[ $strField ] =  sprintf( '%s %s', $strField, mb_strtoupper( $strInputOrderBy, 'UTF-8' ) );
                 }
             }
         }
 
         if ( $varInputSortingFields && is_string( $varInputSortingFields ) ) {
 
-            if ( !in_array( $varInputSortingFields, $arrFields ) && in_array( $strInputOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
+            if ( in_array( $strInputOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
 
-                $arrFields[] = $varInputSortingFields;
-                $arrReturn[] =  sprintf( '%s %s', $varInputSortingFields, mb_strtoupper( $strInputOrderBy, 'UTF-8' ) );
+                $arrReturn[ $varInputSortingFields ] =  sprintf( '%s %s', $varInputSortingFields, mb_strtoupper( $strInputOrderBy, 'UTF-8' ) );
             }
         }
 
@@ -746,10 +742,9 @@ class ModuleListView extends Module
 
             $strDistanceOrderBy = $this->fm_orderByDistance ? $this->fm_orderByDistance : 'DESC';
 
-            if ( !in_array( '_distance', $arrFields ) && in_array( $strDistanceOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
+            if ( in_array( $strDistanceOrderBy, [ 'ASC', 'DESC', 'asc', 'desc' ] ) ) {
 
-                $arrFields[] = '_distance';
-                $arrReturn[] =  sprintf( '%s %s', '_distance', mb_strtoupper( $strDistanceOrderBy, 'UTF-8' ) );
+                $arrReturn[ '_distance' ] =  sprintf( '%s %s', '_distance', mb_strtoupper( $strDistanceOrderBy, 'UTF-8' ) );
             }
         }
 
@@ -759,7 +754,7 @@ class ModuleListView extends Module
         }
 
         $arrReturn = array_unique( $arrReturn );
-
+        
         return ' ORDER BY ' . implode( ',', $arrReturn );
     }
 

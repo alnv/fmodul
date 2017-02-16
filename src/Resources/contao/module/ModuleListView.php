@@ -51,16 +51,15 @@ class ModuleListView extends Module
 
         $this->import('FrontendUser', 'User');
 
-        // set fe view id
         $this->feViewID = md5($this->id);
 
-        // change template
         if (TL_MODE == 'FE' && $this->fm_addMap) {
+
             $this->strTemplate = 'mod_fmodule_map';
         }
 
-        //auto_page Attribute
         if (!isset($_GET['item']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+
             Input::setGet('item', Input::get('auto_item'));
         }
 
@@ -74,10 +73,7 @@ class ModuleListView extends Module
         
         $f_display_mode = deserialize($this->f_display_mode);
         $page_taxonomy = deserialize($objPage->page_taxonomy);
-        
-        //$this->strOrderBy = $this->f_orderby ? mb_strtoupper($this->f_orderby, 'UTF-8') : '';
         $this->fm_orderBy = deserialize( $this->fm_orderBy );
-
         $taxonomyFromFE = is_array($f_display_mode) ? $f_display_mode : array();
         $taxonomyFromPage = is_array($page_taxonomy) ? $page_taxonomy : array();
         $tablename = $this->f_select_module;
@@ -92,10 +88,10 @@ class ModuleListView extends Module
         $geoLocatorValues = array();
         $arrCleanOptions = array();
 
-        // map view settings
         $mapSettings = array();
 
         if ($this->fm_addMap) {
+
             $mapSettings['mapZoom'] = $this->fm_mapZoom;
             $mapSettings['mapMarker'] = $this->fm_mapMarker;
             $mapSettings['mapInfoBox'] = $this->fm_mapInfoBox;
@@ -106,19 +102,19 @@ class ModuleListView extends Module
             $mapSettings['lng'] = $this->fm_center_lng ? $this->fm_center_lng : '0';
         }
 
-        // get wrapper
         $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
-
-        // taxonomies
         $blnDetailView = false;
+
         if (\Input::get('auto_item')) {
+
             $taxonomyItemDB = $this->Database->prepare('SELECT * FROM ' . $tablename . '_data WHERE published = "1" AND pid = ? AND (alias = ? OR id = ?)')->limit(1)->execute($wrapperID, \Input::get('auto_item'), (int)\Input::get('auto_item'));
+
             if ($taxonomyItemDB->count()) {
+
                 $blnDetailView = true;
             }
         }
-        
-        // set params variables
+
         $this->strAutoItem = !$blnDetailView ? '' : \Input::get('auto_item');
         $this->strSpecie = !$blnDetailView ? \Input::get('auto_item') : \Input::get('specie');
         $this->strTag = !$blnDetailView ? \Input::get('specie') : \Input::get('tags');
@@ -138,81 +134,78 @@ class ModuleListView extends Module
             $arrModule['overwrite'] = null;
             $arrModule['active'] = null;
 
-            // set auto_page values
             if ($arrModule['fieldID'] == 'auto_page' || $arrModule['autoPage']) {
+
                 $arrModule = $this->setValuesForAutoPageAttribute($arrModule);
             }
 
-            // taxonomies >>
-            // set specie value
             if ($arrModule['dataFromTaxonomy'] == '1' && !\Config::get('taxonomyDisable')) {
-                $arrModule['type'] = 'taxonomy_field'; // dyn type
+
+                $arrModule['type'] = 'taxonomy_field';
                 $arrModule = $this->setValuesForTaxonomySpecieAttribute($arrModule);
             }
-            // set tags value
             if ($arrModule['reactToTaxonomy'] == '1' && !\Config::get('taxonomyDisable')) {
-                $arrModule['type'] = 'taxonomy_field'; // dyn type
+
+                $arrModule['type'] = 'taxonomy_field';
                 $arrModule = $this->setValuesForTaxonomyTagsAttribute($arrModule);
             }
-            // << end taxonomies
 
             $val = QueryModel::isValue($arrModule['value'], $arrModule['type']);
             if ($val) $arrModule['enable'] = true;
 
-            // check if has an wrapper
             if (($arrModule['type'] === 'search_field' && $arrModule['isInteger']) || $arrModule['type'] === 'date_field') {
+
                 $btw = Input::get($arrModule['fieldID'] . '_btw') ? Input::get($arrModule['fieldID'] . '_btw') : '';
                 $btwHasValue = QueryModel::isValue($btw, $arrModule['type']);
+
                 if ($btwHasValue && !$val) {
+
                     $arrModule['enable'] = true;
                     $arrModule['value'] = 0;
                 }
             }
 
-            // map
             if ($arrModule['type'] == 'map_field') {
 
-                // set map settings
                 $mapFields[] = HelperModel::setGoogleMap($arrModule);
 
-                // set loadMapScript to true
                 $this->loadMapScript = true;
 
-                // load map libraries
                 if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $arrModule['mapInfoBox'] ? true : false;
             }
 
-            // field
             if ($arrModule['type'] == 'widget') {
+
                 $tplName = $arrModule['widgetTemplate'];
                 $tpl = '';
+
                 if (!$tplName) {
+
                     $tplNameType = explode('.', $arrModule['widget_type'])[0];
                     $tplNameArr = $this->getTemplateGroup('fm_field_' . $tplNameType);
                     $tpl = current($tplNameArr);
                     $tpl = $this->parseTemplateName($tpl);
                 }
+
                 $fieldWidgets[$arrModule['fieldID']] = array(
+
                     'fieldID' => $arrModule['fieldID'],
                     'widgetType' => $arrModule['widget_type'],
                     'widgetTemplate' => $arrModule['widgetTemplate'] ? $arrModule['widgetTemplate'] : $tpl
                 );
             }
 
-            // has options
             if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice' || $arrModule['type'] == 'taxonomy_field' ) {
 
                 $dcaHelper = new DCAHelper();
                 $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
             }
 
-            // compass
-            if($arrModule['type'] == 'geo_locator') {
+            if ($arrModule['type'] == 'geo_locator') {
 
-                if($arrModule['value']) $geoLocatorValues[$arrModule['locatorType']] = $arrModule['value'];
+                if ($arrModule['value']) $geoLocatorValues[$arrModule['locatorType']] = $arrModule['value'];
 
-                // get delimiter
-                if($arrModule['locatorType'] == 'geo_distance') {
+                if ($arrModule['locatorType'] == 'geo_distance') {
 
                     $geoLocatorValues['geoDistanceDelimiter'] = $arrModule['geoDistanceDelimiter'] ? $arrModule['geoDistanceDelimiter'] : ',';
                 }
@@ -224,15 +217,15 @@ class ModuleListView extends Module
         }
 
         if (!empty($taxonomyFromFE) || !empty($taxonomyFromPage)) {
+
             $arrFields = $this->setFilterValues($taxonomyFromFE, $taxonomyFromPage, $arrFields);
         }
 
-        // compass
         $arrLongLatCords = array();
         $strDistanceField = "";
         $strHavingQuery = "";
 
-        if($geoLocatorValues['geo_street'] || $geoLocatorValues['geo_zip'] || $geoLocatorValues['geo_city']) {
+        if ($geoLocatorValues['geo_street'] || $geoLocatorValues['geo_zip'] || $geoLocatorValues['geo_city']) {
 
             $this->blnLocatorInvoke = true;
 
@@ -249,18 +242,18 @@ class ModuleListView extends Module
 
             $strGeoAddress = trim($strGeoAddress);
 
-            if(!empty($strGeoAddress)) {
+            if (!empty($strGeoAddress)) {
 
                 $objGeoCords = GeoCoding::getInstance();
                 $arrLongLatCords = $objGeoCords->getGeoCords($strGeoAddress, $strCountry);
             }
 
-            if($arrLongLatCords['lat'] == '0' && $arrLongLatCords['lng'] == '0') {
+            if ($arrLongLatCords['lat'] == '0' && $arrLongLatCords['lng'] == '0') {
 
                 $arrLongLatCords = array();
             }
 
-            if(!empty($arrLongLatCords)) {
+            if (!empty($arrLongLatCords)) {
 
                 $strDistance = $geoLocatorValues['geo_distance'] ? $geoLocatorValues['geo_distance'] : '';
 
@@ -301,8 +294,6 @@ class ModuleListView extends Module
         $qResult = HelperModel::generateSQLQueryFromFilterArray($arrFields);
         $qStr = $qResult['qStr'];
         $qTextSearch = $qResult['isFulltextSearch'] ? $qResult['$qTextSearch'] : '';
-
-        //get text search results
         $textSearchResults = array();
 
         if ($qTextSearch) {
@@ -324,19 +315,17 @@ class ModuleListView extends Module
             $qProtectedStr = 'published = "1"';
         }
 
-        //  preview mode
         if (HelperModel::previewMode()) $qProtectedStr = '';
 
-        // get all items
         $listDB = $this->Database->prepare('SELECT ' . $selectedFields . ' FROM ' . $tablename . '_data WHERE ' . $strPidWhereStatement . $qProtectedStr . $qStr . $strHavingQuery . $qOrderByStr)->query();
-        
-        // image size
         $imgSize = false;
 
-        // Override the default image size
         if ($this->imgSize != '') {
+
             $size = deserialize($this->imgSize);
+
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
+
                 $imgSize = $this->imgSize;
             }
         }
@@ -354,7 +343,6 @@ class ModuleListView extends Module
                 continue;
             }
 
-            // image
             $imagePath = $this->generateSingeSrc($listDB);
 
             if ($imagePath) {
@@ -365,13 +353,12 @@ class ModuleListView extends Module
                 $arrItem['size'] = $imgSize;
             }
 
-            // create href
             $arrItem['href'] = null;
 
             if ($addDetailPage == '1' && $listDB->source == 'default') {
-                // reset target
+
                 $arrItem['target'] = '';
-                $arrItem['href'] = $this->generateUrl($rootDB, $arrItem['alias']); // $listDB->alias
+                $arrItem['href'] = $this->generateUrl($rootDB, $arrItem['alias']);
             }
 
             if ($arrItem['source'] == 'external') {
@@ -379,31 +366,28 @@ class ModuleListView extends Module
             }
 
             if ($arrItem['source'] == 'internal') {
-                // reset target
-                $arrItem['target'] = '';
 
+                $arrItem['target'] = '';
                 $jumpToDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($listDB->jumpTo)->row();
                 $strTaxonomyUrl = \Config::get('taxonomyDisable') ? '' : $this->generateTaxonomyUrl();
                 $arrItem['href'] = $this->generateFrontendUrl($jumpToDB, $strTaxonomyUrl);
             }
 
-            // check for text search
             if ($qTextSearch) {
+
                 if (!$textSearchResults[$arrItem['id']]) {
+
                     continue;
                 }
             }
 
-            //
             $arrItems[] = $arrItem;
-
         }
 
         $total = count($arrItems);
         $strPagination = $this->createPagination($total);
         $this->Template->pagination = $strPagination;
-
-        $strResults = '';
+        $arrResults = array();
         $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
         $objTemplate = new FrontendTemplate($template);
 
@@ -411,7 +395,6 @@ class ModuleListView extends Module
 
             $item = $arrItems[$i];
 
-            // parse value if map is enabled
             if ( $this->fm_addMap ) {
 
                 $item['geo_latitude'] = $item['geo_latitude'] ? $item['geo_latitude'] : '0';
@@ -439,12 +422,10 @@ class ModuleListView extends Module
                 $item['gallery'] = $objGallery->renderGallery();
             }
 
-            // set css and id
             $item['cssID'] = deserialize($item['cssID']);
             $item['itemID'] = $item['cssID'][0];
             $item['itemCSS'] = $item['cssID'][1] ? ' ' . $item['cssID'][1] : '';
 
-            // set date format
             $date = date('Y-m-d', $item['date']);
             $time = date('H:i', $item['time']);
             $dateTime = $time ? $date . ' ' . $time : $date;
@@ -452,33 +433,36 @@ class ModuleListView extends Module
             $item['date'] = $item['date'] ? date($objPage->dateFormat, $item['date']) : '';
             $item['time'] = $item['time'] ? date($objPage->timeFormat, $item['time']) : '';
 
-            // distance
             if($item['_distance']) {
 
                 $item['_distance'] = number_format($item['_distance'], 2, $geoLocatorValues['geoDistanceDelimiter'], $geoLocatorValues['geoDistanceDelimiter']);
                 $item['_distanceLabel'] = $GLOBALS['TL_LANG']['MSC']['fm_distance'];
             }
 
-            // set more
             $item['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
 
-            // get list view ce
             $objCte = ContentModelExtend::findPublishedByPidAndTable($item['id'], $tablename . '_data', array('fview' => 'list'));
             $arrElements = array();
+
             if ($objCte !== null) {
+
                 $intCount = 0;
                 $intLast = $objCte->count() - 1;
 
                 while ($objCte->next()) {
+
                     $arrCss = array();
                     $objRow = $objCte->current();
 
                     if ($intCount == 0 || $intCount == $intLast) {
+
                         if ($intCount == 0) {
+
                             $arrCss[] = 'first';
                         }
 
                         if ($intCount == $intLast) {
+
                             $arrCss[] = 'last';
                         }
                     }
@@ -488,47 +472,61 @@ class ModuleListView extends Module
                     ++$intCount;
                 }
             }
-            $item['teaser'] = $arrElements;
 
-            // set odd and even classes
+            $item['teaser'] = $arrElements;
             $item['cssClass'] = $i % 2 ? ' even' : ' odd';
 
-            //field
             if (!empty($fieldWidgets)) {
+
                 $arrayAsValue = array('list.blank', 'list.keyValue', 'table.blank');
+
                 foreach ($fieldWidgets as $widget) {
+
                     $id = $widget['fieldID'];
                     $tplName = $widget['widgetTemplate'];
                     $type = $widget['widgetType'];
                     $value = $item[$id];
-                    if (in_array($type, $arrayAsValue)) $value = deserialize($value); // unserialize
+
+                    if (in_array($type, $arrayAsValue)) $value = deserialize($value);
+
                     $objFieldTemplate = new FrontendTemplate($tplName);
                     $objFieldTemplate->setData(array(
+
                         'value' => $value,
                         'type' => $type,
                         'item' => $item
                     ));
+
                     $item[$id] = $objFieldTemplate->parse();
                 }
             }
 
-            // set last first classes
             if ($i == 0) {
+
                 $item['cssClass'] .= ' first';
             }
+
             if ($i == ($this->listViewLimit - 1)) {
+
                 $item['cssClass'] .= ' last';
             }
 
-            // create marker path
             if ($item['addMarker'] && $item['markerSRC']) {
+
                 if ($this->markerCache[$item['markerSRC']]) {
+
                     $item['markerSRC'] = $this->markerCache[$item['markerSRC']];
+
                 } else {
+
                     $markerDB = $this->Database->prepare('SELECT * FROM tl_files WHERE uuid = ?')->execute($item['markerSRC']);
+
                     if ($markerDB->count()) {
+
                         $pathInfo = $markerDB->row()['path'];
+
                         if ($pathInfo) {
+
                             $this->markerCache[$item['markerSRC']] = $pathInfo;
                             $item['markerSRC'] = $pathInfo;
                         }
@@ -536,9 +534,10 @@ class ModuleListView extends Module
                 }
             }
 
-            // map settings from field
             if (!empty($mapFields)) {
+
                 foreach ($mapFields as $map) {
+
                     $objMapTemplate = new FrontendTemplate($map['template']);
                     $item['mapSettings'] = $map;
                     $objMapTemplate->setData($item);
@@ -546,44 +545,45 @@ class ModuleListView extends Module
                 }
             }
 
-            // mapSettings
             if (!empty($mapSettings)) {
+
                 $item['mapSettings'] = $mapSettings;
             }
 
-            // set fe view id
             $item['feViewID'] = $this->feViewID;
 
-            // set clean options
             if (!empty($arrCleanOptions)) {
+
                 $item['cleanOptions'] = $arrCleanOptions;
 
-                // overwrite clean options
                 foreach ($arrCleanOptions as $fieldID => $options) {
+
                     if ($item[$fieldID] && is_string($item[$fieldID])) {
+
                         $arrValues = explode(',', $item[$fieldID]);
                         $arrValuesAsString = array();
                         $arrValuesAsArray = array();
+
                         if (is_array($arrValues)) {
+
                             foreach ($arrValues as $val) {
+
                                 $arrValuesAsArray[$val] = $options[$val];
                                 $arrValuesAsString[] = $options[$val];
                             }
                         }
+
                         $item[$fieldID . 'AsArray'] = $arrValuesAsArray;
                         $item[$fieldID] = implode(', ', $arrValuesAsString);
                     }
                 }
             }
 
-            // floating class
             $item['floatClass'] = 'float_' . $item['floating'];
 
-            //set data
             $objTemplate->setData($item);
             $strTitle = $item['title'];
 
-            //set image
             if ($item['addImage']) {
 
                 $this->addImageToTemplate($objTemplate, array(
@@ -597,7 +597,6 @@ class ModuleListView extends Module
                 ));
             }
 
-            // set enclosure
             $objTemplate->enclosure = array();
 
             if ($item['addEnclosure']) {
@@ -607,30 +606,31 @@ class ModuleListView extends Module
 
             $objTemplate->title = $strTitle; // fix title bug
             $objTemplate->addBefore = $item['floatClass'] == 'float_below' ? false : true;
-            
-            $strResults .= $objTemplate->parse();
+
+            $arrResults[] = $objTemplate->parse();
         }
 
-        // set map settings
         if (!empty($mapSettings)) {
 
-            // set map settings array to template
             $this->Template->mapSettings = $mapSettings;
-
-            // set loadMapScript to true
             $this->loadMapScript = true;
 
-            // load map libraries
             if (!$GLOBALS['loadGoogleMapLibraries']) $GLOBALS['loadGoogleMapLibraries'] = $mapSettings['mapInfoBox'] ? true : false;
         }
 
-        // set js files
         if ($this->loadMapScript) {
+
             $language = $objPage->language ? $objPage->language : 'en';
             $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
         }
+
+        if ( $this->fm_randomSorting ) {
+
+            shuffle( $arrResults );
+        }
+
         $this->Template->feViewID = $this->feViewID;
-        $this->Template->results = ($total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults);
+        $this->Template->results = ( $total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : implode( '', $arrResults ) );
     }
 
 
@@ -641,29 +641,36 @@ class ModuleListView extends Module
         $alias = $objPage->alias;
 
         if ($return['type'] == 'multi_choice') {
+
             $language = Config::get('addLanguageToUrl') ? $objPage->language : '';
             $alias = Environment::get('requestUri');
             $alias = explode('/', $alias);
             $alias = array_filter($alias);
             $alias = array_values($alias);
+
             if ($language && $alias[0] && $language == $alias[0]) {
                 array_shift($alias);
             }
         }
+
         $return['value'] = $alias;
+
         return $return;
     }
 
 
     protected function setValuesForTaxonomySpecieAttribute($return) {
 
-        if(\Input::get($return['fieldID']))
-        {
+        if(\Input::get($return['fieldID'])) {
+
             $this->strSpecie = \Input::get($return['fieldID']);
         }
+
         if ($this->strSpecie && is_string($this->strSpecie)) {
+
             $return['value'] = $this->strSpecie;
         }
+
         return $return;
     }
 
@@ -762,22 +769,27 @@ class ModuleListView extends Module
         $taxonomies = array();
 
         foreach ($taxonomyFromFE as $filterValue) {
+
             if ($filterValue['set']['ignore']) {
                 continue;
             }
+
             $taxonomies[$filterValue['fieldID']] = $filterValue;
         }
 
         foreach ($taxonomyFromPage as $filterValue) {
+
             if ($filterValue['set']['ignore']) {
                 continue;
             }
+
             if ($filterValue['active'] == '1') {
                 $taxonomies[$filterValue['fieldID']] = $filterValue;
             }
         }
 
         foreach ($taxonomies as $filterValue) {
+
             $return = $this->taxonomyValueSetter($filterValue, $return);
         }
 
@@ -787,7 +799,6 @@ class ModuleListView extends Module
 
 
     protected function taxonomyValueSetter($filterValue, $return) {
-
 
         $return[$filterValue['fieldID']]['overwrite'] = $filterValue['set']['overwrite'];
         $return[$filterValue['fieldID']]['active'] = $filterValue['active'];
@@ -799,8 +810,8 @@ class ModuleListView extends Module
             $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
             $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
 
-            //exception for toggle field
             if (is_null(Input::get($filterValue['fieldID'])) && $return[$filterValue['fieldID']]['type'] == 'toggle_field') {
+
                 $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] ? '1' : 'skip';
             }
         }
@@ -810,8 +821,8 @@ class ModuleListView extends Module
             $return[$filterValue['fieldID']]['value'] = ($filterValue['set']['filterValue'] ? $filterValue['set']['filterValue'] : '');
             $return[$filterValue['fieldID']]['operator'] = ($filterValue['set']['selected_operator'] ? $filterValue['set']['selected_operator'] : '');
 
-            //exception for toggle field
             if ($return[$filterValue['fieldID']]['type'] == 'toggle_field') {
+
                 $return[$filterValue['fieldID']]['value'] = $return[$filterValue['fieldID']]['value'] == '1' ? '1' : 'skip';
             }
 
@@ -820,6 +831,7 @@ class ModuleListView extends Module
         $val = QueryModel::isValue($return[$filterValue['fieldID']]['value'], $return[$filterValue['fieldID']]['type']);
 
         if ($val) {
+
             $return[$filterValue['fieldID']]['enable'] = true;
         }
 
@@ -833,10 +845,12 @@ class ModuleListView extends Module
         $getOperator = Input::get($fieldID . '_int') ? Input::get($fieldID . '_int') : '';
 
         if ($type == 'multi_choice' && !is_array($getFilter)) {
+
             $getFilter = explode(',', $getFilter);
         }
 
         if ($type == 'toggle_field' && is_null(Input::get($fieldID)) == false && Input::get($fieldID) != '1') {
+
             $getFilter = 'skip';
         }
 
@@ -895,14 +909,18 @@ class ModuleListView extends Module
     }
 
 
-    private function generateSingeSrc($row)
-    {
+    private function generateSingeSrc($row) {
+
         if ($row->singleSRC != '') {
+
             $objModel = \FilesModel::findByUuid($row->singleSRC);
+
             if ($objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
+
                 return $objModel->path;
             }
         }
+
         return null;
     }
 
@@ -917,14 +935,17 @@ class ModuleListView extends Module
     private function generateTaxonomyUrl() {
 
         $strTaxonomyUrl = '';
+
         if ($this->strTag && is_array($this->strTag)) $this->strTag = implode(',', $this->strTag);
 
         if ($this->strSpecie && $this->fm_use_specieUrl) {
             $strTaxonomyUrl .= '/' . $this->strSpecie;
         }
+
         if ($this->strTag && $this->fm_use_specieUrl && $this->fm_use_tagsUrl) {
             $strTaxonomyUrl .= '/' . $this->strTag;
         }
+
         return $strTaxonomyUrl;
     }
 }

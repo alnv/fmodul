@@ -384,10 +384,16 @@ class ModuleListView extends Module
             $arrItems[] = $arrItem;
         }
 
+
+        if ( $this->fm_randomSorting || ( \Input::get('orderBy') && in_array( \Input::get('orderBy'), [ 'rand', 'RAND' ] ) ) ) {
+
+            shuffle( $arrItems );
+        }
+
         $total = count($arrItems);
         $strPagination = $this->createPagination($total);
         $this->Template->pagination = $strPagination;
-        $arrResults = array();
+        $strResults = '';
         $template = $this->fm_addMap ? $this->fm_map_template : $this->f_list_template;
         $objTemplate = new FrontendTemplate($template);
 
@@ -607,7 +613,7 @@ class ModuleListView extends Module
             $objTemplate->title = $strTitle; // fix title bug
             $objTemplate->addBefore = $item['floatClass'] == 'float_below' ? false : true;
 
-            $arrResults[] = $objTemplate->parse();
+            $strResults .= $objTemplate->parse();
         }
 
         if (!empty($mapSettings)) {
@@ -624,13 +630,8 @@ class ModuleListView extends Module
             $GLOBALS['TL_HEAD']['mapJS'] = DiverseFunction::setMapJs($language);
         }
 
-        if ( $this->fm_randomSorting || ( \Input::get('orderBy') && in_array( \Input::get('orderBy'), [ 'rand', 'RAND' ] ) ) ) {
-
-            shuffle( $arrResults );
-        }
-
         $this->Template->feViewID = $this->feViewID;
-        $this->Template->results = ( $total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : implode( '', $arrResults ) );
+        $this->Template->results = ( $total < 1 ? '<p class="no-results">' . $GLOBALS['TL_LANG']['MSC']['noResult'] . '</p>' : $strResults );
     }
 
 

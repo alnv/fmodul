@@ -122,37 +122,45 @@ class HelperModel
      * @return string
      * @throws \Exception
      */
-    public static function getLink($objItem, $strUrl, $strBase = '')
+    public static function getLink( $objItem, $strUrl, $strBase = '' )
     {
-        // switch
-        switch ($objItem->source) {
-            // Link to an external page
+
+        switch ( $objItem->source ) {
+
             case 'external':
+
                 return $objItem->url;
+
                 break;
 
-            // Link to an internal page
             case 'internal':
-                if ($objItem->jumpTo) {
-                    $objPage = PageModel::findWithDetails($objItem->jumpTo);
-                    $domain = ($objPage->rootUseSSL ? 'https://' : 'http://') . ($objPage->domain ?: \Environment::get('host')) . TL_PATH . '/';
-                    return $domain . \Controller::generateFrontendUrl($objPage->row(), '', $objPage->language);
+                
+                if ( $objItem->jumpTo ) {
+                
+                    $objPage = \PageModel::findWithDetails( $objItem->jumpTo );
+
+                    if ( is_null( $objPage ) ) return '';
+
+                    $strDomain = ( $objPage->rootUseSSL ? 'https://' : 'http://' ) . ( $objPage->domain ?: \Environment::get( 'host' ) ) . TL_PATH . '/';
+
+                    return $strDomain . \Controller::generateFrontendUrl( $objPage->row(), '', $objPage->language );
                 }
+
                 break;
 
-            // Link to an article
             case 'article':
-                if (($objArticle = \ArticleModel::findByPk($objItem->articleId, array('eager' => true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null) {
-                    return $strBase . ampersand(\Controller::generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id)));
+
+                if ( ( $objArticle = \ArticleModel::findByPk( $objItem->articleId, array( 'eager' => true ) ) ) !== null && ( $objPid = $objArticle->getRelated('pid') ) !== null ) {
+
+                    return $strBase . ampersand( \Controller::generateFrontendUrl( $objPid->row(), '/articles/' . ( ( !\Config::get('disableAlias') && $objArticle->alias != '' ) ? $objArticle->alias : $objArticle->id ) ) );
                 }
+
                 break;
         }
 
-        // handle encoded characters %D9%86
-        $strUrl = rawurldecode($strUrl);
+        $strUrl = rawurldecode( $strUrl );
 
-        // Link to the default page
-        return $strBase . sprintf($strUrl, (($objItem->alias != '' && !\Config::get('disableAlias')) ? $objItem->alias : $objItem->id));
+        return $strBase . sprintf( $strUrl, ( ( $objItem->alias != '' && !\Config::get('disableAlias') ) ? $objItem->alias : $objItem->id ) );
     }
 
     /**

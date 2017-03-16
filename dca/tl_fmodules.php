@@ -22,7 +22,8 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         'ctable' => array('tl_fmodules_filters'),
         'onload_callback' => array
         (
-            array('tl_fmodules', 'checkPermission')
+            array('tl_fmodules', 'checkPermission'),
+            array('tl_fmodules', 'checkLicence')
         ),
         'onsubmit_callback' => array(
             array('tl_fmodules', 'createGroupCols')
@@ -236,24 +237,18 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
     )
 );
 
-/**
- * Class tl_fmodules
- */
+
 class tl_fmodules extends \Backend
 {
 
-    /**
-     *
-     */
+
     public function __construct()
     {
         parent::__construct();
         $this->import('BackendUser', 'User');
     }
 
-    /**
-     * @return array
-     */
+
     public function getDataProperties()
     {
         // set variables here
@@ -275,9 +270,7 @@ class tl_fmodules extends \Backend
         return $return;
     }
 
-    /**
-     *
-     */
+
     public function checkPermission()
     {
 
@@ -374,9 +367,7 @@ class tl_fmodules extends \Backend
         }
     }
 
-    /**
-     * @return array
-     */
+
     public function getNavigation()
     {
         $arrModules = $GLOBALS['BE_MOD'] ? $GLOBALS['BE_MOD'] : array();
@@ -399,17 +390,13 @@ class tl_fmodules extends \Backend
         return $modules;
     }
 
-    /**
-     * @return array
-     */
+
     public function getPosition()
     {
         return array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30);
     }
 
-    /**
-     * @return array
-     */
+
     public function getPalettes()
     {
         return array(
@@ -425,40 +412,24 @@ class tl_fmodules extends \Backend
         );
     }
 
-    /**
-     * @param $href
-     * @param $label
-     * @param $title
-     * @param $class
-     * @param $attributes
-     * @return string
-     */
+
     public function manageFeeds($href, $label, $title, $class, $attributes)
     {
         return ($this->User->isAdmin || !empty($this->User->fmodulesfeed) || $this->User->hasAccess('create', 'fmodulesfeedp')) ? '<a href="' . $this->addToUrl($href) . '" class="' . $class . '" title="' . specialchars($title) . '"' . $attributes . '>' . $label . '</a> ' : '';
     }
 
-    /**
-     * @return string
-     */
+
     public function createBuyLink()
     {
         return '<a href="http://fmodul.alexandernaumov.de/kaufen.html" target="_blank" title="' . specialchars($GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][1]) . '" class="header_store">' . $GLOBALS['TL_LANG']['tl_fmodules']['buyLicense'][0] . '</a>';
     }
 
-    /**
-     * @param $varValue
-     * @return mixed
-     */
+
     public function parseTableName($varValue) {
         return str_replace('-', '_', $varValue);
     }
 
-    /**
-     * @param $varValue
-     * @return mixed
-     * @throws Exception
-     */
+
     public function generateTableName($varValue)
     {
         if (substr($varValue, 0, 3) == 'fm_' && substr($varValue, 3)) {
@@ -467,9 +438,7 @@ class tl_fmodules extends \Backend
         throw new \Exception($GLOBALS['TL_LANG']['tl_fmodules']['invalidTableName']);
     }
 
-    /**
-     * @param DataContainer $dc
-     */
+
     public function createGroupCols(\DataContainer $dc)
     {
         $tableName = $dc->activeRecord->tablename;
@@ -488,11 +457,7 @@ class tl_fmodules extends \Backend
         }
     }
 
-    /**
-     * @param $varValue
-     * @param DataContainer $dc
-     * @return string
-     */
+
     public function saveSortingType($varValue, \DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
@@ -517,10 +482,7 @@ class tl_fmodules extends \Backend
         return $varValue;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
+
     public function getSortingOptions(\DataContainer $dc)
     {
         $id = $dc->activeRecord->id;
@@ -545,10 +507,7 @@ class tl_fmodules extends \Backend
         return $return;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return null
-     */
+
     public function deleteTable(\DataContainer $dc)
     {
         $tName = $dc->activeRecord->tablename;
@@ -576,11 +535,6 @@ class tl_fmodules extends \Backend
         }
     }
 
-    /**
-     * @param $varValue
-     * @param DataContainer $dc
-     * @return mixed
-     */
     public function updateTable($varValue, \DataContainer $dc)
     {
         if (!$dc->activeRecord->tablename) {
@@ -603,5 +557,16 @@ class tl_fmodules extends \Backend
             $a->purgeInternalCache();
         }
         return $varValue;
+    }
+
+
+    public function checkLicence() {
+
+        $objCatalogManagerVerification = new \FModule\FModuleVerification();
+
+        if ( !$objCatalogManagerVerification->verify() ) {
+
+            \Message::addError( 'This F Module installation is not licensed. Please read the following <a href="https://fmodul.alexandernaumov.de/lizenzvereinbarung.html" target="_blank" title="F Module License Agreement" style="text-decoration: underline;">License Agreement</a>.' );
+        }
     }
 }

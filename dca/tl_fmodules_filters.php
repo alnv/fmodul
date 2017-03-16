@@ -775,15 +775,12 @@ class tl_fmodules_filters extends \Backend
 
         }
 
-        if (!$this->Database->fieldExists($values, $tablename)) {
+        if (!$this->Database->fieldExists($values, $tablename, true)) {
 
-            // create
             if (!$tempVal || $values == $tempVal) {
 
-                //parent
                 SqlData::insertColFilterInput($tablename, $values);
 
-                //child
                 if ($type == 'search_field' || $type == 'widget') {
                     SqlData::insertColSearchField($dataTable, $values);
                 }
@@ -802,13 +799,10 @@ class tl_fmodules_filters extends \Backend
 
             } else {
 
-                // rename
-                if ($this->Database->fieldExists($tempVal, $tablename)) {
+                if ($this->Database->fieldExists($tempVal, $tablename, true)) {
 
-                    //parent
                     SqlData::renameColFilterInput($tablename, $tempVal, $values);
 
-                    //child
                     if ($type == 'search_field' || $type == 'widget') {
                         SqlData::renameColSearchField($dataTable, $tempVal, $values);
                     }

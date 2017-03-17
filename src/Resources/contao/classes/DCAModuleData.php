@@ -471,12 +471,17 @@ class DCAModuleData extends ViewContainer
         }
 
         foreach ($fields as $field) {
+
             if ($field['fieldID'] && $field['type'] == 'toggle_field') {
+
+                if ( $field['preventToggleIcon'] ) continue;
+
                 $list['operations'][$field['fieldID']] = array(
+
                     'label' => array($field['title'], $field['description']),
                     'icon' => $this->getToggleIcon('1', $field['description'], $field['fieldID'], true),
                     'href' => $field['fieldID'],
-                    'attributes' => 'onclick="Backend.getScrollOffset();return FModule.toggleFMField(this)"',
+                    'attributes' => 'onclick="Backend.getScrollOffset();return FModule.toggleFMField(this,%s)"',
                     'button_callback' => array('DCAModuleData', 'iconFeatured')
                 );
             }
@@ -523,14 +528,14 @@ class DCAModuleData extends ViewContainer
         if (strlen(Input::get('fid'))) {
 
             $id = Input::get('fid');
-            $state = Input::get('state');
+            $state = Input::get('data-state');
             $col = Input::get('col');
 
             $this->toggleFMField($id, ($state == 1), $col);
             $this->redirect($this->getReferer());
 
         }
-        $href = '&amp;fid=' . $row['id'] . '&amp;col=' . $field . '&amp;state=' . ($row[$field] ? '' : 1);
+        $href = '&amp;fid=' . $row['id'] . '&amp;col=' . $field . '&amp;data-state=' . ($row[$field] ? '' : 1);
         $imageHTML = $this->getToggleIcon($row[$field], $label, $field, false);
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $imageHTML . '</a> ';
     }

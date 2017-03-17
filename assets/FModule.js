@@ -120,25 +120,40 @@ var FModule = {};
             });
         };
 
-        FModule.toggleFMField = function (el) {
+        FModule.toggleFMField = function ( el, id ) {
 
             el.blur();
+
             var image = $(el).getFirst('img');
             var href = $(el).get('href');
             var tempSrc = image.get('src');
             var src = image.get('data-src');
-
             var featured = (image.get('data-state') == 1);
 
             if (!featured) {
+
                 image.src = src;
                 image.set('data-src', tempSrc);
-                image.set('data-state', 1);
+                image.set('data-state', '1');
+
+                if ( ( typeof href == 'string' && typeof href.length != 'undefined' ) ) {
+
+                    href = href.replace( /data-state/gi, 'data-state=1' );
+                }
+
                 new Request({'url': href}).get({'rt': Contao.request_token});
+
             } else {
+
                 image.src = src;
                 image.set('data-src', tempSrc);
-                image.set('data-state', 0);
+                image.set('data-state', '0');
+
+                if ( ( typeof href == 'string' && typeof href.length != 'undefined' ) ) {
+
+                    href = href.replace( /data-state/gi, 'data-state=' );
+                }
+
                 new Request({'url': href}).get({'rt':Contao.request_token});
             }
 

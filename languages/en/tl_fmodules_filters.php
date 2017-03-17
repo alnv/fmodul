@@ -173,6 +173,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Here you can
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Source';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Please select Source for your taxonomy tags.'; // @todo
 
+// preventToggleIcon
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['preventToggleIcon'][0] = 'Do not show toggle-Icon';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['preventToggleIcon'][1] = 'Here you can disable toggle icon from operations bar.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['simple_choice'] = 'Simple select';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['multi_choice'] = 'Multiple select';

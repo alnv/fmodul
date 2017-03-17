@@ -169,6 +169,10 @@ $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToTaxonomy'][1] = 'Hier können
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][0] = 'Quelle auswählen';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['reactToField'][1] = 'Bitte wählen Sie ein Gattungs-Eingabefeld aus.';
 
+// preventToggleIcon
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['preventToggleIcon'][0] = 'Toggle-Icon nicht anzeigen';
+$GLOBALS['TL_LANG']['tl_fmodules_filters']['preventToggleIcon'][1] = 'Hier können Sie das Icon entfernen.';
+
 // validate
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['fieldIDExist'] = 'Dieser Feldname existiert bereits.';
 $GLOBALS['TL_LANG']['tl_fmodules_filters']['autoAttributeExist'] = 'Es darf nur einen %s Attrbute geben!';

@@ -142,6 +142,7 @@ class DCACreator
                 $field['dataFromTaxonomy'] = $fieldsDB->row()['dataFromTaxonomy'];
                 $field['reactToTaxonomy'] = $fieldsDB->row()['reactToTaxonomy'];
                 $field['reactToField'] = $fieldsDB->row()['reactToField'];
+                $field['preventToggleIcon'] = $fieldsDB->row()['preventToggleIcon'];
                 $fields[] = $field;
             }
 

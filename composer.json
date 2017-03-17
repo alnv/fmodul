@@ -1,35 +1,26 @@
 {
-  "name": "fmodule/fmodule",
-  "description": "Mit dem F Modul kannst du eigene Backend Module erstellen. Erzeuge schnell und einfach Übersichtsseiten, Detailseiten, Filter Formularen und Taxonomies. Mache dein Backend aufgeräumter und benutzerfreundlicher.",
-  "keywords": [
-    "filter",
-    "custom",
-    "catalog",
-    "meta",
-    "tags",
-    "taxonomy",
-    "contao",
-    "google-maps",
-    "frontend-editing"
-  ],
+  "name": "alnv/fmodule",
+  "description": "Create your own backend modules for Contao CMS",
+  "keywords": [ "contao", "filter", "catalog", "tags", "taxonomy", "catalog" ],
   "type": "contao-module",
-  "homepage": "http://fmodul.alexandernaumov.de",
+  "homepage": "https://fmodul.alexandernaumov.de",
   "license": "commercial",
   "authors": [
     {
       "name": "Alexander Naumov",
-      "homepage": "http://www.alexandernaumov.de",
+      "homepage": "https://www.alexandernaumov.de",
       "role": "Developer"
     }
   ],
   "support": {
     "email": "me@alexandernaumov.de",
     "issues": "https://github.com/alnv/fmodul/issues",
-    "wiki": "http://fmodul.alexandernaumov.de/ressourcen.html"
+    "wiki": "https://fmodul.alexandernaumov.de/ressourcen.html"
   },
   "require": {
     "php": ">=5.4",
-    "contao/core-bundle":"~3.5 || ~4.1"
+    "contao/core-bundle":"~3.5 || ~4.1",
+    "contao-community-alliance/composer-plugin":"^2.4.1 || ~3.0"
   },
   "autoload": {
     "classmap": [
@@ -37,7 +28,7 @@
     ]
   },
   "replace": {
-    "contao-legacy/f-modul": "*"
+    "contao-legacy/fmodule": "self.version"
   },
   "extra": {
     "contao": {

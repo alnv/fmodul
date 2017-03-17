@@ -106,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
         'search_field' => '{type_legend},type;{setting_legend},fieldID,title,description,isInteger;{expert_legend},fmGroup,rgxp,evalCss,isMandatory;',
         'date_field' => '{type_legend},type;{setting_legend},fieldID,title,description,addTime;{expert_legend:hide},fmGroup,evalCss,isMandatory;',
         'fulltext_search' => '{type_legend},type;{setting_legend},fieldID,title,description;{fulltext_search_settings},fullTextSearchOrderBy,fullTextSearchFields;',
-        'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{expert_legend:hide},fmGroup,evalCss;',
+        'toggle_field' => '{type_legend},type;{setting_legend},fieldID,title,description;{expert_legend:hide},fmGroup,evalCss,preventToggleIcon;',
         'wrapper_field' => '{type_legend},type;{setting_legend},fieldID,title,description,from_field,to_field;',
         'geo_locator' => '{type_legend},type;{setting_legend},fieldID,title,description;{locator_legend},locatorType;',
         'geo_distance' => '{type_legend},type;{setting_legend},fieldID,title,description;{locator_legend},locatorType,geoDistanceDelimiter,geoDistanceOptions,geoDistanceUnit;',
@@ -411,6 +411,13 @@ $GLOBALS['TL_DCA']['tl_fmodules_filters'] = array
             'options_callback' => array('tl_fmodules_filters', 'getDataCols'),
             'eval' => array('chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-', 'tl_class' => 'clr'),
             'sql' => "varchar(255) NOT NULL default ''"
+        ),
+        'preventToggleIcon' => array(
+            'label' => &$GLOBALS['TL_LANG']['tl_fmodules_filters']['preventToggleIcon'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => array('tl_class' => 'w50'),
+            'sql' => "char(1) NOT NULL default ''"
         )
     )
 );

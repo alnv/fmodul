@@ -566,7 +566,7 @@ class tl_fmodules extends \Backend
 
         if ( !$objCatalogManagerVerification->verify() ) {
 
-            \Message::addError( 'This F Module installation is not licensed. Please read the following <a href="https://fmodul.alexandernaumov.de/lizenzvereinbarung.html" target="_blank" title="F Module License Agreement" style="text-decoration: underline;">License Agreement</a>.' );
+            \Message::addInfo( 'This F Module installation is not licensed. Please read the following <a href="https://fmodul.alexandernaumov.de/lizenzvereinbarung.html" target="_blank" title="F Module License Agreement" style="text-decoration: underline;">License Agreement</a>.' );
         }
     }
 }

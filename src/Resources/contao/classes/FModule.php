@@ -28,9 +28,7 @@ use Contao\Config;
 class FModule extends Frontend
 {
 
-    /**
-     * @param $table
-     */
+
     public function generateFeed($table)
     {
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
@@ -54,9 +52,7 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     *
-     */
+
     public function generateFeeds()
     {
         $this->import('Automator');
@@ -74,9 +70,7 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     * @param $table
-     */
+
     public function generateFeedsByArchive($table)
     {
         $objFeed = $this->Database->prepare('SELECT * FROM tl_fmodules_feed WHERE fmodule = ?')->execute($table);
@@ -94,10 +88,7 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     * @param $arrFeed
-     * @return null
-     */
+
     protected function generateFiles($arrFeed)
     {
         $arrArchives = deserialize($arrFeed['wrappers']);
@@ -212,12 +203,7 @@ class FModule extends Frontend
         File::putContent('share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
     }
 
-    /**
-     * @param $arrPids
-     * @param int $intLimit
-     * @param $tablename
-     * @return \Database\Result|null|object
-     */
+
     public function findPublishedByPids($arrPids, $intLimit = 0, $tablename)
     {
         if (!is_array($arrPids) || empty($arrPids)) return null;
@@ -236,9 +222,7 @@ class FModule extends Frontend
         return $findBy;
     }
 
-    /**
-     * @return array
-     */
+
     public function purgeOldFeeds()
     {
         $arrFeeds = array();
@@ -253,88 +237,85 @@ class FModule extends Frontend
         return $arrFeeds;
     }
 
-    /**
-     * @param $arrPages
-     * @param int $intRoot
-     * @param bool $blnIsSitemap
-     * @return array
-     */
-    public function getSearchablePages($arrPages, $intRoot = 0, $blnIsSitemap = false)
+
+    public function getSearchablePages( $arrPages, $intRoot = 0, $blnIsSitemap = false )
     {
-        $arrRoot = array();
+        $arrRoot = [];
+
         if ($intRoot > 0) {
-            $arrRoot = $this->Database->getChildRecords($intRoot, 'tl_page');
+
+            $arrRoot = $this->Database->getChildRecords( $intRoot, 'tl_page' );
         }
-        $arrProcessed = array();
-        $time = method_exists(Date, 'floorToMinute') ? \Date::floorToMinute() : time();
-        $modulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
 
-        while ($modulesDB->next()) {
+        $dteTime = method_exists( Date, 'floorToMinute' ) ? \Date::floorToMinute() : time();
+        $objModules = $this->Database->prepare( 'SELECT * FROM tl_module WHERE type = ?' )->execute( 'fmodule_fe_detail' );
 
-            $tableName = $modulesDB->tablename;
-            $moduleDB = $this->Database->prepare('SELECT * FROM ' . $tableName . '')->execute();
+        if ( !$objModules->numRows ) return $arrPages;
 
-            while ($moduleDB->next()) {
+        while ( $objModules->next() ) {
 
-                $wrapper = $moduleDB->row();
+            if ( !$objModules->f_list_field ) continue;
 
-                if (!is_array($wrapper) || empty($wrapper) || $wrapper['addDetailPage'] != '1') {
-                    continue;
-                }
+            $objListView = $this->Database->prepare( 'SELECT * FROM tl_module WHERE id = ?' )->limit(1)->execute( $objModules->f_list_field );
 
-                if (!empty($arrRoot) && !in_array($wrapper['rootPage'], $arrRoot)) {
-                    continue;
-                }
+            $strModule = $objListView->f_select_module;
+            $strWrapperID = $objListView->f_select_wrapper;
+            $strMasterPageID = $objModules->fm_addMasterPage ? $objModules->fm_masterPage : '';
 
-                if (!isset($arrProcessed[$wrapper['rootPage']])) {
+            if ( !$strModule || !$strWrapperID ) continue;
 
-                    $objParent = \PageModel::findWithDetails($wrapper['rootPage']);
+            if ( !$strMasterPageID ) {
 
-                    if ($objParent === null) {
-                        continue;
-                    }
+                if ( $this->Database->tableExists( $strModule ) ) {
 
-                    if (!$objParent->published || ($objParent->start != '' && $objParent->start > $time) || ($objParent->stop != '' && $objParent->stop <= ($time + 60))) {
-                        continue;
-                    }
-
-                    if ($objParent->sitemap == 'map_never') {
-
-                        continue;
-                    }
-
-                    $domain = ($objParent->rootUseSSL ? 'https://' : 'http://') . ($objParent->domain ?: \Environment::get('host')) . TL_PATH . '/';
-                    $arrProcessed[$wrapper['rootPage']] = $domain . $this->generateFrontendUrl($objParent->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'), $objParent->language);
-                }
-
-                $strUrl = $arrProcessed[$wrapper['rootPage']];
-                $dataDB = $this->Database->prepare('SELECT * FROM ' . $tableName . '_data WHERE pid = ?')->execute($wrapper['id']);
-                if ($dataDB->count()) {
-                    while ($dataDB->next()) {
-                        $arrPages[] = HelperModel::getLink($dataDB, $strUrl);
-                    }
+                    $objWrapper = $this->Database->prepare( sprintf( 'SELECT * FROM %s WHERE id = ? AND addDetailPage = ?', $strModule ) )->limit(1)->execute( $strWrapperID, '1' );
+                    $strMasterPageID = $objWrapper->rootPage ? $objWrapper->rootPage : '';
                 }
             }
+
+            if ( !$strMasterPageID ) continue;
+
+            if ( !empty( $arrRoot ) && !in_array( $strMasterPageID, $arrRoot ) ) continue;
+
+            if ( !isset( $arrProcessed[ $strMasterPageID ] ) ) {
+
+                $objParent = \PageModel::findWithDetails( $strMasterPageID );
+
+                if ($objParent === null) continue;
+
+                if ( !$objParent->published || ( $objParent->start != '' && $objParent->start > $dteTime ) || ( $objParent->stop != '' && $objParent->stop <= ( $dteTime + 60 ) ) ) {
+
+                    continue;
+                }
+
+                if ( $objParent->sitemap == 'map_never' ) continue;
+
+                $strDomain = ( $objParent->rootUseSSL ? 'https://' : 'http://' ) . ( $objParent->domain ?: \Environment::get('host') ) . TL_PATH . '/';
+                $arrProcessed[ $strMasterPageID ] = $strDomain . $this->generateFrontendUrl( $objParent->row(), ( (\Config::get('useAutoItem') && !\Config::get('disableAlias') ) ? '/%s' : '/items/%s' ), $objParent->language );
+            }
+
+            $strUrl = $arrProcessed[ $strMasterPageID ];
+            $objEntities = $this->Database->prepare('SELECT * FROM ' . $strModule . '_data WHERE pid = ?')->execute( $strWrapperID );
+
+            if ( !$objEntities->numRows ) continue;
+
+            while ( $objEntities->next() ) {
+
+                $arrPages[] = HelperModel::getLink( $objEntities, $strUrl );
+            }
         }
+
         return $arrPages;
     }
 
-    /**
-     * @param $objItem
-     * @param $strUrl
-     * @param string $strBase
-     * @return string
-     * @throws \Exception
-     */
+
     protected function getLink($objItem, $strUrl, $strBase = '')
     {
         // backwards
         return HelperModel::getLink($objItem, $strUrl, $strBase);
     }
 
-    /**
-     * @param $objUser
-     */
+
     public function setLanguage($objUser)
     {
         if (TL_MODE == 'BE') {
@@ -343,9 +324,6 @@ class FModule extends Frontend
     }
 
 
-    /**
-     * @param $strName
-     */
     public function createUserGroupDCA($strName)
     {
         if ($strName == 'tl_user') {
@@ -357,9 +335,7 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     * @return null
-     */
+
     public function createFModuleUserGroupDCA()
     {
         if (!$this->Database->tableExists('tl_fmodules')) return null;
@@ -396,9 +372,7 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     * @return null
-     */
+
     public function createFModuleUserDCA()
     {
         if (!$this->Database->tableExists('tl_fmodules')) return null;
@@ -436,10 +410,7 @@ class FModule extends Frontend
         }
     }
 
-    /**
-     * @param $fieldname
-     * @return bool
-     */
+
     private function permissionFieldExist($fieldname)
     {
         if (!$this->Database->fieldExists($fieldname, 'tl_user') || !$this->Database->fieldExists($fieldname . 'p', 'tl_user')) {
@@ -453,9 +424,7 @@ class FModule extends Frontend
         return true;
     }
 
-    /**
-     * @throws \Exception
-     */
+
     public function getAutoCompleteAjax()
     {
 
@@ -484,13 +453,7 @@ class FModule extends Frontend
         exit;
     }
 
-    /**
-     * @param $tablename
-     * @param $fieldname
-     * @param $pid
-     * @param string $value
-     * @return array|void
-     */
+
     public function getAutoCompleteFromSearchField($tablename, $fieldname, $pid, $value = '')
     {
 

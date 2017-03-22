@@ -87,18 +87,15 @@ class ModeSettings extends Widget
 
         $modeSettingsDB = null;
 
-        //
         if ($this->strTable == 'tl_module') {
             $modeSettingsDB = $this->Database->prepare('SELECT tl_fmodules.tablename, tl_fmodules.id AS fmoduleID, tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid WHERE tablename = ? ORDER BY sorting')->execute($modulename);
             $this->arrWrapper = $this->Database->prepare('SELECT * FROM ' . $modulename . ' WHERE id = ?')->execute($wrapperID)->row();
         }
 
-        //
         if ($this->strTable == 'tl_page') {
             $modeSettingsDB = $this->Database->prepare('SELECT tl_fmodules.tablename, tl_fmodules.id AS fmoduleID, tl_fmodules_filters.* FROM tl_fmodules JOIN tl_fmodules_filters ON tl_fmodules.id = tl_fmodules_filters.pid ORDER BY sorting')->execute();
         }
 
-        //
         if ($this->arrWrapper == null && $this->strTable == 'tl_page') {
 
             $options = array();
@@ -113,7 +110,25 @@ class ModeSettings extends Widget
                     continue;
                 }
 
-                $options[$modeSettingsDB->fieldID] = $this->Database->prepare('SELECT ' . $modeSettingsDB->fieldID . ' FROM ' . $modeSettingsDB->tablename . '')->execute()->row()[$modeSettingsDB->fieldID];
+                if ( !$this->Database->tableExists( $modeSettingsDB->tablename ) ) {
+                    continue;
+                }
+
+                if ( !$this->Database->fieldExists( $modeSettingsDB->fieldID, $modeSettingsDB->tablename ) ) {
+                    continue;
+                }
+
+                $objOptions = $this->Database->prepare('SELECT ' . $modeSettingsDB->fieldID . ' FROM ' . $modeSettingsDB->tablename . '')->execute();
+
+                if ( $objOptions->numRows ) {
+
+                    $arrRow = $objOptions->row();
+
+                    if ( !empty( $arrRow ) && is_array( $arrRow ) ) {
+
+                        $options[ $modeSettingsDB->fieldID ] = $arrRow[ $modeSettingsDB->fieldID ] ? $arrRow[ $modeSettingsDB->fieldID ] : [];
+                    }
+                }
             }
 
             $this->arrWrapper = $options;

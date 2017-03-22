@@ -219,7 +219,7 @@ class ModeSettings extends Widget
 
             $str = '<div class="f_checkbox">
                        <h4><input type="checkbox" value="1" name="%s" id="%s" %s %s> <label for="%s">%s</label></h4>
-                       <p class="tl_help tl_tip" title="">' . sprintf($GLOBALS['TL_LANG']['MSC']['fm_activate_filter'], $viewObject['title'], $viewObject['fieldID']) . '</p>
+                       <p class="tl_help tl_tip">' . sprintf( $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'], $viewObject['title'], $viewObject['fieldID'] ) . '</p>
                     </div>';
 
             $name = $this->strName . '[' . $viewObject['fieldID'] . '][active]';
@@ -228,8 +228,7 @@ class ModeSettings extends Widget
             $attributes = $this->getAttributes();
             $for = "ctrl_" . $viewObject['fieldID'];
             $label = $viewObject['title'];
-            $span = '';
-            $checkbox = sprintf($str, $name, $id, $checked, $attributes, $for, $label, $span);
+            $checkbox = sprintf($str, $name, $id, $checked, $attributes, $for, $label);
 
             $html = $html . $checkbox;
 

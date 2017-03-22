@@ -302,6 +302,14 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_taxonomy_page'][1] = 'Please sele
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][0] = 'Show all Elements';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_showAllItems'][1] = 'All items will be shown.';
 
+// fm_addMasterPage
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMasterPage'][0] = 'Overwrite redirect page';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMasterPage'][1] = 'Here you can overwrite redirect page.';
+
+// fm_masterPage
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][0] = 'Select redirect page';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][1] = 'Please select a detail page.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

@@ -308,6 +308,14 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'][1] = 'Hier können Sie 
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'][0] = 'Zufallssortierung aktivieren';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_randomSorting'][1] = 'Die Datensätze werden zufällig sortiert.';
 
+// fm_addMasterPage
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMasterPage'][0] = 'Weiterleitungsseite überschreiben';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMasterPage'][1] = 'Hier können Sie die Weiterleitungsseite überschreiben.';
+
+// fm_masterPage
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][0] = 'Weiterleitungsseite auswählen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][1] = 'Bitte wählen Sie eine Weiterleitungsseite für die Detailansicht aus.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

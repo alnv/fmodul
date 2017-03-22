@@ -78,7 +78,7 @@ class ModeSettings extends Widget
         $wrapperID = $moduleDB ? $moduleDB['f_select_wrapper'] : '';
 
         if ($this->strTable == 'tl_module' && (!$modulename || !$wrapperID)) {
-            return '<p>Please select Backend Modul</p>';
+            return '<p>Please select a backend module</p>';
         }
 
         if ($this->strTable == 'tl_module' && !$this->Database->tableExists($modulename)) {

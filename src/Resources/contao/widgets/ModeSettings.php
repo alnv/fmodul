@@ -242,9 +242,9 @@ class ModeSettings extends Widget
             $checked = ($viewObject['active'] == '1' ? 'checked="checked"' : '');
             $attributes = $this->getAttributes();
             $for = "ctrl_" . $viewObject['fieldID'];
-            $label = $viewObject['title'];
-            $checkbox = sprintf($str, $name, $id, $checked, $attributes, $for, $label);
+            $label = $viewObject['title'] ? $viewObject['title'] : '-';
 
+            $checkbox = sprintf( $str, $name, $id, $checked, $attributes, $for, $label );
             $html = $html . $checkbox;
 
             if ($viewObject['active'] == '1') {

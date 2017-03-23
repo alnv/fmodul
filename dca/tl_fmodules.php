@@ -563,10 +563,6 @@ class tl_fmodules extends \Backend
     public function checkLicence() {
 
         $objCatalogManagerVerification = new \FModule\FModuleVerification();
-
-        if ( !$objCatalogManagerVerification->verify() ) {
-
-            \Message::addInfo( 'This F Module installation is not licensed. Please read the following <a href="https://fmodul.alexandernaumov.de/lizenzvereinbarung.html" target="_blank" title="F Module License Agreement" style="text-decoration: underline;">License Agreement</a>.' );
-        }
+        $objCatalogManagerVerification->verify();
     }
 }

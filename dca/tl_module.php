@@ -14,7 +14,7 @@
 $GLOBALS['TL_DCA']['tl_module']['config']['onload_callback'][] = array('tl_module_fmodule', 'setFEModule');
 $GLOBALS['TL_DCA']['tl_module']['config']['onsubmit_callback'][] = array('tl_module_fmodule', 'saveGeoCoding');
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_orderBy_legend},fm_orderBy,fm_randomSorting;{fm_pagination_legend},f_limit_page,f_perPage;{gallery_legend:hide},fm_disableGallery;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_list'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper,fm_detailView;{fm_mode_legend},f_display_mode;{fm_map_legend:hide},fm_addMap;{fm_geo_legend:hide},fm_addGeoLocator;{taxonomy_url_legend:hide},fm_use_specieUrl,fm_use_tagsUrl;{fm_orderBy_legend},fm_orderBy,fm_randomSorting;{fm_pagination_legend},f_limit_page,f_perPage;{gallery_legend:hide},fm_disableGallery;{template_legend},f_list_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_formfilter'] = '{title_legend},name,headline,type;{list_view_legend},f_list_field;{form_fields_legend},f_form_fields;{form_settings_legend},f_reset_button,fm_disable_submit,f_active_options,fm_related_options;{fm_redirect_legend:hide},fm_redirect_source;{template_legend},f_form_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_detail'] = '{title_legend},name,headline,type,f_list_field,f_doNotSet_404,fm_addMasterPage;{fm_seo_legend},fm_overwrite_seoSettings;{template_legend},f_detail_template,customTpl;{image_legend:hide},imgSize;{comment_legend:hide},com_template;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['fmodule_fe_registration'] = '{title_legend},name,headline,type,f_select_module,f_select_wrapper;{config_legend},fm_editable_fields,disableCaptcha,fm_extensions,fm_maxlength,fm_EntityAuthor;{redirect_legend:hide},jumpTo;{store_legend:hide},fm_storeFile;{fm_notification_legend:hide},fm_addNotificationEmail;{fm_confirmation_legend:hide},fm_addConfirmationEmail;{defaultValues_legend:hide},fm_defaultValues;{protected_legend:hide},protected;{template_legend},fm_sign_template,tableless;{expert_legend:hide},guests,cssID,space';
@@ -83,6 +83,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['f_select_wrapper'] = array
     'options' => array(),
     'eval' => array('tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-'),
     'sql' => "varchar(255) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['fm_detailView'] = array(
+
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_detailView'],
+    'exclude' => true,
+    'inputType' => 'select',
+    'options_callback' => array( 'tl_module_fmodule', 'getDetailViews' ),
+    'eval' => array('tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'blankOptionLabel' => '-' ),
+    'sql' => "varchar(128) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_orderBy'] = [
@@ -1062,5 +1072,20 @@ class tl_module_fmodule extends tl_module {
         if ($type != 'fmodule_fe_list') {
             return null;
         }
+    }
+
+    public function getDetailViews() {
+
+        $arrReturn = [];
+        $objDetailViews = $this->Database->prepare( 'SELECT * FROM tl_module WHERE type = ?' )->execute( 'fmodule_fe_detail' );
+
+        if ( !$objDetailViews->numRows ) return $arrReturn;
+
+        while ( $objDetailViews->next() ) {
+
+            $arrReturn[ $objDetailViews->id ] = $objDetailViews->name ? $objDetailViews->name : $objDetailViews->id;
+        }
+
+        return $arrReturn;
     }
 }

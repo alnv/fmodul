@@ -103,6 +103,18 @@ class ModuleListView extends Module
         }
 
         $wrapperDB = $this->Database->prepare('SELECT addDetailPage, title, id, rootPage FROM ' . $tablename . ' WHERE id = ?')->execute($wrapperID)->row();
+        $arrDetailSettings = [];
+
+        if ( $this->fm_detailView ) {
+
+            $objModule = $this->Database->prepare( 'SELECT * FROM tl_module WHERE id = ? AND type = ?' )->limit(1)->execute( $this->fm_detailView, 'fmodule_fe_detail' );
+
+            if ( $objModule->numRows ) {
+
+                $arrDetailSettings = $objModule->row();
+            }
+        }
+
         $blnDetailView = false;
 
         if (\Input::get('auto_item')) {
@@ -301,10 +313,28 @@ class ModuleListView extends Module
             $textSearchResults = QueryModel::getTextSearchResult($qTextSearch, $tablename, $wrapperID, $qResult['searchSettings']);
         }
 
-
+        $arrRootPage = [];
         $qOrderByStr = $this->getOrderBy();
-        $addDetailPage = $wrapperDB['addDetailPage'];
-        $rootDB = $this->Database->prepare('SELECT * FROM ' . $tablename . ' JOIN tl_page ON tl_page.id = ' . $tablename . '.rootPage WHERE ' . $tablename . '.id = ?')->execute($wrapperID)->row();
+
+        if ( $wrapperDB['addDetailPage'] ) {
+
+            $strPageID = $wrapperDB['rootPage'];
+
+            if ( !empty( $arrDetailSettings ) && is_array( $arrDetailSettings ) ) {
+
+                if ( $arrDetailSettings['fm_addMasterPage'] && $arrDetailSettings['fm_masterPage'] ) {
+
+                    $strPageID = $arrDetailSettings['fm_masterPage'];
+                }
+            }
+
+            $arrRootPage = \PageModel::findWithDetails( $strPageID )->row();
+
+            if ( !is_array( $arrRootPage ) ) {
+
+                $arrRootPage = [];
+            }
+        }
 
         $strPidWhereStatement = 'pid = ' . $wrapperID;
         $qProtectedStr = ' AND published = "1"';
@@ -331,6 +361,7 @@ class ModuleListView extends Module
         }
 
         $arrItems = array();
+
         while ($listDB->next()) {
 
             $arrItem = $listDB->row();
@@ -355,10 +386,10 @@ class ModuleListView extends Module
 
             $arrItem['href'] = null;
 
-            if ($addDetailPage == '1' && $listDB->source == 'default') {
+            if ($wrapperDB['addDetailPage'] && $listDB->source == 'default') {
 
                 $arrItem['target'] = '';
-                $arrItem['href'] = $this->generateUrl($rootDB, $arrItem['alias']);
+                $arrItem['href'] = $this->generateUrl( $arrRootPage, $arrItem['alias'] );
             }
 
             if ($arrItem['source'] == 'external') {

@@ -215,14 +215,13 @@ class ModeSettings extends Widget
 
     }
 
-    /**
-     * @return string
-     */
-    private function setModeBlocks()
-    {
-        $html = '<div class="fmode_settings">';
 
-        $methods = array(
+    private function setModeBlocks() {
+
+        $strWidgetTemplate = '<div class="fmode_settings">';
+
+        $arrMethods = array(
+
             'simple_choice' => 'setSimpleChoiceSettings',
             'multi_choice' => 'setMultiChoiceSettings',
             'search_field' => 'setSearchFieldSettings',
@@ -230,33 +229,36 @@ class ModeSettings extends Widget
             'toggle_field' => 'setToggleFieldSettings'
         );
 
-        foreach ($this->modeViewObject as $viewObject) {
+        foreach ( $this->modeViewObject as $objWidgetData ) {
 
-            $str = '<div class="f_checkbox">
-                       <h4><input type="checkbox" value="1" name="%s" id="%s" %s %s> <label for="%s">%s</label></h4>
-                       <p class="tl_help tl_tip">' . sprintf( $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'], $viewObject['title'], $viewObject['fieldID'] ) . '</p>
-                    </div>';
+            $strName = $this->strName . '[' . $objWidgetData['fieldID'] . '][active]';
+            $strID = "ctrl_" . $objWidgetData['fieldID'];
+            $strChecked = ($objWidgetData['active'] == '1' ? 'checked="checked"' : '');
+            $strAttributes = $this->getAttributes();
+            $strFor = "ctrl_" . $objWidgetData['fieldID'];
+            $strLabel = $objWidgetData['title'] ? $objWidgetData['title'] : '-';
 
-            $name = $this->strName . '[' . $viewObject['fieldID'] . '][active]';
-            $id = "ctrl_" . $viewObject['fieldID'];
-            $checked = ($viewObject['active'] == '1' ? 'checked="checked"' : '');
-            $attributes = $this->getAttributes();
-            $for = "ctrl_" . $viewObject['fieldID'];
-            $label = $viewObject['title'] ? $viewObject['title'] : '-';
+            $strCheckboxTemplate =
+                '<div class="f_checkbox">' .
+                    '<h4>'.
+                        '<input type="checkbox" value="1" name="'. $strName .'" id="'. $strID .'" '. $strChecked .' '. $strAttributes .'>'.
+                        '<label for="'. $strFor .'">'. $strLabel .'</label>'.
+                    '</h4>'.
+                    '<p class="tl_help tl_tip" title="">' . sprintf( $GLOBALS['TL_LANG']['MSC']['fm_activate_filter'], $objWidgetData['title'], $objWidgetData['fieldID'] ) . '</p>'.
+                '</div>';
 
-            $checkbox = sprintf( $str, $name, $id, $checked, $attributes, $for, $label );
-            $html = $html . $checkbox;
+            $strWidgetTemplate = $strWidgetTemplate . $strCheckboxTemplate;
 
-            if ($viewObject['active'] == '1') {
+            if ( $objWidgetData['active'] == '1' ) {
 
-                $func = $methods[$viewObject['type']];
-                $temp = call_user_func(array($this, $func), $viewObject['fieldID'], $viewObject);
-                $box = '<div class="f_settings">' . $temp . '</div>';;
-                $html = $html . $box;
+                $strFunction = $arrMethods[ $objWidgetData['type'] ];
+                $strInputTemplate = call_user_func(array( $this, $strFunction ), $objWidgetData['fieldID'], $objWidgetData );
+                $strBoxTemplate = '<div class="f_settings">' . $strInputTemplate . '</div>';;
+                $strWidgetTemplate = $strWidgetTemplate . $strBoxTemplate;
             }
         }
 
-        return $html . '</div>';
+        return $strWidgetTemplate . '</div>';
     }
 
     /**

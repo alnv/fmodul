@@ -316,6 +316,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMasterPage'][1] = 'Hier könne
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][0] = 'Weiterleitungsseite auswählen';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][1] = 'Bitte wählen Sie eine Weiterleitungsseite für die Detailansicht aus.';
 
+// fm_detailView
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_detailView'][0] = 'Eine Detailansicht auswählen';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_detailView'][1] = 'Hier können Sie eine Detailansicht auswählen und die Weiterleitungsseite überschreiben.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

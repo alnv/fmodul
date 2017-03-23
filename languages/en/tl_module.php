@@ -310,6 +310,10 @@ $GLOBALS['TL_LANG']['tl_module']['fields']['fm_addMasterPage'][1] = 'Here you ca
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][0] = 'Select redirect page';
 $GLOBALS['TL_LANG']['tl_module']['fields']['fm_masterPage'][1] = 'Please select a detail page.';
 
+// fm_detailView
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_detailView'][0] = 'Select detail view';
+$GLOBALS['TL_LANG']['tl_module']['fields']['fm_detailView'][1] = 'Here you can select a detail view and overwrite redirect page.';
+
 // reference
 $GLOBALS['TL_LANG']['tl_module']['title'] = 'Title';
 $GLOBALS['TL_LANG']['tl_module']['id'] = 'ID';

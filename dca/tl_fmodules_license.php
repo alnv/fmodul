@@ -42,7 +42,7 @@ class tl_fmodules_license extends \Backend {
     public function verifyLicence( $varValue ) {
 
         $objCatalogManagerVerification = new \FModule\FModuleVerification();
-        $blnValidLicence = $objCatalogManagerVerification->verify( $varValue, false );
+        $blnValidLicence = $objCatalogManagerVerification->verify( $varValue );
 
         if ( !$varValue ) return '';
 

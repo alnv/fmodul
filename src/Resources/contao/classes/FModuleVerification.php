@@ -10,11 +10,11 @@ class FModuleVerification {
         return [
 
             'name' => 'fmodule',
-            'ip' => \Environment::get('ip'),
+            'version' => constant('VERSION'),
             'lastUpdate' => date( 'd.m.Y H:i' ),
+            'ip' => \Environment::get('server'),
             'domain' => \Environment::get('base'),
             'title' => \Config::get('websiteTitle'),
-            'adminEmail' => \Config::get('adminEmail'),
             'licence' => \Config::get('fmodule_license')
         ];
     }

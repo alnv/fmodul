@@ -88,18 +88,30 @@ class DCAHelper extends Backend
         $option = array();
 
         while ($optionsDB->next()) {
+
             $arrOption = $optionsDB->row();
+
             $option = $optionsDB->row()[$field['fieldID']] ? deserialize($arrOption[$field['fieldID']]) : array();
+
             if (empty($option) && $field['dataFromTaxonomy'] == '1') $option = isset($arrOption['select_taxonomy_' . $field['fieldID']]) ? $arrOption['select_taxonomy_' . $field['fieldID']] : '';
+
+            if ( empty($option) && $field['reactToTaxonomy'] == '1' && $field['reactToField'] ) {
+
+                $option = isset($arrOption['select_taxonomy_' . $field['reactToField']]) ? $arrOption['select_taxonomy_' . $field['reactToField']] : '';
+            }
         }
 
         // species
-        if ($field['dataFromTaxonomy'] == '1' && $option) {
+        if ( $field['dataFromTaxonomy'] == '1' && is_string( $option ) && $option ) {
+
             $speciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? ORDER BY sorting')->execute($option);
-            if (!$speciesDB->count()) {
-                return $options;
-            }
+
+            if ( !$speciesDB->numRows ) return $options;
+
             while ($speciesDB->next()) {
+
+                if ( !$speciesDB->alias ) continue;
+
                 $options[$speciesDB->alias] = $speciesDB->name ? $speciesDB->name : $speciesDB->alias;
             }
 
@@ -107,7 +119,29 @@ class DCAHelper extends Backend
         }
 
         // tags
-        if ($field['reactToTaxonomy'] == '1') {
+        if ( $field['reactToTaxonomy'] == '1' && $field['reactToField'] && is_string( $option ) && $option ) {
+
+            $speciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? ORDER BY sorting')->execute($option);
+
+            if (!$speciesDB->count()) {
+
+                return $options;
+            }
+
+            while ($speciesDB->next()) {
+
+                if ( !$speciesDB->id ) continue;
+
+                $objTags = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? ORDER BY sorting')->execute( $speciesDB->id );
+
+                if ( !$objTags->numRows ) continue;
+
+                while ( $objTags->next() ) {
+
+                    $options[$objTags->alias] = $objTags->name ? $objTags->name : $objTags->alias;
+                }
+            }
+
             return $options;
         }
 

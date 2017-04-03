@@ -210,7 +210,7 @@ class ModuleListView extends Module
             if ($arrModule['type'] == 'simple_choice' || $arrModule['type'] == 'multi_choice' || $arrModule['type'] == 'taxonomy_field' ) {
 
                 $dcaHelper = new DCAHelper();
-                $arrCleanOptions[$arrModule['fieldID']] = $dcaHelper->getOptions($arrModule, $tablename, $wrapperID);
+                $arrCleanOptions[ $arrModule['fieldID'] ] = $dcaHelper->getOptions( $arrModule, $tablename, $wrapperID );
             }
 
             if ($arrModule['type'] == 'geo_locator') {
@@ -592,7 +592,6 @@ class ModuleListView extends Module
             if (!empty($arrCleanOptions)) {
 
                 $item['cleanOptions'] = $arrCleanOptions;
-
                 foreach ($arrCleanOptions as $fieldID => $options) {
 
                     if ($item[$fieldID] && is_string($item[$fieldID])) {
@@ -601,7 +600,7 @@ class ModuleListView extends Module
                         $arrValuesAsString = array();
                         $arrValuesAsArray = array();
 
-                        if (is_array($arrValues)) {
+                        if ( !empty( $arrValues ) && is_array( $arrValues ) ) {
 
                             foreach ($arrValues as $val) {
 

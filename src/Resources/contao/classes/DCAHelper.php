@@ -100,7 +100,7 @@ class DCAHelper extends Backend
                 $option = isset($arrOption['select_taxonomy_' . $field['reactToField']]) ? $arrOption['select_taxonomy_' . $field['reactToField']] : '';
             }
         }
-
+        
         // species
         if ( $field['dataFromTaxonomy'] == '1' && is_string( $option ) && $option ) {
 
@@ -112,7 +112,7 @@ class DCAHelper extends Backend
 
                 if ( !$speciesDB->alias ) continue;
 
-                $options[$speciesDB->alias] = $speciesDB->name ? $speciesDB->name : $speciesDB->alias;
+                $options[$speciesDB->alias] = FModuleLabel::translate( $speciesDB->alias, $speciesDB->name);
             }
 
             return $options;
@@ -138,7 +138,9 @@ class DCAHelper extends Backend
 
                 while ( $objTags->next() ) {
 
-                    $options[$objTags->alias] = $objTags->name ? $objTags->name : $objTags->alias;
+                    if ( !$objTags->alias ) continue;
+
+                    $options[ $objTags->alias ] = FModuleLabel::translate( $objTags->alias, $objTags->name );
                 }
             }
 
@@ -165,9 +167,11 @@ class DCAHelper extends Backend
             $dataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strOrderByQuery)->execute(); // @todo where q mit pid hinzufügen
 
             while ($dataFromTableDB->next()) {
+
                 $k = $dataFromTableDB->row()[$option['col']];
                 $v = $dataFromTableDB->row()[$option['title']];
-                $options[$k] = $v;
+
+                $options[ $k ] = FModuleLabel::translate( $k, $v );
             }
 
             return $options;
@@ -177,24 +181,21 @@ class DCAHelper extends Backend
             
             foreach ( $option as $value ) {
             
-                if ( !isset($value['value']) || !isset($value['value']) ) {
+                if ( !isset($value['value']) || !isset($value['label']) ) {
 
                     continue;
                 }
-            
-                $options[$value['value']] = $value['label'];
+
+                $options[ $value['value'] ] = FModuleLabel::translate( $value['value'], $value['label'] );
             }
         }
 
         return $options;
     }
+    
 
-    /**
-     * @param $strTable
-     * @return string
-     */
-    private function generateOrderByQuery($strTable)
-    {
+    private function generateOrderByQuery($strTable) {
+
         $strOrderByQuery = '';
         $strTablePrefix = substr($strTable, 0, 2);
 

@@ -29,6 +29,7 @@ ClassLoader::addClasses([
     'FModule\CleanUrls' => $pathToFiles . 'src/Resources/contao/classes/CleanUrls.php',
     'FModule\GalleryGenerator' => $pathToFiles . 'src/Resources/contao/classes/GalleryGenerator.php',
     'FModule\FModuleVerification' => $pathToFiles . 'src/Resources/contao/classes/FModuleVerification.php',
+    'FModule\FModuleLabel' => $pathToFiles . 'src/Resources/contao/classes/FModuleLabel.php',
 
     'FModule\ModeSettings' => $pathToFiles . 'src/Resources/contao/widgets/ModeSettings.php',
     'FModule\FilterFields' => $pathToFiles . 'src/Resources/contao/widgets/FilterFields.php',

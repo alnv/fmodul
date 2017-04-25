@@ -129,7 +129,10 @@ class ModuleFModuleTaxonomy extends \Module
         // parse taxonomies
         foreach ($taxonomies as $param => $taxonomy) {
             for ($i = 0; $i < count($taxonomy); $i++) {
+
                 $taxonomy[$i]['css'] = $param;
+                $taxonomy[$i]['name'] = FModuleLabel::translate( $taxonomy[$i]['alias'], $taxonomy[$i]['name'] );
+                
                 $taxonomies[$param][$i] = $this->parseTaxonomiesArrays($param, $taxonomy[$i], $arrPage);
             }
         }

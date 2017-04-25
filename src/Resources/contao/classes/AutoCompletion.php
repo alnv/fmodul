@@ -68,7 +68,7 @@ class AutoCompletion extends \Frontend
             
                 foreach ($wrapperOptionsDB as $option) {
 
-                    $options[$option['value']] = $option['label'];
+                    $options[ $option['value'] ] = FModuleLabel::translate( $option['value'], $option['label'] );
                 }
             }
 
@@ -89,15 +89,14 @@ class AutoCompletion extends \Frontend
 
                         foreach ($optionsFromTableDB as $option) {
 
-                            $options[$option['value']] = $option['label'];
+                            $options[ $option['value'] ] = FModuleLabel::translate( $option['value'], $option['label'] );
                         }
                     }
                 }
             }
         }
 
-        if($field['fieldID'] == 'address_country')
-        {
+        if($field['fieldID'] == 'address_country') {
             $options = $this->getCountries();
         }
 
@@ -161,17 +160,12 @@ class AutoCompletion extends \Frontend
         $autoCompletionArr = \Input::decodeEntities($autoCompletionArr);
 
         $returnActiveOptions = $this->dataFormatter($field['type'], $autoCompletionArr);
-
+        
         return $returnActiveOptions;
 	}
 
-    /**
-     * @param $type
-     * @param $autoCompletionArr
-     * @return array
-     */
-	protected function dataFormatter($type, $autoCompletionArr)
-	{
+
+	protected function dataFormatter($type, $autoCompletionArr) {
 
 		$returnActiveOptions = array();
 
@@ -184,8 +178,7 @@ class AutoCompletion extends \Frontend
 			
 			return $returnActiveOptions;
 		}
-		
-		//
+
 		foreach ($autoCompletionArr as $value => $label) {
 
             $returnActiveOptions[] = array(
@@ -193,7 +186,7 @@ class AutoCompletion extends \Frontend
                 'value' => $value
             );
         }
-		//
+        
 		return $returnActiveOptions;
 	}	
 }

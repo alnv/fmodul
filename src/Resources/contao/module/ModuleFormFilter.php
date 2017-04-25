@@ -244,6 +244,12 @@ class ModuleFormFilter extends \Contao\Module
                 }
 
                 if (is_null($arrWrapperOptions['table']) && !in_array($strFieldID, $arrActiveOptions)) {
+
+                    foreach ( $arrWrapperOptions as $strKey => $arrOption ) {
+
+                        $arrWrapperOptions[$strKey]['label'] = FModuleLabel::translate( $arrOption['value'], $arrOption['label'] );
+                    }
+
                     $arrFields[$strFieldID]['options'] = $arrWrapperOptions;
                 }
             }
@@ -556,7 +562,7 @@ class ModuleFormFilter extends \Contao\Module
         while ($dataFromTableDB->next()) {
 
             $arrOptions[] = array(
-                'label' => $dataFromTableDB->{$arrTableData['title']},
+                'label' => FModuleLabel::translate( $dataFromTableDB->{$arrTableData['col']}, $dataFromTableDB->{$arrTableData['title']} ),
                 'value' => $dataFromTableDB->{$arrTableData['col']},
             );
 
@@ -581,7 +587,7 @@ class ModuleFormFilter extends \Contao\Module
                 continue;
             }
             $arrOptions[] = array(
-                'label' => $taxonomiesDB->name ? $taxonomiesDB->name : $taxonomiesDB->alias,
+                'label' => FModuleLabel::translate( $taxonomiesDB->alias, $taxonomiesDB->name ),
                 'value' => $taxonomiesDB->alias,
             );
         }
@@ -616,7 +622,7 @@ class ModuleFormFilter extends \Contao\Module
             }
             $arrValues[] = $tagsDB->alias;
             $arrOptions[] = array(
-                'label' => $tagsDB->name ? $tagsDB->name : $tagsDB->alias,
+                'label' => FModuleLabel::translate( $tagsDB->alias, $tagsDB->name ),
                 'value' => $tagsDB->alias,
             );
         }

@@ -257,7 +257,7 @@ class DCAModuleData extends ViewContainer
 
             while($taxonomiesTagsDB->next())
             {
-                $options[$taxonomiesTagsDB->alias] = $taxonomiesTagsDB->name ? $taxonomiesTagsDB->name : $taxonomiesTagsDB->alias;
+                $options[ $taxonomiesTagsDB->alias ] = FModuleLabel::translate( $taxonomiesTagsDB->alias, $taxonomiesTagsDB->name);
             }
         }
 

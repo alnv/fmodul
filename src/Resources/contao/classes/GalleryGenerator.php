@@ -146,7 +146,7 @@ class GalleryGenerator extends \Frontend{
                     'uuid'      => $objFiles->uuid,
                     'name'      => $objFile->basename,
                     'singleSRC' => $objFiles->path,
-                    'alt'       => $arrMeta['title'],
+                    'alt'       => $arrMeta['alt'],
                     'imageUrl'  => $arrMeta['link'],
                     'caption'   => $arrMeta['caption']
                 );
@@ -206,7 +206,7 @@ class GalleryGenerator extends \Frontend{
                         'uuid'      => $objSubfiles->uuid,
                         'name'      => $objFile->basename,
                         'singleSRC' => $objSubfiles->path,
-                        'alt'       => $arrMeta['title'],
+                        'alt'       => $arrMeta['alt'],
                         'imageUrl'  => $arrMeta['link'],
                         'caption'   => $arrMeta['caption']
                     );
@@ -216,7 +216,7 @@ class GalleryGenerator extends \Frontend{
             }
         }
         switch ($this->sortBy) {
-            default:
+
             case 'name_asc':
                 uksort($images, 'basename_natcasecmp');
                 break;
@@ -233,7 +233,6 @@ class GalleryGenerator extends \Frontend{
                 array_multisort($images, SORT_NUMERIC, $auxDate, SORT_DESC);
                 break;
 
-            case 'meta': // Backwards compatibility
             case 'custom':
                 if ($this->orderSRC != '')
                 {
@@ -389,7 +388,7 @@ class GalleryGenerator extends \Frontend{
         $objTemplate->setData($this->arrData);
         $objTemplate->body = $body;
         $strGalleryTemplate->images = $objTemplate->parse();
-        $strGalleryTemplate->parse();
+        
         return $strGalleryTemplate->parse();
     }
 

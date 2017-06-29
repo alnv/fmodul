@@ -11,17 +11,9 @@
  * @copyright 2016 Alexander Naumov
  */
 
-$GLOBALS['FM_AUTO_PATH'] = 'system/modules/fmodule/assets/';
-
-if ( ( version_compare( VERSION, '4.0', '>=' ) && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) ) {
-
-    $GLOBALS['FM_AUTO_PATH'] = 'bundles/fmodule/';
-}
-
-
 $GLOBALS['BE_MOD']['system']['fmodule'] = [
 
-    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'icon.png',
+    'icon' => 'system/modules/fmodule/assets/icon.png',
     'name' => 'F Module',
 
     'tables' => [
@@ -32,13 +24,13 @@ $GLOBALS['BE_MOD']['system']['fmodule'] = [
         'tl_fmodules_license'
     ]
 ];
+
 $GLOBALS['BE_MOD']['system']['taxonomy'] = [
 
-    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'tag.png',
+    'icon' => 'system/modules/fmodule/assets/tag.png',
     'name' => 'Taxonomy',
     'tables' => [ 'tl_taxonomies' ]
 ];
-
 
 array_insert($GLOBALS['FE_MOD'], 5, [
 
@@ -58,10 +50,9 @@ $GLOBALS['BE_FFL']['optionWizardExtended'] = 'OptionWizardExtended';
 $GLOBALS['BE_FFL']['keyValueWizardCustom'] = 'KeyValueWizardCustom';
 $GLOBALS['BE_FFL']['catalogOrderByWizard'] = 'FModuleOrderByWizard';
 
-
 if (TL_MODE == 'BE') {
 
-    $GLOBALS['TL_CSS'][] = $GLOBALS['FM_AUTO_PATH'] . 'stylesheet.css';
+    $GLOBALS['TL_CSS'][] = 'system/modules/fmodule/assets/stylesheet.css';
 }
 
 $GLOBALS['loadGoogleMapLibraries'] = false;
@@ -83,8 +74,8 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = [ 'FModuleInsertTags', 'setHooks' 
 if ( TL_MODE == 'BE' ) {
 
     $GLOBALS['TL_JAVASCRIPT']['FModuleJS'] = $GLOBALS['TL_CONFIG']['debugMode']
-        ? $GLOBALS['FM_AUTO_PATH'] . 'FModule.js'
-        : $GLOBALS['FM_AUTO_PATH'] . 'FModule.js';
+        ? 'system/modules/fmodule/assets/FModule.js'
+        : 'system/modules/fmodule/assets/FModule.js';
 }
 
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodules';
@@ -98,7 +89,6 @@ $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfeedp';
 
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfilters';
 $GLOBALS['TL_PERMISSIONS'][] = 'fmodulesfiltersp';
-
 
 $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] = [
 

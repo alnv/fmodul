@@ -428,13 +428,13 @@ class DCAModuleData extends ViewContainer
                 (
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editList'],
                     'href' => 'table=tl_content&view=list',
-                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'page.png'
+                    'icon' => 'system/modules/fmodule/assets/page.png'
                 ),
                 'editDetail' => array(
 
                     'label' => $GLOBALS['TL_LANG']['tl_fmodules_language_pack']['editDetail'],
                     'href' => 'table=tl_content&view=detail',
-                    'icon' => $GLOBALS['FM_AUTO_PATH'] . 'detail.png'
+                    'icon' => 'system/modules/fmodule/assets/detail.png'
                 ),
                 'copy' => array
                 (

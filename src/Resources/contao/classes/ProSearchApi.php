@@ -11,46 +11,40 @@
  * @copyright 2016 Alexander Naumov
  */
 
-class ProSearchApi
-{
-	
-	/**
-	 *
-	 */
-	public function setCustomIcon($table, $db, $dataArr, $dca)
-	{
-		$iconName = '';
+class ProSearchApi {
+
+	public function setCustomIcon($table, $db, $dataArr, $dca) {
+
+        $iconName = '';
 		
-		if($table == 'tl_fmodules')
-        {
-            $iconName = $GLOBALS['FM_AUTO_PATH'].'icon.png';
+		if($table == 'tl_fmodules') {
+
+            $iconName = 'system/modules/fmodule/assets/icon.png';
         }
         
-        if($table == 'tl_fmodules_filters')
-        {
-            $iconName = $GLOBALS['FM_AUTO_PATH'].'filter.png';
+        if($table == 'tl_fmodules_filters') {
+
+            $iconName = 'system/modules/fmodule/assets/filter.png';
         }
         
         return $iconName;
 	}
-	
-	/**
-	 *
-	 */
-	public function setCustomShortcut($table, $db, $dataArr, $dca)
-	{
+
+
+	public function setCustomShortcut($table, $db, $dataArr, $dca) {
+
 		$shortcut = '';
 
-        if($table == 'tl_fmodules')
-        {
+        if($table == 'tl_fmodules') {
+
             $shortcut = 'fm';
         }
         
-        if($table == 'tl_fmodules_filters')
-        {
+        if($table == 'tl_fmodules_filters') {
+
             $shortcut = 'ff';
         }
+
         return $shortcut;
-	} 	
-	
+	}
 }

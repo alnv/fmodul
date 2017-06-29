@@ -76,7 +76,7 @@ class DiverseFunction
                     var FModuleLoadLibraries = function()
                     {
                         var mapInfoBox = document.createElement("script");
-                        mapInfoBox.src = "'.$GLOBALS['FM_AUTO_PATH'].'InfoBox.js";
+                        mapInfoBox.src = "system/modules/fmodule/assets/InfoBox.js";
                         mapInfoBox.onload = FModuleLoadMaps;
                         document.body.appendChild(mapInfoBox);
                     };

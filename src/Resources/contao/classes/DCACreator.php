@@ -294,7 +294,7 @@ class DCACreator
      */
     private function createBackendModule($tablename, $childname)
     {
-        $icon = $GLOBALS['FM_AUTO_PATH'] . 'fmodule.png';
+        $icon = 'system/modules/fmodule/assets/fmodule.png';
         $path = $this->getModuleIcon($tablename);
 
         if (is_string($path)) {

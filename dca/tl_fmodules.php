@@ -11,9 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
-/**
- * fmodules DCA
- */
+
 $GLOBALS['TL_DCA']['tl_fmodules'] = array
 (
     'config' => array
@@ -23,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
         'onload_callback' => array
         (
             array('tl_fmodules', 'checkPermission'),
-            array('tl_fmodules', 'checkLicence')
+            // array('tl_fmodules', 'checkLicence')
         ),
         'onsubmit_callback' => array(
             array('tl_fmodules', 'createGroupCols')
@@ -86,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_fmodules'] = array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_fmodules']['editFilters'],
                 'href' => 'table=tl_fmodules_filters',
-                'icon' => $GLOBALS['FM_AUTO_PATH'] . 'filter.png'
+                'icon' => 'system/modules/fmodule/assets/filter.png'
             ),
 
             'delete' => array

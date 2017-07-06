@@ -1080,7 +1080,7 @@ class ViewContainer extends DCAHelper
         $field = array();
         $field['label'] = $this->setLabels($fieldData['title'], $fieldData['description'], $fieldData['fieldID']);
         $field['exclude'] = true;
-        $field['fmodule_filter'] = true; // @todo rausfinden wieso es da ist :)
+        $field['fmodule_filter'] = true;
         $field['eval'] = array('tl_class' => 'clr', 'chosen' => true);
         $field['inputType'] = 'select';
         $field['options_callback'] = array('DCAModuleSettings', 'getParentTaxonomies');

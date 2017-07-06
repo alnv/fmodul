@@ -207,7 +207,7 @@ class DCACreator
         );
         $GLOBALS['TL_LANG']['MOD'][$modulename] = array($module['name'], $module['info']);
         $dcaSettings->createTable();
-
+        
         // child
         $dcaData = new DCAModuleData();
         $dcaData->init($childname, $tablename);

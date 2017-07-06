@@ -219,7 +219,7 @@ class DCAHelper extends Backend
             $arrSortingField = explode('.', $arrModule['sorting']);
             $strSortingField = is_array($arrSortingField) ? $arrSortingField[0] : 'id';
             $strOrderBy = $arrModule['orderBy'] ? strtoupper($arrModule['orderBy']) : 'DESC';
-
+            
             // generate query
             $strOrderByQuery .= ' ORDER BY ' . $strSortingField . ' ' . $strOrderBy;
         }

@@ -159,7 +159,7 @@ class QueryModel
         $arrValues = $arrQuery['value'];
         $strBind = ' AND (';
         $arrSql = array();
-
+        
         if (!is_array($arrValues)) {
             $arrValues = explode(',', $arrValues);
         }
@@ -171,10 +171,19 @@ class QueryModel
         foreach ($arrValues as $intIndex => $value) {
 
             if ($intIndex > 0) {
+                
                 $strBind = 'OR';
             }
+            
+            if ( $arrQuery['negate'] ) {
 
-            $arrSql[] = ' ' . $strBind . ' ' . $arrQuery['fieldID'] . ' ' . $strLike . ' "%' . $value . '%"';
+                $arrSql[] = ' ' . $strBind . ' ' . $arrQuery['fieldID'] . ' ' . $strLike . ' "%' . $value . '%"';
+            }
+            
+            else {
+
+                $arrSql[] = ' ' . $strBind . ' ' . sprintf( 'FIND_IN_SET( "%s", LOWER(CAST( %s AS CHAR)))',$value, $arrQuery['fieldID'] );
+            }
         }
 
         $arrSql[] = (count($arrValues) <= 1 ? '' : ' )');

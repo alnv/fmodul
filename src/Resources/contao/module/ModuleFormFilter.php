@@ -581,7 +581,7 @@ class ModuleFormFilter extends \Contao\Module
         if (!$taxonomyID) {
             return $arrOptions;
         }
-        $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? AND published = "1"')->execute($taxonomyID);
+        $taxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = ? AND published = "1" ORDER BY sorting')->execute($taxonomyID);
         while ($taxonomiesDB->next()) {
             if (!$taxonomiesDB->alias) {
                 continue;
@@ -615,7 +615,7 @@ class ModuleFormFilter extends \Contao\Module
             return $arrOptions;
         }
 
-        $tagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?)')->execute($specieAlias, $specieID);
+        $tagsDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? AND pid = ?) ORDER BY sorting')->execute($specieAlias, $specieID);
         while ($tagsDB->next()) {
             if (!$tagsDB->alias) {
                 continue;

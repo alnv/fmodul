@@ -60,7 +60,7 @@ class ModuleFModuleTaxonomy extends \Module
 
         global $objPage;
         $taxonomyID = $this->fm_taxonomy ? $this->fm_taxonomy : '';
-        $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( id = ? OR pid = ? ) AND published = "1"')->execute($taxonomyID, $taxonomyID);
+        $rootTaxonomiesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE ( id = ? OR pid = ? ) AND published = "1" ORDER BY sorting')->execute($taxonomyID, $taxonomyID);
         $blnDetailView = false;
         $redirectID = $this->fm_taxonomy_page ? $this->fm_taxonomy_page : $objPage->id;
         $objPageDB = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ? ORDER BY sorting')->execute($redirectID);
@@ -115,7 +115,7 @@ class ModuleFModuleTaxonomy extends \Module
 
         $rootSpeciesDB = null;
         if ($this->strSpecie && $currentTaxonomyPID == $taxonomyID) {
-            $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1"')->execute($this->strSpecie);
+            $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1" ORDER BY sorting')->execute($this->strSpecie);
         }
 
         if ($rootSpeciesDB) {

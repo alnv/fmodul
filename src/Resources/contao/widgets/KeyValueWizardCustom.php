@@ -193,7 +193,7 @@ class KeyValueWizardCustom extends \Widget
             $return .= '
     <tr>
       <td><select name="'.$this->strId.'['.$i.'][key]" id="'.$this->strId.'_key_'.$i.'" class="tl_select tl_chosen" tabindex="'.$tabindex++.'" '.$this->getAttributes().'>' . $strOptions . '</select></td>
-      <td><input type="text" name="'.$this->strId.'['.$i.'][value]" id="'.$this->strId.'_value_'.$i.'" class="tl_text_2" tabindex="'.$tabindex++.'" value="'.specialchars($this->varValue[$i]['value']).'"'.$this->getAttributes().'></td>';
+      <td><input type="text" name="'.$this->strId.'['.$i.'][value]" id="'.$this->strId.'_value_'.$i.'" class="tl_text" tabindex="'.$tabindex++.'" value="'.specialchars($this->varValue[$i]['value']).'"'.$this->getAttributes().'></td>';
 
             // Add row buttons
             $return .= '

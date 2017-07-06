@@ -140,8 +140,8 @@ class OptionWizardExtended extends Widget
         for ($i = 0, $c = count($this->varValue); $i < $c; $i++) {
             $return .= '
     <tr>
-      <td><input type="text" name="' . $this->strId . '[' . $i . '][value]" id="' . $this->strId . '_value_' . $i . '" class="tl_text_2"  value="' . specialchars($this->varValue[$i]['value']) . '"></td>
-      <td><input type="text" name="' . $this->strId . '[' . $i . '][label]" id="' . $this->strId . '_label_' . $i . '" class="tl_text_2"  value="' . specialchars($this->varValue[$i]['label']) . '"></td>';
+      <td><input type="text" name="' . $this->strId . '[' . $i . '][value]" id="' . $this->strId . '_value_' . $i . '" class="tl_text"  value="' . specialchars($this->varValue[$i]['value']) . '"></td>
+      <td><input type="text" name="' . $this->strId . '[' . $i . '][label]" id="' . $this->strId . '_label_' . $i . '" class="tl_text"  value="' . specialchars($this->varValue[$i]['label']) . '"></td>';
 
             // Add row buttons
             $return .= '

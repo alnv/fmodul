@@ -61,12 +61,17 @@
     background-color: #F5F5F5;
 }
 
-.tl_filter_fields .fm_field_block_item{
+.tl_filter_fields .fm_field_block_item {
+
     border: 1px solid #ddd;
     background-color: #fff;
     padding: 1em;
     margin-bottom: 1em;
+}
 
+.c4.tl_filter_fields .fm_field_block_item {
+
+    padding: 0 0 1em 0;
 }
 
 .tl_filter_fields h3.fm_field_block_headline.collapsed{
@@ -76,4 +81,10 @@
 
 .tl_filter_fields .fm_field_block_item.collapsed{
     display: none;
+}
+
+.tl_filter_fields h3 a {
+
+    position: relative;
+    margin: 0;
 }

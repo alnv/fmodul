@@ -144,35 +144,35 @@ class FilterFields extends Widget
                     '<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">' .
                     '<h3 class="fm_field_block_headline collapsed" onclick="fmToggleFieldBlock(this)">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
                     '<div class="fm_field_block_item collapsed">' .
-                        '<div class="w50">' .
+                        '<div class="w50 widget">' .
                             '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][0] . '</label></h3>' .
                             '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_appearance]" id="ctrl_' . $this->strId . '[' . $key . '][appearance]" class="tl_select" >' . $selectOptionsTemplate . '</select>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][1] . '</p>' .
                         '</div>' .
-                        '<div  class="w50">' .
+                        '<div  class="w50 widget">' .
                             '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_template'][0] . '</label></h3>' .
                             '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][used_templates]" id="ctrl_' . $this->strId . '[' . $key . '][template]" class="tl_select" >' . $widgetsOptionsTemplate . '</select>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_template'][1] . '</p>' .
                         '</div>' .
-                        '<div  class="w50">' .
+                        '<div  class="w50 widget">' .
                             '<h3><label for="ctrl_' . $this->strId . '[' . $key . '][cssClass]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_class'][0] . '</label></h3>' .
                             '<input type="text" tabindex="' . $tabindex++ . '" value="' . $value['cssClass'] . '" name="' . $this->strName . '[' . $key . '][cssClass]" id="ctrl_' . $this->strId . '[' . $key . '][cssClass]" class="tl_text"/>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_class'][1] . '</p>' .
                         '</div>' .
-                        '<div  class="w50">' .
+                        '<div  class="w50 widget">' .
                             '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][0] . '</label></h3>' .
                             '<select tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][dependsOn]" id="ctrl_' . $this->strId . '[' . $key . '][dependsOn]" class="tl_select" >'.$strFieldOptions.'</select>' .
                             '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_dependsOn'][1] . '</p>' .
                         '</div>' .
                         ( $value['type'] == 'multi_choice' || $value['type'] == 'simple_choice' ?
-                        '<div class="clr">' .
+                        '<div class="clr widget">' .
                             '<div class="tl_checkbox_single_container">' .
                                 '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][changeOnSubmit]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]" class="tl_checkbox" ' . ($value['changeOnSubmit'] ? 'checked="checked"' : '') . ' />' .
                                 ' <label for="ctrl_' . $this->strId . '[' . $key . '][changeOnSubmit]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_changeOnSubmit'][0] . '</label>' .
                                 '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_changeOnSubmit'][1] . '</p>' .
                             '</div>' .
                         '</div>' : '').
-                        '<div class="clr">' .
+                        '<div class="clr widget">' .
                             '<div class="tl_checkbox_single_container">' .
                             '<input type="checkbox" tabindex="' . $tabindex++ . '" name="' . $this->strName . '[' . $key . '][active]" value="1" id="ctrl_' . $this->strId . '[' . $key . '][active]" class="tl_checkbox" ' . ($value['active'] ? 'checked="checked"' : '') . ' />' .
                             ' <label for="ctrl_' . $this->strId . '[' . $key . '][active]">' . $GLOBALS['TL_LANG']['MSC']['fm_ff_active'][0] . '</label>' .
@@ -187,7 +187,7 @@ class FilterFields extends Widget
 
         }
 
-        $strWidget = '<div class="tl_optionwizard tl_filter_fields" id="ctrl_' . $this->strId . '"><div class="sortable" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
+        $strWidget = '<div class="tl_filter_fields '. ( version_compare( VERSION, '4.0', '>=' ) ? 'c4' : 'c3' ) .'" id="ctrl_' . $this->strId . '"><div class="sortable" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
 
         $strJS =
             '<script>

@@ -161,10 +161,21 @@ class DCAHelper extends Backend
                 return $options;
             }
 
-            // create order by query
-            // only for f modules tables
-            $strOrderByQuery = $this->generateOrderByQuery($option['table']);
-            $dataFromTableDB = $this->Database->prepare('SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strOrderByQuery)->execute(); // @todo where q mit pid hinzufügen
+            $strOrderByQuery = $this->generateOrderByQuery( $option['table'] );
+            $strQuery = 'SELECT ' . $option['col'] . ', ' . $option['title'] . ' FROM ' . $option['table'] . $strOrderByQuery;
+
+            if ( isset( $GLOBALS['TL_HOOKS']['fmModifyDataFromTableQuery'] ) && is_array( $GLOBALS['TL_HOOKS']['fmModifyDataFromTableQuery'] ) ) {
+
+                foreach ( $GLOBALS['TL_HOOKS']['fmModifyDataFromTableQuery'] as $callback)  {
+
+                    $this->import($callback[0]);
+                    $strQuery = $this->{$callback[0]}->{$callback[1]}( $strQuery, $option['table'], $option['col'], $option['title'] );
+                }
+            }
+
+            if ( !$strQuery ) return $options;
+
+            $dataFromTableDB = $this->Database->prepare( $strQuery )->execute();
 
             while ($dataFromTableDB->next()) {
 

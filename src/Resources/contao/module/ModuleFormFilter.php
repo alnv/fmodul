@@ -557,7 +557,20 @@ class ModuleFormFilter extends \Contao\Module
             return $arrOptions;
         }
 
-        $dataFromTableDB = $this->Database->prepare('SELECT ' . $arrTableData['col'] . ', ' . $arrTableData['title'] . ' FROM ' . $arrTableData['table'] . '')->execute();
+        $strQuery = 'SELECT ' . $arrTableData['col'] . ', ' . $arrTableData['title'] . ' FROM ' . $arrTableData['table'] . '';
+
+        if ( isset( $GLOBALS['TL_HOOKS']['fmModifyDataFromTableQuery'] ) && is_array( $GLOBALS['TL_HOOKS']['fmModifyDataFromTableQuery'] ) ) {
+
+            foreach ( $GLOBALS['TL_HOOKS']['fmModifyDataFromTableQuery'] as $callback)  {
+
+                $this->import($callback[0]);
+                $strQuery = $this->{$callback[0]}->{$callback[1]}( $strQuery, $arrTableData['table'], $arrTableData['col'], $arrTableData['title'] );
+            }
+        }
+
+        if ( !$strQuery ) return $arrOptions;
+
+        $dataFromTableDB = $this->Database->prepare($strQuery)->execute();
 
         while ($dataFromTableDB->next()) {
 
@@ -591,6 +604,7 @@ class ModuleFormFilter extends \Contao\Module
                 'value' => $taxonomiesDB->alias,
             );
         }
+        
         return $arrOptions;
     }
 

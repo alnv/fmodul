@@ -150,6 +150,7 @@ $GLOBALS['TL_DCA']['tl_taxonomies'] = array(
         'description' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_taxonomies']['description'],
             'inputType' => 'textarea',
+            'eval' => array('tl_class' => 'clr'),
             'exclude' => true,
             'sql' => "mediumtext NULL"
         ),
@@ -187,18 +188,27 @@ class tl_taxonomies_fmodule extends \Backend
     {
 
         if ($this->User->isAdmin) {
+
             return null;
         }
 
         $root = array(0);
+
         if (is_array($this->User->taxonomies) || !empty($this->User->taxonomies)) {
+
             $root = $this->User->taxonomies;
         }
 
         $GLOBALS['TL_DCA']['tl_taxonomies']['list']['sorting']['root'] = $root;
 
         if (!$this->User->hasAccess('create', 'taxonomiesp')) {
+
             $GLOBALS['TL_DCA']['tl_taxonomies']['config']['closed'] = true;
+        }
+
+        if (!$this->User->hasAccess('delete', 'taxonomiesp')) {
+
+            unset( $GLOBALS['TL_DCA']['tl_taxonomies']['list']['operations']['delete'] );
         }
 
         if (Input::get('act') && Input::get('act') != 'paste') {
@@ -253,7 +263,8 @@ class tl_taxonomies_fmodule extends \Backend
                 case 'copy':
                 case 'delete':
                 case 'show':
-                    if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'taxonomiesp'))) {
+                    if ( Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'taxonomiesp') ) {
+
                         $this->log('Not enough permissions to ' . Input::get('act') . ' Taxonomy  ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
                         $this->redirect('contao/main.php?act=error');
                     }
@@ -391,28 +402,13 @@ class tl_taxonomies_fmodule extends \Backend
         return \Image::getHtml($image, '', $imageAttribute) . ' <span>' . $label . '</span>';
     }
 
-    /**
-     * Return the "toggle visibility" button
-     *
-     * @param array $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
-     */
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
-    {
+
+    public function toggleIcon($row, $href, $label, $title, $icon, $attributes) {
+        
         if (strlen(Input::get('tid'))) {
+
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
-        }
-
-        // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$this->User->hasAccess('tl_taxonomies::published', 'alexf')) {
-            return '';
         }
 
         $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
@@ -421,27 +417,12 @@ class tl_taxonomies_fmodule extends \Backend
             $icon = 'invisible.gif';
         }
 
-        $objPage = $this->Database->prepare("SELECT * FROM tl_taxonomies WHERE id=?")
-            ->limit(1)
-            ->execute($row['id']);
-
-        if (!$this->User->hasAccess($row['type'], 'alpty') || !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $objPage->row())) {
-            return Image::getHtml($icon) . ' ';
-        }
-
         return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
     }
 
 
-    /**
-     *
-     * @param integer $intId
-     * @param boolean $blnVisible
-     * @param DataContainer $dc
-     */
-    public function toggleVisibility($intId, $blnVisible, DataContainer $dc = null)
-    {
-        // Set the ID and action
+    public function toggleVisibility($intId, $blnVisible, DataContainer $dc = null) {
+
         Input::setGet('id', $intId);
         Input::setGet('act', 'toggle');
 
@@ -449,32 +430,26 @@ class tl_taxonomies_fmodule extends \Backend
             $dc->id = $intId; // see #8043
         }
 
-        $this->checkPermission();
-
-        // Check the field access
-        if (!$this->User->hasAccess('tl_taxonomies::published', 'alexf')) {
-            $this->log('Not enough permissions to publish/unpublish Taxonomy ID "' . $intId . '"', __METHOD__, TL_ERROR);
-            $this->redirect('contao/main.php?act=error');
-        }
-
         $objVersions = new Versions('tl_taxonomies', $intId);
         $objVersions->initialize();
 
-        // Trigger the save_callback
         if (is_array($GLOBALS['TL_DCA']['tl_taxonomies']['fields']['published']['save_callback'])) {
+
             foreach ($GLOBALS['TL_DCA']['tl_taxonomies']['fields']['published']['save_callback'] as $callback) {
+
                 if (is_array($callback)) {
+
                     $this->import($callback[0]);
                     $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, ($dc ?: $this));
+
                 } elseif (is_callable($callback)) {
+
                     $blnVisible = $callback($blnVisible, ($dc ?: $this));
                 }
             }
         }
 
-        // Update the database
-        $this->Database->prepare("UPDATE tl_taxonomies SET tstamp=" . time() . ", published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
-            ->execute($intId);
+        $this->Database->prepare("UPDATE tl_taxonomies SET tstamp=" . time() . ", published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
         $objVersions->create();
         $this->log('A new version of record "tl_taxonomies.id=' . $intId . '" has been created' . $this->getParentEntries('tl_taxonomies', $intId), __METHOD__, TL_GENERAL);

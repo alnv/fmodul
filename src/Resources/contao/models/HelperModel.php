@@ -225,6 +225,12 @@ class HelperModel
         foreach ($arrFilter as $field) {
 
             if ($field['enable']) {
+
+                if ( is_string( $field['value'] ) && $field['value'] !== '' ) {
+
+                    $field['value'] = \Controller::replaceInsertTags( $field['value'] );
+                }
+
                 switch ($field['type']) {
                     case 'simple_choice':
                         $qStr .= QueryModel::simpleChoiceQuery($field);

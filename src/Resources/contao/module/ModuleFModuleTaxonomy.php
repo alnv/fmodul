@@ -115,7 +115,7 @@ class ModuleFModuleTaxonomy extends \Module
 
         $rootSpeciesDB = null;
         if ($this->strSpecie && $currentTaxonomyPID == $taxonomyID) {
-            $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ?) AND published = "1" ORDER BY sorting')->execute($this->strSpecie);
+            $rootSpeciesDB = $this->Database->prepare('SELECT * FROM tl_taxonomies WHERE pid = (SELECT id FROM tl_taxonomies WHERE alias = ? LIMIT 1) AND published = "1" ORDER BY sorting')->execute($this->strSpecie);
         }
 
         if ($rootSpeciesDB) {

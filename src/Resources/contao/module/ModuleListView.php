@@ -820,7 +820,6 @@ class ModuleListView extends Module
         }
 
         return $return;
-
     }
 
 

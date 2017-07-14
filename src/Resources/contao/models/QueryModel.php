@@ -235,24 +235,19 @@ class QueryModel
     {
         global $objPage;
 
+        $objCurrentDate = new \Date();
         $format = $query['addTime'] ? $objPage->datimFormat : $objPage->dateFormat;
-        $unix = strtotime($query['value']);
+        $objDate = new \Date( $query['value'], $format );
+        $unix = $objDate->tstamp;
 
-        if ($unix == false) {
-            return '';
-        }
-
-        //wrapper
         $btw = Input::get($query['fieldID'] . '_btw') ? Input::get($query['fieldID'] . '_btw') : '';
-        $value = $query['value'] == '' ? strtotime(date($format)) : $unix;
+        $value = $query['value'] == '' ? $objCurrentDate->tstamp : $unix;
 
-        if ($btw) {
+        if ( $btw ) {
+
             $fromValue = $value;
-            $toValue = strtotime($btw);
-
-            if ($toValue == false) {
-                return '';
-            }
+            $objBtwDate = new \Date( $btw, $format );
+            $toValue = $objBtwDate->tstamp;
 
             return ' AND ' . $query['fieldID'] . ' BETWEEN ' . $fromValue . ' AND ' . $toValue . '';
         }

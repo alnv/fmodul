@@ -81,8 +81,23 @@ class FModuleInsertTags extends Frontend
 
             return '0';
         }
+
+        if ( $arrSplit[0] == 'fmDate' ) {
+
+            return $this->getCurrentDate( $arrSplit[1] );
+        }
+
         return false;
     }
+
+
+    private function getCurrentDate( $strFormat = 'tstamp' ) {
+
+        $objDate = new \Date();
+
+        return $objDate->{$strFormat};
+    }
+    
 
     /**
      *

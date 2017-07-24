@@ -295,7 +295,20 @@ class FModule extends Frontend
             }
 
             $strUrl = $arrProcessed[ $strMasterPageID ];
-            $objEntities = $this->Database->prepare('SELECT * FROM ' . $strModule . '_data WHERE pid = ?')->execute( $strWrapperID );
+            $strQuery = 'SELECT * FROM ' . $strModule . '_data WHERE pid = ?';
+
+            if ( isset( $GLOBALS['TL_HOOKS']['fmModifyGetSearchablePagesQuery'] ) && is_array( $GLOBALS['TL_HOOKS']['fmModifyGetSearchablePagesQuery'] ) ) {
+
+                foreach ( $GLOBALS['TL_HOOKS']['fmModifyGetSearchablePagesQuery'] as $callback )  {
+
+                    $this->import($callback[0]);
+                    $strQuery = $this->{$callback[0]}->{$callback[1]}( $strQuery, $strModule . '_data', $strWrapperID );
+                }
+            }
+
+            if ( !$strQuery ) continue;
+
+            $objEntities = $this->Database->prepare( $strQuery )->execute( $strWrapperID );
 
             if ( !$objEntities->numRows ) continue;
 

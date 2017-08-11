@@ -46,9 +46,9 @@ array_insert($GLOBALS['FE_MOD'], 5, [
 
 $GLOBALS['BE_FFL']['modeSettings'] = 'ModeSettings';
 $GLOBALS['BE_FFL']['filterFields'] = 'FilterFields';
+$GLOBALS['BE_FFL']['fmOrderByWizard'] = 'FModuleOrderByWizard';
 $GLOBALS['BE_FFL']['optionWizardExtended'] = 'OptionWizardExtended';
 $GLOBALS['BE_FFL']['keyValueWizardCustom'] = 'KeyValueWizardCustom';
-$GLOBALS['BE_FFL']['catalogOrderByWizard'] = 'FModuleOrderByWizard';
 
 if (TL_MODE == 'BE') {
 

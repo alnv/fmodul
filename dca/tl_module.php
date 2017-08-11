@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_detailView'] = array(
 $GLOBALS['TL_DCA']['tl_module']['fields']['fm_orderBy'] = [
 
     'label' => &$GLOBALS['TL_LANG']['tl_module']['fields']['fm_orderBy'],
-    'inputType' => 'catalogOrderByWizard',
+    'inputType' => 'fmOrderByWizard',
 
     'eval' => [
 

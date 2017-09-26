@@ -802,7 +802,7 @@ class FModuleInsertTags extends Frontend
                 continue;
             }
 
-            if ($qArr[$tname] || $allFiltersDB->type == 'toggle_field') {
+            if ( $qArr[$tname] ) {
                 $arrFilter[$tname] = $allFiltersDB->row();
                 $arrFilter[$tname]['value'] = $qArr[$tname];
                 $arrFilter[$tname]['enable'] = true;

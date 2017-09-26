@@ -92,14 +92,14 @@ class GeoCoding extends \Backend
 
         $response = $request->response ? json_decode($request->response, true) : array();
 
-
-        if( !is_array( $response ) ) {
+        if ( !is_array( $response ) || empty( $response ) ) {
 
             return $return;
         }
 
-        if ( empty( $response ) ) {
+        if ( isset( $response['error_message'] ) && $response['error_message'] ) {
 
+            \System::log( $response['error_message'], '\Fmodule\GeoCoding\getGeoCords', 'Google Maps' );
             return $return;
         }
 

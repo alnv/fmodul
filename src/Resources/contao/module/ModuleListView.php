@@ -262,6 +262,7 @@ class ModuleListView extends Module
 
             if ($arrLongLatCords['lat'] == '0' && $arrLongLatCords['lng'] == '0') {
 
+                $this->blnLocatorInvoke = false;
                 $arrLongLatCords = array();
             }
 

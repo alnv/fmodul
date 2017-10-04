@@ -257,7 +257,7 @@ class ModuleListView extends Module
             if (!empty($strGeoAddress)) {
 
                 $objGeoCords = GeoCoding::getInstance();
-                $arrLongLatCords = $objGeoCords->getGeoCords($strGeoAddress, $strCountry);
+                $arrLongLatCords = $objGeoCords->getGeoCords($strGeoAddress, $strCountry, true );
             }
 
             if ($arrLongLatCords['lat'] == '0' && $arrLongLatCords['lng'] == '0') {

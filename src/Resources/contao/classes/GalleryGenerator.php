@@ -151,6 +151,11 @@ class GalleryGenerator extends \Frontend{
                     'caption'   => $arrMeta['caption']
                 );
 
+                if ( !version_compare( VERSION, '4.0', '>=' ) && !$images[$objFiles->path]['alt'] ) {
+
+                    $images[$objFiles->path]['alt'] = $arrMeta['title'];
+                }
+
                 $auxDate[] = $objFile->mtime;
             }
 
@@ -210,6 +215,11 @@ class GalleryGenerator extends \Frontend{
                         'imageUrl'  => $arrMeta['link'],
                         'caption'   => $arrMeta['caption']
                     );
+
+                    if ( !version_compare( VERSION, '4.0', '>=' ) && !$images[$objFiles->path]['alt'] ) {
+
+                        $images[$objFiles->path]['alt'] = $arrMeta['title'];
+                    }
 
                     $auxDate[] = $objFile->mtime;
                 }

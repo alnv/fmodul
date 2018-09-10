@@ -398,7 +398,7 @@ class GalleryGenerator extends \Frontend{
         $objTemplate->setData($this->arrData);
         $objTemplate->body = $body;
         $strGalleryTemplate->images = $objTemplate->parse();
-        
+
         return $strGalleryTemplate->parse();
     }
 

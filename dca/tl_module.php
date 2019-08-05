@@ -728,6 +728,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['fm_use_tagsUrl'] = array
     'sql' => "char(1) NOT NULL default ''"
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['customTpl']['options_callback'] = [ 'tl_module_fmodule', 'getFeModuleTemplates' ];
+
 use FModule\FieldAppearance;
 use FModule\GeoCoding;
 
@@ -1087,5 +1089,15 @@ class tl_module_fmodule extends tl_module {
         }
 
         return $arrReturn;
+    }
+
+    public function getFeModuleTemplates( Contao\DataContainer $dc) {
+
+        if ( in_array( $dc->activeRecord->type, [ 'fmodule_fe_list', 'fmodule_fe_formfilter', 'fmodule_fe_detail' ] ) ) {
+
+            return $this->getTemplateGroup( 'mod_' );
+        }
+
+        return $this->getModuleTemplates( $dc );
     }
 }

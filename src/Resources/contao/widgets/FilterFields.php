@@ -119,15 +119,14 @@ class FilterFields extends Widget
             foreach ($arrButtons as $button) {
                 $class = ($button == 'up' || $button == 'down') ? ' class="button-move"' : '';
                 if ($button == 'drag') {
-                    $dragBtnTemplate .= \Image::getHtml('drag.gif', '', 'class="drag-handle" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['move']) . '"');
+                    // $dragBtnTemplate .= \Image::getHtml('drag.gif', '', 'class="drag-handle" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['move']) . '"');
                 } else {
-                    $dragBtnTemplate .= '<a href="' . $this->addToUrl('&amp;' . $strCommand . '=' . $button . '&amp;cid=' . $key . '&amp;id=' . $this->currentRecord) . '"' . $class . ' title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_' . $button]) . '" onclick="Backend.optionsWizard(this,\'' . $button . '\',\'ctrl_' . $this->strId . '\');return false">' . \Image::getHtml($button . '.gif', $GLOBALS['TL_LANG']['MSC']['ow_' . $button]) . '</a> ';
-
+                    $dragBtnTemplate .= '<a href="' . $this->addToUrl('&amp;' . $strCommand . '=' . $button . '&amp;cid=' . $key . '&amp;id=' . $this->currentRecord) . '"' . $class . ' title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_' . $button]) . '" onclick="FModule.optionsWizard(this,\'' . $button . '\',\'ctrl_' . $this->strId . '\');return false">' . \Image::getHtml($button . '.gif', $GLOBALS['TL_LANG']['MSC']['ow_' . $button]) . '</a> ';
                 }
             }
 
             $strFieldTemplate =
-                '<div class="fm_field_block">' .
+                '<div class="fm_field_block tr">' .
                     '<input type="hidden" value="' . $value['id'] . '" name="' . $this->strName . '[' . $key . '][objID]">' .
                     '<input type="hidden" value="' . $value['title'] . '" name="' . $this->strName . '[' . $key . '][title]">' .
                     '<input type="hidden" value="' . $this->currentListID . '" name="' . $this->strName . '[' . $key . '][currentID]">' .
@@ -142,7 +141,7 @@ class FilterFields extends Widget
                     '<input type="hidden" value="' . $value['dataFromTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][dataFromTaxonomy]">' .
                     '<input type="hidden" value="' . $value['reactToTaxonomy'] . '" name="' . $this->strName . '[' . $key . '][reactToTaxonomy]">' .
                     '<input type="hidden" value="' . $value['reactToField'] . '" name="' . $this->strName . '[' . $key . '][reactToField]">' .
-                    '<h3 class="fm_field_block_headline collapsed" onclick="fmToggleFieldBlock(this)">' . $value['title'] . '<span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
+                    '<h3 class="fm_field_block_headline collapsed"><span onclick="fmToggleFieldBlock(this)">' . $value['title'] . '</span><span class="fm_field_block_drag">' . $dragBtnTemplate . '</span></h3>' .
                     '<div class="fm_field_block_item collapsed">' .
                         '<div class="w50 widget">' .
                             '<h3><label>' . $GLOBALS['TL_LANG']['MSC']['fm_ff_form_type'][0] . '</label></h3>' .
@@ -187,15 +186,15 @@ class FilterFields extends Widget
 
         }
 
-        $strWidget = '<div class="tl_filter_fields '. ( version_compare( VERSION, '4.0', '>=' ) ? 'c4' : 'c3' ) .'" id="ctrl_' . $this->strId . '"><div class="sortable" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
+        $strWidget = '<div class="tl_filter_fields '. ( version_compare( VERSION, '4.0', '>=' ) ? 'c4' : 'c3' ) .'" id="ctrl_' . $this->strId . '"><div class="sortable tbody" data-tabindex="' . $tabindex . '">' . $strBodyTemplate . '</div></div>';
 
         $strJS =
             '<script>
                function fmToggleFieldBlock(e) {   
-                  if(typeof $ != "undefined") {
-                     var tab = $(e);
+                  if(typeof $ !== "undefined") {
+                     var tab = $(e).getParent("h3");
                      var block = tab.getNext();
-                     var isCollapsed = typeof tab.hasClass("collapsed") != "boolean" ? tab.hasClass("collapsed")[0] : tab.hasClass("collapsed");                   
+                     var isCollapsed = typeof tab.hasClass("collapsed") !== "boolean" ? tab.hasClass("collapsed")[0] : tab.hasClass("collapsed");                   
                      if(isCollapsed) {
                         tab.removeClass("collapsed");
                         block.removeClass("collapsed");

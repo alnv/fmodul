@@ -449,7 +449,7 @@ class tl_fmodules extends \Backend
             $this->Database->prepare('ALTER TABLE tl_user_group ADD ' . $moduleName . 'p blob NULL;')->execute();
         }
 
-        if (!\Config::get('bypassCache')) {
+        if (!\Config::get('bypassCache') && version_compare( VERSION, '4.0', 'lt' ) ) {
             $a = new \Automator();
             $a->purgeInternalCache();
         }
@@ -527,7 +527,7 @@ class tl_fmodules extends \Backend
             $this->Database->prepare('ALTER TABLE tl_user_group DROP COLUMN ' . $moduleName . 'p ')->execute();
         }
 
-        if (!\Config::get('bypassCache')) {
+        if (!\Config::get('bypassCache') && version_compare( VERSION, '4.0', 'lt' )) {
             $a = new \Automator();
             $a->purgeInternalCache();
         }
@@ -550,7 +550,7 @@ class tl_fmodules extends \Backend
             $this->Database->prepare("UPDATE tl_content SET ptable = ? WHERE ptable = ?")->execute($strDataTableName, $preDataTableName);
         }
 
-        if (!\Config::get('bypassCache')) {
+        if (!\Config::get('bypassCache') && version_compare( VERSION, '4.0', 'lt' )) {
             $a = new \Automator();
             $a->purgeInternalCache();
         }

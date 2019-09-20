@@ -247,7 +247,7 @@ class FModule extends Frontend
             $arrRoot = $this->Database->getChildRecords( $intRoot, 'tl_page' );
         }
 
-        $dteTime = method_exists( Date, 'floorToMinute' ) ? \Date::floorToMinute() : time();
+        $dteTime = method_exists( 'Date', 'floorToMinute' ) ? \Date::floorToMinute() : time();
         $objModules = $this->Database->prepare( 'SELECT * FROM tl_module WHERE type = ?' )->execute( 'fmodule_fe_detail' );
 
         if ( !$objModules->numRows ) return $arrPages;

@@ -371,6 +371,11 @@ class GalleryGenerator extends \Frontend{
                     $images[($i+$j)]['size'] = $this->size;
                     $images[($i+$j)]['fullsize'] = $this->fullsize;
 
+                    if ( !$images[($i+$j)]['singleSRC'] ) {
+
+                        continue;
+                    }
+
                     $this->addImageToTemplate($objCell, $images[($i+$j)], $intMaxWidth, $strLightboxId);
 
                     // Add column width and class

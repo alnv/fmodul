@@ -622,16 +622,17 @@ class ModuleListView extends Module
             $strTitle = $item['title'];
 
             if ($item['addImage']) {
-
-                $this->addImageToTemplate($objTemplate, array(
-
-                    'singleSRC' => $item['singleSRC'],
-                    'alt' => $item['alt'],
-                    'title' => $item['imgTitle'],
-                    'size' => $item['size'],
-                    'fullsize' => $item['fullsize'],
-                    'caption' => $item['caption']
-                ));
+                $objFile = \FilesModel::findByUuid( $item['singleSRC'] );
+                if ( $objFile !== null ) {
+                    $this->addImageToTemplate($objTemplate, array(
+                        'singleSRC' => $item['singleSRC'],
+                        'alt' => $item['alt'],
+                        'title' => $item['imgTitle'],
+                        'size' => $item['size'],
+                        'fullsize' => $item['fullsize'],
+                        'caption' => $item['caption']
+                    ));
+                }
             }
 
             $objTemplate->enclosure = array();

@@ -1093,11 +1093,14 @@ class tl_module_fmodule extends tl_module {
 
     public function getFeModuleTemplates( Contao\DataContainer $dc) {
 
-        if ( in_array( $dc->activeRecord->type, [ 'fmodule_fe_list', 'fmodule_fe_formfilter', 'fmodule_fe_detail' ] ) ) {
-
+        if ( in_array($dc->activeRecord->type, ['fmodule_fe_list', 'fmodule_fe_formfilter', 'fmodule_fe_detail']) ) {
             return $this->getTemplateGroup( 'mod_' );
         }
 
-        return $this->getModuleTemplates( $dc );
+        if (version_compare(VERSION, '4.9', '>=')) {
+            return \Controller::getTemplateGroup('mod_' . $dc->activeRecord->type . '_');
+        }
+
+        return $this->getModuleTemplates($dc);
     }
 }

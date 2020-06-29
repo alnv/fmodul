@@ -248,7 +248,7 @@ class FModule extends Frontend
         }
 
         $dteTime = method_exists( 'Date', 'floorToMinute' ) ? \Date::floorToMinute() : time();
-        $objModules = $this->Database->prepare( 'SELECT * FROM tl_module WHERE type = ?' )->execute( 'fmodule_fe_detail' );
+        $objModules = $this->Database->prepare( 'SELECT * FROM tl_module WHERE `type` = ?' )->execute( 'fmodule_fe_detail' );
 
         if ( !$objModules->numRows ) return $arrPages;
 
@@ -295,7 +295,9 @@ class FModule extends Frontend
             }
 
             $strUrl = $arrProcessed[ $strMasterPageID ];
-            $strQuery = 'SELECT * FROM ' . $strModule . '_data WHERE pid = ?';
+            $arrValues = [$strWrapperID, '1'];
+            $strQuery = 'SELECT * FROM ' . $strModule . '_data WHERE pid = ? AND published = ?';
+
 
             if ( isset( $GLOBALS['TL_HOOKS']['fmModifyGetSearchablePagesQuery'] ) && is_array( $GLOBALS['TL_HOOKS']['fmModifyGetSearchablePagesQuery'] ) ) {
 
@@ -308,7 +310,7 @@ class FModule extends Frontend
 
             if ( !$strQuery ) continue;
 
-            $objEntities = $this->Database->prepare( $strQuery )->execute( $strWrapperID );
+            $objEntities = $this->Database->prepare( $strQuery )->execute($arrValues);
 
             if ( !$objEntities->numRows ) continue;
 

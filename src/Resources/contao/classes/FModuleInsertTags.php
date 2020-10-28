@@ -593,7 +593,7 @@ class FModuleInsertTags extends Frontend
                 }
 
                 $objRow->classes = $arrCss;
-                $detailStr .= $this->getContentElement($objRow, $this->strColumn);
+                $detailStr .= $this->getContentElement($objRow);
                 ++$intCount;
             }
         }
@@ -621,7 +621,7 @@ class FModuleInsertTags extends Frontend
                 }
 
                 $objRow->classes = $arrCss;
-                $teaserStr .= $this->getContentElement($objRow, $this->strColumn);
+                $teaserStr .= $this->getContentElement($objRow);
                 ++$intCount;
             }
         }

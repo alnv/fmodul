@@ -11,6 +11,7 @@
  * @copyright 2016 Alexander Naumov
  */
 
+use Contao\BackendUser;
 use Contao\System;
 use Contao\Input;
 
@@ -1212,15 +1213,13 @@ class ViewContainer extends DCAHelper
      */
     protected function getUserID()
     {
-        $hash = Input::cookie('BE_USER_AUTH');
-        $id = '0';
-        if (isset($hash) && $hash != '') {
-            $sessionDB = $this->Database->prepare('SELECT * FROM tl_session WHERE hash = ?')->execute($hash);
-            if ($sessionDB->count() > 0) {
-                $id = $sessionDB->row()['pid'];
-            }
+        if (true !== BE_USER_LOGGED_IN) {
+            return '0';
         }
-        return $id;
+
+        $user = BackendUser::getInstance();
+
+        return (string) $user->id;
     }
 
 

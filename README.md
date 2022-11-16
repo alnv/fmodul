@@ -1,3 +1,5 @@
+**This extension is unmaintained!**
+
 F Modul v1.16.0
 ===============
 
